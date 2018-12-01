@@ -29,7 +29,7 @@ func Encode(b []byte) ([]byte, error) {
 	}
 
 	if string(crypto.Sha3(b[0:2])) == string(crypto.Sha3(MemPrefix)) { // Check already encoded
-		return encodeNoMem(b) // Return encoded
+		b = b[2:] // Trim 0x
 	}
 
 	enc := make([]byte, len(b)*2+2) // Init encoder buffer
@@ -95,16 +95,3 @@ func DecodeString(s string) ([]byte, error) {
 }
 
 /* END EXPORTED METHODS */
-
-/* BEGIN INTERNAL METHODS */
-
-// encodeNoMem - encode given byte array to hex without appending 0x
-func encodeNoMem(b []byte) ([]byte, error) {
-	enc := make([]byte, len(b)*2-2) // Init encoder buffer
-
-	hex.Encode(enc[2:], b) // Encode given byte array
-
-	return enc, nil // Return encoded
-}
-
-/* END INTERNAL METHODS */
