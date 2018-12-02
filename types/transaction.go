@@ -15,6 +15,9 @@ var (
 
 	// ErrNilSignature - error definition describing nil tx signature
 	ErrNilSignature = errors.New("nil signature")
+
+	// ErrInvalidSignature - error definition describing invalid tx signature (doesn't match public key)
+	ErrInvalidSignature = errors.New("invalid signature")
 )
 
 // Transaction - primitive transaction type

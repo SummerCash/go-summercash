@@ -5,6 +5,7 @@ import (
 	"crypto/rand"
 	"math/big"
 
+	"github.com/space55/summertech-blockchain/common"
 	"github.com/space55/summertech-blockchain/crypto"
 )
 
@@ -47,6 +48,16 @@ func SignTransaction(transaction *Transaction, privateKey *ecdsa.PrivateKey) err
 func VerifyTransactionSignature(transaction *Transaction) (bool, error) {
 	if transaction.Signature == nil { // Check nil signature
 		return false, ErrNilSignature // Return nil signature error
+	}
+
+	address, err := common.PublicKeyToAddress(transaction.Signature.PublicKey) // Generate address
+
+	if err != nil { // Check for errors
+		return false, err // Return found error
+	}
+
+	if address != *transaction.Sender { // Check for invalid public key
+		return false, ErrInvalidSignature // Return invalid signature error
 	}
 
 	return ecdsa.Verify(transaction.Signature.PublicKey, transaction.Signature.V, transaction.Signature.R, transaction.Signature.S), nil // Check signature valid

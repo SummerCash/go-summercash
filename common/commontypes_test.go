@@ -34,6 +34,25 @@ func TestNewAddress(t *testing.T) {
 	t.Log(address) // Log address
 }
 
+// TestPublicKeyToAddress - test functionality of public key address initializer
+func TestPublicKeyToAddress(t *testing.T) {
+	privateKey, err := ecdsa.GenerateKey(elliptic.P521(), rand.Reader)
+
+	if err != nil { // Check for errors
+		t.Error(err) // Log found error
+		t.FailNow()  // Panic
+	}
+
+	address, err := PublicKeyToAddress(&privateKey.PublicKey) // Generate address
+
+	if err != nil { // Check for errors
+		t.Error(err) // Log found error
+		t.FailNow()  // Panic
+	}
+
+	t.Log(address) // Log address
+}
+
 func TestStringToAddress(t *testing.T) {
 	privateKey, err := ecdsa.GenerateKey(elliptic.P521(), rand.Reader)
 
