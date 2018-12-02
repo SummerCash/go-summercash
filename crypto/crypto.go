@@ -1,6 +1,8 @@
 package crypto
 
 import (
+	"encoding/hex"
+
 	"golang.org/x/crypto/sha3"
 )
 
@@ -11,4 +13,11 @@ func Sha3(b []byte) []byte {
 	hash.Write(b) // Write
 
 	return hash.Sum(nil) // Return final hash
+}
+
+// Sha3String - hash specified byte array to string
+func Sha3String(b []byte) string {
+	b = Sha3(b) // Hash
+
+	return hex.EncodeToString(b) // Return string
 }
