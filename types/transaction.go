@@ -12,6 +12,9 @@ import (
 var (
 	// ErrAlreadySigned - error definition stating transaction has already been signed
 	ErrAlreadySigned = errors.New("transaction already signed")
+
+	// ErrNilSignature - error definition describing nil tx signature
+	ErrNilSignature = errors.New("nil signature")
 )
 
 // Transaction - primitive transaction type
