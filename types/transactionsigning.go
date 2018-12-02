@@ -43,4 +43,13 @@ func SignTransaction(transaction *Transaction, privateKey *ecdsa.PrivateKey) err
 	return nil // No error occurred, return nil
 }
 
+// VerifyTransactionSignature - verify given transaction signature, returning false if signature invalid
+func VerifyTransactionSignature(transaction *Transaction) (bool, error) {
+	if transaction.Signature == nil { // Check nil signature
+		return false, ErrNilSignature // Return nil signature error
+	}
+
+	return ecdsa.Verify(transaction.Signature.PublicKey, transaction.Signature.V, transaction.Signature.R, transaction.Signature.S), nil // Check signature valid
+}
+
 /* END EXPORTED METHODS */
