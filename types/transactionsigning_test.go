@@ -5,6 +5,7 @@ import (
 	"crypto/elliptic"
 	"crypto/rand"
 	"encoding/json"
+	"fmt"
 	"testing"
 
 	"github.com/space55/summertech-blockchain/common"
@@ -52,8 +53,16 @@ func TestSignTransaction(t *testing.T) {
 	t.Log(string(marshaledVal)) // Log success
 }
 
-func TestVerifyTransaction(t *testing.T) {
+// TestVerifyTransactionSignature - test functionality of VerifyTransactionSignature() method
+func TestVerifyTransactionSignature(t *testing.T) {
 	privateKey, err := ecdsa.GenerateKey(elliptic.P521(), rand.Reader) // Generate private key
+
+	if err != nil { // Check for errors
+		t.Error(err) // Log found error
+		t.FailNow()  // Panic
+	}
+
+	invalidPrivateKey, err := ecdsa.GenerateKey(elliptic.P521(), rand.Reader) // Generate private key
 
 	if err != nil { // Check for errors
 		t.Error(err) // Log found error
@@ -67,6 +76,16 @@ func TestVerifyTransaction(t *testing.T) {
 		t.FailNow()  // Panic
 	}
 
+	sender2, err := common.NewAddress(invalidPrivateKey) // Init address from private key
+
+	if err != nil { // Check for errors
+		t.Error(err) // Log found error
+		t.FailNow()  // Panic
+	}
+
+	fmt.Println(sender)
+	fmt.Println(sender2)
+
 	transaction, err := NewTransaction(0, &sender, &sender, 0, []byte("test")) // Initialize transaction
 
 	if err != nil { // Check for errors
@@ -74,7 +93,7 @@ func TestVerifyTransaction(t *testing.T) {
 		t.FailNow()  // Panic
 	}
 
-	err = SignTransaction(transaction, privateKey) // Sign transaction
+	err = SignTransaction(transaction, invalidPrivateKey) // Sign transaction
 
 	if err != nil { // Check for errors
 		t.Error(err) // Log found error

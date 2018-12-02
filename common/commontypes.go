@@ -4,6 +4,7 @@ import (
 	"crypto/ecdsa"
 	"crypto/x509"
 	"encoding/hex"
+	"fmt"
 
 	"github.com/space55/summertech-blockchain/crypto"
 )
@@ -32,7 +33,26 @@ const (
 func NewAddress(privateKey *ecdsa.PrivateKey) (Address, error) {
 	var address Address // Init buffer
 
-	marhsaledPublicKey, err := x509.MarshalPKIXPublicKey(&privateKey.PublicKey) // Marshal public key
+	marhsaledPublicKey, err := x509.MarshalPKIXPublicKey(&(*privateKey).PublicKey) // Marshal public key
+
+	if err != nil { // Check for errors
+		return Address{}, err // Return found error
+	}
+
+	fmt.Println(marhsaledPublicKey)
+
+	marhsaledPublicKey = append([]byte("0x"), marhsaledPublicKey...) // Prepend prefix
+
+	copy(address[:], marhsaledPublicKey) // Copy marshaled
+
+	return address, nil // Return public key
+}
+
+// PublicKeyToAddress - initialize new address with given public key
+func PublicKeyToAddress(publicKey *ecdsa.PublicKey) (Address, error) {
+	var address Address // Init buffer
+
+	marhsaledPublicKey, err := x509.MarshalPKIXPublicKey(publicKey) // Marshal public key
 
 	if err != nil { // Check for errors
 		return Address{}, err // Return found error
