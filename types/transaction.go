@@ -3,9 +3,15 @@ package types
 import (
 	"bytes"
 	"encoding/json"
+	"errors"
 
 	"github.com/space55/summertech-blockchain/common"
 	"github.com/space55/summertech-blockchain/crypto"
+)
+
+var (
+	// ErrAlreadySigned - error definition stating transaction has already been signed
+	ErrAlreadySigned = errors.New("transaction already signed")
 )
 
 // Transaction - primitive transaction type
