@@ -17,6 +17,8 @@ type signature struct {
 	S *big.Int // Signature S
 }
 
+/* BEGIN EXPORTED METHODS */
+
 // SignTransaction - sign given transaction
 func SignTransaction(transaction *Transaction, privateKey *ecdsa.PrivateKey) error {
 	if transaction.Signature != nil { // Check not already signed
@@ -40,3 +42,5 @@ func SignTransaction(transaction *Transaction, privateKey *ecdsa.PrivateKey) err
 
 	return nil // No error occurred, return nil
 }
+
+/* END EXPORTED METHODS */
