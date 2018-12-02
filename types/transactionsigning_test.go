@@ -5,7 +5,6 @@ import (
 	"crypto/elliptic"
 	"crypto/rand"
 	"encoding/json"
-	"fmt"
 	"testing"
 
 	"github.com/space55/summertech-blockchain/common"
@@ -76,16 +75,6 @@ func TestVerifyTransactionSignature(t *testing.T) {
 		t.FailNow()  // Panic
 	}
 
-	sender2, err := common.NewAddress(invalidPrivateKey) // Init address from private key
-
-	if err != nil { // Check for errors
-		t.Error(err) // Log found error
-		t.FailNow()  // Panic
-	}
-
-	fmt.Println(sender)
-	fmt.Println(sender2)
-
 	transaction, err := NewTransaction(0, &sender, &sender, 0, []byte("test")) // Initialize transaction
 
 	if err != nil { // Check for errors
@@ -93,7 +82,7 @@ func TestVerifyTransactionSignature(t *testing.T) {
 		t.FailNow()  // Panic
 	}
 
-	err = SignTransaction(transaction, invalidPrivateKey) // Sign transaction
+	err = SignTransaction(transaction, invalidPrivateKey) // Sign transaction with invalid keypair
 
 	if err != nil { // Check for errors
 		t.Error(err) // Log found error
@@ -102,7 +91,7 @@ func TestVerifyTransactionSignature(t *testing.T) {
 
 	valid, err := VerifyTransactionSignature(transaction) // Verify signature
 
-	if err != nil { // Check for errors
+	if err != nil && err != ErrInvalidSignature { // Check for errors
 		t.Error(err) // Log found error
 		t.FailNow()  // Panic
 	}

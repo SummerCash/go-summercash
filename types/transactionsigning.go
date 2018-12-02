@@ -48,15 +48,7 @@ func SignTransaction(transaction *Transaction, privateKey *ecdsa.PrivateKey) err
 func VerifyTransactionSignature(transaction *Transaction) (bool, error) {
 	if transaction.Signature == nil { // Check nil signature
 		return false, ErrNilSignature // Return nil signature error
-	}
-
-	address, err := common.PublicKeyToAddress(transaction.Signature.PublicKey) // Generate address
-
-	if err != nil { // Check for errors
-		return false, err // Return found error
-	}
-
-	if address != *transaction.Sender { // Check for invalid public key
+	} else if common.PublicKeyToAddress(transaction.Signature.PublicKey) != *transaction.Sender { // Check for invalid public key
 		return false, ErrInvalidSignature // Return invalid signature error
 	}
 

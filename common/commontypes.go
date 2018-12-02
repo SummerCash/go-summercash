@@ -2,9 +2,8 @@ package common
 
 import (
 	"crypto/ecdsa"
-	"crypto/x509"
+	"crypto/elliptic"
 	"encoding/hex"
-	"fmt"
 
 	"github.com/space55/summertech-blockchain/crypto"
 )
@@ -33,36 +32,26 @@ const (
 func NewAddress(privateKey *ecdsa.PrivateKey) (Address, error) {
 	var address Address // Init buffer
 
-	marhsaledPublicKey, err := x509.MarshalPKIXPublicKey(&(*privateKey).PublicKey) // Marshal public key
+	marshaledPublicKey := elliptic.Marshal(privateKey.PublicKey, privateKey.PublicKey.X, privateKey.PublicKey.Y) // Marshal public key
 
-	if err != nil { // Check for errors
-		return Address{}, err // Return found error
-	}
+	marshaledPublicKey = append([]byte("0x"), marshaledPublicKey...) // Prepend prefix
 
-	fmt.Println(marhsaledPublicKey)
-
-	marhsaledPublicKey = append([]byte("0x"), marhsaledPublicKey...) // Prepend prefix
-
-	copy(address[:], marhsaledPublicKey) // Copy marshaled
+	copy(address[:], marshaledPublicKey) // Copy marshaled
 
 	return address, nil // Return public key
 }
 
 // PublicKeyToAddress - initialize new address with given public key
-func PublicKeyToAddress(publicKey *ecdsa.PublicKey) (Address, error) {
+func PublicKeyToAddress(publicKey *ecdsa.PublicKey) Address {
 	var address Address // Init buffer
 
-	marhsaledPublicKey, err := x509.MarshalPKIXPublicKey(publicKey) // Marshal public key
+	marshaledPublicKey := elliptic.Marshal(publicKey, publicKey.X, publicKey.Y) // Marshal public key
 
-	if err != nil { // Check for errors
-		return Address{}, err // Return found error
-	}
+	marshaledPublicKey = append([]byte("0x"), marshaledPublicKey...) // Prepend prefix
 
-	marhsaledPublicKey = append([]byte("0x"), marhsaledPublicKey...) // Prepend prefix
+	copy(address[:], marshaledPublicKey) // Copy marshaled
 
-	copy(address[:], marhsaledPublicKey) // Copy marshaled
-
-	return address, nil // Return public key
+	return address // Return public key
 }
 
 // StringToAddress - convert string to address
