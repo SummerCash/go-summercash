@@ -25,7 +25,7 @@ func TestNewAddress(t *testing.T) {
 		t.FailNow()  // Panic
 	}
 
-	t.Logf("0x%s", address) // Log address
+	t.Log(address) // Log address
 }
 
 func TestStringToAddress(t *testing.T) {
@@ -57,7 +57,7 @@ func TestStringToAddress(t *testing.T) {
 		t.FailNow()  // Panic
 	}
 
-	t.Logf("0x%s", decoded) // Log success
+	t.Log(decoded) // Log success
 }
 
 // TestBytes - test address to bytes conversion
@@ -95,7 +95,7 @@ func TestString(t *testing.T) {
 		t.FailNow()  // Panic
 	}
 
-	t.Logf("0x%s", address.String()) // Log success
+	t.Log(address) // Log success
 }
 
 /* END EXPORTED METHODS */

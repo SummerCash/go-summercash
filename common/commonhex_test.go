@@ -2,6 +2,8 @@ package common
 
 import "testing"
 
+/* BEGIN EXPORTED METHODS */
+
 // TestMemPrefix - test MemPrefix definition
 func TestMemPrefix(t *testing.T) {
 	if string(MemPrefix) != "0x" || len(MemPrefix) != 2 { // Check invalid memPrefix
@@ -97,3 +99,5 @@ func TestDecodeString(t *testing.T) {
 
 	t.Log(string(decoded)) // Log success
 }
+
+/* END EXPORTED METHODS */
