@@ -43,12 +43,7 @@ func TestPublicKeyToAddress(t *testing.T) {
 		t.FailNow()  // Panic
 	}
 
-	address, err := PublicKeyToAddress(&privateKey.PublicKey) // Generate address
-
-	if err != nil { // Check for errors
-		t.Error(err) // Log found error
-		t.FailNow()  // Panic
-	}
+	address := PublicKeyToAddress(&privateKey.PublicKey) // Generate address
 
 	t.Log(address) // Log address
 }
