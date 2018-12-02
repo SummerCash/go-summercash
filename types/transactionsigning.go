@@ -36,7 +36,7 @@ func SignTransaction(transaction *Transaction, privateKey *ecdsa.PrivateKey) err
 		S:         s,                                // Set S
 	}
 
-	*(*transaction).Signature = txSignature // Set signature
+	(*transaction).Signature = &txSignature // Set signature
 
 	return nil // No error occurred, return nil
 }
