@@ -55,7 +55,7 @@ func startRPCServer() {
 		panic(err) // Panic
 	}
 
-	cryptoHandler := cryptoProto.NewNodeServer(&cryptoServer.Server{}, nil) // Init handler
+	cryptoHandler := cryptoProto.NewCryptoServer(&cryptoServer.Server{}, nil) // Init handler
 
 	mux := http.NewServeMux() // Init mux
 
