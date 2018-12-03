@@ -11,6 +11,8 @@ import (
 	"github.com/space55/summertech-blockchain/common"
 	cryptoServer "github.com/space55/summertech-blockchain/internal/rpc/crypto"
 	cryptoProto "github.com/space55/summertech-blockchain/internal/rpc/proto/crypto"
+	upnpProto "github.com/space55/summertech-blockchain/internal/rpc/proto/upnp"
+	upnpServer "github.com/space55/summertech-blockchain/internal/rpc/upnp"
 	"github.com/space55/summertech-blockchain/upnp"
 )
 
@@ -43,7 +45,7 @@ func main() {
 		cli.NewTerminal(uint(*rpcPortFlag), *rpcAddrFlag) // Initialize terminal
 	}
 
-	/* UNCOMMENT ONCE START NODE
+	/* REMOVE COMMENT ONCE START NODE
 	go common.Forever() // Prevent main from closing
 	select {}           // Prevent main from closing
 	*/
@@ -58,10 +60,12 @@ func startRPCServer() {
 	}
 
 	cryptoHandler := cryptoProto.NewCryptoServer(&cryptoServer.Server{}, nil) // Init handler
+	upnpHandler := upnpProto.NewUpnpServer(&upnpServer.Server{}, nil)         // Init handler
 
 	mux := http.NewServeMux() // Init mux
 
 	mux.Handle(cryptoProto.CryptoPathPrefix, cryptoHandler) // Start mux node handler
+	mux.Handle(upnpProto.UpnpPathPrefix, upnpHandler)       // Start mux upnp handler
 
 	go http.ListenAndServeTLS(":"+strconv.Itoa(*rpcPortFlag), "termCert.pem", "termKey.pem", mux) // Start server
 }
