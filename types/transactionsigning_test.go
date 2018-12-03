@@ -75,21 +75,44 @@ func TestVerifyTransactionSignature(t *testing.T) {
 		t.FailNow()  // Panic
 	}
 
-	transaction, err := NewTransaction(0, &sender, &sender, 0, []byte("test")) // Initialize transaction
+	invalidTransaction, err := NewTransaction(0, &sender, &sender, 0, []byte("test")) // Initialize transaction
 
 	if err != nil { // Check for errors
 		t.Error(err) // Log found error
 		t.FailNow()  // Panic
 	}
 
-	err = SignTransaction(transaction, invalidPrivateKey) // Sign transaction with invalid keypair
+	err = SignTransaction(invalidTransaction, invalidPrivateKey) // Sign transaction with invalid keypair
 
 	if err != nil { // Check for errors
 		t.Error(err) // Log found error
 		t.FailNow()  // Panic
 	}
 
-	valid, err := VerifyTransactionSignature(transaction) // Verify signature
+	valid, err := VerifyTransactionSignature(invalidTransaction) // Verify signature
+
+	if err != nil && err != ErrInvalidSignature { // Check for errors
+		t.Error(err) // Log found error
+		t.FailNow()  // Panic
+	}
+
+	t.Logf("signature valid: %t", valid) // Log success
+
+	validTransaction, err := NewTransaction(0, &sender, &sender, 0, []byte("test")) // Initialize transaction
+
+	if err != nil { // Check for errors
+		t.Error(err) // Log found error
+		t.FailNow()  // Panic
+	}
+
+	err = SignTransaction(validTransaction, privateKey) // Sign transaction with valid keypair
+
+	if err != nil { // Check for errors
+		t.Error(err) // Log found error
+		t.FailNow()  // Panic
+	}
+
+	valid, err = VerifyTransactionSignature(validTransaction) // Verify signature
 
 	if err != nil && err != ErrInvalidSignature { // Check for errors
 		t.Error(err) // Log found error
