@@ -17,8 +17,8 @@ import (
 var (
 	terminalFlag   = flag.Bool("terminal", false, "launch node in terminal mode")                                                                                     // Init term flag
 	upnpFlag       = flag.Bool("no-upnp", false, "launch node without automatic UPnP port forwarding")                                                                // Init upnp flag
-	rpcPortFlag    = flag.Int("rpc-port", 8080, "launch GoP2P with specified RPC port")                                                                               // Init RPC port flag
-	forwardRPCFlag = flag.Bool("forward-rpc", false, "enables forwarding of GoP2P RPC terminal ports")                                                                // Init forward RPC flag
+	rpcPortFlag    = flag.Int("rpc-port", 8080, "launch node with specified RPC port")                                                                                // Init RPC port flag
+	forwardRPCFlag = flag.Bool("forward-rpc", false, "enables forwarding of node RPC terminal ports")                                                                 // Init forward RPC flag
 	rpcAddrFlag    = flag.String("rpc-address", fmt.Sprintf("localhost:%s", strconv.Itoa(*rpcPortFlag)), "connects to remote RPC terminal (default: localhost:8080)") // Init remote rpc addr flag
 )
 
