@@ -1,0 +1,24 @@
+syntax = "proto3"; // Specify compiler version
+
+package crypto;
+
+service Crypto {
+    rpc Sha3(GeneralRequest) returns (GeneralResponse) {} // Hash specified byte array
+    rpc Sha3String(GeneralRequest) returns (GeneralResponse) {} // Hash specified byte array to string
+}
+
+/* BEGIN REQUESTS */
+
+message GeneralRequest {
+    bytes input = 1; // Input to be hashed
+}
+
+/* END REQUESTS */
+
+/* BEGIN RESPONSES */
+
+message GeneralResponse {
+    string message = 1; // Response
+}
+
+/* END REPSONSES */
