@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"context"
 	"crypto/tls"
+	"errors"
 	"fmt"
 	"net/http"
 	"os"
@@ -13,6 +14,11 @@ import (
 
 	"github.com/space55/summertech-blockchain/common"
 	cryptoProto "github.com/space55/summertech-blockchain/internal/rpc/proto/crypto"
+)
+
+var (
+	// ErrInvalidParams - error definition describing invalid input parameters
+	ErrInvalidParams = errors.New("invalid parameters")
 )
 
 // NewTerminal - attempts to start handler for term commands
@@ -64,13 +70,24 @@ func handleCrypto(cryptoClient *cryptoProto.Crypto, methodname string, params []
 
 	reflectParams = append(reflectParams, reflect.ValueOf(context.Background())) // Append request context
 
-	// methodName - handle different methods
-	switch methodName {
+	switch methodname { // Handle different methods
 	case "Sha3", "Sha3String":
 		if len(params) != 1 { // Check for invalid params
-
+			return ErrInvalidParams // Retrun error
 		}
+
+		reflectParams = append(reflectParams, reflect.ValueOf(&cryptoProto.GeneralRequest{Input: []byte(params[0])})) // Append params
 	}
+
+	result := reflect.ValueOf(*cryptoClient).MethodByName(methodname).Call(reflectParams) // Call method
+
+	response := result[0].Interface().(*cryptoProto.GeneralResponse) // Get response
+
+	if result[1].Interface() != nil { // Check for errors
+		return result[1].Interface().(error) // Return error
+	}
+
+	fmt.Println(response.Message) // Log response
 
 	return nil // No error occurred, return nil
 }
