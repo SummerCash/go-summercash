@@ -2,6 +2,7 @@ package crypto
 
 import (
 	"context"
+	"encoding/hex"
 	"fmt"
 
 	"github.com/space55/summertech-blockchain/crypto"
@@ -15,7 +16,7 @@ type Server struct{}
 func (server *Server) Sha3(ctx context.Context, req *cryptoProto.GeneralRequest) (*cryptoProto.GeneralResponse, error) {
 	result := crypto.Sha3(req.Input) // Hash input
 
-	return &cryptoProto.GeneralResponse{Message: fmt.Sprintf("\n%s", result)}, nil // Return response
+	return &cryptoProto.GeneralResponse{Message: fmt.Sprintf("\n%s", hex.EncodeToString(result))}, nil // Return response
 }
 
 // Sha3String - crypto.Sha3String RPC handler
