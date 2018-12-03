@@ -43,8 +43,10 @@ func main() {
 		cli.NewTerminal(uint(*rpcPortFlag), *rpcAddrFlag) // Initialize terminal
 	}
 
+	/* UNCOMMENT ONCE START NODE
 	go common.Forever() // Prevent main from closing
 	select {}           // Prevent main from closing
+	*/
 }
 
 // startRPCServer - start RPC server

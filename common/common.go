@@ -17,6 +17,11 @@ import (
 	"time"
 )
 
+var (
+	// ErrNilInput - error definition describing input of 0 char length
+	ErrNilInput = errors.New("nil input")
+)
+
 /* BEGIN EXPORTED METHODS */
 
 /*
@@ -26,7 +31,7 @@ import (
 // ParseStringMethodCall - attempt to parse string as method call, returning receiver, method name, and params
 func ParseStringMethodCall(input string) (string, string, []string, error) {
 	if input == "" { // Check for errors
-		return "", "", []string{}, errors.New("nil input") // Return found error
+		return "", "", []string{}, ErrNilInput // Return found error
 	} else if !strings.Contains(input, "(") || !strings.Contains(input, ")") {
 		input = input + "()" // Fetch receiver methods
 	}
@@ -51,7 +56,7 @@ func ParseStringMethodCall(input string) (string, string, []string, error) {
 // ParseStringParams - attempt to fetch string parameters from (..., ..., ...) style call
 func ParseStringParams(input string) ([]string, error) {
 	if input == "" { // Check for errors
-		return []string{}, errors.New("nil input") // Return found error
+		return []string{}, ErrNilInput // Return found error
 	}
 
 	parenthesesStripped := StringStripParentheses(StringStripReceiverCall(input)) // Strip parentheses

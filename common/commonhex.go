@@ -11,9 +11,6 @@ var (
 	// MemPrefix - "0x" memory address  prefixbyte array representation
 	MemPrefix = []byte{48, 120}
 
-	// ErrNilInput - error definition describing nil input
-	ErrNilInput = errors.New("nil input")
-
 	// ErrNoMem - error definition describing input < 2 chars long (< len(0x))
 	ErrNoMem = errors.New("insufficient length for memory address char")
 )
