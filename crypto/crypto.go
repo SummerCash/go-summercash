@@ -21,3 +21,15 @@ func Sha3String(b []byte) string {
 
 	return hex.EncodeToString(b) // Return string
 }
+
+// Sha3d - hash specified byte array using sha3d algorithm
+func Sha3d(b []byte) []byte {
+	return Sha3(Sha3(b)) // Return sha3d result
+}
+
+// Sha3dString - hash specified byte array to string using sha3d algorithm
+func Sha3dString(b []byte) string {
+	b = Sha3d(b) // Hash
+
+	return hex.EncodeToString(b) // Return string
+}
