@@ -22,6 +22,22 @@ func Sha3String(b []byte) string {
 	return hex.EncodeToString(b) // Return string
 }
 
+// Sha3n - hash specified byte array n times
+func Sha3n(b []byte, n uint) []byte {
+	for x := uint(0); x != n; x++ { // Hash n times
+		b = Sha3(b) // Hash
+	}
+
+	return b // Return hashed
+}
+
+// Sha3nString - hash specified byte array n times to string
+func Sha3nString(b []byte, n uint) string {
+	b = Sha3n(b, n) // Hash
+
+	return hex.EncodeToString(b) // Return string
+}
+
 // Sha3d - hash specified byte array using sha3d algorithm
 func Sha3d(b []byte) []byte {
 	return Sha3(Sha3(b)) // Return sha3d result
