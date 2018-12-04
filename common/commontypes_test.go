@@ -192,4 +192,104 @@ func TestStringHash(t *testing.T) {
 	END HASH METHODS
 */
 
+/*
+	BEGIN ADDRESS-SPACE METHODS
+*/
+
+// TestNewAddressSpace - test functionality of address-space initializer
+func TestNewAddressSpace(t *testing.T) {
+	privateKey, err := ecdsa.GenerateKey(elliptic.P521(), rand.Reader)
+
+	if err != nil { // Check for errors
+		t.Error(err) // Log found error
+		t.FailNow()  // Panic
+	}
+
+	address, err := NewAddress(privateKey) // Generate address
+
+	if err != nil { // Check for errors
+		t.Error(err) // Log found error
+		t.FailNow()  // Panic
+	}
+
+	addressSpace, err := NewAddressSpace([]Address{address}) // Init address-space
+
+	if err != nil { // Check for errors
+		t.Error(err) // Log found error
+		t.FailNow()  // Panic
+	}
+
+	t.Log(addressSpace) // Log initialized address-space
+}
+
+// TestBytesAddressSpace - test functionality of address-space Bytes() extension method
+func TestBytesAddressSpace(t *testing.T) {
+	privateKey, err := ecdsa.GenerateKey(elliptic.P521(), rand.Reader)
+
+	if err != nil { // Check for errors
+		t.Error(err) // Log found error
+		t.FailNow()  // Panic
+	}
+
+	address, err := NewAddress(privateKey) // Generate address
+
+	if err != nil { // Check for errors
+		t.Error(err) // Log found error
+		t.FailNow()  // Panic
+	}
+
+	addressSpace, err := NewAddressSpace([]Address{address}) // Init address-space
+
+	if err != nil { // Check for errors
+		t.Error(err) // Log found error
+		t.FailNow()  // Panic
+	}
+
+	byteVal := addressSpace.Bytes() // Get string val
+
+	if byteVal == nil { // Check for nil byte value
+		t.Errorf("invalid byte value") // Log invalid string val
+		t.FailNow()                    // Panic
+	}
+
+	t.Log(byteVal) // Log success
+}
+
+// TestStringAddressSpace - test functionality of address-space String() extension method
+func TestStringAddressSpace(t *testing.T) {
+	privateKey, err := ecdsa.GenerateKey(elliptic.P521(), rand.Reader)
+
+	if err != nil { // Check for errors
+		t.Error(err) // Log found error
+		t.FailNow()  // Panic
+	}
+
+	address, err := NewAddress(privateKey) // Generate address
+
+	if err != nil { // Check for errors
+		t.Error(err) // Log found error
+		t.FailNow()  // Panic
+	}
+
+	addressSpace, err := NewAddressSpace([]Address{address}) // Init address-space
+
+	if err != nil { // Check for errors
+		t.Error(err) // Log found error
+		t.FailNow()  // Panic
+	}
+
+	stringVal := addressSpace.String() // Get string val
+
+	if stringVal == "" { // Check for nil string value
+		t.Errorf("invalid string value") // Log invalid string val
+		t.FailNow()                      // Panic
+	}
+
+	t.Log(stringVal) // Log success
+}
+
+/*
+	END ADDRESS-SPACE METHODS
+*/
+
 /* END EXPORTED METHODS */
