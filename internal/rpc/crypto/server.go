@@ -26,29 +26,29 @@ func (server *Server) Sha3String(ctx context.Context, req *cryptoProto.GeneralRe
 	return &cryptoProto.GeneralResponse{Message: fmt.Sprintf("\n%s", result)}, nil // Return response
 }
 
-// Sha3n - crypto.Sha3n RPC handler
-func (server *Server) Sha3n(ctx context.Context, req *cryptoProto.GeneralRequest) (*cryptoProto.GeneralResponse, error) {
+// Sha3N - crypto.Sha3n RPC handler
+func (server *Server) Sha3N(ctx context.Context, req *cryptoProto.GeneralRequest) (*cryptoProto.GeneralResponse, error) {
 	result := crypto.Sha3n(req.Input, uint(req.N)) // Hash input
 
-	return &cryptoProto.GeneralResponse{Message: fmt.Sprintf("\n%s", result)}, nil // Return response
+	return &cryptoProto.GeneralResponse{Message: fmt.Sprintf("\n%s", hex.EncodeToString(result))}, nil // Return response
 }
 
-// Sha3nString - crypto.Sha3nString RPC handler
-func (server *Server) Sha3nString(ctx context.Context, req *cryptoProto.GeneralRequest) (*cryptoProto.GeneralResponse, error) {
+// Sha3NString - crypto.Sha3nString RPC handler
+func (server *Server) Sha3NString(ctx context.Context, req *cryptoProto.GeneralRequest) (*cryptoProto.GeneralResponse, error) {
 	result := crypto.Sha3nString(req.Input, uint(req.N)) // Hash input
 
 	return &cryptoProto.GeneralResponse{Message: fmt.Sprintf("\n%s", result)}, nil // Return response
 }
 
-// Sha3d - crypto.Sha3d RPC handler
-func (server *Server) Sha3d(ctx context.Context, req *cryptoProto.GeneralRequest) (*cryptoProto.GeneralResponse, error) {
+// Sha3D - crypto.Sha3d RPC handler
+func (server *Server) Sha3D(ctx context.Context, req *cryptoProto.GeneralRequest) (*cryptoProto.GeneralResponse, error) {
 	result := crypto.Sha3d(req.Input) // Hash input
 
-	return &cryptoProto.GeneralResponse{Message: fmt.Sprintf("\n%s", result)}, nil // Return response
+	return &cryptoProto.GeneralResponse{Message: fmt.Sprintf("\n%s", hex.EncodeToString(result))}, nil // Return response
 }
 
-// Sha3dString - crypto.Sha3dString RPC handler
-func (server *Server) Sha3dString(ctx context.Context, req *cryptoProto.GeneralRequest) (*cryptoProto.GeneralResponse, error) {
+// Sha3DString - crypto.Sha3dString RPC handler
+func (server *Server) Sha3DString(ctx context.Context, req *cryptoProto.GeneralRequest) (*cryptoProto.GeneralResponse, error) {
 	result := crypto.Sha3dString(req.Input) // Hash input
 
 	return &cryptoProto.GeneralResponse{Message: fmt.Sprintf("\n%s", result)}, nil // Return response

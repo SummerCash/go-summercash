@@ -37,13 +37,13 @@ type Crypto interface {
 
 	Sha3String(context.Context, *GeneralRequest) (*GeneralResponse, error)
 
-	Sha3n(context.Context, *GeneralRequest) (*GeneralResponse, error)
+	Sha3N(context.Context, *GeneralRequest) (*GeneralResponse, error)
 
-	Sha3nString(context.Context, *GeneralRequest) (*GeneralResponse, error)
+	Sha3NString(context.Context, *GeneralRequest) (*GeneralResponse, error)
 
-	Sha3d(context.Context, *GeneralRequest) (*GeneralResponse, error)
+	Sha3D(context.Context, *GeneralRequest) (*GeneralResponse, error)
 
-	Sha3dString(context.Context, *GeneralRequest) (*GeneralResponse, error)
+	Sha3DString(context.Context, *GeneralRequest) (*GeneralResponse, error)
 }
 
 // ======================
@@ -62,10 +62,10 @@ func NewCryptoProtobufClient(addr string, client HTTPClient) Crypto {
 	urls := [6]string{
 		prefix + "Sha3",
 		prefix + "Sha3String",
-		prefix + "Sha3n",
-		prefix + "Sha3nString",
-		prefix + "Sha3d",
-		prefix + "Sha3dString",
+		prefix + "Sha3N",
+		prefix + "Sha3NString",
+		prefix + "Sha3D",
+		prefix + "Sha3DString",
 	}
 	if httpClient, ok := client.(*http.Client); ok {
 		return &cryptoProtobufClient{
@@ -103,10 +103,10 @@ func (c *cryptoProtobufClient) Sha3String(ctx context.Context, in *GeneralReques
 	return out, nil
 }
 
-func (c *cryptoProtobufClient) Sha3n(ctx context.Context, in *GeneralRequest) (*GeneralResponse, error) {
+func (c *cryptoProtobufClient) Sha3N(ctx context.Context, in *GeneralRequest) (*GeneralResponse, error) {
 	ctx = ctxsetters.WithPackageName(ctx, "crypto")
 	ctx = ctxsetters.WithServiceName(ctx, "Crypto")
-	ctx = ctxsetters.WithMethodName(ctx, "Sha3n")
+	ctx = ctxsetters.WithMethodName(ctx, "Sha3N")
 	out := new(GeneralResponse)
 	err := doProtobufRequest(ctx, c.client, c.urls[2], in, out)
 	if err != nil {
@@ -115,10 +115,10 @@ func (c *cryptoProtobufClient) Sha3n(ctx context.Context, in *GeneralRequest) (*
 	return out, nil
 }
 
-func (c *cryptoProtobufClient) Sha3nString(ctx context.Context, in *GeneralRequest) (*GeneralResponse, error) {
+func (c *cryptoProtobufClient) Sha3NString(ctx context.Context, in *GeneralRequest) (*GeneralResponse, error) {
 	ctx = ctxsetters.WithPackageName(ctx, "crypto")
 	ctx = ctxsetters.WithServiceName(ctx, "Crypto")
-	ctx = ctxsetters.WithMethodName(ctx, "Sha3nString")
+	ctx = ctxsetters.WithMethodName(ctx, "Sha3NString")
 	out := new(GeneralResponse)
 	err := doProtobufRequest(ctx, c.client, c.urls[3], in, out)
 	if err != nil {
@@ -127,10 +127,10 @@ func (c *cryptoProtobufClient) Sha3nString(ctx context.Context, in *GeneralReque
 	return out, nil
 }
 
-func (c *cryptoProtobufClient) Sha3d(ctx context.Context, in *GeneralRequest) (*GeneralResponse, error) {
+func (c *cryptoProtobufClient) Sha3D(ctx context.Context, in *GeneralRequest) (*GeneralResponse, error) {
 	ctx = ctxsetters.WithPackageName(ctx, "crypto")
 	ctx = ctxsetters.WithServiceName(ctx, "Crypto")
-	ctx = ctxsetters.WithMethodName(ctx, "Sha3d")
+	ctx = ctxsetters.WithMethodName(ctx, "Sha3D")
 	out := new(GeneralResponse)
 	err := doProtobufRequest(ctx, c.client, c.urls[4], in, out)
 	if err != nil {
@@ -139,10 +139,10 @@ func (c *cryptoProtobufClient) Sha3d(ctx context.Context, in *GeneralRequest) (*
 	return out, nil
 }
 
-func (c *cryptoProtobufClient) Sha3dString(ctx context.Context, in *GeneralRequest) (*GeneralResponse, error) {
+func (c *cryptoProtobufClient) Sha3DString(ctx context.Context, in *GeneralRequest) (*GeneralResponse, error) {
 	ctx = ctxsetters.WithPackageName(ctx, "crypto")
 	ctx = ctxsetters.WithServiceName(ctx, "Crypto")
-	ctx = ctxsetters.WithMethodName(ctx, "Sha3dString")
+	ctx = ctxsetters.WithMethodName(ctx, "Sha3DString")
 	out := new(GeneralResponse)
 	err := doProtobufRequest(ctx, c.client, c.urls[5], in, out)
 	if err != nil {
@@ -167,10 +167,10 @@ func NewCryptoJSONClient(addr string, client HTTPClient) Crypto {
 	urls := [6]string{
 		prefix + "Sha3",
 		prefix + "Sha3String",
-		prefix + "Sha3n",
-		prefix + "Sha3nString",
-		prefix + "Sha3d",
-		prefix + "Sha3dString",
+		prefix + "Sha3N",
+		prefix + "Sha3NString",
+		prefix + "Sha3D",
+		prefix + "Sha3DString",
 	}
 	if httpClient, ok := client.(*http.Client); ok {
 		return &cryptoJSONClient{
@@ -208,10 +208,10 @@ func (c *cryptoJSONClient) Sha3String(ctx context.Context, in *GeneralRequest) (
 	return out, nil
 }
 
-func (c *cryptoJSONClient) Sha3n(ctx context.Context, in *GeneralRequest) (*GeneralResponse, error) {
+func (c *cryptoJSONClient) Sha3N(ctx context.Context, in *GeneralRequest) (*GeneralResponse, error) {
 	ctx = ctxsetters.WithPackageName(ctx, "crypto")
 	ctx = ctxsetters.WithServiceName(ctx, "Crypto")
-	ctx = ctxsetters.WithMethodName(ctx, "Sha3n")
+	ctx = ctxsetters.WithMethodName(ctx, "Sha3N")
 	out := new(GeneralResponse)
 	err := doJSONRequest(ctx, c.client, c.urls[2], in, out)
 	if err != nil {
@@ -220,10 +220,10 @@ func (c *cryptoJSONClient) Sha3n(ctx context.Context, in *GeneralRequest) (*Gene
 	return out, nil
 }
 
-func (c *cryptoJSONClient) Sha3nString(ctx context.Context, in *GeneralRequest) (*GeneralResponse, error) {
+func (c *cryptoJSONClient) Sha3NString(ctx context.Context, in *GeneralRequest) (*GeneralResponse, error) {
 	ctx = ctxsetters.WithPackageName(ctx, "crypto")
 	ctx = ctxsetters.WithServiceName(ctx, "Crypto")
-	ctx = ctxsetters.WithMethodName(ctx, "Sha3nString")
+	ctx = ctxsetters.WithMethodName(ctx, "Sha3NString")
 	out := new(GeneralResponse)
 	err := doJSONRequest(ctx, c.client, c.urls[3], in, out)
 	if err != nil {
@@ -232,10 +232,10 @@ func (c *cryptoJSONClient) Sha3nString(ctx context.Context, in *GeneralRequest) 
 	return out, nil
 }
 
-func (c *cryptoJSONClient) Sha3d(ctx context.Context, in *GeneralRequest) (*GeneralResponse, error) {
+func (c *cryptoJSONClient) Sha3D(ctx context.Context, in *GeneralRequest) (*GeneralResponse, error) {
 	ctx = ctxsetters.WithPackageName(ctx, "crypto")
 	ctx = ctxsetters.WithServiceName(ctx, "Crypto")
-	ctx = ctxsetters.WithMethodName(ctx, "Sha3d")
+	ctx = ctxsetters.WithMethodName(ctx, "Sha3D")
 	out := new(GeneralResponse)
 	err := doJSONRequest(ctx, c.client, c.urls[4], in, out)
 	if err != nil {
@@ -244,10 +244,10 @@ func (c *cryptoJSONClient) Sha3d(ctx context.Context, in *GeneralRequest) (*Gene
 	return out, nil
 }
 
-func (c *cryptoJSONClient) Sha3dString(ctx context.Context, in *GeneralRequest) (*GeneralResponse, error) {
+func (c *cryptoJSONClient) Sha3DString(ctx context.Context, in *GeneralRequest) (*GeneralResponse, error) {
 	ctx = ctxsetters.WithPackageName(ctx, "crypto")
 	ctx = ctxsetters.WithServiceName(ctx, "Crypto")
-	ctx = ctxsetters.WithMethodName(ctx, "Sha3dString")
+	ctx = ctxsetters.WithMethodName(ctx, "Sha3DString")
 	out := new(GeneralResponse)
 	err := doJSONRequest(ctx, c.client, c.urls[5], in, out)
 	if err != nil {
@@ -310,17 +310,17 @@ func (s *cryptoServer) ServeHTTP(resp http.ResponseWriter, req *http.Request) {
 	case "/twirp/crypto.Crypto/Sha3String":
 		s.serveSha3String(ctx, resp, req)
 		return
-	case "/twirp/crypto.Crypto/Sha3n":
-		s.serveSha3n(ctx, resp, req)
+	case "/twirp/crypto.Crypto/Sha3N":
+		s.serveSha3N(ctx, resp, req)
 		return
-	case "/twirp/crypto.Crypto/Sha3nString":
-		s.serveSha3nString(ctx, resp, req)
+	case "/twirp/crypto.Crypto/Sha3NString":
+		s.serveSha3NString(ctx, resp, req)
 		return
-	case "/twirp/crypto.Crypto/Sha3d":
-		s.serveSha3d(ctx, resp, req)
+	case "/twirp/crypto.Crypto/Sha3D":
+		s.serveSha3D(ctx, resp, req)
 		return
-	case "/twirp/crypto.Crypto/Sha3dString":
-		s.serveSha3dString(ctx, resp, req)
+	case "/twirp/crypto.Crypto/Sha3DString":
+		s.serveSha3DString(ctx, resp, req)
 		return
 	default:
 		msg := fmt.Sprintf("no handler for path %q", req.URL.Path)
@@ -618,7 +618,7 @@ func (s *cryptoServer) serveSha3StringProtobuf(ctx context.Context, resp http.Re
 	callResponseSent(ctx, s.hooks)
 }
 
-func (s *cryptoServer) serveSha3n(ctx context.Context, resp http.ResponseWriter, req *http.Request) {
+func (s *cryptoServer) serveSha3N(ctx context.Context, resp http.ResponseWriter, req *http.Request) {
 	header := req.Header.Get("Content-Type")
 	i := strings.Index(header, ";")
 	if i == -1 {
@@ -626,9 +626,9 @@ func (s *cryptoServer) serveSha3n(ctx context.Context, resp http.ResponseWriter,
 	}
 	switch strings.TrimSpace(strings.ToLower(header[:i])) {
 	case "application/json":
-		s.serveSha3nJSON(ctx, resp, req)
+		s.serveSha3NJSON(ctx, resp, req)
 	case "application/protobuf":
-		s.serveSha3nProtobuf(ctx, resp, req)
+		s.serveSha3NProtobuf(ctx, resp, req)
 	default:
 		msg := fmt.Sprintf("unexpected Content-Type: %q", req.Header.Get("Content-Type"))
 		twerr := badRouteError(msg, req.Method, req.URL.Path)
@@ -636,9 +636,9 @@ func (s *cryptoServer) serveSha3n(ctx context.Context, resp http.ResponseWriter,
 	}
 }
 
-func (s *cryptoServer) serveSha3nJSON(ctx context.Context, resp http.ResponseWriter, req *http.Request) {
+func (s *cryptoServer) serveSha3NJSON(ctx context.Context, resp http.ResponseWriter, req *http.Request) {
 	var err error
-	ctx = ctxsetters.WithMethodName(ctx, "Sha3n")
+	ctx = ctxsetters.WithMethodName(ctx, "Sha3N")
 	ctx, err = callRequestRouted(ctx, s.hooks)
 	if err != nil {
 		s.writeError(ctx, resp, err)
@@ -663,7 +663,7 @@ func (s *cryptoServer) serveSha3nJSON(ctx context.Context, resp http.ResponseWri
 				panic(r)
 			}
 		}()
-		respContent, err = s.Crypto.Sha3n(ctx, reqContent)
+		respContent, err = s.Crypto.Sha3N(ctx, reqContent)
 	}()
 
 	if err != nil {
@@ -671,7 +671,7 @@ func (s *cryptoServer) serveSha3nJSON(ctx context.Context, resp http.ResponseWri
 		return
 	}
 	if respContent == nil {
-		s.writeError(ctx, resp, twirp.InternalError("received a nil *GeneralResponse and nil error while calling Sha3n. nil responses are not supported"))
+		s.writeError(ctx, resp, twirp.InternalError("received a nil *GeneralResponse and nil error while calling Sha3N. nil responses are not supported"))
 		return
 	}
 
@@ -698,9 +698,9 @@ func (s *cryptoServer) serveSha3nJSON(ctx context.Context, resp http.ResponseWri
 	callResponseSent(ctx, s.hooks)
 }
 
-func (s *cryptoServer) serveSha3nProtobuf(ctx context.Context, resp http.ResponseWriter, req *http.Request) {
+func (s *cryptoServer) serveSha3NProtobuf(ctx context.Context, resp http.ResponseWriter, req *http.Request) {
 	var err error
-	ctx = ctxsetters.WithMethodName(ctx, "Sha3n")
+	ctx = ctxsetters.WithMethodName(ctx, "Sha3N")
 	ctx, err = callRequestRouted(ctx, s.hooks)
 	if err != nil {
 		s.writeError(ctx, resp, err)
@@ -730,7 +730,7 @@ func (s *cryptoServer) serveSha3nProtobuf(ctx context.Context, resp http.Respons
 				panic(r)
 			}
 		}()
-		respContent, err = s.Crypto.Sha3n(ctx, reqContent)
+		respContent, err = s.Crypto.Sha3N(ctx, reqContent)
 	}()
 
 	if err != nil {
@@ -738,7 +738,7 @@ func (s *cryptoServer) serveSha3nProtobuf(ctx context.Context, resp http.Respons
 		return
 	}
 	if respContent == nil {
-		s.writeError(ctx, resp, twirp.InternalError("received a nil *GeneralResponse and nil error while calling Sha3n. nil responses are not supported"))
+		s.writeError(ctx, resp, twirp.InternalError("received a nil *GeneralResponse and nil error while calling Sha3N. nil responses are not supported"))
 		return
 	}
 
@@ -762,7 +762,7 @@ func (s *cryptoServer) serveSha3nProtobuf(ctx context.Context, resp http.Respons
 	callResponseSent(ctx, s.hooks)
 }
 
-func (s *cryptoServer) serveSha3nString(ctx context.Context, resp http.ResponseWriter, req *http.Request) {
+func (s *cryptoServer) serveSha3NString(ctx context.Context, resp http.ResponseWriter, req *http.Request) {
 	header := req.Header.Get("Content-Type")
 	i := strings.Index(header, ";")
 	if i == -1 {
@@ -770,9 +770,9 @@ func (s *cryptoServer) serveSha3nString(ctx context.Context, resp http.ResponseW
 	}
 	switch strings.TrimSpace(strings.ToLower(header[:i])) {
 	case "application/json":
-		s.serveSha3nStringJSON(ctx, resp, req)
+		s.serveSha3NStringJSON(ctx, resp, req)
 	case "application/protobuf":
-		s.serveSha3nStringProtobuf(ctx, resp, req)
+		s.serveSha3NStringProtobuf(ctx, resp, req)
 	default:
 		msg := fmt.Sprintf("unexpected Content-Type: %q", req.Header.Get("Content-Type"))
 		twerr := badRouteError(msg, req.Method, req.URL.Path)
@@ -780,9 +780,9 @@ func (s *cryptoServer) serveSha3nString(ctx context.Context, resp http.ResponseW
 	}
 }
 
-func (s *cryptoServer) serveSha3nStringJSON(ctx context.Context, resp http.ResponseWriter, req *http.Request) {
+func (s *cryptoServer) serveSha3NStringJSON(ctx context.Context, resp http.ResponseWriter, req *http.Request) {
 	var err error
-	ctx = ctxsetters.WithMethodName(ctx, "Sha3nString")
+	ctx = ctxsetters.WithMethodName(ctx, "Sha3NString")
 	ctx, err = callRequestRouted(ctx, s.hooks)
 	if err != nil {
 		s.writeError(ctx, resp, err)
@@ -807,7 +807,7 @@ func (s *cryptoServer) serveSha3nStringJSON(ctx context.Context, resp http.Respo
 				panic(r)
 			}
 		}()
-		respContent, err = s.Crypto.Sha3nString(ctx, reqContent)
+		respContent, err = s.Crypto.Sha3NString(ctx, reqContent)
 	}()
 
 	if err != nil {
@@ -815,7 +815,7 @@ func (s *cryptoServer) serveSha3nStringJSON(ctx context.Context, resp http.Respo
 		return
 	}
 	if respContent == nil {
-		s.writeError(ctx, resp, twirp.InternalError("received a nil *GeneralResponse and nil error while calling Sha3nString. nil responses are not supported"))
+		s.writeError(ctx, resp, twirp.InternalError("received a nil *GeneralResponse and nil error while calling Sha3NString. nil responses are not supported"))
 		return
 	}
 
@@ -842,9 +842,9 @@ func (s *cryptoServer) serveSha3nStringJSON(ctx context.Context, resp http.Respo
 	callResponseSent(ctx, s.hooks)
 }
 
-func (s *cryptoServer) serveSha3nStringProtobuf(ctx context.Context, resp http.ResponseWriter, req *http.Request) {
+func (s *cryptoServer) serveSha3NStringProtobuf(ctx context.Context, resp http.ResponseWriter, req *http.Request) {
 	var err error
-	ctx = ctxsetters.WithMethodName(ctx, "Sha3nString")
+	ctx = ctxsetters.WithMethodName(ctx, "Sha3NString")
 	ctx, err = callRequestRouted(ctx, s.hooks)
 	if err != nil {
 		s.writeError(ctx, resp, err)
@@ -874,7 +874,7 @@ func (s *cryptoServer) serveSha3nStringProtobuf(ctx context.Context, resp http.R
 				panic(r)
 			}
 		}()
-		respContent, err = s.Crypto.Sha3nString(ctx, reqContent)
+		respContent, err = s.Crypto.Sha3NString(ctx, reqContent)
 	}()
 
 	if err != nil {
@@ -882,7 +882,7 @@ func (s *cryptoServer) serveSha3nStringProtobuf(ctx context.Context, resp http.R
 		return
 	}
 	if respContent == nil {
-		s.writeError(ctx, resp, twirp.InternalError("received a nil *GeneralResponse and nil error while calling Sha3nString. nil responses are not supported"))
+		s.writeError(ctx, resp, twirp.InternalError("received a nil *GeneralResponse and nil error while calling Sha3NString. nil responses are not supported"))
 		return
 	}
 
@@ -906,7 +906,7 @@ func (s *cryptoServer) serveSha3nStringProtobuf(ctx context.Context, resp http.R
 	callResponseSent(ctx, s.hooks)
 }
 
-func (s *cryptoServer) serveSha3d(ctx context.Context, resp http.ResponseWriter, req *http.Request) {
+func (s *cryptoServer) serveSha3D(ctx context.Context, resp http.ResponseWriter, req *http.Request) {
 	header := req.Header.Get("Content-Type")
 	i := strings.Index(header, ";")
 	if i == -1 {
@@ -914,9 +914,9 @@ func (s *cryptoServer) serveSha3d(ctx context.Context, resp http.ResponseWriter,
 	}
 	switch strings.TrimSpace(strings.ToLower(header[:i])) {
 	case "application/json":
-		s.serveSha3dJSON(ctx, resp, req)
+		s.serveSha3DJSON(ctx, resp, req)
 	case "application/protobuf":
-		s.serveSha3dProtobuf(ctx, resp, req)
+		s.serveSha3DProtobuf(ctx, resp, req)
 	default:
 		msg := fmt.Sprintf("unexpected Content-Type: %q", req.Header.Get("Content-Type"))
 		twerr := badRouteError(msg, req.Method, req.URL.Path)
@@ -924,9 +924,9 @@ func (s *cryptoServer) serveSha3d(ctx context.Context, resp http.ResponseWriter,
 	}
 }
 
-func (s *cryptoServer) serveSha3dJSON(ctx context.Context, resp http.ResponseWriter, req *http.Request) {
+func (s *cryptoServer) serveSha3DJSON(ctx context.Context, resp http.ResponseWriter, req *http.Request) {
 	var err error
-	ctx = ctxsetters.WithMethodName(ctx, "Sha3d")
+	ctx = ctxsetters.WithMethodName(ctx, "Sha3D")
 	ctx, err = callRequestRouted(ctx, s.hooks)
 	if err != nil {
 		s.writeError(ctx, resp, err)
@@ -951,7 +951,7 @@ func (s *cryptoServer) serveSha3dJSON(ctx context.Context, resp http.ResponseWri
 				panic(r)
 			}
 		}()
-		respContent, err = s.Crypto.Sha3d(ctx, reqContent)
+		respContent, err = s.Crypto.Sha3D(ctx, reqContent)
 	}()
 
 	if err != nil {
@@ -959,7 +959,7 @@ func (s *cryptoServer) serveSha3dJSON(ctx context.Context, resp http.ResponseWri
 		return
 	}
 	if respContent == nil {
-		s.writeError(ctx, resp, twirp.InternalError("received a nil *GeneralResponse and nil error while calling Sha3d. nil responses are not supported"))
+		s.writeError(ctx, resp, twirp.InternalError("received a nil *GeneralResponse and nil error while calling Sha3D. nil responses are not supported"))
 		return
 	}
 
@@ -986,9 +986,9 @@ func (s *cryptoServer) serveSha3dJSON(ctx context.Context, resp http.ResponseWri
 	callResponseSent(ctx, s.hooks)
 }
 
-func (s *cryptoServer) serveSha3dProtobuf(ctx context.Context, resp http.ResponseWriter, req *http.Request) {
+func (s *cryptoServer) serveSha3DProtobuf(ctx context.Context, resp http.ResponseWriter, req *http.Request) {
 	var err error
-	ctx = ctxsetters.WithMethodName(ctx, "Sha3d")
+	ctx = ctxsetters.WithMethodName(ctx, "Sha3D")
 	ctx, err = callRequestRouted(ctx, s.hooks)
 	if err != nil {
 		s.writeError(ctx, resp, err)
@@ -1018,7 +1018,7 @@ func (s *cryptoServer) serveSha3dProtobuf(ctx context.Context, resp http.Respons
 				panic(r)
 			}
 		}()
-		respContent, err = s.Crypto.Sha3d(ctx, reqContent)
+		respContent, err = s.Crypto.Sha3D(ctx, reqContent)
 	}()
 
 	if err != nil {
@@ -1026,7 +1026,7 @@ func (s *cryptoServer) serveSha3dProtobuf(ctx context.Context, resp http.Respons
 		return
 	}
 	if respContent == nil {
-		s.writeError(ctx, resp, twirp.InternalError("received a nil *GeneralResponse and nil error while calling Sha3d. nil responses are not supported"))
+		s.writeError(ctx, resp, twirp.InternalError("received a nil *GeneralResponse and nil error while calling Sha3D. nil responses are not supported"))
 		return
 	}
 
@@ -1050,7 +1050,7 @@ func (s *cryptoServer) serveSha3dProtobuf(ctx context.Context, resp http.Respons
 	callResponseSent(ctx, s.hooks)
 }
 
-func (s *cryptoServer) serveSha3dString(ctx context.Context, resp http.ResponseWriter, req *http.Request) {
+func (s *cryptoServer) serveSha3DString(ctx context.Context, resp http.ResponseWriter, req *http.Request) {
 	header := req.Header.Get("Content-Type")
 	i := strings.Index(header, ";")
 	if i == -1 {
@@ -1058,9 +1058,9 @@ func (s *cryptoServer) serveSha3dString(ctx context.Context, resp http.ResponseW
 	}
 	switch strings.TrimSpace(strings.ToLower(header[:i])) {
 	case "application/json":
-		s.serveSha3dStringJSON(ctx, resp, req)
+		s.serveSha3DStringJSON(ctx, resp, req)
 	case "application/protobuf":
-		s.serveSha3dStringProtobuf(ctx, resp, req)
+		s.serveSha3DStringProtobuf(ctx, resp, req)
 	default:
 		msg := fmt.Sprintf("unexpected Content-Type: %q", req.Header.Get("Content-Type"))
 		twerr := badRouteError(msg, req.Method, req.URL.Path)
@@ -1068,9 +1068,9 @@ func (s *cryptoServer) serveSha3dString(ctx context.Context, resp http.ResponseW
 	}
 }
 
-func (s *cryptoServer) serveSha3dStringJSON(ctx context.Context, resp http.ResponseWriter, req *http.Request) {
+func (s *cryptoServer) serveSha3DStringJSON(ctx context.Context, resp http.ResponseWriter, req *http.Request) {
 	var err error
-	ctx = ctxsetters.WithMethodName(ctx, "Sha3dString")
+	ctx = ctxsetters.WithMethodName(ctx, "Sha3DString")
 	ctx, err = callRequestRouted(ctx, s.hooks)
 	if err != nil {
 		s.writeError(ctx, resp, err)
@@ -1095,7 +1095,7 @@ func (s *cryptoServer) serveSha3dStringJSON(ctx context.Context, resp http.Respo
 				panic(r)
 			}
 		}()
-		respContent, err = s.Crypto.Sha3dString(ctx, reqContent)
+		respContent, err = s.Crypto.Sha3DString(ctx, reqContent)
 	}()
 
 	if err != nil {
@@ -1103,7 +1103,7 @@ func (s *cryptoServer) serveSha3dStringJSON(ctx context.Context, resp http.Respo
 		return
 	}
 	if respContent == nil {
-		s.writeError(ctx, resp, twirp.InternalError("received a nil *GeneralResponse and nil error while calling Sha3dString. nil responses are not supported"))
+		s.writeError(ctx, resp, twirp.InternalError("received a nil *GeneralResponse and nil error while calling Sha3DString. nil responses are not supported"))
 		return
 	}
 
@@ -1130,9 +1130,9 @@ func (s *cryptoServer) serveSha3dStringJSON(ctx context.Context, resp http.Respo
 	callResponseSent(ctx, s.hooks)
 }
 
-func (s *cryptoServer) serveSha3dStringProtobuf(ctx context.Context, resp http.ResponseWriter, req *http.Request) {
+func (s *cryptoServer) serveSha3DStringProtobuf(ctx context.Context, resp http.ResponseWriter, req *http.Request) {
 	var err error
-	ctx = ctxsetters.WithMethodName(ctx, "Sha3dString")
+	ctx = ctxsetters.WithMethodName(ctx, "Sha3DString")
 	ctx, err = callRequestRouted(ctx, s.hooks)
 	if err != nil {
 		s.writeError(ctx, resp, err)
@@ -1162,7 +1162,7 @@ func (s *cryptoServer) serveSha3dStringProtobuf(ctx context.Context, resp http.R
 				panic(r)
 			}
 		}()
-		respContent, err = s.Crypto.Sha3dString(ctx, reqContent)
+		respContent, err = s.Crypto.Sha3DString(ctx, reqContent)
 	}()
 
 	if err != nil {
@@ -1170,7 +1170,7 @@ func (s *cryptoServer) serveSha3dStringProtobuf(ctx context.Context, resp http.R
 		return
 	}
 	if respContent == nil {
-		s.writeError(ctx, resp, twirp.InternalError("received a nil *GeneralResponse and nil error while calling Sha3dString. nil responses are not supported"))
+		s.writeError(ctx, resp, twirp.InternalError("received a nil *GeneralResponse and nil error while calling Sha3DString. nil responses are not supported"))
 		return
 	}
 
