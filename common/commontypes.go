@@ -187,6 +187,13 @@ func (addressSpace *AddressSpace) Bytes() []byte {
 	return buffer.Bytes() // Return serialized
 }
 
+// String - convert given address-space to string
+func (addressSpace *AddressSpace) String() string {
+	marshaled, _ := json.MarshalIndent(*addressSpace, "", "  ") // Marshal address-space
+
+	return string(marshaled) // Return marshaled
+}
+
 /*
 	END ADDRESS-SPACE METHODS
 */
