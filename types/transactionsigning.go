@@ -1,8 +1,10 @@
 package types
 
 import (
+	"bytes"
 	"crypto/ecdsa"
 	"crypto/rand"
+	"encoding/json"
 	"math/big"
 
 	"github.com/space55/summertech-blockchain/common"
@@ -53,6 +55,22 @@ func VerifyTransactionSignature(transaction *Transaction) (bool, error) {
 	}
 
 	return ecdsa.Verify(transaction.Signature.PublicKey, transaction.Signature.V, transaction.Signature.R, transaction.Signature.S), nil // Check signature valid
+}
+
+// Bytes - convert given signature to byte array
+func (signature *signature) Bytes() []byte {
+	buffer := new(bytes.Buffer) // Init buffer
+
+	json.NewEncoder(buffer).Encode(*signature) // Serialize tx
+
+	return buffer.Bytes() // Return serialized
+}
+
+// String - convert given signature to string
+func (signature *signature) String() string {
+	marshaled, _ := json.MarshalIndent(*signature, "", "  ") // Marshal signature
+
+	return string(marshaled) // Return marshaled
 }
 
 /* END EXPORTED METHODS */

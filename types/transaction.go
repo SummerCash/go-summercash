@@ -64,4 +64,11 @@ func (tx *Transaction) Bytes() []byte {
 	return buffer.Bytes() // Return serialized
 }
 
+// String - convert given transaction to string
+func (tx *Transaction) String() string {
+	marshaled, _ := json.MarshalIndent(*tx, "", "  ") // Marshal tx
+
+	return string(marshaled) // Return marshaled
+}
+
 /* END EXPORTED METHODS */
