@@ -75,3 +75,36 @@ func TestBytes(t *testing.T) {
 
 	t.Log(byteVal) // Log success
 }
+
+// TestString - test transaction to string conversion
+func TestString(t *testing.T) {
+	privateKey, err := ecdsa.GenerateKey(elliptic.P521(), rand.Reader) // Generate private key
+
+	if err != nil { // Check for errors
+		t.Error(err) // Log found error
+		t.FailNow()  // Panic
+	}
+
+	sender, err := common.NewAddress(privateKey) // Initialize address from private key
+
+	if err != nil { // Check for errors
+		t.Error(err) // Log found error
+		t.FailNow()  // Panic
+	}
+
+	transaction, err := NewTransaction(0, &sender, &sender, 0, []byte("test")) // Initialize transaction
+
+	if err != nil { // Check for errors
+		t.Error(err) // Log found error
+		t.FailNow()  // Panic
+	}
+
+	stringVal := transaction.String() // Convert to string
+
+	if stringVal == "" { // Check for nil val
+		t.Errorf("invalid stringval") // Return found error
+		t.FailNow()                   // Panic
+	}
+
+	t.Log(stringVal) // Log success
+}
