@@ -82,6 +82,8 @@ func handleCrypto(cryptoClient *cryptoProto.Crypto, methodname string, params []
 	case "Sha3", "Sha3String", "Sha3d", "Sha3dString":
 		if len(params) != 1 { // Check for invalid params
 			return ErrInvalidParams // Return error
+		} else if methodname == "Sha3d" || methodname == "Sha3dString" {
+			methodname = methodname[:4] + "D" + methodname[4+1:] // Fix incorrect namespace
 		}
 
 		reflectParams = append(reflectParams, reflect.ValueOf(&cryptoProto.GeneralRequest{Input: []byte(params[0])})) // Append params
@@ -89,6 +91,8 @@ func handleCrypto(cryptoClient *cryptoProto.Crypto, methodname string, params []
 		if len(params) != 2 { // Check for invalid params
 			return ErrInvalidParams // return error
 		}
+
+		methodname = methodname[:4] + "N" + methodname[4+1:] // Fix incorrect namespace
 
 		intVal, _ := strconv.Atoi(params[1]) // Convert to int
 
