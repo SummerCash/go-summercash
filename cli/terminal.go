@@ -79,12 +79,22 @@ func handleCrypto(cryptoClient *cryptoProto.Crypto, methodname string, params []
 	reflectParams = append(reflectParams, reflect.ValueOf(context.Background())) // Append request context
 
 	switch methodname { // Handle different methods
-	case "Sha3", "Sha3String":
+	case "Sha3", "Sha3String", "Sha3d", "Sha3dString":
 		if len(params) != 1 { // Check for invalid params
-			return ErrInvalidParams // Retrun error
+			return ErrInvalidParams // Return error
 		}
 
 		reflectParams = append(reflectParams, reflect.ValueOf(&cryptoProto.GeneralRequest{Input: []byte(params[0])})) // Append params
+	case "Sha3n", "Sha3nString":
+		if len(params) != 2 { // Check for invalid params
+			return ErrInvalidParams // return error
+		}
+
+		intVal, _ := strconv.Atoi(params[1]) // Convert to int
+
+		reflectParams = append(reflectParams, reflect.ValueOf(&cryptoProto.GeneralRequest{Input: []byte(params[0]), N: uint32(intVal)})) // Append params
+	default:
+		return errors.New("illegal method: " + methodname + ", available methods: Sha3(), Sha3String(), Sha3d(), Sha3dString(), Sha3n(), Sha3nString()") // Return error
 	}
 
 	result := reflect.ValueOf(*cryptoClient).MethodByName(methodname).Call(reflectParams) // Call method
