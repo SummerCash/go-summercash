@@ -1,9 +1,12 @@
 package common
 
 import (
+	"bytes"
 	"crypto/ecdsa"
 	"crypto/elliptic"
 	"encoding/hex"
+	"encoding/json"
+	"errors"
 
 	"github.com/space55/summertech-blockchain/crypto"
 )
@@ -13,6 +16,17 @@ type Address [AddressLength]byte
 
 // Hash - []byte wrapper for hashes
 type Hash [HashLength]byte
+
+// AddressSpace - given address-space (e.g. 0x000-0x123)
+type AddressSpace struct {
+	Addresses []Address `json:"addresses"` // Addresses in address space
+	ID        Hash      `json:"ID"`        // AddressSpace identifier
+}
+
+var (
+	// ErrDuplicateAddress - error definition describing two addresses of equal value
+	ErrDuplicateAddress = errors.New("duplicate address")
+)
 
 const (
 	// AddressLength - max addr length
@@ -139,6 +153,42 @@ func (hash Hash) String() string {
 
 /*
 	END HASH METHODS
+*/
+
+/*
+	BEGIN ADDRESS-SPACE METHODS
+*/
+
+// NewAddressSpace - initialize address space
+func NewAddressSpace(originAddresses []Address) (*AddressSpace, error) {
+	for x, address := range originAddresses { // Iterate through addresses
+		if x != 0 && address == originAddresses[x-1] { // Check for duplicate
+			return &AddressSpace{}, ErrDuplicateAddress // Return error
+		}
+	}
+
+	addressSpace := &AddressSpace{ // Init space
+		Addresses: originAddresses,
+	}
+
+	hash := crypto.Sha3(addressSpace.Bytes()) // Hash
+
+	(*addressSpace).ID = NewHash(hash) // Set ID
+
+	return addressSpace, nil
+}
+
+// Bytes - convert given address-space to bytes
+func (addressSpace *AddressSpace) Bytes() []byte {
+	buffer := new(bytes.Buffer) // Init buffer
+
+	json.NewEncoder(buffer).Encode(*addressSpace) // Serialize space
+
+	return buffer.Bytes() // Return serialized
+}
+
+/*
+	END ADDRESS-SPACE METHODS
 */
 
 /* END EXPORTED METHODS */
