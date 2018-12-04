@@ -26,6 +26,30 @@ func TestSha3String(t *testing.T) {
 	t.Log(hashed) // Log hashed
 }
 
+// TestSha3n - test functionality of sha3n hashing function
+func TestSha3n(t *testing.T) {
+	hashed := Sha3n([]byte("test"), 10) // Hash
+
+	if hashed == nil { // Check is nil
+		t.Errorf("invalid hash %s", hashed) // Log found error
+		t.FailNow()                         // Panic
+	}
+
+	t.Log(hashed) // Log hashed
+}
+
+// TestSha3nString - test functionality of sha3n string hashing function
+func TestSha3nString(t *testing.T) {
+	hashed := Sha3nString([]byte("test"), 10) // Hash
+
+	if hashed == "" { // Check is nil
+		t.Errorf("invalid hash %s", hashed) // Log found error
+		t.FailNow()                         // Panic
+	}
+
+	t.Log(hashed) // Log hashed
+}
+
 // TestSha3d - test functionality of sha3d hashing function
 func TestSha3d(t *testing.T) {
 	hashed := Sha3d([]byte("test")) // Hash
