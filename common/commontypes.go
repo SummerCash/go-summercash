@@ -175,7 +175,7 @@ func NewAddressSpace(originAddresses []Address) (*AddressSpace, error) {
 
 	(*addressSpace).ID = NewHash(hash) // Set ID
 
-	return addressSpace, nil
+	return addressSpace, nil // Return initialized
 }
 
 // Bytes - convert given address-space to bytes
