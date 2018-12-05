@@ -3,6 +3,7 @@ package types
 import (
 	"bytes"
 	"encoding/json"
+	"errors"
 	"time"
 
 	"github.com/space55/summertech-blockchain/common"
@@ -23,7 +24,14 @@ type CoordinationNode struct {
 	Addresses    []string             `json:"addresses"` // Node addresses in coordination node
 
 	Origin time.Time `json:"origin"` // Time at initialization of coordination node
+
+	ID common.Hash `json:"id"` // Node ID
 }
+
+var (
+	// ErrNilAddress - error definition describing an input of addresses of length 0
+	ErrNilAddress = errors.New("nil address")
+)
 
 /* BEGIN EXPORTED METHODS */
 
@@ -66,6 +74,39 @@ func (coordinationChain *CoordinationChain) String() string {
 /*
 	BEGIN COORDINATIONNODE METHODS
 */
+
+// NewCoordinationNode - initialize new coordinationNode
+func NewCoordinationNode(addressSpace *common.AddressSpace, foundingAddresses []string) (*CoordinationNode, error) {
+	if len(foundingAddresses) == 0 { // Check for invalid node
+		return &CoordinationNode{}, ErrNilAddress // Return error
+	}
+
+	coordinationNode := &CoordinationNode{ // Init node
+		AddressSpace: addressSpace,
+		Addresses:    foundingAddresses,
+		Origin:       time.Now().UTC(),
+	}
+
+	coordinationNode.ID = common.NewHash(crypto.Sha3(coordinationNode.Bytes())) // Set ID
+
+	return coordinationNode, nil // Return initialized node
+}
+
+// Bytes - convert given coordinationNode to byte array
+func (coordinationNode *CoordinationNode) Bytes() []byte {
+	buffer := new(bytes.Buffer) // Init buffer
+
+	json.NewEncoder(buffer).Encode(*coordinationNode) // Serialize node
+
+	return buffer.Bytes() // Return serialized
+}
+
+// String - convert given coordinationNode to string
+func (coordinationNode *CoordinationNode) String() string {
+	marshaled, _ := json.MarshalIndent(*coordinationNode, "", "  ") // Marshal coordination node
+
+	return string(marshaled) // Return marshaled
+}
 
 /*
 	END COORDINATIONNODE METHODS
