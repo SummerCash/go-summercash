@@ -224,4 +224,23 @@ func publicKey(privateKey interface{}) interface{} {
 	END TLS METHODS
 */
 
+/*
+	BEGIN MISC METHODS
+*/
+
+// getNonNilInStringSlice - get non nil string in slice
+func getNonNilInStringSlice(slice []string) (string, error) {
+	for _, entry := range slice { // Iterate through entries
+		if entry != "" { // Check for non-nil entry
+			return entry, nil // Return valid entry
+		}
+	}
+
+	return "", fmt.Errorf("couldn't find non-nil element in slice %v", slice) // Couldn't find valid address, return error
+}
+
+/*
+	END MISC METHODS
+*/
+
 /* END INTERNAL METHODS */

@@ -67,4 +67,26 @@ func TestStringFetchCallReceiver(t *testing.T) {
 	END TERMINAL METHODS
 */
 
+/*
+	BEGIN MISC METHODS
+*/
+
+// TestGetNonNilInStringSlice - test functionality of getNonNilInStringSlice() methods
+func TestGetNonNilInStringSlice(t *testing.T) {
+	slice := []string{"test", "", "test2"} // Init slice
+
+	s, err := getNonNilInStringSlice(slice) // Get non-nil
+
+	if err != nil { // Check for errors
+		t.Error(err) // Log found error
+		t.FailNow()  // Panic
+	}
+
+	t.Log(s) // Log success
+}
+
+/*
+	END MISC METHODS
+*/
+
 /* END EXPORTED METHODS */
