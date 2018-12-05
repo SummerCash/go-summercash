@@ -11,8 +11,8 @@ import (
 	"github.com/space55/summertech-blockchain/crypto"
 )
 
-// signature - struct containing signature values
-type signature struct {
+// Signature - struct containing signature values
+type Signature struct {
 	PublicKey *ecdsa.PublicKey // Public key
 
 	V []byte   // Hash signature value
@@ -34,7 +34,7 @@ func SignTransaction(transaction *Transaction, privateKey *ecdsa.PrivateKey) err
 		return err // Return found error
 	}
 
-	txSignature := signature{ // Initialize signature
+	txSignature := Signature{ // Initialize signature
 		PublicKey: &privateKey.PublicKey,            // Set public key
 		V:         crypto.Sha3(transaction.Bytes()), // Set val
 		R:         r,                                // Set R
@@ -58,7 +58,7 @@ func VerifyTransactionSignature(transaction *Transaction) (bool, error) {
 }
 
 // Bytes - convert given signature to byte array
-func (signature *signature) Bytes() []byte {
+func (signature *Signature) Bytes() []byte {
 	buffer := new(bytes.Buffer) // Init buffer
 
 	json.NewEncoder(buffer).Encode(*signature) // Serialize tx
@@ -67,7 +67,7 @@ func (signature *signature) Bytes() []byte {
 }
 
 // String - convert given signature to string
-func (signature *signature) String() string {
+func (signature *Signature) String() string {
 	marshaled, _ := json.MarshalIndent(*signature, "", "  ") // Marshal signature
 
 	return string(marshaled) // Return marshaled
