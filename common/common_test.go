@@ -10,7 +10,7 @@ import "testing"
 
 // TestParseStringMethodCall - test functionality of ParseStringMethodCall() function
 func TestParseStringMethodCall(t *testing.T) {
-	input := "common.Sha3(test)" // Init input
+	input := "crypto.Sha3(test)" // Init input
 
 	receiver, methodName, params, err := ParseStringMethodCall(input) // Parse string method call
 
@@ -24,7 +24,7 @@ func TestParseStringMethodCall(t *testing.T) {
 
 // TestParseStringParams - test functionality of ParseStringParams() function
 func TestParseStringParams(t *testing.T) {
-	input := "common.Sha3(test)" // Init input
+	input := "crypto.Sha3(test)" // Init input
 
 	params, err := ParseStringParams(input) // Parse string params
 
@@ -38,7 +38,7 @@ func TestParseStringParams(t *testing.T) {
 
 // TestStringStripReceiverCall - test functionality of StripReceiverCall() function
 func TestStringStripReceiverCall(t *testing.T) {
-	input := "common.Sha3(test)" // Init input
+	input := "crypto.Sha3(test)" // Init input
 
 	stripped := StringStripReceiverCall(input) // Parse string params
 
@@ -47,7 +47,7 @@ func TestStringStripReceiverCall(t *testing.T) {
 
 // TestStringStripParentheses - test functionality of StringStripParentheses() function
 func TestStringStripParentheses(t *testing.T) {
-	input := "common.Sha3(test)" // Init input
+	input := "crypto.Sha3(test)" // Init input
 
 	stripped := StringStripParentheses(input) // Strip parentheses
 
@@ -56,7 +56,7 @@ func TestStringStripParentheses(t *testing.T) {
 
 // TestStringFetchCallReceiver - test functionality of StringFetchCallReceiver() method
 func TestStringFetchCallReceiver(t *testing.T) {
-	input := "common.Sha3(test)" // Init input
+	input := "crypto.Sha3(test)" // Init input
 
 	receiver := StringFetchCallReceiver(input) // Fetch receiver
 

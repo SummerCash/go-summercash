@@ -198,7 +198,7 @@ func TestStringHash(t *testing.T) {
 
 // TestNewAddressSpace - test functionality of address-space initializer
 func TestNewAddressSpace(t *testing.T) {
-	privateKey, err := ecdsa.GenerateKey(elliptic.P521(), rand.Reader)
+	privateKey, err := ecdsa.GenerateKey(elliptic.P521(), rand.Reader) // Generate private key
 
 	if err != nil { // Check for errors
 		t.Error(err) // Log found error
@@ -224,7 +224,7 @@ func TestNewAddressSpace(t *testing.T) {
 
 // TestBytesAddressSpace - test functionality of address-space Bytes() extension method
 func TestBytesAddressSpace(t *testing.T) {
-	privateKey, err := ecdsa.GenerateKey(elliptic.P521(), rand.Reader)
+	privateKey, err := ecdsa.GenerateKey(elliptic.P521(), rand.Reader) // Generate private key
 
 	if err != nil { // Check for errors
 		t.Error(err) // Log found error
@@ -257,7 +257,7 @@ func TestBytesAddressSpace(t *testing.T) {
 
 // TestStringAddressSpace - test functionality of address-space String() extension method
 func TestStringAddressSpace(t *testing.T) {
-	privateKey, err := ecdsa.GenerateKey(elliptic.P521(), rand.Reader)
+	privateKey, err := ecdsa.GenerateKey(elliptic.P521(), rand.Reader) // Generate private key
 
 	if err != nil { // Check for errors
 		t.Error(err) // Log found error

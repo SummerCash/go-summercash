@@ -1,6 +1,13 @@
 package types
 
-import "testing"
+import (
+	"crypto/ecdsa"
+	"crypto/elliptic"
+	"crypto/rand"
+	"testing"
+
+	"github.com/space55/summertech-blockchain/common"
+)
 
 /* BEGIN EXTERNAL METHDOS */
 
@@ -60,6 +67,127 @@ func TestStringCoordinationChain(t *testing.T) {
 
 /*
 	END COORDINATIONCHAIN METHODS
+*/
+
+/*
+	BEGIN COORDINATIONNODE METHODS
+*/
+
+// TestNewCoordinationNode - test functionality of coordinationNode initializer
+func TestNewCoordinationNode(t *testing.T) {
+	privateKey, err := ecdsa.GenerateKey(elliptic.P521(), rand.Reader) // Generate private key
+
+	if err != nil { // Check for errors
+		t.Error(err) // Log found error
+		t.FailNow()  // Panic
+	}
+
+	address, err := common.NewAddress(privateKey) // Generate address
+
+	if err != nil { // Check for errors
+		t.Error(err) // Log found error
+		t.FailNow()  // Panic
+	}
+
+	addressSpace, err := common.NewAddressSpace([]common.Address{address}) // Init address-space
+
+	if err != nil { // Check for errors
+		t.Error(err) // Log found error
+		t.FailNow()  // Panic
+	}
+
+	coordinationNode, err := NewCoordinationNode(addressSpace, []string{"1.1.1.1"}) // Init coordination node
+
+	if err != nil { // Check for errors
+		t.Error(err) // Log found error
+		t.FailNow()  // Panic
+	}
+
+	t.Log(*coordinationNode) // Log success
+}
+
+// TestBytesCoordinationNode - test functionality of coordinationNode Byte() extension method
+func TestBytesCoordinationNode(t *testing.T) {
+	privateKey, err := ecdsa.GenerateKey(elliptic.P521(), rand.Reader) // Generate private key
+
+	if err != nil { // Check for errors
+		t.Error(err) // Log found error
+		t.FailNow()  // Panic
+	}
+
+	address, err := common.NewAddress(privateKey) // Generate address
+
+	if err != nil { // Check for errors
+		t.Error(err) // Log found error
+		t.FailNow()  // Panic
+	}
+
+	addressSpace, err := common.NewAddressSpace([]common.Address{address}) // Init address-space
+
+	if err != nil { // Check for errors
+		t.Error(err) // Log found error
+		t.FailNow()  // Panic
+	}
+
+	coordinationNode, err := NewCoordinationNode(addressSpace, []string{"1.1.1.1"}) // Init coordination node
+
+	if err != nil { // Check for errors
+		t.Error(err) // Log found error
+		t.FailNow()  // Panic
+	}
+
+	byteVal := coordinationNode.Bytes() // Get byteVal
+
+	if byteVal == nil { // Check for nil byte val
+		t.Errorf("invalid byte val") // Log found error
+		t.FailNow()                  // Panic
+	}
+
+	t.Log(byteVal) // Log success
+}
+
+// TestStringCoordinationNode - test functionality of coordinationNode String() extension method
+func TestStringCoordinationNode(t *testing.T) {
+	privateKey, err := ecdsa.GenerateKey(elliptic.P521(), rand.Reader) // Generate private key
+
+	if err != nil { // Check for errors
+		t.Error(err) // Log found error
+		t.FailNow()  // Panic
+	}
+
+	address, err := common.NewAddress(privateKey) // Generate address
+
+	if err != nil { // Check for errors
+		t.Error(err) // Log found error
+		t.FailNow()  // Panic
+	}
+
+	addressSpace, err := common.NewAddressSpace([]common.Address{address}) // Init address-space
+
+	if err != nil { // Check for errors
+		t.Error(err) // Log found error
+		t.FailNow()  // Panic
+	}
+
+	coordinationNode, err := NewCoordinationNode(addressSpace, []string{"1.1.1.1"}) // Init coordination node
+
+	if err != nil { // Check for errors
+		t.Error(err) // Log found error
+		t.FailNow()  // Panic
+	}
+
+	stringVal := coordinationNode.String() // Get stringVal
+
+	if stringVal == "" { // Check for nil string val
+		t.Errorf("invalid string val") // Log found error
+		t.FailNow()                    // Panic
+	}
+
+	t.Log(stringVal) // Log success
+}
+
+/*
+	END COORDINATIONNODE METHODS
 */
 
 /* END EXTERNAL METHODS */
