@@ -33,6 +33,8 @@ type Transaction struct {
 
 	Signature *Signature `json:"signature"` // Transaction signature meta
 
+	Verifications []*Signature `json:"verifications"` // Transaction verifications
+
 	Hash *common.Hash `json:"hash"` // Transaction hash
 }
 

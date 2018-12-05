@@ -5,6 +5,7 @@ import (
 	"crypto/ecdsa"
 	"crypto/rand"
 	"encoding/json"
+	"errors"
 	"math/big"
 
 	"github.com/space55/summertech-blockchain/common"
@@ -20,13 +21,20 @@ type Signature struct {
 	S *big.Int // Signature S
 }
 
+var (
+	// ErrInvalidPublicKey - error definition describing a public key input not equal to transaction sender address
+	ErrInvalidPublicKey = errors.New("signing public key does not match transaction public key")
+)
+
 /* BEGIN EXPORTED METHODS */
 
 // SignTransaction - sign given transaction
 func SignTransaction(transaction *Transaction, privateKey *ecdsa.PrivateKey) error {
 	if transaction.Signature != nil { // Check not already signed
 		return ErrAlreadySigned // Return already signed error
-	}
+	} else if common.PublicKeyToAddress(&privateKey.PublicKey) != *transaction.Sender { // Check for invalid public key
+		return ErrInvalidPublicKey // Return error
+	} // TODO: handle self-sign vs witness
 
 	r, s, err := ecdsa.Sign(rand.Reader, privateKey, crypto.Sha3(transaction.Bytes())) // Sign tx
 
