@@ -25,6 +25,8 @@ type Signature struct {
 type Witness struct {
 	Signature *Signature // Witness signature
 
+	Address common.Address // Witnessing address
+
 	Weight float64 // Witness weight (stake)
 }
 
@@ -40,12 +42,13 @@ var (
 
 // SignTransaction - sign given transaction
 func SignTransaction(transaction *Transaction, privateKey *ecdsa.PrivateKey) error {
-	if common.PublicKeyToAddress(&privateKey.PublicKey) != *transaction.Sender { // Check for non-self-sign
-		return signTransactionWitness(transaction, privateKey) // Sign tx as witness
-	}
-
 	return selfSignTransaction(transaction, privateKey) // Sign tx
-} // TODO: separate into WitnessTransaction, SignTransaction
+}
+
+// WitnessTransaction - sign given transaction as witness
+func WitnessTransaction(transaction *Transaction, privateKey *ecdsa.PrivateKey) error {
+	return signTransactionWitness(transaction, privateKey) // Sign tx
+}
 
 // VerifyTransactionSignature - verify given transaction signature, returning false if signature invalid
 func VerifyTransactionSignature(transaction *Transaction) (bool, error) {
@@ -56,6 +59,17 @@ func VerifyTransactionSignature(transaction *Transaction) (bool, error) {
 	}
 
 	return ecdsa.Verify(transaction.Signature.PublicKey, transaction.Signature.V, transaction.Signature.R, transaction.Signature.S), nil // Check signature valid
+}
+
+// VerifyTransactionWitness - very given transaction witness value, returning false if signature invalid
+func VerifyTransactionWitness(transaction *Transaction) (bool, error) {
+	if transaction.Witness.Signature == nil { // Check nil signature
+		return false, ErrNilSignature // Return nil signature error
+	} else if common.PublicKeyToAddress(transaction.Witness.Signature.PublicKey) != transaction.Witness.Address { // Check for invalid public key
+		return false, ErrInvalidSignature // Return invalid signature error
+	}
+
+	return ecdsa.Verify(transaction.Witness.Signature.PublicKey, transaction.Witness.Signature.V, transaction.Witness.Signature.R, transaction.Witness.Signature.S), nil // Check signature valid
 }
 
 // Bytes - convert given signature to byte array
@@ -108,12 +122,8 @@ func signTransactionWitness(transaction *Transaction, privateKey *ecdsa.PrivateK
 		return ErrNilSignature // Return error
 	} else if *transaction.Signature.PublicKey == privateKey.PublicKey { // Check already signed as sender
 		return ErrCannotWitnessSelf // Return error
-	}
-
-	for _, witness := range transaction.Witnesses { // Iterate through witnesses
-		if *witness.Signature.PublicKey == privateKey.PublicKey { // Check match
-			return ErrAlreadySigned // Return error
-		}
+	} else if transaction.Witness != nil { // Check already signed
+		return ErrAlreadySigned // Return error
 	}
 
 	r, s, err := ecdsa.Sign(rand.Reader, privateKey, crypto.Sha3(transaction.Bytes())) // Sign tx
@@ -133,13 +143,7 @@ func signTransactionWitness(transaction *Transaction, privateKey *ecdsa.PrivateK
 		Signature: &signature,
 	}
 
-	if transaction.Witnesses == nil { // Check for nil witnesses
-		(*transaction).Witnesses = []*Witness{&witness} // Init witnesses
-
-		return nil // No error occurred, return nil
-	}
-
-	(*transaction).Witnesses = append((*transaction).Witnesses, &witness) // Append witness
+	*(*transaction).Witness = witness // Set witness
 
 	return nil // No error occurred, return nil
 }
