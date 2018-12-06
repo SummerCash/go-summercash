@@ -61,42 +61,12 @@ func TestVerifyTransactionSignature(t *testing.T) {
 		t.FailNow()  // Panic
 	}
 
-	invalidPrivateKey, err := ecdsa.GenerateKey(elliptic.P521(), rand.Reader) // Generate private key
-
-	if err != nil { // Check for errors
-		t.Error(err) // Log found error
-		t.FailNow()  // Panic
-	}
-
 	sender, err := common.NewAddress(privateKey) // Initialize address from private key
 
 	if err != nil { // Check for errors
 		t.Error(err) // Log found error
 		t.FailNow()  // Panic
 	}
-
-	invalidTransaction, err := NewTransaction(0, &sender, &sender, 0, []byte("test")) // Initialize transaction
-
-	if err != nil { // Check for errors
-		t.Error(err) // Log found error
-		t.FailNow()  // Panic
-	}
-
-	err = SignTransaction(invalidTransaction, invalidPrivateKey) // Sign transaction with invalid keypair
-
-	if err != nil { // Check for errors
-		t.Error(err) // Log found error
-		t.FailNow()  // Panic
-	}
-
-	valid, err := VerifyTransactionSignature(invalidTransaction) // Verify signature
-
-	if err != nil && err != ErrInvalidSignature { // Check for errors
-		t.Error(err) // Log found error
-		t.FailNow()  // Panic
-	}
-
-	t.Logf("signature valid: %t", valid) // Log success
 
 	validTransaction, err := NewTransaction(0, &sender, &sender, 0, []byte("test")) // Initialize transaction
 
@@ -112,7 +82,7 @@ func TestVerifyTransactionSignature(t *testing.T) {
 		t.FailNow()  // Panic
 	}
 
-	valid, err = VerifyTransactionSignature(validTransaction) // Verify signature
+	valid, err := VerifyTransactionSignature(validTransaction) // Verify signature
 
 	if err != nil && err != ErrInvalidSignature { // Check for errors
 		t.Error(err) // Log found error
