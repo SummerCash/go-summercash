@@ -21,6 +21,13 @@ type Signature struct {
 	S *big.Int // Signature S
 }
 
+// Witness - struct containing transaction witness values
+type Witness struct {
+	Signature *Signature // Witness signature
+
+	Weight float64 // Witness weight (stake)
+}
+
 var (
 	// ErrInvalidPublicKey - error definition describing a public key input not equal to transaction sender address
 	ErrInvalidPublicKey = errors.New("signing public key does not match transaction public key")
