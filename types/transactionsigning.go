@@ -97,7 +97,9 @@ func selfSignTransaction(transaction *Transaction, privateKey *ecdsa.PrivateKey)
 
 // signTransactionWitness - sign transaction as witness
 func signTransactionWitness(transaction *Transaction, privateKey *ecdsa.PrivateKey) error {
-	if *transaction.Signature.PublicKey == privateKey.PublicKey { // Check already signed as sender
+	if transaction.Signature == nil { // Check for nil signature
+		return ErrNilSignature // Return error
+	} else if *transaction.Signature.PublicKey == privateKey.PublicKey { // Check already signed as sender
 		return ErrCannotWitnessSelf // Return error
 	}
 
