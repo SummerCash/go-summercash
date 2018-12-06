@@ -38,7 +38,7 @@ func SignTransaction(transaction *Transaction, privateKey *ecdsa.PrivateKey) err
 	}
 
 	return selfSignTransaction(transaction, privateKey) // Sign tx
-}
+} // TODO: separate into WitnessTransaction, SignTransaction
 
 // VerifyTransactionSignature - verify given transaction signature, returning false if signature invalid
 func VerifyTransactionSignature(transaction *Transaction) (bool, error) {
