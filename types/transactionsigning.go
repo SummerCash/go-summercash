@@ -159,7 +159,7 @@ func signTransactionWitness(transaction *Transaction, privateKey *ecdsa.PrivateK
 		Signature: &signature,
 	}
 
-	*(*transaction).Witness = witness // Set witness
+	(*transaction).Witness = &witness // Set witness
 
 	return nil // No error occurred, return nil
 }
