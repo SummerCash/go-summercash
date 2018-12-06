@@ -110,8 +110,8 @@ func signTransactionWitness(transaction *Transaction, privateKey *ecdsa.PrivateK
 		return ErrCannotWitnessSelf // Return error
 	}
 
-	for _, signature := range transaction.Witnesses { // Iterate through witnesses
-		if *signature.PublicKey == privateKey.PublicKey { // Check match
+	for _, witness := range transaction.Witnesses { // Iterate through witnesses
+		if *witness.Signature.PublicKey == privateKey.PublicKey { // Check match
 			return ErrAlreadySigned // Return error
 		}
 	}
@@ -122,20 +122,24 @@ func signTransactionWitness(transaction *Transaction, privateKey *ecdsa.PrivateK
 		return err // Return found error
 	}
 
-	txSignature := Signature{ // Initialize signature
+	signature := Signature{ // Initialize signature
 		PublicKey: &privateKey.PublicKey,            // Set public key
 		V:         crypto.Sha3(transaction.Bytes()), // Set val
 		R:         r,                                // Set R
 		S:         s,                                // Set S
 	}
 
+	witness := Witness{ // Initialize witness
+		Signature: &signature,
+	}
+
 	if transaction.Witnesses == nil { // Check for nil witnesses
-		(*transaction).Witnesses = []*Signature{&txSignature} // Init witnesses
+		(*transaction).Witnesses = []*Witness{&witness} // Init witnesses
 
 		return nil // No error occurred, return nil
 	}
 
-	(*transaction).Witnesses = append((*transaction).Witnesses, &txSignature) // Append witness signature
+	(*transaction).Witnesses = append((*transaction).Witnesses, &witness) // Append witness
 
 	return nil // No error occurred, return nil
 }
