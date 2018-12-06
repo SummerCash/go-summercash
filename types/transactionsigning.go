@@ -76,7 +76,7 @@ func VerifyTransactionWitness(transaction *Transaction) (bool, error) {
 func (signature *Signature) Bytes() []byte {
 	buffer := new(bytes.Buffer) // Init buffer
 
-	json.NewEncoder(buffer).Encode(*signature) // Serialize tx
+	json.NewEncoder(buffer).Encode(*signature) // Serialize signature
 
 	return buffer.Bytes() // Return serialized
 }
@@ -84,6 +84,22 @@ func (signature *Signature) Bytes() []byte {
 // String - convert given signature to string
 func (signature *Signature) String() string {
 	marshaled, _ := json.MarshalIndent(*signature, "", "  ") // Marshal signature
+
+	return string(marshaled) // Return marshaled
+}
+
+// Bytes - convert given witness to byte array
+func (witness *Witness) Bytes() []byte {
+	buffer := new(bytes.Buffer) // Init buffer
+
+	json.NewEncoder(buffer).Encode(*witness) // Serialize witness
+
+	return buffer.Bytes() // Return serialized
+}
+
+// String - convert given witness to string
+func (witness *Witness) String() string {
+	marshaled, _ := json.MarshalIndent(*witness, "", "  ") // Marshal witness
 
 	return string(marshaled) // Return marshaled
 }
