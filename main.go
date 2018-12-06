@@ -71,3 +71,4 @@ func startRPCServer() {
 }
 
 // TODO: RPC server unit testing
+// TODO: Transaction witness weight calculation
