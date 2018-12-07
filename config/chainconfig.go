@@ -2,7 +2,9 @@ package config
 
 import (
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
+	"path/filepath"
 	"strconv"
 	"time"
 
@@ -30,13 +32,34 @@ func NewChainConfig(genesisFilePath string) (*ChainConfig, error) {
 
 	var readJSON map[string]interface{} // Init buffer
 
-	json.Unmarshal(rawJSON, &readJSON) // Unmarshal to buffer
+	err = json.Unmarshal(rawJSON, &readJSON) // Unmarshal to buffer
+
+	if err != nil { // Check for errors
+		return &ChainConfig{}, err // Return error
+	}
 
 	config := &ChainConfig{ // Init config
 		Origin:    time.Now().UTC(),
 		NetworkID: readJSON["networkID"].(uint),
-		ChainID:   common.NewHash(crypto.Sha3(append(genesisSignature.Bytes(), []byte(strconv.Itoa(readJSON["networkID"].(int)))...))),
+		ChainID:   common.NewHash(crypto.Sha3(append(rawJSON, []byte(strconv.Itoa(readJSON["networkID"].(int)))...))), // Generate chainID
 	}
 
 	return config, nil // Return initialized chainConfig
+}
+
+// WriteToMemory - write given chainConfig to memory
+func (chainConfig *ChainConfig) WriteToMemory() error {
+	json, err := json.MarshalIndent(*chainConfig, "", "  ") // Marshal config
+
+	if err != nil { // Check for errors
+		return err // Return error
+	}
+
+	err = ioutil.WriteFile(filepath.FromSlash(fmt.Sprintf("%s/config/config.json", common.DataDir)), json, 0644) // Write chainConfig to JSON
+
+	if err != nil { // Check for errors
+		return err // Return error
+	}
+
+	return nil // No error occurred, return nil
 }

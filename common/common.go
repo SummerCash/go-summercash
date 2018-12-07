@@ -13,6 +13,7 @@ import (
 	"io/ioutil"
 	"math/big"
 	"os"
+	"path/filepath"
 	"strings"
 	"time"
 )
@@ -20,6 +21,9 @@ import (
 var (
 	// ErrNilInput - error definition describing input of 0 char length
 	ErrNilInput = errors.New("nil input")
+
+	// DataDir - global data directory definition
+	DataDir = filepath.FromSlash("/data")
 )
 
 /* BEGIN EXPORTED METHODS */
