@@ -51,3 +51,22 @@ func TestBytesChainConfig(t *testing.T) {
 
 	t.Log(byteVal) // Log string value
 }
+
+// TestWriteToMemoryChainConfig - test i/o for chainConfig
+func TestWriteToMemoryChainConfig(t *testing.T) {
+	chainConfig, err := NewChainConfig("genesis.json") // Initialize chain configuration
+
+	if err != nil { // Check for errors
+		t.Error(err) // Log found error
+		t.FailNow()  // Panic
+	}
+
+	err = chainConfig.WriteToMemory() // Write to memory
+
+	if err != nil { // Check for errors
+		t.Error(err) // Log found error
+		t.FailNow()  // Panic
+	}
+
+	t.Logf("wrote chain config to memory") // Log success
+}
