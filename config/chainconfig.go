@@ -40,8 +40,8 @@ func NewChainConfig(genesisFilePath string) (*ChainConfig, error) {
 
 	config := &ChainConfig{ // Init config
 		Origin:    time.Now().UTC(),
-		NetworkID: readJSON["networkID"].(uint),
-		ChainID:   common.NewHash(crypto.Sha3(append(rawJSON, []byte(strconv.Itoa(readJSON["networkID"].(int)))...))), // Generate chainID
+		NetworkID: uint(readJSON["networkID"].(float64)),
+		ChainID:   common.NewHash(crypto.Sha3(append(rawJSON, []byte(strconv.Itoa(int(readJSON["networkID"].(float64))))...))), // Generate chainID
 	}
 
 	return config, nil // Return initialized chainConfig
