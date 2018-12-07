@@ -1,6 +1,80 @@
 package crypto
 
-import "testing"
+import (
+	"crypto/ecdsa"
+	"crypto/elliptic"
+	"crypto/rand"
+	"testing"
+	"time"
+)
+
+// TestBytesSignature - test functionality of signature to bytes extension method
+func TestBytesSignature(t *testing.T) {
+	privateKey, err := ecdsa.GenerateKey(elliptic.P521(), rand.Reader) // Generate private key
+
+	if err != nil { // Check for errors
+		t.Error(err) // Log found error
+		t.FailNow()  // Panic
+	}
+
+	r, s, err := ecdsa.Sign(rand.Reader, privateKey, []byte("test")) // Sign
+
+	if err != nil { // Check for errors
+		t.Error(err) // Log found error
+		t.FailNow()  // Panic
+	}
+
+	signature := Signature{ // Init signature
+		PublicKey: &privateKey.PublicKey,
+		Time:      time.Now().UTC(),
+		V:         []byte("test"),
+		R:         r,
+		S:         s,
+	}
+
+	byteVal := signature.Bytes() // Get byte val
+
+	if byteVal == nil { // Check for nil byte val
+		t.Errorf("invalid byte value") // Log found error
+		t.FailNow()                    // Panic
+	}
+
+	t.Log(byteVal) // Log success
+}
+
+// TestStringSignature - test functionality of signature to string extension method
+func TestStringSignature(t *testing.T) {
+	privateKey, err := ecdsa.GenerateKey(elliptic.P521(), rand.Reader) // Generate private key
+
+	if err != nil { // Check for errors
+		t.Error(err) // Log found error
+		t.FailNow()  // Panic
+	}
+
+	r, s, err := ecdsa.Sign(rand.Reader, privateKey, []byte("test")) // Sign
+
+	if err != nil { // Check for errors
+		t.Error(err) // Log found error
+		t.FailNow()  // Panic
+	}
+
+	signature := Signature{ // Init signature
+		PublicKey: &privateKey.PublicKey,
+		Time:      time.Now().UTC(),
+		V:         []byte("test"),
+		R:         r,
+		S:         s,
+	}
+
+	stringVal := signature.String() // Get string val
+
+	if stringVal == "" { // Check for nil string val
+		t.Errorf("invalid string value") // Log found error
+		t.FailNow()                      // Panic
+	}
+
+	t.Log(stringVal) // Log success
+}
 
 // TestSha3 - test functionality of sha3 hashing function
 func TestSha3(t *testing.T) {
