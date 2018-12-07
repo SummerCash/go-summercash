@@ -16,3 +16,6 @@
 
 # Settings
 .vscode/settings.json
+
+# Testing files
+genesis_test.json

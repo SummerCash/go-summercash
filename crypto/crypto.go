@@ -1,10 +1,42 @@
 package crypto
 
 import (
+	"bytes"
+	"crypto/ecdsa"
 	"encoding/hex"
+	"encoding/json"
+	"math/big"
+	"time"
 
 	"golang.org/x/crypto/sha3"
 )
+
+// Signature - struct containing signature values
+type Signature struct {
+	PublicKey *ecdsa.PublicKey `json:"pubKey"` // Public key
+
+	Time time.Time `json:"time"` // Signature time
+
+	V []byte   `json:"V"` // Hash signature value
+	R *big.Int `json:"R"` // Signature R
+	S *big.Int `json:"s"` // Signature S
+}
+
+// Bytes - convert given signature to byte array
+func (signature *Signature) Bytes() []byte {
+	buffer := new(bytes.Buffer) // Init buffer
+
+	json.NewEncoder(buffer).Encode(*signature) // Serialize signature
+
+	return buffer.Bytes() // Return serialized
+}
+
+// String - convert given signature to string
+func (signature *Signature) String() string {
+	marshaled, _ := json.MarshalIndent(*signature, "", "  ") // Marshal signature
+
+	return string(marshaled) // Return marshaled
+}
 
 // Sha3 - hash specified byte array
 func Sha3(b []byte) []byte {
