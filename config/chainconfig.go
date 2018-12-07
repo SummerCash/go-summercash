@@ -1,6 +1,7 @@
 package config
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
@@ -45,6 +46,22 @@ func NewChainConfig(genesisFilePath string) (*ChainConfig, error) {
 	}
 
 	return config, nil // Return initialized chainConfig
+}
+
+// Bytes - convert given chainConfig to byte array
+func (chainConfig *ChainConfig) Bytes() []byte {
+	buffer := new(bytes.Buffer) // Init buffer
+
+	json.NewEncoder(buffer).Encode(*chainConfig) // Serialize config
+
+	return buffer.Bytes() // Return serialized
+}
+
+// String - convert given chainConfig to string
+func (chainConfig *ChainConfig) String() string {
+	marshaled, _ := json.MarshalIndent(*chainConfig, "", "  ") // Marshal config
+
+	return string(marshaled) // Return marshaled
 }
 
 // WriteToMemory - write given chainConfig to memory
