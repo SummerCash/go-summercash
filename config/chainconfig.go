@@ -72,6 +72,12 @@ func (chainConfig *ChainConfig) WriteToMemory() error {
 		return err // Return error
 	}
 
+	err = common.CreateDirIfDoesNotExit(fmt.Sprintf("%s/config", common.DataDir)) // Create dir if necessary
+
+	if err != nil { // Check for errors
+		return err // Return error
+	}
+
 	err = ioutil.WriteFile(filepath.FromSlash(fmt.Sprintf("%s/config/config.json", common.DataDir)), json, 0644) // Write chainConfig to JSON
 
 	if err != nil { // Check for errors
