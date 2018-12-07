@@ -36,7 +36,7 @@ func TestNewAddress(t *testing.T) {
 
 // TestPublicKeyToAddress - test functionality of public key address initializer
 func TestPublicKeyToAddress(t *testing.T) {
-	privateKey, err := ecdsa.GenerateKey(elliptic.P521(), rand.Reader)
+	privateKey, err := ecdsa.GenerateKey(elliptic.P521(), rand.Reader) // Generate private key
 
 	if err != nil { // Check for errors
 		t.Error(err) // Log found error
@@ -49,7 +49,7 @@ func TestPublicKeyToAddress(t *testing.T) {
 }
 
 func TestStringToAddress(t *testing.T) {
-	privateKey, err := ecdsa.GenerateKey(elliptic.P521(), rand.Reader)
+	privateKey, err := ecdsa.GenerateKey(elliptic.P521(), rand.Reader) // Generate private key
 
 	if err != nil { // Check for errors
 		t.Error(err) // Log found error
@@ -82,7 +82,7 @@ func TestStringToAddress(t *testing.T) {
 
 // TestBytes - test address to bytes conversion
 func TestBytes(t *testing.T) {
-	privateKey, err := ecdsa.GenerateKey(elliptic.P521(), rand.Reader)
+	privateKey, err := ecdsa.GenerateKey(elliptic.P521(), rand.Reader) // Generate private key
 
 	if err != nil { // Check for errors
 		t.Error(err) // Log found error
@@ -101,7 +101,7 @@ func TestBytes(t *testing.T) {
 
 // TestString - test address to string conversion
 func TestString(t *testing.T) {
-	privateKey, err := ecdsa.GenerateKey(elliptic.P521(), rand.Reader)
+	privateKey, err := ecdsa.GenerateKey(elliptic.P521(), rand.Reader) // Generate private key
 
 	if err != nil { // Check for errors
 		t.Error(err) // Log found error
