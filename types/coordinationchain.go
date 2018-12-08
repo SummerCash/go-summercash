@@ -31,6 +31,9 @@ type CoordinationNode struct {
 var (
 	// ErrNilAddress - error definition describing an input of addresses of length 0
 	ErrNilAddress = errors.New("nil address")
+
+	// ErrNilNode - error definition describing a coordinationNode input of nil value
+	ErrNilNode = errors.New("nil node")
 )
 
 /* BEGIN EXPORTED METHODS */
@@ -49,6 +52,23 @@ func NewCoordinationChain(networkID uint, bootstrapNode *CoordinationNode) *Coor
 	(*coordinationChain).ChainID = common.NewHash(crypto.Sha3(coordinationChain.Bytes())) // Set chain ID
 
 	return coordinationChain // Return chain
+}
+
+// AddNode - append given coordination node to coordinationChain
+func (coordinationChain *CoordinationChain) AddNode(coordinationNode *CoordinationNode) error {
+	if coordinationNode == nil { // Check for errors
+		return ErrNilNode // Return error
+	}
+
+	if len(coordinationChain.Nodes) == 0 { // Check genesis
+		(*coordinationChain).Nodes = []*CoordinationNode{coordinationNode} // Initialize node list
+
+		return nil // No error occurred, return nil
+	}
+
+	(*coordinationChain).Nodes = append((*coordinationChain).Nodes, coordinationNode) // Append node
+
+	return nil // No error occurred, return nil
 }
 
 // Bytes - convert given coordinationChain to byte array
