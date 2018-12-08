@@ -27,6 +27,107 @@ func TestNewCoordinationChain(t *testing.T) {
 	t.Log(*coordinationChain) // Log success
 }
 
+// TestAddNode - test addNode() method
+func TestAddNode(t *testing.T) {
+	coordinationChain := NewCoordinationChain(0, &CoordinationNode{}) // Init coordinationChain
+
+	if coordinationChain == nil { // Check for nil coordination chain
+		t.Errorf("invalid coordination chain") // Log found error
+		t.FailNow()                            // Panic
+	}
+
+	privateKey, err := ecdsa.GenerateKey(elliptic.P521(), rand.Reader) // Generate private key
+
+	if err != nil { // Check for errors
+		t.Error(err) // Log found error
+		t.FailNow()  // Panic
+	}
+
+	address, err := common.NewAddress(privateKey) // Generate address
+
+	if err != nil { // Check for errors
+		t.Error(err) // Log found error
+		t.FailNow()  // Panic
+	}
+
+	addressSpace, err := common.NewAddressSpace([]common.Address{address}) // Init address-space
+
+	if err != nil { // Check for errors
+		t.Error(err) // Log found error
+		t.FailNow()  // Panic
+	}
+
+	coordinationNode, err := NewCoordinationNode(addressSpace, []string{"1.1.1.1"}) // Init coordination node
+
+	if err != nil { // Check for errors
+		t.Error(err) // Log found error
+		t.FailNow()  // Panic
+	}
+
+	err = coordinationChain.AddNode(coordinationNode) // Add node
+
+	if err != nil { // Check for errors
+		t.Error(err) // Log error
+		t.FailNow()  // panic
+	}
+
+	t.Log(*coordinationNode) // Log success
+}
+
+// TestPushNode - test PushNode() method
+func TestPushNode(t *testing.T) {
+	coordinationChain := NewCoordinationChain(0, &CoordinationNode{}) // Init coordinationChain
+
+	if coordinationChain == nil { // Check for nil coordination chain
+		t.Errorf("invalid coordination chain") // Log found error
+		t.FailNow()                            // Panic
+	}
+
+	privateKey, err := ecdsa.GenerateKey(elliptic.P521(), rand.Reader) // Generate private key
+
+	if err != nil { // Check for errors
+		t.Error(err) // Log found error
+		t.FailNow()  // Panic
+	}
+
+	address, err := common.NewAddress(privateKey) // Generate address
+
+	if err != nil { // Check for errors
+		t.Error(err) // Log found error
+		t.FailNow()  // Panic
+	}
+
+	addressSpace, err := common.NewAddressSpace([]common.Address{address}) // Init address-space
+
+	if err != nil { // Check for errors
+		t.Error(err) // Log found error
+		t.FailNow()  // Panic
+	}
+
+	coordinationNode, err := NewCoordinationNode(addressSpace, []string{"1.1.1.1"}) // Init coordination node
+
+	if err != nil { // Check for errors
+		t.Error(err) // Log found error
+		t.FailNow()  // Panic
+	}
+
+	err = coordinationChain.AddNode(coordinationNode) // Add node
+
+	if err != nil { // Check for errors
+		t.Error(err) // Log error
+		t.FailNow()  // panic
+	}
+
+	err = coordinationChain.PushNode(coordinationNode) // Push changes
+
+	if err != nil { // Check for errors
+		t.Error(err) // Log error
+		t.FailNow()  // Panic
+	}
+
+	t.Log(*coordinationChain) // Log success
+}
+
 // TestBytesCoordinationChain - test functionality of coordinationChain Bytes() extension method
 func TestBytesCoordinationChain(t *testing.T) {
 	coordinationChain := NewCoordinationChain(0, &CoordinationNode{}) // Init coordinationChain

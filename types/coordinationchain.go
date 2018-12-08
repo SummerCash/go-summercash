@@ -68,6 +68,33 @@ func (coordinationChain *CoordinationChain) AddNode(coordinationNode *Coordinati
 
 	(*coordinationChain).Nodes = append((*coordinationChain).Nodes, coordinationNode) // Append node
 
+	err := coordinationChain.PushNode(coordinationNode) // Push to remote chains
+
+	if err != nil { // Check for errors
+		return err // Return error
+	}
+
+	return nil // No error occurred, return nil
+}
+
+// PushNode - send new node to addresses in coordination chain
+func (coordinationChain *CoordinationChain) PushNode(coordinationNode *CoordinationNode) error {
+	localIP, err := common.GetExtIPAddrWithoutUPnP() // Get IP address
+
+	if err != nil { // Check for errors
+		return err // Return error
+	}
+
+	for _, node := range coordinationChain.Nodes { // Iterate through nodes
+		if node != coordinationNode { // Plz no recursion
+			for _, address := range node.Addresses { // Iterate through node addresses
+				if address != localIP { // Plz, plz no recursion
+					go common.SendBytes(coordinationNode.Bytes(), address) // Send new node
+				}
+			}
+		}
+	}
+
 	return nil // No error occurred, return nil
 }
 
