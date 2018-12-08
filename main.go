@@ -1,6 +1,7 @@
 package main
 
 import (
+	"crypto/tls"
 	"flag"
 	"fmt"
 	"net/http"
@@ -9,6 +10,7 @@ import (
 
 	"github.com/space55/summertech-blockchain/cli"
 	"github.com/space55/summertech-blockchain/common"
+	"github.com/space55/summertech-blockchain/handler"
 	cryptoServer "github.com/space55/summertech-blockchain/internal/rpc/crypto"
 	cryptoProto "github.com/space55/summertech-blockchain/internal/rpc/proto/crypto"
 	upnpProto "github.com/space55/summertech-blockchain/internal/rpc/proto/upnp"
@@ -23,6 +25,7 @@ var (
 	forwardRPCFlag = flag.Bool("forward-rpc", false, "enables forwarding of node RPC terminal ports")                                                                 // Init forward RPC flag
 	rpcAddrFlag    = flag.String("rpc-address", fmt.Sprintf("localhost:%s", strconv.Itoa(*rpcPortFlag)), "connects to remote RPC terminal (default: localhost:8080)") // Init remote rpc addr flag
 	dataDirFlag    = flag.String("data-dir", common.DataDir, "performs all node i/o operations in given data directory")                                              // Init data dir flag
+	nodePortFlag   = flag.Int("node-port", 3000, "launch node on give port")                                                                                          // Init node port flag
 )
 
 func main() {
@@ -42,16 +45,16 @@ func main() {
 		startRPCServer() // Start RPC server
 	}
 
+	startNode() // Start node
+
 	if *terminalFlag { // Check for terminal
 		*rpcAddrFlag = strings.Split(*rpcAddrFlag, ":")[0] // Remove port
 
 		cli.NewTerminal(uint(*rpcPortFlag), *rpcAddrFlag) // Initialize terminal
 	}
 
-	/* REMOVE COMMENT ONCE START NODE
 	go common.Forever() // Prevent main from closing
 	select {}           // Prevent main from closing
-	*/
 }
 
 // startRPCServer - start RPC server
@@ -73,5 +76,17 @@ func startRPCServer() {
 	go http.ListenAndServeTLS(":"+strconv.Itoa(*rpcPortFlag), "termCert.pem", "termKey.pem", mux) // Start server
 }
 
-// TODO: RPC server unit testing
-// TODO: Transaction witness weight calculation
+// startNode - start necessary services for full node
+func startNode() {
+	ln, err := tls.Listen("tcp", ":"+strconv.Itoa(*nodePortFlag), common.GeneralTLSConfig) // Listen on port
+
+	if err != nil { // Check for errors
+		panic(err) // Panic
+	}
+
+	err = handler.StartHandler(&ln) // Start handler
+
+	if err != nil { // Check for errors
+		panic(err) // Panic
+	}
+}

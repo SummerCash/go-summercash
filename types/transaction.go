@@ -32,7 +32,10 @@ type Transaction struct {
 	Payload []byte `json:"payload"` // Misc. data transported with transaction
 
 	Signature *Signature `json:"signature"` // Transaction signature meta
-	Witness   *Witness   `json:"witness"`   // Transaction witness
+
+	ParentTx *Transaction `json:"-"` // Parent transaction
+
+	Genesis bool `json:"genesis"` // Genesis
 
 	Hash *common.Hash `json:"hash"` // Transaction hash
 }
@@ -40,13 +43,14 @@ type Transaction struct {
 /* BEGIN EXPORTED METHODS */
 
 // NewTransaction - attempt to initialize transaction primitive
-func NewTransaction(nonce uint64, sender *common.Address, destination *common.Address, amount float64, payload []byte) (*Transaction, error) {
+func NewTransaction(nonce uint64, parentTx *Transaction, sender *common.Address, destination *common.Address, amount float64, payload []byte) (*Transaction, error) {
 	transaction := Transaction{ // Init tx
 		AccountNonce: nonce,       // Set nonce
 		Sender:       sender,      // Set sender
 		Recipient:    destination, // Set recipient
 		Amount:       amount,      // Set amount
 		Payload:      payload,     // Set tx payload
+		ParentTx:     parentTx,    // Set parent
 	}
 
 	hash := common.NewHash(crypto.Sha3(transaction.Bytes())) // Hash transaction

@@ -31,6 +31,9 @@ type CoordinationNode struct {
 var (
 	// ErrNilAddress - error definition describing an input of addresses of length 0
 	ErrNilAddress = errors.New("nil address")
+
+	// ErrNilNode - error definition describing a coordinationNode input of nil value
+	ErrNilNode = errors.New("nil node")
 )
 
 /* BEGIN EXPORTED METHODS */
@@ -40,15 +43,80 @@ var (
 */
 
 // NewCoordinationChain - initialize new CoordinationChain
-func NewCoordinationChain(networkID uint, bootstrapNode *CoordinationNode) *CoordinationChain {
-	coordinationChain := &CoordinationChain{
-		Nodes:     []*CoordinationNode{bootstrapNode},
+func NewCoordinationChain(networkID uint) *CoordinationChain {
+	coordinationChain := &CoordinationChain{ // Init chain
+		Nodes:     []*CoordinationNode{},
 		NetworkID: networkID,
-	} // Init chain
+	}
 
 	(*coordinationChain).ChainID = common.NewHash(crypto.Sha3(coordinationChain.Bytes())) // Set chain ID
 
 	return coordinationChain // Return chain
+}
+
+// AddNode - append given coordination node to coordinationChain
+func (coordinationChain *CoordinationChain) AddNode(coordinationNode *CoordinationNode, updateRemote bool) error {
+	if coordinationNode == nil { // Check for errors
+		return ErrNilNode // Return error
+	}
+
+	if len(coordinationChain.Nodes) == 0 { // Check genesis
+		(*coordinationChain).Nodes = []*CoordinationNode{coordinationNode} // Initialize node list
+
+		return nil // No error occurred, return nil
+	}
+
+	(*coordinationChain).Nodes = append((*coordinationChain).Nodes, coordinationNode) // Append node
+
+	err := coordinationChain.PushNode(coordinationNode) // Push to remote chains
+
+	if err != nil { // Check for errors
+		return err // Return error
+	}
+
+	return nil // No error occurred, return nil
+}
+
+// QueryAddress - query for address in coordination chain
+func (coordinationChain *CoordinationChain) QueryAddress(queryAddress common.Address) (*CoordinationNode, error) {
+	if coordinationChain.Nodes == nil { // Check for nil nodes
+		return &CoordinationNode{}, ErrNilNode // Return error
+	}
+
+	for _, node := range coordinationChain.Nodes { // Iterate through nodes
+		if node.AddressSpace == nil { // Check for nil address space
+			return &CoordinationNode{}, ErrNilNode // Return error
+		}
+
+		for _, address := range node.AddressSpace.Addresses { // Iterate through addresses
+			if address == queryAddress { // Check for match
+				return node, nil // Return result
+			}
+		}
+	}
+
+	return &CoordinationNode{}, ErrNilNode // Return error
+}
+
+// PushNode - send new node to addresses in coordination chain
+func (coordinationChain *CoordinationChain) PushNode(coordinationNode *CoordinationNode) error {
+	localIP, err := common.GetExtIPAddrWithoutUPnP() // Get IP address
+
+	if err != nil { // Check for errors
+		return err // Return error
+	}
+
+	for _, node := range coordinationChain.Nodes { // Iterate through nodes
+		if node != coordinationNode { // Plz no recursion
+			for _, address := range node.Addresses { // Iterate through node addresses
+				if address != localIP { // Plz, plz no recursion
+					go common.SendBytes(coordinationNode.Bytes(), address) // Send new node
+				}
+			}
+		}
+	}
+
+	return nil // No error occurred, return nil
 }
 
 // Bytes - convert given coordinationChain to byte array
@@ -90,6 +158,19 @@ func NewCoordinationNode(addressSpace *common.AddressSpace, foundingAddresses []
 	coordinationNode.ID = common.NewHash(crypto.Sha3(coordinationNode.Bytes())) // Set ID
 
 	return coordinationNode, nil // Return initialized node
+}
+
+// CoordinationNodeFromBytes - convert byte array to coordinationNode
+func CoordinationNodeFromBytes(b []byte) (*CoordinationNode, error) {
+	coordinationNode := CoordinationNode{} // Init buffer
+
+	err := json.NewDecoder(bytes.NewReader(b)).Decode(&coordinationNode) // Decode into buffer
+
+	if err != nil { // Check for errors
+		return nil, err // Return found error
+	}
+
+	return &coordinationNode, nil // No error occurred, return read value
 }
 
 // Bytes - convert given coordinationNode to byte array
