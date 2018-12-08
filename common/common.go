@@ -23,7 +23,10 @@ var (
 	ErrNilInput = errors.New("nil input")
 
 	// DataDir - global data directory definition
-	DataDir = filepath.FromSlash("/data")
+	DataDir = filepath.FromSlash("data")
+
+	// ConfigDir - global config directory definition
+	ConfigDir = filepath.FromSlash(fmt.Sprintf("%s/config", DataDir))
 )
 
 /* BEGIN EXPORTED METHODS */
