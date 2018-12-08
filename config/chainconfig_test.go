@@ -70,3 +70,29 @@ func TestWriteToMemoryChainConfig(t *testing.T) {
 
 	t.Logf("wrote chain config to memory") // Log success
 }
+
+// TestReadChainConfigFromMemory - test read chain config from json file
+func TestReadChainConfigFromMemory(t *testing.T) {
+	chainConfig, err := NewChainConfig("genesis.json") // Initialize chain configuration
+
+	if err != nil { // Check for errors
+		t.Error(err) // Log found error
+		t.FailNow()  // Panic
+	}
+
+	err = chainConfig.WriteToMemory() // Write to memory
+
+	if err != nil { // Check for errors
+		t.Error(err) // Log found error
+		t.FailNow()  // Panic
+	}
+
+	chainConfig, err = ReadChainConfigFromMemory() // Read chain config
+
+	if err != nil { // Check for errors
+		t.Error(err) // Log found error
+		t.FailNow()  // Panic
+	}
+
+	t.Log(*chainConfig) // Log success
+}

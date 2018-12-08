@@ -88,8 +88,8 @@ func (chainConfig *ChainConfig) WriteToMemory() error {
 }
 
 // ReadChainConfigFromMemory - read chain configuration from chain config json file
-func ReadChainConfigFromMemory(path string) (*ChainConfig, error) {
-	data, err := ioutil.ReadFile(path) // Read file
+func ReadChainConfigFromMemory() (*ChainConfig, error) {
+	data, err := ioutil.ReadFile(filepath.FromSlash(fmt.Sprintf("%s/config/config.json", common.DataDir))) // Read file
 
 	if err != nil { // Check for errors
 		return &ChainConfig{}, err // Return error

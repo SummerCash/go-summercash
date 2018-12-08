@@ -19,3 +19,6 @@
 
 # Testing files
 genesis_test.json
+
+# Runtime-Generate Support Files
+config/data/
