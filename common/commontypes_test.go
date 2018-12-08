@@ -17,7 +17,7 @@ import (
 
 // TestNewAddress - test init new address
 func TestNewAddress(t *testing.T) {
-	privateKey, err := ecdsa.GenerateKey(elliptic.P521(), rand.Reader)
+	privateKey, err := ecdsa.GenerateKey(elliptic.P521(), rand.Reader) // Generate private key
 
 	if err != nil { // Check for errors
 		t.Error(err) // Log found error
