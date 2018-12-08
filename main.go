@@ -90,5 +90,3 @@ func startNode() {
 		panic(err) // Panic
 	}
 }
-
-// TODO: init http server handler.go

@@ -43,9 +43,9 @@ var (
 */
 
 // NewCoordinationChain - initialize new CoordinationChain
-func NewCoordinationChain(networkID uint, bootstrapNode *CoordinationNode) *CoordinationChain {
+func NewCoordinationChain(networkID uint) *CoordinationChain {
 	coordinationChain := &CoordinationChain{ // Init chain
-		Nodes:     []*CoordinationNode{bootstrapNode},
+		Nodes:     []*CoordinationNode{},
 		NetworkID: networkID,
 	}
 
@@ -75,6 +75,27 @@ func (coordinationChain *CoordinationChain) AddNode(coordinationNode *Coordinati
 	}
 
 	return nil // No error occurred, return nil
+}
+
+// QueryAddress - query for address in coordination chain
+func (coordinationChain *CoordinationChain) QueryAddress(queryAddress common.Address) (*CoordinationNode, error) {
+	if coordinationChain.Nodes == nil { // Check for nil nodes
+		return &CoordinationNode{}, ErrNilNode // Return error
+	}
+
+	for _, node := range coordinationChain.Nodes { // Iterate through nodes
+		if node.AddressSpace == nil { // Check for nil address space
+			return &CoordinationNode{}, ErrNilNode // Return error
+		}
+
+		for _, address := range node.AddressSpace.Addresses { // Iterate through addresses
+			if address == queryAddress { // Check for match
+				return node, nil // Return result
+			}
+		}
+	}
+
+	return &CoordinationNode{}, ErrNilNode // Return error
 }
 
 // PushNode - send new node to addresses in coordination chain
