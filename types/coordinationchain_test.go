@@ -64,7 +64,7 @@ func TestAddNode(t *testing.T) {
 		t.FailNow()  // Panic
 	}
 
-	err = coordinationChain.AddNode(coordinationNode) // Add node
+	err = coordinationChain.AddNode(coordinationNode, false) // Add node
 
 	if err != nil { // Check for errors
 		t.Error(err) // Log error
@@ -111,7 +111,7 @@ func TestPushNode(t *testing.T) {
 		t.FailNow()  // Panic
 	}
 
-	err = coordinationChain.AddNode(coordinationNode) // Add node
+	err = coordinationChain.AddNode(coordinationNode, false) // Add node
 
 	if err != nil { // Check for errors
 		t.Error(err) // Log error
@@ -198,6 +198,53 @@ func TestNewCoordinationNode(t *testing.T) {
 	}
 
 	coordinationNode, err := NewCoordinationNode(addressSpace, []string{"1.1.1.1"}) // Init coordination node
+
+	if err != nil { // Check for errors
+		t.Error(err) // Log found error
+		t.FailNow()  // Panic
+	}
+
+	t.Log(*coordinationNode) // Log success
+}
+
+// TestCoordinationNodeFromBytes - test conversion from byte array to coordination node
+func TestCoordinationNodeFromByte(t *testing.T) {
+	privateKey, err := ecdsa.GenerateKey(elliptic.P521(), rand.Reader) // Generate private key
+
+	if err != nil { // Check for errors
+		t.Error(err) // Log found error
+		t.FailNow()  // Panic
+	}
+
+	address, err := common.NewAddress(privateKey) // Generate address
+
+	if err != nil { // Check for errors
+		t.Error(err) // Log found error
+		t.FailNow()  // Panic
+	}
+
+	addressSpace, err := common.NewAddressSpace([]common.Address{address}) // Init address-space
+
+	if err != nil { // Check for errors
+		t.Error(err) // Log found error
+		t.FailNow()  // Panic
+	}
+
+	coordinationNode, err := NewCoordinationNode(addressSpace, []string{"1.1.1.1"}) // Init coordination node
+
+	if err != nil { // Check for errors
+		t.Error(err) // Log found error
+		t.FailNow()  // Panic
+	}
+
+	byteVal := coordinationNode.Bytes() // Get byteVal
+
+	if byteVal == nil { // Check for nil byte val
+		t.Errorf("invalid byte val") // Log found error
+		t.FailNow()                  // Panic
+	}
+
+	coordinationNode, err = CoordinationNodeFromBytes(byteVal) // Get coordination node
 
 	if err != nil { // Check for errors
 		t.Error(err) // Log found error
