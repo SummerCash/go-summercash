@@ -1,6 +1,7 @@
 package common
 
 import (
+	"crypto/tls"
 	"strings"
 	"testing"
 )
@@ -17,6 +18,32 @@ func TestSendBytes(t *testing.T) {
 	}
 
 	t.Logf("wrote to address 1.1.1.1") // Log success
+}
+
+// TestReadConnectionWaitAsyncNoTLS - test functionality of ReadConnectionWaitAsyncNoTLS() method
+func TestReadConnectionWaitAsyncNoTLS(t *testing.T) {
+	connection, err := tls.Dial("tcp", "1.1.1.1:443", GeneralTLSConfig) // Connect to given address
+
+	if err != nil { // Check for errors
+		t.Error(err) // Log found error
+		t.FailNow()  // Panic
+	}
+
+	_, err = connection.Write([]byte("test")) // Write test data to connection
+
+	if err != nil { // Check for errors
+		t.Error(err) // Log found error
+		t.FailNow()  // Panic
+	}
+
+	data, err := ReadConnectionWaitAsyncNoTLS(connection) // Read connection
+
+	if err != nil { // Check for errors
+		t.Error(err) // Log found error
+		t.FailNow()  // Panic
+	}
+
+	t.Log(data) // Log success
 }
 
 /*
