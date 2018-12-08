@@ -2,7 +2,7 @@ package types
 
 import "github.com/space55/summertech-blockchain/common"
 
-// Chain - account blockchain
+// Chain - account transactions chain
 type Chain struct {
 	Account common.Address `json:"account"` // Chain account
 
