@@ -6,6 +6,7 @@ import (
 	"strings"
 
 	"github.com/space55/summertech-blockchain/common"
+	"github.com/space55/summertech-blockchain/types"
 )
 
 var (
@@ -42,9 +43,11 @@ func handleConnection(conn net.Conn) error {
 		return err // Return error
 	}
 
+	defer conn.Close() // Close connection
+
 	switch {
 	case strings.Contains(string(data), "scope"): // Handle coordinationNode
-
+		return types.HandleReceivedCoordinationNode(data) // Handle received data
 	}
 
 	return nil // No error occurred, return nil
