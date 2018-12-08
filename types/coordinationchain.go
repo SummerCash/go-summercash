@@ -44,10 +44,10 @@ var (
 
 // NewCoordinationChain - initialize new CoordinationChain
 func NewCoordinationChain(networkID uint, bootstrapNode *CoordinationNode) *CoordinationChain {
-	coordinationChain := &CoordinationChain{
+	coordinationChain := &CoordinationChain{ // Init chain
 		Nodes:     []*CoordinationNode{bootstrapNode},
 		NetworkID: networkID,
-	} // Init chain
+	}
 
 	(*coordinationChain).ChainID = common.NewHash(crypto.Sha3(coordinationChain.Bytes())) // Set chain ID
 
@@ -55,7 +55,7 @@ func NewCoordinationChain(networkID uint, bootstrapNode *CoordinationNode) *Coor
 }
 
 // AddNode - append given coordination node to coordinationChain
-func (coordinationChain *CoordinationChain) AddNode(coordinationNode *CoordinationNode) error {
+func (coordinationChain *CoordinationChain) AddNode(coordinationNode *CoordinationNode, updateRemote bool) error {
 	if coordinationNode == nil { // Check for errors
 		return ErrNilNode // Return error
 	}
@@ -137,6 +137,19 @@ func NewCoordinationNode(addressSpace *common.AddressSpace, foundingAddresses []
 	coordinationNode.ID = common.NewHash(crypto.Sha3(coordinationNode.Bytes())) // Set ID
 
 	return coordinationNode, nil // Return initialized node
+}
+
+// CoordinationNodeFromBytes - convert byte array to coordinationNode
+func CoordinationNodeFromBytes(b []byte) (*CoordinationNode, error) {
+	coordinationNode := CoordinationNode{} // Init buffer
+
+	err := json.NewDecoder(bytes.NewReader(b)).Decode(&coordinationNode) // Decode into buffer
+
+	if err != nil { // Check for errors
+		return nil, err // Return found error
+	}
+
+	return &coordinationNode, nil // No error occurred, return read value
 }
 
 // Bytes - convert given coordinationNode to byte array
