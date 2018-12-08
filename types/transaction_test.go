@@ -26,7 +26,7 @@ func TestNewTransaction(t *testing.T) {
 		t.FailNow()  // Panic
 	}
 
-	transaction, err := NewTransaction(0, &sender, &sender, 0, []byte("test")) // Initialize transaction
+	transaction, err := NewTransaction(0, nil, &sender, &sender, 0, []byte("test")) // Initialize transaction
 
 	if err != nil { // Check for errors
 		t.Error(err) // Log found error
@@ -59,7 +59,7 @@ func TestBytes(t *testing.T) {
 		t.FailNow()  // Panic
 	}
 
-	transaction, err := NewTransaction(0, &sender, &sender, 0, []byte("test")) // Initialize transaction
+	transaction, err := NewTransaction(0, nil, &sender, &sender, 0, []byte("test")) // Initialize transaction
 
 	if err != nil { // Check for errors
 		t.Error(err) // Log found error
@@ -92,7 +92,7 @@ func TestString(t *testing.T) {
 		t.FailNow()  // Panic
 	}
 
-	transaction, err := NewTransaction(0, &sender, &sender, 0, []byte("test")) // Initialize transaction
+	transaction, err := NewTransaction(0, nil, &sender, &sender, 0, []byte("test")) // Initialize transaction
 
 	if err != nil { // Check for errors
 		t.Error(err) // Log found error
