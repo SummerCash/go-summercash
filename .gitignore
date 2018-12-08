@@ -22,3 +22,4 @@ genesis_test.json
 
 # Runtime-Generate Support Files
 config/data/
+types/data/

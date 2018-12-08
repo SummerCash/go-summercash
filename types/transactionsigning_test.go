@@ -28,7 +28,7 @@ func TestSignTransaction(t *testing.T) {
 		t.FailNow()  // Panic
 	}
 
-	transaction, err := NewTransaction(0, &sender, &sender, 0, []byte("test")) // Initialize transaction
+	transaction, err := NewTransaction(0, nil, &sender, &sender, 0, []byte("test")) // Initialize transaction
 
 	if err != nil { // Check for errors
 		t.Error(err) // Log found error
@@ -36,60 +36,6 @@ func TestSignTransaction(t *testing.T) {
 	}
 
 	err = SignTransaction(transaction, privateKey) // Sign transaction
-
-	if err != nil { // Check for errors
-		t.Error(err) // Log found error
-		t.FailNow()  // Panic
-	}
-
-	marshaledVal, err := json.MarshalIndent(*transaction, "", "  ") // Marshal tx
-
-	if err != nil { // Check for errors
-		t.Error(err) // Log found error
-		t.FailNow()  // Panic
-	}
-
-	t.Log(string(marshaledVal)) // Log success
-}
-
-// TestWitnessTransaction - test functionality of WitnessTransaction() method
-func TestWitnessTransaction(t *testing.T) {
-	privateKey, err := ecdsa.GenerateKey(elliptic.P521(), rand.Reader) // Generate private key
-
-	if err != nil { // Check for errors
-		t.Error(err) // Log found error
-		t.FailNow()  // Panic
-	}
-
-	witness, err := ecdsa.GenerateKey(elliptic.P521(), rand.Reader) // Generat private key
-
-	if err != nil { // Check for errors
-		t.Error(err) // Log found error
-		t.FailNow()  // Panic
-	}
-
-	sender, err := common.NewAddress(privateKey) // Initialize address from private key
-
-	if err != nil { // Check for errors
-		t.Error(err) // Log found error
-		t.FailNow()  // Panic
-	}
-
-	transaction, err := NewTransaction(0, &sender, &sender, 0, []byte("test")) // Initialize transaction
-
-	if err != nil { // Check for errors
-		t.Error(err) // Log found error
-		t.FailNow()  // Panic
-	}
-
-	err = SignTransaction(transaction, privateKey) // Sign transaction
-
-	if err != nil { // Check for errors
-		t.Error(err) // Log found error
-		t.FailNow()  // Panic
-	}
-
-	err = WitnessTransaction(transaction, witness) // Witness transaction
 
 	if err != nil { // Check for errors
 		t.Error(err) // Log found error
@@ -122,7 +68,7 @@ func TestVerifyTransactionSignature(t *testing.T) {
 		t.FailNow()  // Panic
 	}
 
-	validTransaction, err := NewTransaction(0, &sender, &sender, 0, []byte("test")) // Initialize transaction
+	validTransaction, err := NewTransaction(0, nil, &sender, &sender, 0, []byte("test")) // Initialize transaction
 
 	if err != nil { // Check for errors
 		t.Error(err) // Log found error
@@ -162,7 +108,7 @@ func TestBytesSignature(t *testing.T) {
 		t.FailNow()  // Panic
 	}
 
-	transaction, err := NewTransaction(0, &sender, &sender, 0, []byte("test")) // Initialize transaction
+	transaction, err := NewTransaction(0, nil, &sender, &sender, 0, []byte("test")) // Initialize transaction
 
 	if err != nil { // Check for errors
 		t.Error(err) // Log found error
@@ -202,7 +148,7 @@ func TestStringSignature(t *testing.T) {
 		t.FailNow()  // Panic
 	}
 
-	transaction, err := NewTransaction(0, &sender, &sender, 0, []byte("test")) // Initialize transaction
+	transaction, err := NewTransaction(0, nil, &sender, &sender, 0, []byte("test")) // Initialize transaction
 
 	if err != nil { // Check for errors
 		t.Error(err) // Log found error
@@ -217,114 +163,6 @@ func TestStringSignature(t *testing.T) {
 	}
 
 	stringVal := transaction.Signature.String() // Get string val
-
-	if stringVal == "" { // Check for nil string val
-		t.Errorf("invalid string value") // Log found error
-		t.FailNow()                      // Panic
-	}
-
-	t.Log(stringVal) // Log success
-}
-
-// TestBytesWitness - test functionality of Bytes() witness extension method
-func TestBytesWitness(t *testing.T) {
-	privateKey, err := ecdsa.GenerateKey(elliptic.P521(), rand.Reader) // Generate private key
-
-	if err != nil { // Check for errors
-		t.Error(err) // Log found error
-		t.FailNow()  // Panic
-	}
-
-	witness, err := ecdsa.GenerateKey(elliptic.P521(), rand.Reader) // Generat private key
-
-	if err != nil { // Check for errors
-		t.Error(err) // Log found error
-		t.FailNow()  // Panic
-	}
-
-	sender, err := common.NewAddress(privateKey) // Initialize address from private key
-
-	if err != nil { // Check for errors
-		t.Error(err) // Log found error
-		t.FailNow()  // Panic
-	}
-
-	transaction, err := NewTransaction(0, &sender, &sender, 0, []byte("test")) // Initialize transaction
-
-	if err != nil { // Check for errors
-		t.Error(err) // Log found error
-		t.FailNow()  // Panic
-	}
-
-	err = SignTransaction(transaction, privateKey) // Sign transaction
-
-	if err != nil { // Check for errors
-		t.Error(err) // Log found error
-		t.FailNow()  // Panic
-	}
-
-	err = WitnessTransaction(transaction, witness) // Witness transaction
-
-	if err != nil { // Check for errors
-		t.Error(err) // Log found error
-		t.FailNow()  // Panic
-	}
-
-	byteVal := transaction.Witness.Bytes() // Get byte val
-
-	if byteVal == nil { // Check for nil byte val
-		t.Errorf("invalid byte value") // Log found error
-		t.FailNow()                    // Panic
-	}
-
-	t.Log(byteVal) // Log success
-}
-
-// TestStringWitness - test functionality of String() witness extension method
-func TestStringWitness(t *testing.T) {
-	privateKey, err := ecdsa.GenerateKey(elliptic.P521(), rand.Reader) // Generate private key
-
-	if err != nil { // Check for errors
-		t.Error(err) // Log found error
-		t.FailNow()  // Panic
-	}
-
-	witness, err := ecdsa.GenerateKey(elliptic.P521(), rand.Reader) // Generat private key
-
-	if err != nil { // Check for errors
-		t.Error(err) // Log found error
-		t.FailNow()  // Panic
-	}
-
-	sender, err := common.NewAddress(privateKey) // Initialize address from private key
-
-	if err != nil { // Check for errors
-		t.Error(err) // Log found error
-		t.FailNow()  // Panic
-	}
-
-	transaction, err := NewTransaction(0, &sender, &sender, 0, []byte("test")) // Initialize transaction
-
-	if err != nil { // Check for errors
-		t.Error(err) // Log found error
-		t.FailNow()  // Panic
-	}
-
-	err = SignTransaction(transaction, privateKey) // Sign transaction
-
-	if err != nil { // Check for errors
-		t.Error(err) // Log found error
-		t.FailNow()  // Panic
-	}
-
-	err = WitnessTransaction(transaction, witness) // Witness transaction
-
-	if err != nil { // Check for errors
-		t.Error(err) // Log found error
-		t.FailNow()  // Panic
-	}
-
-	stringVal := transaction.Witness.String() // Get string val
 
 	if stringVal == "" { // Check for nil string val
 		t.Errorf("invalid string value") // Log found error
@@ -350,7 +188,7 @@ func TestSelfSignTransaction(t *testing.T) {
 		t.FailNow()  // Panic
 	}
 
-	transaction, err := NewTransaction(0, &sender, &sender, 0, []byte("test")) // Initialize transaction
+	transaction, err := NewTransaction(0, nil, &sender, &sender, 0, []byte("test")) // Initialize transaction
 
 	if err != nil { // Check for errors
 		t.Error(err) // Log found error
@@ -358,60 +196,6 @@ func TestSelfSignTransaction(t *testing.T) {
 	}
 
 	err = selfSignTransaction(transaction, privateKey) // Self-sign transaction
-
-	if err != nil { // Check for errors
-		t.Error(err) // Log found error
-		t.FailNow()  // Panic
-	}
-
-	marshaledVal, err := json.MarshalIndent(*transaction, "", "  ") // Marshal tx
-
-	if err != nil { // Check for errors
-		t.Error(err) // Log found error
-		t.FailNow()  // Panic
-	}
-
-	t.Log(string(marshaledVal)) // Log success
-}
-
-// TestSignTransactionWitness - test functionality of witness tx-signing
-func TestSignTransactionWitness(t *testing.T) {
-	privateKey, err := ecdsa.GenerateKey(elliptic.P521(), rand.Reader) // Generate private key
-
-	if err != nil { // Check for errors
-		t.Error(err) // Log found error
-		t.FailNow()  // Panic
-	}
-
-	witnessPrivateKey, err := ecdsa.GenerateKey(elliptic.P521(), rand.Reader) // Generate private key
-
-	if err != nil { // Check for errors
-		t.Error(err) // Log found error
-		t.FailNow()  // Panic
-	}
-
-	sender, err := common.NewAddress(privateKey) // Initialize address from private key
-
-	if err != nil { // Check for errors
-		t.Error(err) // Log found error
-		t.FailNow()  // Panic
-	}
-
-	transaction, err := NewTransaction(0, &sender, &sender, 0, []byte("test")) // Initialize transaction
-
-	if err != nil { // Check for errors
-		t.Error(err) // Log found error
-		t.FailNow()  // Panic
-	}
-
-	err = SignTransaction(transaction, privateKey) // Sign transaction
-
-	if err != nil { // Check for errors
-		t.Error(err) // Log found error
-		t.FailNow()  // Panic
-	}
-
-	err = signTransactionWitness(transaction, witnessPrivateKey) // Witness-sign transaction
 
 	if err != nil { // Check for errors
 		t.Error(err) // Log found error

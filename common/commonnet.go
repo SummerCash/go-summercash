@@ -1,9 +1,15 @@
 package common
 
 import (
+	"bytes"
+	"crypto/tls"
+	"errors"
+	"io"
 	"io/ioutil"
+	"net"
 	"net/http"
 	"strings"
+	"time"
 
 	upnp "github.com/NebulousLabs/go-upnp"
 )
@@ -14,6 +20,70 @@ var (
 )
 
 /* BEGIN EXPORTED METHODS */
+
+// SendBytes - attempt to send specified bytes to given address
+func SendBytes(b []byte, address string) error {
+	connection, err := tls.Dial("tcp", address, GeneralTLSConfig) // Connect to given address
+
+	if err != nil { // Check for errors
+		return err // Return found error
+	}
+
+	_, err = connection.Write(b) // Write data to connection
+
+	if err != nil { // Check for errors
+		return err // Return found errors
+	}
+
+	err = connection.Close() // Close connection
+
+	if err != nil { // Check for errors
+		return err // Return found error
+	}
+
+	return nil // No error occurred, return nil
+}
+
+// ReadConnectionWaitAsyncNoTLS - attempt to read from connection in an asynchronous fashion, after waiting for peer to write
+func ReadConnectionWaitAsyncNoTLS(conn net.Conn) ([]byte, error) {
+	data := make(chan []byte) // Init buffer
+	err := make(chan error)   // Init error buffer
+
+	conn.SetReadDeadline(time.Now().Add(2 * time.Second)) // Set read deadline
+
+	go func(data chan []byte, err chan error) {
+		reads := 0 // Init reads buffer
+
+		for {
+			reads++ // Increment read
+
+			var buffer bytes.Buffer // Init buffer
+
+			readData, readErr := io.Copy(&buffer, conn) // Read connection
+
+			if readErr != nil && readErr != io.EOF && reads > 3 { // Check for errors
+				err <- readErr // Write read error
+			} else if readData == 0 { // Check for nil readData
+				continue // Continue
+			}
+
+			data <- buffer.Bytes() // Write read data
+		}
+	}(data, err)
+
+	ticker := time.Tick(3 * time.Second) // Init ticker
+
+	for { // Continuously read from connection
+		select {
+		case readData := <-data: // Read data from connection
+			return readData, nil // Return read data
+		case readErr := <-err: // Error on read
+			return []byte{}, readErr // Return error
+		case <-ticker: // Timed out
+			return []byte{}, errors.New("timed out") // Return timed out error
+		}
+	}
+}
 
 /*
 	BEGIN IP ADDR METHODS
