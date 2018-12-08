@@ -17,7 +17,7 @@ import (
 type ChainConfig struct {
 	Origin time.Time `json:"origin"` // Time at chain initialization
 
-	GenesisSignature *crypto.Signature `json:"genesis"` // Signature of genesis address
+	Alloc map[string]float64 `json:"alloc"` // Account balances at genesis
 
 	NetworkID uint        `json:"network"` // Network ID (0: mainnet, 1: testnet, etc...)
 	ChainID   common.Hash `json:"id"`      // Hashed networkID, genesisSignature
@@ -39,8 +39,21 @@ func NewChainConfig(genesisFilePath string) (*ChainConfig, error) {
 		return &ChainConfig{}, err // Return error
 	}
 
+	alloc := make(map[string]float64) // Init alloc map
+
+	for key, value := range readJSON["alloc"].(map[string]interface{}) { // Iterate through genesis addresses
+		intVal, err := strconv.Atoi(value.(map[string]interface{})["balance"].(string)) // Get int val
+
+		if err != nil { // Check for errors
+			return &ChainConfig{}, err // Return error
+		}
+
+		alloc[key] = float64(intVal) // Set int val
+	}
+
 	config := &ChainConfig{ // Init config
 		Origin:    time.Now().UTC(),
+		Alloc:     alloc,
 		NetworkID: uint(readJSON["networkID"].(float64)),
 		ChainID:   common.NewHash(crypto.Sha3(append(rawJSON, []byte(strconv.Itoa(int(readJSON["networkID"].(float64))))...))), // Generate chainID
 	}

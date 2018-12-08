@@ -1,3 +1,8 @@
 {
-    "networkID": 0
+    "networkID": 0,
+    "alloc": {
+        "0x307804000f116276e92a7636be4aa0aa2e6ae75f": {
+            "balance": "1000000"
+        }
+    }
 }
