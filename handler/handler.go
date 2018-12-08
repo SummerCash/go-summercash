@@ -3,7 +3,6 @@ package handler
 import (
 	"errors"
 	"net"
-	"strings"
 
 	"github.com/space55/summertech-blockchain/common"
 	"github.com/space55/summertech-blockchain/types"
@@ -45,8 +44,8 @@ func handleConnection(conn net.Conn) error {
 
 	defer conn.Close() // Close connection
 
-	switch {
-	case strings.Contains(string(data), "scope"): // Handle coordinationNode
+	switch string(data)[0:10] { // Handle signatures
+	case "{" + `"` + "scope" + `"` + ":": // Check coordinationNode
 		return types.HandleReceivedCoordinationNode(data) // Handle received data
 	}
 
