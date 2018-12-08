@@ -72,6 +72,3 @@ func startRPCServer() {
 
 	go http.ListenAndServeTLS(":"+strconv.Itoa(*rpcPortFlag), "termCert.pem", "termKey.pem", mux) // Start server
 }
-
-// TODO: RPC server unit testing
-// TODO: Transaction witness weight calculation

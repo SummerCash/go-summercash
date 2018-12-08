@@ -32,7 +32,6 @@ type Transaction struct {
 	Payload []byte `json:"payload"` // Misc. data transported with transaction
 
 	Signature *Signature `json:"signature"` // Transaction signature meta
-	Witness   *Witness   `json:"witness"`   // Transaction witness
 
 	ParentTx *Transaction `json:"-"` // Parent transaction
 

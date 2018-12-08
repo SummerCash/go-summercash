@@ -45,11 +45,6 @@ func SignTransaction(transaction *Transaction, privateKey *ecdsa.PrivateKey) err
 	return selfSignTransaction(transaction, privateKey) // Sign tx
 }
 
-// WitnessTransaction - sign given transaction as witness
-func WitnessTransaction(transaction *Transaction, privateKey *ecdsa.PrivateKey) error {
-	return signTransactionWitness(transaction, privateKey) // Sign tx
-}
-
 // VerifyTransactionSignature - verify given transaction signature, returning false if signature invalid
 func VerifyTransactionSignature(transaction *Transaction) (bool, error) {
 	if transaction.Signature == nil { // Check nil signature
@@ -59,17 +54,6 @@ func VerifyTransactionSignature(transaction *Transaction) (bool, error) {
 	}
 
 	return ecdsa.Verify(transaction.Signature.PublicKey, transaction.Signature.V, transaction.Signature.R, transaction.Signature.S), nil // Check signature valid
-}
-
-// VerifyTransactionWitness - very given transaction witness value, returning false if signature invalid
-func VerifyTransactionWitness(transaction *Transaction) (bool, error) {
-	if transaction.Witness.Signature == nil { // Check nil signature
-		return false, ErrNilSignature // Return nil signature error
-	} else if common.PublicKeyToAddress(transaction.Witness.Signature.PublicKey) != transaction.Witness.Address { // Check for invalid public key
-		return false, ErrInvalidSignature // Return invalid signature error
-	}
-
-	return ecdsa.Verify(transaction.Witness.Signature.PublicKey, transaction.Witness.Signature.V, transaction.Witness.Signature.R, transaction.Witness.Signature.S), nil // Check signature valid
 }
 
 // Bytes - convert given signature to byte array
@@ -128,38 +112,6 @@ func selfSignTransaction(transaction *Transaction, privateKey *ecdsa.PrivateKey)
 	}
 
 	(*transaction).Signature = &txSignature // Set signature
-
-	return nil // No error occurred, return nil
-}
-
-// signTransactionWitness - sign transaction as witness
-func signTransactionWitness(transaction *Transaction, privateKey *ecdsa.PrivateKey) error {
-	if transaction.Signature == nil { // Check for nil signature
-		return ErrNilSignature // Return error
-	} else if *transaction.Signature.PublicKey == privateKey.PublicKey { // Check already signed as sender
-		return ErrCannotWitnessSelf // Return error
-	} else if transaction.Witness != nil { // Check already signed
-		return ErrAlreadySigned // Return error
-	}
-
-	r, s, err := ecdsa.Sign(rand.Reader, privateKey, crypto.Sha3(transaction.Bytes())) // Sign tx
-
-	if err != nil { // Check for errors
-		return err // Return found error
-	}
-
-	signature := Signature{ // Initialize signature
-		PublicKey: &privateKey.PublicKey,            // Set public key
-		V:         crypto.Sha3(transaction.Bytes()), // Set val
-		R:         r,                                // Set R
-		S:         s,                                // Set S
-	}
-
-	witness := Witness{ // Initialize witness
-		Signature: &signature,
-	}
-
-	(*transaction).Witness = &witness // Set witness
 
 	return nil // No error occurred, return nil
 }
