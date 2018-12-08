@@ -7,7 +7,6 @@ import (
 	"io/ioutil"
 	"path/filepath"
 	"strconv"
-	"time"
 
 	"github.com/space55/summertech-blockchain/common"
 	"github.com/space55/summertech-blockchain/crypto"
@@ -15,9 +14,7 @@ import (
 
 // ChainConfig - chain configuration
 type ChainConfig struct {
-	Origin time.Time `json:"origin"` // Time at chain initialization
-
-	GenesisSignature *crypto.Signature `json:"genesis"` // Signature of genesis address
+	Alloc map[common.Address]float64 // Account balances
 
 	NetworkID uint        `json:"network"` // Network ID (0: mainnet, 1: testnet, etc...)
 	ChainID   common.Hash `json:"id"`      // Hashed networkID, genesisSignature
@@ -40,7 +37,6 @@ func NewChainConfig(genesisFilePath string) (*ChainConfig, error) {
 	}
 
 	config := &ChainConfig{ // Init config
-		Origin:    time.Now().UTC(),
 		NetworkID: uint(readJSON["networkID"].(float64)),
 		ChainID:   common.NewHash(crypto.Sha3(append(rawJSON, []byte(strconv.Itoa(int(readJSON["networkID"].(float64))))...))), // Generate chainID
 	}
