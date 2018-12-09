@@ -11,14 +11,14 @@ import (
 
 // TestHandleReceivedCoordinationNode - test functionality of HandleReceivedCoordinationNode() method
 func TestHandleReceivedCoordinationNode(t *testing.T) {
-	coordinationChain := NewCoordinationChain(0) // Init coordinationChain
+	coordinationChain, err := NewCoordinationChain(0) // Init coordinationChain
 
-	if coordinationChain == nil { // Check for nil coordination chain
-		t.Errorf("invalid coordination chain") // Log found error
-		t.FailNow()                            // Panic
+	if err != nil { // Check for errors
+		t.Error(err) // Log found error
+		t.FailNow()  // Panic
 	}
 
-	err := coordinationChain.WriteToMemory() // Write coordination chain to memory
+	err = coordinationChain.WriteToMemory() // Write coordination chain to memory
 
 	if err != nil { // Check for errors
 		t.Error(err) // Log found error
