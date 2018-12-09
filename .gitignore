@@ -20,6 +20,6 @@
 # Testing files
 genesis_test.json
 
-# Runtime-Generate Support Files
+# Runtime-Generated Support Files
 config/data/
-types/data/
+types/data/db
