@@ -44,19 +44,18 @@ var (
 */
 
 // NewCoordinationChain - initialize new CoordinationChain
-func NewCoordinationChain(networkID uint) (*CoordinationChain, error) {
-	coordinationChain := &CoordinationChain{ // Init chain
-		Nodes:     []*CoordinationNode{},
-		NetworkID: networkID,
-	}
-
+func NewCoordinationChain() (*CoordinationChain, error) {
 	config, err := config.ReadChainConfigFromMemory() // Read config from memory
 
 	if err != nil { // Check for errors
 		return &CoordinationChain{}, err // Return error
 	}
 
-	(*coordinationChain).ChainID = config.ChainID // Set chain ID
+	coordinationChain := &CoordinationChain{ // Init chain
+		Nodes:     []*CoordinationNode{},
+		NetworkID: config.NetworkID,
+		ChainID:   config.ChainID,
+	}
 
 	return coordinationChain, nil // Return chain
 }

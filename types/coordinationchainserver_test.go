@@ -11,7 +11,7 @@ import (
 
 // TestHandleReceivedCoordinationNode - test functionality of HandleReceivedCoordinationNode() method
 func TestHandleReceivedCoordinationNode(t *testing.T) {
-	coordinationChain, err := NewCoordinationChain(0) // Init coordinationChain
+	coordinationChain, err := NewCoordinationChain() // Init coordinationChain
 
 	if err != nil { // Check for errors
 		t.Error(err) // Log found error
