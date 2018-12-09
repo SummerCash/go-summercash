@@ -8,5 +8,6 @@ type Chain struct {
 
 	Transactions []*Transaction `json:"transactions"` // Transactions in chain
 
-	ID common.Hash `json:"ID"` // Chain ID
+	NetworkID uint        `json:"network"` // Network ID (mainnet: 0, testnet: 1, etc...)
+	ID        common.Hash `json:"ID"`      // Chain ID
 }
