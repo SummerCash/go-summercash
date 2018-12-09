@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/space55/summertech-blockchain/common"
+	"github.com/space55/summertech-blockchain/config"
 	"github.com/space55/summertech-blockchain/crypto"
 )
 
@@ -43,15 +44,21 @@ var (
 */
 
 // NewCoordinationChain - initialize new CoordinationChain
-func NewCoordinationChain(networkID uint) *CoordinationChain {
+func NewCoordinationChain(networkID uint) (*CoordinationChain, error) {
 	coordinationChain := &CoordinationChain{ // Init chain
 		Nodes:     []*CoordinationNode{},
 		NetworkID: networkID,
 	}
 
-	(*coordinationChain).ChainID = common.NewHash(crypto.Sha3(coordinationChain.Bytes())) // Set chain ID
+	config, err := config.ReadChainConfigFromMemory() // Read config from memory
 
-	return coordinationChain // Return chain
+	if err != nil { // Check for errors
+		return &CoordinationChain{}, err // Return error
+	}
+
+	(*coordinationChain).ChainID = config.ChainID // Set chain ID
+
+	return coordinationChain, nil // Return chain
 }
 
 // AddNode - append given coordination node to coordinationChain

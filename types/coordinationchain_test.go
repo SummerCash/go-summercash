@@ -17,11 +17,11 @@ import (
 
 // TestNewCoordinationChain - test coordinationChain initializer
 func TestNewCoordinationChain(t *testing.T) {
-	coordinationChain := NewCoordinationChain(0) // Init coordinationChain
+	coordinationChain, err := NewCoordinationChain(0) // Init coordinationChain
 
-	if coordinationChain == nil { // Check for nil coordination chain
-		t.Errorf("invalid coordination chain") // Log found error
-		t.FailNow()                            // Panic
+	if err != nil { // Check for errors
+		t.Error(err) // Log found error
+		t.FailNow()  // Panic
 	}
 
 	t.Log(*coordinationChain) // Log success
@@ -29,11 +29,11 @@ func TestNewCoordinationChain(t *testing.T) {
 
 // TestAddNode - test addNode() method
 func TestAddNode(t *testing.T) {
-	coordinationChain := NewCoordinationChain(0) // Init coordinationChain
+	coordinationChain, err := NewCoordinationChain(0) // Init coordinationChain
 
-	if coordinationChain == nil { // Check for nil coordination chain
-		t.Errorf("invalid coordination chain") // Log found error
-		t.FailNow()                            // Panic
+	if err != nil { // Check for errors
+		t.Error(err) // Log found error
+		t.FailNow()  // Panic
 	}
 
 	privateKey, err := ecdsa.GenerateKey(elliptic.P521(), rand.Reader) // Generate private key
@@ -69,11 +69,11 @@ func TestAddNode(t *testing.T) {
 
 // TestQueryAddress - test QueryAddress() method
 func TestQueryAddress(t *testing.T) {
-	coordinationChain := NewCoordinationChain(0) // Init coordinationChain
+	coordinationChain, err := NewCoordinationChain(0) // Init coordinationChain
 
-	if coordinationChain == nil { // Check for nil coordination chain
-		t.Errorf("invalid coordination chain") // Log found error
-		t.FailNow()                            // Panic
+	if err != nil { // Check for errors
+		t.Error(err) // Log found error
+		t.FailNow()  // Panic
 	}
 
 	privateKey, err := ecdsa.GenerateKey(elliptic.P521(), rand.Reader) // Generate private key
@@ -116,11 +116,11 @@ func TestQueryAddress(t *testing.T) {
 
 // TestPushNode - test PushNode() method
 func TestPushNode(t *testing.T) {
-	coordinationChain := NewCoordinationChain(0) // Init coordinationChain
+	coordinationChain, err := NewCoordinationChain(0) // Init coordinationChain
 
-	if coordinationChain == nil { // Check for nil coordination chain
-		t.Errorf("invalid coordination chain") // Log found error
-		t.FailNow()                            // Panic
+	if err != nil { // Check for errors
+		t.Error(err) // Log found error
+		t.FailNow()  // Panic
 	}
 
 	privateKey, err := ecdsa.GenerateKey(elliptic.P521(), rand.Reader) // Generate private key
@@ -163,11 +163,11 @@ func TestPushNode(t *testing.T) {
 
 // TestBytesCoordinationChain - test functionality of coordinationChain Bytes() extension method
 func TestBytesCoordinationChain(t *testing.T) {
-	coordinationChain := NewCoordinationChain(0) // Init coordinationChain
+	coordinationChain, err := NewCoordinationChain(0) // Init coordinationChain
 
-	if coordinationChain == nil { // Check for nil coordination chain
-		t.Errorf("invalid coordination chain") // Log found error
-		t.FailNow()                            // Panic
+	if err != nil { // Check for errors
+		t.Error(err) // Log found error
+		t.FailNow()  // Panic
 	}
 
 	byteVal := coordinationChain.Bytes() // Get byte val
@@ -182,11 +182,11 @@ func TestBytesCoordinationChain(t *testing.T) {
 
 // TestStringCoordinationChain - test functionality of coordinationChain String() extension method
 func TestStringCoordinationChain(t *testing.T) {
-	coordinationChain := NewCoordinationChain(0) // Init coordinationChain
+	coordinationChain, err := NewCoordinationChain(0) // Init coordinationChain
 
-	if coordinationChain == nil { // Check for nil coordination chain
-		t.Errorf("invalid coordination chain") // Log found error
-		t.FailNow()                            // Panic
+	if err != nil { // Check for errors
+		t.Error(err) // Log found error
+		t.FailNow()  // Panic
 	}
 
 	stringVal := coordinationChain.String() // Get string val
