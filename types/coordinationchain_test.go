@@ -50,14 +50,7 @@ func TestAddNode(t *testing.T) {
 		t.FailNow()  // Panic
 	}
 
-	addressSpace, err := common.NewAddressSpace([]common.Address{address}) // Init address-space
-
-	if err != nil { // Check for errors
-		t.Error(err) // Log found error
-		t.FailNow()  // Panic
-	}
-
-	coordinationNode, err := NewCoordinationNode(addressSpace, []string{"1.1.1.1"}) // Init coordination node
+	coordinationNode, err := NewCoordinationNode(address, []string{"1.1.1.1"}) // Init coordination node
 
 	if err != nil { // Check for errors
 		t.Error(err) // Log found error
@@ -97,14 +90,7 @@ func TestQueryAddress(t *testing.T) {
 		t.FailNow()  // Panic
 	}
 
-	addressSpace, err := common.NewAddressSpace([]common.Address{address}) // Init address-space
-
-	if err != nil { // Check for errors
-		t.Error(err) // Log found error
-		t.FailNow()  // Panic
-	}
-
-	coordinationNode, err := NewCoordinationNode(addressSpace, []string{"1.1.1.1"}) // Init coordination node
+	coordinationNode, err := NewCoordinationNode(address, []string{"1.1.1.1"}) // Init coordination node
 
 	if err != nil { // Check for errors
 		t.Error(err) // Log found error
@@ -151,14 +137,7 @@ func TestPushNode(t *testing.T) {
 		t.FailNow()  // Panic
 	}
 
-	addressSpace, err := common.NewAddressSpace([]common.Address{address}) // Init address-space
-
-	if err != nil { // Check for errors
-		t.Error(err) // Log found error
-		t.FailNow()  // Panic
-	}
-
-	coordinationNode, err := NewCoordinationNode(addressSpace, []string{"1.1.1.1"}) // Init coordination node
+	coordinationNode, err := NewCoordinationNode(address, []string{"1.1.1.1"}) // Init coordination node
 
 	if err != nil { // Check for errors
 		t.Error(err) // Log found error
@@ -244,14 +223,7 @@ func TestNewCoordinationNode(t *testing.T) {
 		t.FailNow()  // Panic
 	}
 
-	addressSpace, err := common.NewAddressSpace([]common.Address{address}) // Init address-space
-
-	if err != nil { // Check for errors
-		t.Error(err) // Log found error
-		t.FailNow()  // Panic
-	}
-
-	coordinationNode, err := NewCoordinationNode(addressSpace, []string{"1.1.1.1"}) // Init coordination node
+	coordinationNode, err := NewCoordinationNode(address, []string{"1.1.1.1"}) // Init coordination node
 
 	if err != nil { // Check for errors
 		t.Error(err) // Log found error
@@ -277,14 +249,7 @@ func TestCoordinationNodeFromByte(t *testing.T) {
 		t.FailNow()  // Panic
 	}
 
-	addressSpace, err := common.NewAddressSpace([]common.Address{address}) // Init address-space
-
-	if err != nil { // Check for errors
-		t.Error(err) // Log found error
-		t.FailNow()  // Panic
-	}
-
-	coordinationNode, err := NewCoordinationNode(addressSpace, []string{"1.1.1.1"}) // Init coordination node
+	coordinationNode, err := NewCoordinationNode(address, []string{"1.1.1.1"}) // Init coordination node
 
 	if err != nil { // Check for errors
 		t.Error(err) // Log found error
@@ -324,14 +289,7 @@ func TestBytesCoordinationNode(t *testing.T) {
 		t.FailNow()  // Panic
 	}
 
-	addressSpace, err := common.NewAddressSpace([]common.Address{address}) // Init address-space
-
-	if err != nil { // Check for errors
-		t.Error(err) // Log found error
-		t.FailNow()  // Panic
-	}
-
-	coordinationNode, err := NewCoordinationNode(addressSpace, []string{"1.1.1.1"}) // Init coordination node
+	coordinationNode, err := NewCoordinationNode(address, []string{"1.1.1.1"}) // Init coordination node
 
 	if err != nil { // Check for errors
 		t.Error(err) // Log found error
@@ -364,14 +322,7 @@ func TestStringCoordinationNode(t *testing.T) {
 		t.FailNow()  // Panic
 	}
 
-	addressSpace, err := common.NewAddressSpace([]common.Address{address}) // Init address-space
-
-	if err != nil { // Check for errors
-		t.Error(err) // Log found error
-		t.FailNow()  // Panic
-	}
-
-	coordinationNode, err := NewCoordinationNode(addressSpace, []string{"1.1.1.1"}) // Init coordination node
+	coordinationNode, err := NewCoordinationNode(address, []string{"1.1.1.1"}) // Init coordination node
 
 	if err != nil { // Check for errors
 		t.Error(err) // Log found error

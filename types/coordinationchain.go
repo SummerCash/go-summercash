@@ -20,8 +20,8 @@ type CoordinationChain struct {
 
 // CoordinationNode - node holding metadata regarding a certain address-space
 type CoordinationNode struct {
-	AddressSpace *common.AddressSpace `json:"scope"`     // Address focus
-	Addresses    []string             `json:"addresses"` // Node addresses in coordination node
+	Address   common.Address `json:"address"`   // Address
+	Addresses []string       `json:"addresses"` // Node addresses in coordination node
 
 	Origin time.Time `json:"origin"` // Time at initialization of coordination node
 
@@ -84,12 +84,8 @@ func (coordinationChain *CoordinationChain) QueryAddress(queryAddress common.Add
 	}
 
 	for _, node := range coordinationChain.Nodes { // Iterate through nodes
-		if node.AddressSpace == nil { // Check for nil address space
-			return &CoordinationNode{}, ErrNilNode // Return error
-		}
-
-		for _, address := range node.AddressSpace.Addresses { // Iterate through addresses
-			if address == queryAddress { // Check for match
+		if node != nil { // Ensure safe pointer
+			if node.Address == queryAddress { // Check for match
 				return node, nil // Return result
 			}
 		}
@@ -144,15 +140,15 @@ func (coordinationChain *CoordinationChain) String() string {
 */
 
 // NewCoordinationNode - initialize new coordinationNode
-func NewCoordinationNode(addressSpace *common.AddressSpace, foundingAddresses []string) (*CoordinationNode, error) {
+func NewCoordinationNode(address common.Address, foundingAddresses []string) (*CoordinationNode, error) {
 	if len(foundingAddresses) == 0 { // Check for invalid node
 		return &CoordinationNode{}, ErrNilAddress // Return error
 	}
 
 	coordinationNode := &CoordinationNode{ // Init node
-		AddressSpace: addressSpace,
-		Addresses:    foundingAddresses,
-		Origin:       time.Now().UTC(),
+		Address:   address,
+		Addresses: foundingAddresses,
+		Origin:    time.Now().UTC(),
 	}
 
 	coordinationNode.ID = common.NewHash(crypto.Sha3(coordinationNode.Bytes())) // Set ID

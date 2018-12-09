@@ -39,14 +39,7 @@ func TestHandleReceivedCoordinationNode(t *testing.T) {
 		t.FailNow()  // Panic
 	}
 
-	addressSpace, err := common.NewAddressSpace([]common.Address{address}) // Init address-space
-
-	if err != nil { // Check for errors
-		t.Error(err) // Log found error
-		t.FailNow()  // Panic
-	}
-
-	coordinationNode, err := NewCoordinationNode(addressSpace, []string{"1.1.1.1"}) // Init coordination node
+	coordinationNode, err := NewCoordinationNode(address, []string{"1.1.1.1"}) // Init coordination node
 
 	if err != nil { // Check for errors
 		t.Error(err) // Log found error
