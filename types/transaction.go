@@ -60,6 +60,23 @@ func NewTransaction(nonce uint64, parentTx *Transaction, sender *common.Address,
 	return &transaction, nil // Return initialized transaction
 }
 
+// VerifyTransaction - verify transaction integrity
+func VerifyTransaction(transaction *Transaction) (bool, error) {
+	signatureValid, err := VerifyTransactionSignature(transaction) // Verify signature
+
+	if err != nil { // Check for errors
+		return false, err // Return error
+	} else if signatureValid != true {
+		return false, nil // Return invalid
+	}
+
+	if transaction.ParentTx.Recipient != transaction.Sender { // Check for invalid UTXO input
+		return false, nil // Return invalid
+	} // TODO: finish transaction verification
+
+	return true, nil // No error occurred, return nil
+}
+
 // Bytes - convert given transaction to byte array
 func (tx *Transaction) Bytes() []byte {
 	buffer := new(bytes.Buffer) // Init buffer
