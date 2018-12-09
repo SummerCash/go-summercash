@@ -17,7 +17,7 @@ import (
 
 // TestNewCoordinationChain - test coordinationChain initializer
 func TestNewCoordinationChain(t *testing.T) {
-	coordinationChain, err := NewCoordinationChain(0) // Init coordinationChain
+	coordinationChain, err := NewCoordinationChain() // Init coordinationChain
 
 	if err != nil { // Check for errors
 		t.Error(err) // Log found error
@@ -29,7 +29,7 @@ func TestNewCoordinationChain(t *testing.T) {
 
 // TestAddNode - test addNode() method
 func TestAddNode(t *testing.T) {
-	coordinationChain, err := NewCoordinationChain(0) // Init coordinationChain
+	coordinationChain, err := NewCoordinationChain() // Init coordinationChain
 
 	if err != nil { // Check for errors
 		t.Error(err) // Log found error
@@ -69,7 +69,7 @@ func TestAddNode(t *testing.T) {
 
 // TestQueryAddress - test QueryAddress() method
 func TestQueryAddress(t *testing.T) {
-	coordinationChain, err := NewCoordinationChain(0) // Init coordinationChain
+	coordinationChain, err := NewCoordinationChain() // Init coordinationChain
 
 	if err != nil { // Check for errors
 		t.Error(err) // Log found error
@@ -116,7 +116,7 @@ func TestQueryAddress(t *testing.T) {
 
 // TestPushNode - test PushNode() method
 func TestPushNode(t *testing.T) {
-	coordinationChain, err := NewCoordinationChain(0) // Init coordinationChain
+	coordinationChain, err := NewCoordinationChain() // Init coordinationChain
 
 	if err != nil { // Check for errors
 		t.Error(err) // Log found error
@@ -163,7 +163,7 @@ func TestPushNode(t *testing.T) {
 
 // TestBytesCoordinationChain - test functionality of coordinationChain Bytes() extension method
 func TestBytesCoordinationChain(t *testing.T) {
-	coordinationChain, err := NewCoordinationChain(0) // Init coordinationChain
+	coordinationChain, err := NewCoordinationChain() // Init coordinationChain
 
 	if err != nil { // Check for errors
 		t.Error(err) // Log found error
@@ -182,7 +182,7 @@ func TestBytesCoordinationChain(t *testing.T) {
 
 // TestStringCoordinationChain - test functionality of coordinationChain String() extension method
 func TestStringCoordinationChain(t *testing.T) {
-	coordinationChain, err := NewCoordinationChain(0) // Init coordinationChain
+	coordinationChain, err := NewCoordinationChain() // Init coordinationChain
 
 	if err != nil { // Check for errors
 		t.Error(err) // Log found error
