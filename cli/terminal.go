@@ -12,7 +12,9 @@ import (
 	"strconv"
 	"strings"
 
+	figure "github.com/common-nighthawk/go-figure"
 	"github.com/space55/summertech-blockchain/common"
+	"github.com/space55/summertech-blockchain/config"
 	cryptoProto "github.com/space55/summertech-blockchain/internal/rpc/proto/crypto"
 	upnpProto "github.com/space55/summertech-blockchain/internal/rpc/proto/upnp"
 )
@@ -29,6 +31,8 @@ func NewTerminal(rpcPort uint, rpcAddress string) {
 	transport := &http.Transport{ // Init transport
 		TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
 	}
+
+	//logHeader() // Log header
 
 	for {
 		fmt.Print("\n> ") // Print prompt
@@ -150,4 +154,11 @@ func handleUpnp(upnpClient *upnpProto.Upnp, methodname string, params []string) 
 	fmt.Println(response.Message) // Log response
 
 	return nil // No error occurred, return nil
+}
+
+// logHeader - log contents of header file
+func logHeader() {
+	header := figure.NewFigure("SummerChain v"+config.Version, "", true) // Generate header text
+
+	header.Print() // Log
 }

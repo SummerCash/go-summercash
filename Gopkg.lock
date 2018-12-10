@@ -18,6 +18,14 @@
   version = "1.4"
 
 [[projects]]
+  branch = "master"
+  digest = "1:7bbfeef88a6cc7d65a6a009ba696e980dcf84ed31a7dd6da7e0c6c2ff544df92"
+  name = "github.com/common-nighthawk/go-figure"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "18b2b544842cab16f3ff418fb5290d8f2896a069"
+
+[[projects]]
   digest = "1:865079840386857c809b72ce300be7580cb50d3d3129ce11bf9aa6ca2bc1934a"
   name = "github.com/fatih/color"
   packages = ["."]
@@ -154,6 +162,7 @@
   input-imports = [
     "github.com/NebulousLabs/go-upnp",
     "github.com/briandowns/spinner",
+    "github.com/common-nighthawk/go-figure",
     "github.com/golang/protobuf/jsonpb",
     "github.com/golang/protobuf/proto",
     "github.com/twitchtv/twirp",

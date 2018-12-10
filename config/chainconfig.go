@@ -20,6 +20,11 @@ type ChainConfig struct {
 	ChainID   common.Hash `json:"id"`      // Hashed networkID, genesisSignature
 }
 
+const (
+	// Version - dist version def
+	Version = "0.1"
+)
+
 // NewChainConfig - generate new ChainConfig from genesis.json file
 func NewChainConfig(genesisFilePath string) (*ChainConfig, error) {
 	rawJSON, err := ioutil.ReadFile(genesisFilePath) // Read genesis file
