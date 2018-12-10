@@ -32,7 +32,7 @@ func NewTerminal(rpcPort uint, rpcAddress string) {
 		TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
 	}
 
-	//logHeader() // Log header
+	logHeader() // Log header
 
 	for {
 		fmt.Print("\n> ") // Print prompt
@@ -158,7 +158,7 @@ func handleUpnp(upnpClient *upnpProto.Upnp, methodname string, params []string) 
 
 // logHeader - log contents of header file
 func logHeader() {
-	header := figure.NewFigure("SummerChain v"+config.Version, "", true) // Generate header text
+	header := figure.NewFigure("SummerChain v"+config.Version, "slant", true) // Generate header text
 
 	header.Print() // Log
 }
