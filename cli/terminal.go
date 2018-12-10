@@ -161,4 +161,7 @@ func logHeader() {
 	header := figure.NewFigure("SummerChain v"+config.Version, "slant", true) // Generate header text
 
 	header.Print() // Log
+
+	fmt.Println("") // Spacing
+	fmt.Println("") // Spacing
 }

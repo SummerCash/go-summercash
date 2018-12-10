@@ -45,7 +45,7 @@ func main() {
 		startRPCServer() // Start RPC server
 	}
 
-	startNode() // Start node
+	go startNode() // Start node
 
 	if *terminalFlag { // Check for terminal
 		*rpcAddrFlag = strings.Split(*rpcAddrFlag, ":")[0] // Remove port
