@@ -158,7 +158,7 @@ func handleUpnp(upnpClient *upnpProto.Upnp, methodname string, params []string) 
 
 // logHeader - log contents of header file
 func logHeader() {
-	header := figure.NewFigure("SummerChain v"+config.Version, "slant", true) // Generate header text
+	header := figure.NewFigure("SummerCash v"+config.Version, "slant", true) // Generate header text
 
 	header.Print() // Log
 
