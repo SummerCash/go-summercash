@@ -47,6 +47,10 @@ func NewChain(account common.Address) (*Chain, error) {
 		return &Chain{}, ErrAlreadySigned // Return error
 	}
 
+	if coordinationChain.Nodes == nil || len(coordinationChain.Nodes) == 0 { // Check genesis
+
+	}
+
 	chain := &Chain{ // Init chain
 		Account:      account,
 		Transactions: []*Transaction{},

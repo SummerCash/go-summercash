@@ -26,6 +26,8 @@ type CoordinationNode struct {
 
 	Origin time.Time `json:"origin"` // Time at initialization of coordination node
 
+	Genesis bool `json:"genesis"` // Has genesis
+
 	ID common.Hash `json:"id"` // Node ID
 }
 
