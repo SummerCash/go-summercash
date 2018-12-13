@@ -123,6 +123,17 @@ func (coordinationChain *CoordinationChain) PushNode(coordinationNode *Coordinat
 	return nil // No error occurred, return nil
 }
 
+// GetGenesis - iterate through coordination nodes, return genesis node
+func (coordinationChain *CoordinationChain) GetGenesis() (*CoordinationNode, error) {
+	for _, node := range coordinationChain.Nodes { // Iterate through nodes
+		if node.Genesis == true { // Check genesis
+			return node, nil // No error occurred, return nil
+		}
+	}
+
+	return &CoordinationNode{}, ErrNilNode // Couldn't find node, return error
+}
+
 // Bytes - convert given coordinationChain to byte array
 func (coordinationChain *CoordinationChain) Bytes() []byte {
 	buffer := new(bytes.Buffer) // Init buffer

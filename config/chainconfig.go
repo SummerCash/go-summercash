@@ -16,6 +16,8 @@ import (
 type ChainConfig struct {
 	Alloc map[string]float64 `json:"alloc"` // Account balances at genesis
 
+	AllocAddresses []common.Address // Account addresses
+
 	NetworkID uint        `json:"network"` // Network ID (0: mainnet, 1: testnet, etc...)
 	ChainID   common.Hash `json:"id"`      // Hashed networkID, genesisSignature
 }
@@ -43,6 +45,10 @@ func NewChainConfig(genesisFilePath string) (*ChainConfig, error) {
 
 	alloc := make(map[string]float64) // Init alloc map
 
+	allocAddresses := []common.Address{}
+
+	x := 0 // Init iterator
+
 	for key, value := range readJSON["alloc"].(map[string]interface{}) { // Iterate through genesis addresses
 		intVal, err := strconv.Atoi(value.(map[string]interface{})["balance"].(string)) // Get int val
 
@@ -50,13 +56,28 @@ func NewChainConfig(genesisFilePath string) (*ChainConfig, error) {
 			return &ChainConfig{}, err // Return error
 		}
 
+		address, err := common.StringToAddress(key) // Get address value
+
+		if err != nil { // Check for errors
+			return &ChainConfig{}, err // Return error
+		}
+
+		if x == 0 { // Check genesis
+			allocAddresses = []common.Address{address} // Init slice
+		} else { // Else
+			allocAddresses = append(allocAddresses, address) // Append address
+		}
+
 		alloc[key] = float64(intVal) // Set int val
+
+		x++ // Increment iterator
 	}
 
 	config := &ChainConfig{ // Init config
-		Alloc:     alloc,
-		NetworkID: uint(readJSON["networkID"].(float64)),
-		ChainID:   common.NewHash(crypto.Sha3(append(rawJSON, []byte(strconv.Itoa(int(readJSON["networkID"].(float64))))...))), // Generate chainID
+		Alloc:          alloc,
+		AllocAddresses: allocAddresses,
+		NetworkID:      uint(readJSON["networkID"].(float64)),
+		ChainID:        common.NewHash(crypto.Sha3(append(rawJSON, []byte(strconv.Itoa(int(readJSON["networkID"].(float64))))...))), // Generate chainID
 	}
 
 	return config, nil // Return initialized chainConfig
