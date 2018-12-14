@@ -15,7 +15,6 @@ func HandleReceivedChainRequest(b []byte) (*Chain, error) {
 	chain, err := ReadChainFromMemory(address) // Read chain from memory
 
 	if err != nil { // Check for errors
-		panic(err)
 		return &Chain{}, err // Return found error
 	}
 

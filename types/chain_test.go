@@ -4,6 +4,8 @@ import (
 	"crypto/ecdsa"
 	"crypto/elliptic"
 	"crypto/rand"
+	"fmt"
+	"path/filepath"
 	"testing"
 
 	"github.com/space55/summertech-blockchain/common"
@@ -76,7 +78,16 @@ func TestAddTransaction(t *testing.T) {
 		t.FailNow()  // Panic
 	}
 
-	err = chain.WriteToMemory() // Write to persistent memory
+	abs, _ := filepath.Abs(filepath.FromSlash(fmt.Sprintf("../%s", common.DataDir)))
+
+	err = common.CreateDirIfDoesNotExit(fmt.Sprintf("%s/db/chain", abs)) // Create dir if necessary
+
+	if err != nil { // Check for errors
+		t.Error(err) // Log found error
+		t.FailNow()  // Panic
+	}
+
+	err = common.WriteGob(fmt.Sprintf("%s/db/chain/chain_%s.gob", abs, chain.Account.String()), *chain) // Write gob
 
 	if err != nil { // Check for errors
 		t.Error(err) // Log found error
