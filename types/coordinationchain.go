@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"errors"
+	"strconv"
 	"time"
 
 	gop2pCommon "github.com/mitsukomegumi/GoP2P/common"
@@ -77,10 +78,18 @@ func (coordinationChain *CoordinationChain) AddNode(coordinationNode *Coordinati
 
 	(*coordinationChain).Nodes = append((*coordinationChain).Nodes, coordinationNode) // Append node
 
-	err := coordinationChain.PushNode(coordinationNode) // Push to remote chains
+	if updateRemote {
+		err := coordinationChain.PushNode(coordinationNode) // Push to remote chains
+
+		if err != nil { // Check for errors
+			return err // Return error
+		}
+	}
+
+	err := coordinationChain.WriteToMemory() // Save for persistency
 
 	if err != nil { // Check for errors
-		return err // Return error
+		return err // Return found error
 	}
 
 	return nil // No error occurred, return nil
@@ -115,7 +124,7 @@ func (coordinationChain *CoordinationChain) PushNode(coordinationNode *Coordinat
 		if node != coordinationNode { // Plz no recursion
 			for _, address := range node.Addresses { // Iterate through node addresses
 				if address != localIP { // Plz, plz no recursion
-					go common.SendBytes(coordinationNode.Bytes(), address) // Send new node
+					go common.SendBytes(coordinationNode.Bytes(), address+":"+strconv.Itoa(common.DefaultNodePort)) // Send new node
 				}
 			}
 		}
@@ -143,7 +152,7 @@ func (coordinationChain *CoordinationChain) GetBalance(address common.Address) (
 		return 0, err // Return found error
 	}
 
-	result, err := gop2pCommon.SendBytesResult(append([]byte("chainRequest")[:], node.Address[:]...), node.Addresses[len(node.Addresses)-1]) // Get chain
+	result, err := gop2pCommon.SendBytesResult(append([]byte("chainRequest")[:], node.Address[:]...), node.Addresses[len(node.Addresses)-1]+":"+strconv.Itoa(common.DefaultNodePort)) // Get chain
 
 	if err != nil { // Check for errors
 		return 0, err // Return found error

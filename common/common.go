@@ -37,6 +37,11 @@ var (
 	}
 )
 
+const (
+	// DefaultNodePort - global port definition
+	DefaultNodePort = 3000
+)
+
 /* BEGIN EXPORTED METHODS */
 
 /*
