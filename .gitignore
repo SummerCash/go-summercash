@@ -22,3 +22,4 @@ genesis_test.json
 
 # Runtime-Generated Support Files
 config/data/
+types/data/db/chain/
