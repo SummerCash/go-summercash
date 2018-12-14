@@ -58,12 +58,16 @@ func TestAddTransaction(t *testing.T) {
 		t.FailNow()  // Panic
 	}
 
+	t.Logf("created transaction: %s", transaction.Hash.String()) // Log issued tx
+
 	err = SignTransaction(transaction, privateKey) // Sign transaction
 
 	if err != nil { // Check for errors
 		t.Error(err) // Log found error
 		t.FailNow()  // Panic
 	}
+
+	t.Logf("signed transaction: %s", transaction.Signature.String()) // Log signed
 
 	chain, err := NewChain(sender) // Initialize chain
 
@@ -72,12 +76,16 @@ func TestAddTransaction(t *testing.T) {
 		t.FailNow()  // Panic
 	}
 
+	t.Logf("created chain: %s", chain.ID.String()) // Log init
+
 	err = chain.AddTransaction(transaction) // Add transaction
 
 	if err != nil { // Check for errors
 		t.Error(err) // Log found error
 		t.FailNow()  // Panic
 	}
+
+	t.Logf("added transaction: %s", transaction.Hash.String()) // Log signed
 
 	t.Log("success") // Log success
 }
