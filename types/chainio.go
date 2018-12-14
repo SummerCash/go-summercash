@@ -2,6 +2,8 @@ package types
 
 import (
 	"fmt"
+	"path/filepath"
+	"time"
 
 	"github.com/space55/summertech-blockchain/common"
 )
@@ -22,6 +24,8 @@ func (chain *Chain) WriteToMemory() error {
 		return err // Return found error
 	}
 
+	fmt.Println(time.Now())
+
 	return nil // No error occurred, return nil
 }
 
@@ -29,7 +33,7 @@ func (chain *Chain) WriteToMemory() error {
 func ReadChainFromMemory(address common.Address) (*Chain, error) {
 	chain := &Chain{} // Init buffer
 
-	err := common.ReadGob(fmt.Sprintf("%s/db/chain/chain_%s.gob", common.DataDir, address.String()), chain) // Read chain
+	err := common.ReadGob(filepath.FromSlash(fmt.Sprintf("%s/db/chain/chain_%s.gob", common.DataDir, address.String())), chain) // Read chain
 
 	if err != nil { // Check for errors
 		return &Chain{}, err // Return error

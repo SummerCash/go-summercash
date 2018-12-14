@@ -76,6 +76,13 @@ func TestAddTransaction(t *testing.T) {
 		t.FailNow()  // Panic
 	}
 
+	err = chain.WriteToMemory() // Write to persistent memory
+
+	if err != nil { // Check for errors
+		t.Error(err) // Log found error
+		t.FailNow()  // Panic
+	}
+
 	t.Logf("created chain: %s", chain.ID.String()) // Log init
 
 	err = chain.AddTransaction(transaction) // Add transaction
