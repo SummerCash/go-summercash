@@ -41,7 +41,16 @@ func TestHandleReceivedChainRequest(t *testing.T) {
 		t.FailNow()  // Panic
 	}
 
-	t.Log("success") // Log success
+	request := append([]byte("chainRequest")[:], address[:]...) // Generate request
+
+	reqChain, err := HandleReceivedChainRequest(request) // Handle request
+
+	if err != nil { // Check for errors
+		t.Error(err) // Log found error
+		t.FailNow()  // Panic
+	}
+
+	t.Log(reqChain.String()) // Log success
 }
 
 /* END EXPORTED METHODS */
