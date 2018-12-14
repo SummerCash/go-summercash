@@ -3,7 +3,6 @@ package types
 import (
 	"fmt"
 	"path/filepath"
-	"time"
 
 	"github.com/space55/summertech-blockchain/common"
 )
@@ -23,8 +22,6 @@ func (chain *Chain) WriteToMemory() error {
 	if err != nil { // Check for errors
 		return err // Return found error
 	}
-
-	fmt.Println(time.Now())
 
 	return nil // No error occurred, return nil
 }
