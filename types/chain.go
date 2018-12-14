@@ -90,8 +90,6 @@ func NewChain(account common.Address) (*Chain, error) {
 		if err != nil { // Check for errors
 			return &Chain{}, err // Return found error
 		}
-
-		// TODO: register on coordinationChain
 	}
 
 	(*chain).ID = common.NewHash(crypto.Sha3(chain.Bytes())) // Set ID

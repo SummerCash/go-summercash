@@ -1,6 +1,8 @@
 package types
 
-import "github.com/space55/summertech-blockchain/common"
+import (
+	"github.com/space55/summertech-blockchain/common"
+)
 
 /* BEGIN EXPORTED METHODS */
 
@@ -13,6 +15,7 @@ func HandleReceivedChainRequest(b []byte) (*Chain, error) {
 	chain, err := ReadChainFromMemory(address) // Read chain from memory
 
 	if err != nil { // Check for errors
+		panic(err)
 		return &Chain{}, err // Return found error
 	}
 
