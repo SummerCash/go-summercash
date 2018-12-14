@@ -48,7 +48,17 @@ func handleConnection(conn net.Conn) error {
 	case "{" + `"` + "scope" + `"` + ":": // Check coordinationNode
 		return types.HandleReceivedCoordinationNode(data) // Handle received data
 	case "chainRequ":
-		return types.HandleReceivedChainRequest(data) // Handle received data
+		chain, err := types.HandleReceivedChainRequest(data) // Handle received chain request
+
+		if err != nil { // Check for errors
+			return err // Return found error
+		}
+
+		_, err = conn.Write(chain.Bytes()) // Write chain
+
+		if err != nil { // Check for errors
+			return err // Return found error
+		}
 	}
 
 	return nil // No error occurred, return nil
