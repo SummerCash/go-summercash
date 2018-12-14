@@ -121,7 +121,7 @@ func (chain *Chain) AddTransaction(transaction *Transaction) error {
 		return err // Return found error
 	}
 
-	if balance < transaction.Amount {
+	if balance < transaction.Amount { // Check balance insufficient
 		return ErrInsufficientBalance // Return error
 	}
 
@@ -132,8 +132,6 @@ func (chain *Chain) AddTransaction(transaction *Transaction) error {
 	} else {
 		chain.Transactions = append(chain.Transactions, transaction) // Append transaction
 	}
-
-	// TODO: verify sender balance (if applicable)
 
 	return nil // No error occurred, return nil
 }
