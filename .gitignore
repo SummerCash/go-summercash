@@ -24,3 +24,4 @@ genesis_test.json
 config/data/
 types/data/db/chain/
 common/data/keystore/
+data/db/chain
