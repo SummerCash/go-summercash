@@ -66,6 +66,24 @@ func NewChain(account common.Address) (*Chain, error) {
 		NetworkID:    config.NetworkID,
 	}
 
+	localIP, err := common.GetExtIPAddrWithoutUPnP() // Get IP addr
+
+	if err != nil { // Check for errors
+		return &Chain{}, err // Return found error
+	}
+
+	node, err := NewCoordinationNode(account, []string{localIP}) // Initialize node
+
+	if err != nil { // Check for errors
+		return &Chain{}, err // Return found error
+	}
+
+	err = coordinationChain.AddNode(node, false) // Add node
+
+	if err != nil { // Check for errors
+		return &Chain{}, err // Return found error
+	}
+
 	if coordinationChain.Nodes == nil || len(coordinationChain.Nodes) == 0 { // Check genesis
 		_, err := chain.makeGenesis(config) // Make genesis
 
