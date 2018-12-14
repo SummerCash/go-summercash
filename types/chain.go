@@ -31,6 +31,9 @@ var (
 
 	// ErrIrrelevantTransaction - error definition describing a transaction outside the scope of the given chain
 	ErrIrrelevantTransaction = errors.New("irrelevant transaction")
+
+	// ErrInsufficientBalance - error definition describing a transaction worth less than the sender's balance
+	ErrInsufficientBalance = errors.New("insufficient transaction sender balance")
 )
 
 /* BEGIN EXPORTED METHODS */
@@ -112,6 +115,16 @@ func (chain *Chain) AddTransaction(transaction *Transaction) error {
 		return ErrGenesisAlreadyExists // Return error
 	}
 
+	balance, err := coordinationChain.GetBalance(*transaction.Sender) // Get sender balance
+
+	if err != nil { // Check for errors
+		return err // Return found error
+	}
+
+	if balance < transaction.Amount {
+		return ErrInsufficientBalance // Return error
+	}
+
 	if len(chain.Transactions) == 0 && transaction.Sender == nil { // Check is genesis
 		chain.Genesis = *transaction.Hash // Set genesis
 	} else if len(chain.Transactions) == 0 { // Check first index
@@ -120,7 +133,52 @@ func (chain *Chain) AddTransaction(transaction *Transaction) error {
 		chain.Transactions = append(chain.Transactions, transaction) // Append transaction
 	}
 
+	// TODO: verify sender balance (if applicable)
+
 	return nil // No error occurred, return nil
+}
+
+// HandleReceivedChainRequest - handle chain request
+func HandleReceivedChainRequest(b []byte) (*Chain, error) {
+	var address common.Address // Init buffer
+
+	copy(address[:], b[12:len(b)][:]) // Copy read address
+
+	chain, err := ReadChainFromMemory(address) // Read chain from memory
+
+	if err != nil { // Check for errors
+		return &Chain{}, err // Return found error
+	}
+
+	return chain, nil // Return read chain
+}
+
+// CalculateBalance - iterate through tx set, return balance
+func (chain *Chain) CalculateBalance() float64 {
+	balance := float64(0) // Init buffer
+
+	for _, transaction := range chain.Transactions { // Iterate through transactions
+		if *transaction.Sender == chain.Account { // Check is sender
+			balance -= transaction.Amount // Subtract value
+		} else if *transaction.Recipient == chain.Account { // Check is recipient
+			balance += transaction.Amount // Add value
+		}
+	}
+
+	return balance // Return balance
+}
+
+// FromBytes - decode given byte array to chain
+func FromBytes(b []byte) (*Chain, error) {
+	chain := Chain{} // Init buffer
+
+	err := json.NewDecoder(bytes.NewReader(b)).Decode(&chain) // Decode into buffer
+
+	if err != nil { // Check for errors
+		return nil, err // Return found error
+	}
+
+	return &chain, nil // No error occurred, return read value
 }
 
 // Bytes - convert given chain to byte array

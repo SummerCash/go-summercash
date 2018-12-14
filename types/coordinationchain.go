@@ -6,6 +6,7 @@ import (
 	"errors"
 	"time"
 
+	gop2pCommon "github.com/mitsukomegumi/GoP2P/common"
 	"github.com/space55/summertech-blockchain/common"
 	"github.com/space55/summertech-blockchain/config"
 	"github.com/space55/summertech-blockchain/crypto"
@@ -132,6 +133,29 @@ func (coordinationChain *CoordinationChain) GetGenesis() (*CoordinationNode, err
 	}
 
 	return &CoordinationNode{}, ErrNilNode // Couldn't find node, return error
+}
+
+// GetBalance - attempt to get balance of account
+func (coordinationChain *CoordinationChain) GetBalance(address common.Address) (float64, error) {
+	node, err := coordinationChain.QueryAddress(address) // Get node
+
+	if err != nil { // Check for errors
+		return 0, err // Return found error
+	}
+
+	result, err := gop2pCommon.SendBytesResult(append([]byte("chainRequest")[:], node.Address[:]...), node.Addresses[len(node.Addresses)-1]) // Get chain
+
+	if err != nil { // Check for errors
+		return 0, err // Return found error
+	}
+
+	chain, err := FromBytes(result) // Get chain from bytes
+
+	if err != nil { // Check for errors
+		return 0, err // Return found error
+	}
+
+	return chain.CalculateBalance(), nil // No error occurred, return balance
 }
 
 // Bytes - convert given coordinationChain to byte array
