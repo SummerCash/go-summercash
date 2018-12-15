@@ -2,7 +2,10 @@ package types
 
 import (
 	"bytes"
+	"crypto/ecdsa"
+	"crypto/x509"
 	"encoding/json"
+	"encoding/pem"
 	"errors"
 
 	"github.com/space55/summertech-blockchain/common"
@@ -60,11 +63,54 @@ func NewTransaction(nonce uint64, parentTx *Transaction, sender *common.Address,
 	return &transaction, nil // Return initialized transaction
 }
 
+// TransactionFromBytes - serialize transaction from byte array
+func TransactionFromBytes(b []byte) (*Transaction, error) {
+	transaction := Transaction{} // Init buffer
+
+	err := json.NewDecoder(bytes.NewReader(b)).Decode(&transaction) // Decode into buffer
+
+	if err != nil { // Check for errors
+		return nil, err // Return found error
+	}
+
+	if transaction.Signature != nil { // Check signature
+		blockPub, _ := pem.Decode([]byte(transaction.Signature.SerializedPublicKey)) // Decode
+
+		x509EncodedPub := blockPub.Bytes // Get x509 byte val
+
+		genericPublicKey, _ := x509.ParsePKIXPublicKey(x509EncodedPub) // Parse public  key
+
+		publicKey := genericPublicKey.(*ecdsa.PublicKey) // Get public key value
+
+		(*(*transaction.Signature).PublicKey) = *publicKey // Set public key
+	}
+
+	return &transaction, nil // No error occurred, return read value
+}
+
 // Bytes - convert given transaction to byte array
 func (tx *Transaction) Bytes() []byte {
+	publicKey := ecdsa.PublicKey{} // Init buffer
+
+	if tx.Signature != nil {
+		publicKey = *(*(*tx).Signature).PublicKey // Set public key
+
+		encoded, _ := x509.MarshalPKIXPublicKey(tx.Signature.PublicKey) // Encode
+
+		pemEncodedPub := pem.EncodeToMemory(&pem.Block{Type: "PUBLIC KEY", Bytes: encoded}) // Encode PEM
+
+		(*(*tx).Signature).SerializedPublicKey = pemEncodedPub // Write encoded
+
+		*(*tx).Signature.PublicKey = ecdsa.PublicKey{} // Set nil
+	}
+
 	buffer := new(bytes.Buffer) // Init buffer
 
 	json.NewEncoder(buffer).Encode(*tx) // Serialize tx
+
+	if tx.Signature != nil {
+		*(*(*tx).Signature).PublicKey = publicKey // Reset public key
+	}
 
 	return buffer.Bytes() // Return serialized
 }

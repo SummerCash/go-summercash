@@ -21,4 +21,27 @@ func HandleReceivedChainRequest(b []byte) (*Chain, error) {
 	return chain, nil // Return read chain
 }
 
+// HandleReceivedTransaction - handle received transaction
+func HandleReceivedTransaction(b []byte) error {
+	tx, err := TransactionFromBytes(b) // Marshal bytes to transaction
+
+	if err != nil { // Check for errors
+		return err // Return error
+	}
+
+	chain, err := ReadChainFromMemory(*tx.Recipient) // Read chain
+
+	if err != nil { // Check for errors
+		return err // Return found error
+	}
+
+	err = chain.AddTransaction(tx) // Append tx
+
+	if err != nil { // Check for errors
+		return err // Return found error
+	}
+
+	return nil // No error occurred, return nil
+}
+
 /* END EXPORTED METHODS */

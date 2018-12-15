@@ -94,6 +94,12 @@ func NewChain(account common.Address) (*Chain, error) {
 
 	(*chain).ID = common.NewHash(crypto.Sha3(chain.Bytes())) // Set ID
 
+	err = chain.WriteToMemory() // Write to memory
+
+	if err != nil { // Check for errors
+		return &Chain{}, err // Return found error
+	}
+
 	return chain, nil // Return initialized chain
 }
 
@@ -149,7 +155,7 @@ func (chain *Chain) AddTransaction(transaction *Transaction) error {
 		chain.Transactions = append(chain.Transactions, transaction) // Append transaction
 	}
 
-	return nil // No error occurred, return nil
+	return chain.WriteToMemory() // No error occurred, return nil
 }
 
 // CalculateBalance - iterate through tx set, return balance
