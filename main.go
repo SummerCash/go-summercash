@@ -31,8 +31,6 @@ var (
 func main() {
 	flag.Parse() // Parse flags
 
-	fmt.Println("test")
-
 	common.DataDir = *dataDirFlag // Set data-dir
 
 	if !*upnpFlag { // Check for UPnP

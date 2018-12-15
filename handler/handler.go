@@ -2,6 +2,7 @@ package handler
 
 import (
 	"errors"
+	"fmt"
 	"net"
 
 	"github.com/space55/summertech-blockchain/common"
@@ -17,6 +18,7 @@ var (
 
 // StartHandler - attempt to accept and forward requests on given listener
 func StartHandler(ln *net.Listener) error {
+	fmt.Println("test")
 	if ln == nil { // Check for nil listener
 		return ErrNilListener // Return error
 	}
