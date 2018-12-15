@@ -88,36 +88,59 @@ func TransactionFromBytes(b []byte) (*Transaction, error) {
 	return &transaction, nil // No error occurred, return read value
 }
 
+// Publish - publish given transaction
+func (transaction *Transaction) Publish() error {
+	coordinationChain, err := ReadCoordinationChainFromMemory() // Read coordination chain
+
+	if err != nil { // Check for errors
+		return err // Return found error
+	}
+
+	address, err := coordinationChain.QueryAddress(*transaction.Recipient) // Get address
+
+	if err != nil { // Check for errors
+		return err // Return found error
+	}
+
+	err = common.SendBytes(transaction.Bytes(), address.Addresses[0]) // Send transaction
+
+	if err != nil { // Check for errors
+		return err // Return found error
+	}
+
+	return nil // No error occurred, return nil
+}
+
 // Bytes - convert given transaction to byte array
-func (tx *Transaction) Bytes() []byte {
+func (transaction *Transaction) Bytes() []byte {
 	publicKey := ecdsa.PublicKey{} // Init buffer
 
-	if tx.Signature != nil {
-		publicKey = *(*(*tx).Signature).PublicKey // Set public key
+	if transaction.Signature != nil {
+		publicKey = *(*(*transaction).Signature).PublicKey // Set public key
 
-		encoded, _ := x509.MarshalPKIXPublicKey(tx.Signature.PublicKey) // Encode
+		encoded, _ := x509.MarshalPKIXPublicKey(transaction.Signature.PublicKey) // Encode
 
 		pemEncodedPub := pem.EncodeToMemory(&pem.Block{Type: "PUBLIC KEY", Bytes: encoded}) // Encode PEM
 
-		(*(*tx).Signature).SerializedPublicKey = pemEncodedPub // Write encoded
+		(*(*transaction).Signature).SerializedPublicKey = pemEncodedPub // Write encoded
 
-		*(*tx).Signature.PublicKey = ecdsa.PublicKey{} // Set nil
+		*(*transaction).Signature.PublicKey = ecdsa.PublicKey{} // Set nil
 	}
 
 	buffer := new(bytes.Buffer) // Init buffer
 
-	json.NewEncoder(buffer).Encode(*tx) // Serialize tx
+	json.NewEncoder(buffer).Encode(*transaction) // Serialize tx
 
-	if tx.Signature != nil {
-		*(*(*tx).Signature).PublicKey = publicKey // Reset public key
+	if transaction.Signature != nil {
+		*(*(*transaction).Signature).PublicKey = publicKey // Reset public key
 	}
 
 	return buffer.Bytes() // Return serialized
 }
 
 // String - convert given transaction to string
-func (tx *Transaction) String() string {
-	marshaled, _ := json.MarshalIndent(*tx, "", "  ") // Marshal tx
+func (transaction *Transaction) String() string {
+	marshaled, _ := json.MarshalIndent(*transaction, "", "  ") // Marshal tx
 
 	return string(marshaled) // Return marshaled
 }
