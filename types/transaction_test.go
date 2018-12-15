@@ -5,6 +5,8 @@ import (
 	"crypto/elliptic"
 	"crypto/rand"
 	"encoding/json"
+	"fmt"
+	"path/filepath"
 	"testing"
 
 	"github.com/space55/summertech-blockchain/common"
@@ -41,6 +43,75 @@ func TestNewTransaction(t *testing.T) {
 	}
 
 	t.Log(string(marshaledVal)) // Log success
+}
+
+// TestPublishTransaction - test functionality of transaction.Publish() method
+func TestPublishTransaction(t *testing.T) {
+	privateKey, err := ecdsa.GenerateKey(elliptic.P521(), rand.Reader) // Generate private key
+
+	if err != nil { // Check for errors
+		t.Error(err) // Log found error
+		t.FailNow()  // Panic
+	}
+
+	sender, err := common.NewAddress(privateKey) // Initialize address from private key
+
+	if err != nil { // Check for errors
+		t.Error(err) // Log found error
+		t.FailNow()  // Panic
+	}
+
+	transaction, err := NewTransaction(0, nil, &sender, &sender, 0, []byte("test")) // Initialize transaction
+
+	if err != nil { // Check for errors
+		t.Error(err) // Log found error
+		t.FailNow()  // Panic
+	}
+
+	t.Logf("created transaction: %s", transaction.Hash.String()) // Log issued tx
+
+	err = SignTransaction(transaction, privateKey) // Sign transaction
+
+	if err != nil { // Check for errors
+		t.Error(err) // Log found error
+		t.FailNow()  // Panic
+	}
+
+	t.Logf("signed transaction: %s", transaction.Signature.String()) // Log signed
+
+	chain, err := NewChain(sender) // Initialize chain
+
+	if err != nil { // Check for errors
+		t.Error(err) // Log found error
+		t.FailNow()  // Panic
+	}
+
+	abs, _ := filepath.Abs(filepath.FromSlash(fmt.Sprintf("../%s", common.DataDir)))
+
+	err = common.CreateDirIfDoesNotExit(fmt.Sprintf("%s/db/chain", abs)) // Create dir if necessary
+
+	if err != nil { // Check for errors
+		t.Error(err) // Log found error
+		t.FailNow()  // Panic
+	}
+
+	err = common.WriteGob(fmt.Sprintf("%s/db/chain/chain_%s.gob", abs, chain.Account.String()), *chain) // Write gob
+
+	if err != nil { // Check for errors
+		t.Error(err) // Log found error
+		t.FailNow()  // Panic
+	}
+
+	t.Logf("created chain: %s", chain.ID.String()) // Log init
+
+	err = transaction.Publish() // Publish transaction
+
+	if err != nil { // Check for errors
+		t.Error(err) // Log found error
+		t.FailNow()  // Panic
+	}
+
+	t.Logf("published transaction: " + transaction.String()) // Log success
 }
 
 // TestTransactionFromBytes - test transaction serialization from byte array

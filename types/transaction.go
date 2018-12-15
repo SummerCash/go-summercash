@@ -7,6 +7,7 @@ import (
 	"encoding/json"
 	"encoding/pem"
 	"errors"
+	"strconv"
 
 	"github.com/space55/summertech-blockchain/common"
 	"github.com/space55/summertech-blockchain/crypto"
@@ -102,7 +103,7 @@ func (transaction *Transaction) Publish() error {
 		return err // Return found error
 	}
 
-	err = common.SendBytes(transaction.Bytes(), address.Addresses[0]) // Send transaction
+	err = common.SendBytes(transaction.Bytes(), address.Addresses[0]+":"+strconv.Itoa(common.DefaultNodePort)) // Send transaction
 
 	if err != nil { // Check for errors
 		return err // Return found error

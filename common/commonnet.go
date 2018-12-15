@@ -23,6 +23,10 @@ var (
 
 // SendBytes - attempt to send specified bytes to given address
 func SendBytes(b []byte, address string) error {
+	if strings.Count(address, ":") > 1 { // Check IPv6
+		address = "[" + address[:strings.LastIndex(address, ":")] + "]" + address[strings.LastIndex(address, ":"):] // Set address
+	}
+
 	connection, err := tls.Dial("tcp", address, GeneralTLSConfig) // Connect to given address
 
 	if err != nil { // Check for errors

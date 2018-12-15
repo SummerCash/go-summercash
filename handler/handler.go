@@ -59,6 +59,8 @@ func handleConnection(conn net.Conn) error {
 		if err != nil { // Check for errors
 			return err // Return found error
 		}
+	case "{" + `"` + "nonce" + `"` + ":": // Check transaction
+		return types.HandleReceivedTransaction(data) // Handle received data
 	}
 
 	return nil // No error occurred, return nil
