@@ -38,7 +38,7 @@ func main() {
 			go upnp.ForwardPortSilent(uint(*rpcPortFlag)) // Forward RPC port
 		}
 
-		go upnp.ForwardPortSilent(3000) // Forward port 3000
+		go upnp.ForwardPortSilent(uint(*nodePortFlag)) // Forward port 3000
 	}
 
 	if strings.Contains(*rpcAddrFlag, "localhost") { // Check for default RPC address
