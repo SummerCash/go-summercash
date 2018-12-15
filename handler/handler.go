@@ -24,10 +24,10 @@ func StartHandler(ln *net.Listener) error {
 	}
 
 	for {
-		fmt.Println("DESPACITO DESPACITO")
 		conn, err := (*ln).Accept() // Accept connection
 
 		if err == nil { // Check for errors
+			fmt.Println("DESPACITO DESPACITO DESPACITO")
 			go handleConnection(conn) // Handle connection
 		}
 	}
