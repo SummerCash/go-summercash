@@ -7,7 +7,7 @@ import (
 	"strconv"
 	"time"
 
-	gop2pCommon "github.com/mitsukomegumi/GoP2P/common"
+	gop2pCommon "github.com/dowlandaiello/GoP2P/common"
 	"github.com/space55/summertech-blockchain/common"
 	"github.com/space55/summertech-blockchain/config"
 	"github.com/space55/summertech-blockchain/crypto"
