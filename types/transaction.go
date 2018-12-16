@@ -131,6 +131,27 @@ func (transaction *Transaction) MakeEncodingSafe() error {
 	return nil // No error occurred, return nil
 }
 
+// RecoverSafeEncoding - recover transaction from safe encoding
+func (transaction *Transaction) RecoverSafeEncoding() error {
+	if transaction.Signature != nil { // Check has signature
+		blockPub, _ := pem.Decode([]byte(transaction.Signature.SerializedPublicKey)) // Decode
+
+		x509EncodedPub := blockPub.Bytes // Get x509 byte val
+
+		genericPublicKey, err := x509.ParsePKIXPublicKey(x509EncodedPub) // Parse public  key
+
+		if err != nil { // Check for errors
+			return err // Return found error
+		}
+
+		publicKey := genericPublicKey.(*ecdsa.PublicKey) // Get public key value
+
+		(*(*transaction.Signature).PublicKey) = *publicKey // Set public key
+	}
+
+	return nil // No error occurred, return nil
+}
+
 // Bytes - convert given transaction to byte array
 func (transaction *Transaction) Bytes() []byte {
 	publicKey := ecdsa.PublicKey{} // Init buffer
