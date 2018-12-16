@@ -147,17 +147,20 @@ func (chain *Chain) AddTransaction(transaction *Transaction) error {
 		return ErrGenesisAlreadyExists // Return error
 	}
 
-	balance, err := coordinationChain.GetBalance(*transaction.Sender) // Get sender balance
+	if transaction.Sender != nil { // Check not nil sender
+		balance, err := coordinationChain.GetBalance(*transaction.Sender) // Get sender balance
 
-	if err != nil { // Check for errors
-		return err // Return found error
-	}
+		if err != nil { // Check for errors
+			return err // Return found error
+		}
 
-	if balance < transaction.Amount && genesis.String() != nilCoordinationNode.String() { // Check balance insufficient
-		return ErrInsufficientBalance // Return error
+		if balance < transaction.Amount && genesis.String() != nilCoordinationNode.String() { // Check balance insufficient
+			return ErrInsufficientBalance // Return error
+		}
 	}
 
 	if len(chain.Transactions) == 0 && transaction.Sender == nil { // Check is genesis
+		(*transaction).Genesis = true                    // Set is genesis
 		chain.Genesis = *transaction.Hash                // Set genesis
 		chain.Transactions = []*Transaction{transaction} // Set transaction
 	} else if len(chain.Transactions) == 0 { // Check first index
@@ -174,10 +177,12 @@ func (chain *Chain) CalculateBalance() float64 {
 	balance := float64(0) // Init buffer
 
 	for _, transaction := range chain.Transactions { // Iterate through transactions
-		if *transaction.Sender == chain.Account { // Check is sender
-			balance -= transaction.Amount // Subtract value
-		} else if *transaction.Recipient == chain.Account { // Check is recipient
-			balance += transaction.Amount // Add value
+		if chain.Genesis != *transaction.Hash {
+			if *transaction.Sender == chain.Account { // Check is sender
+				balance -= transaction.Amount // Subtract value
+			} else if *transaction.Recipient == chain.Account { // Check is recipient
+				balance += transaction.Amount // Add value
+			}
 		}
 	}
 
