@@ -4,13 +4,18 @@ import (
 	"crypto/ecdsa"
 	"crypto/elliptic"
 	"crypto/rand"
+	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"path/filepath"
 	"strings"
 	"testing"
 
 	"github.com/space55/summertech-blockchain/common"
+	"github.com/space55/summertech-blockchain/config"
 )
+
+/* BEGIN EXPORTED METHODS */
 
 // TestNewChain - test chain initializer
 func TestNewChain(t *testing.T) {
@@ -48,6 +53,13 @@ func TestAddTransaction(t *testing.T) {
 	}
 
 	sender, err := common.NewAddress(privateKey) // Initialize address from private key
+
+	if err != nil { // Check for errors
+		t.Error(err) // Log found error
+		t.FailNow()  // Panic
+	}
+
+	err = makeChainConfig(sender) // Make config
 
 	if err != nil { // Check for errors
 		t.Error(err) // Log found error
@@ -174,3 +186,46 @@ func TestStringChain(t *testing.T) {
 
 	t.Log(stringVal) // Log success
 }
+
+/* END EXPORTED METHODS */
+
+/* BEGIN INTERNAL METHODS */
+
+type genesis struct {
+	NetworkID uint `json:"networkID"`
+
+	Alloc map[string]map[string]string `json:"alloc"`
+}
+
+// makeChainConfig - generate necessary config files
+func makeChainConfig(address common.Address) error {
+	alloc := make(map[string]map[string]string) // Init map
+
+	alloc[address.String()] = make(map[string]string) // Init map
+
+	alloc[address.String()]["balance"] = "5000000000000" // Set balance
+
+	genesis := genesis{NetworkID: 0, Alloc: alloc} // Init genesis
+
+	json, err := json.MarshalIndent(genesis, "", "  ") // Marshal genesis
+
+	if err != nil { // Check for errors
+		return err // Return error
+	}
+
+	err = ioutil.WriteFile("genesis.json", json, 0644) // Write genesis to JSON
+
+	if err != nil { // Check for errors
+		return err // Return error
+	}
+
+	config, err := config.NewChainConfig("genesis.json") // Generate config
+
+	if err != nil { // Check for errors
+		return err // Return error
+	}
+
+	return config.WriteToMemory() // Write to memory
+}
+
+/* END INTERNAL METHODS */
