@@ -21,6 +21,7 @@
 genesis_test.json
 
 # Runtime-Generated Support Files
+*.gob
 config/data/
 types/data/db/chain/
 common/data/keystore/
