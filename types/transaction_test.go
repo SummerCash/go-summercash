@@ -115,6 +115,41 @@ func TestPublishTransaction(t *testing.T) {
 	t.Logf("published transaction: " + transaction.String()) // Log success
 }
 
+// TestMakeEncodingSafe - test functionality of transaction.MakeEncodingSafe() method
+func TestMakeEncodingSafe(t *testing.T) {
+	privateKey, err := ecdsa.GenerateKey(elliptic.P521(), rand.Reader) // Generate private key
+
+	if err != nil { // Check for errors
+		t.Error(err) // Log found error
+		t.FailNow()  // Panic
+	}
+
+	sender, err := common.NewAddress(privateKey) // Initialize address from private key
+
+	if err != nil { // Check for errors
+		t.Error(err) // Log found error
+		t.FailNow()  // Panic
+	}
+
+	transaction, err := NewTransaction(0, nil, &sender, &sender, 0, []byte("test")) // Initialize transaction
+
+	if err != nil { // Check for errors
+		t.Error(err) // Log found error
+		t.FailNow()  // Panic
+	}
+
+	t.Logf("created transaction: %s", transaction.Hash.String()) // Log issued tx
+
+	err = transaction.MakeEncodingSafe() // Make encoding safe
+
+	if err != nil { // Check for errors
+		t.Error(err) // Log found error
+		t.FailNow()  // Panic
+	}
+
+	t.Log(transaction.String()) // Log success
+}
+
 // TestTransactionFromBytes - test transaction serialization from byte array
 func TestTransactionFromBytes(t *testing.T) {
 	privateKey, err := ecdsa.GenerateKey(elliptic.P521(), rand.Reader) // Generate private key

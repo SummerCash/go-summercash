@@ -113,7 +113,7 @@ func (chain *Chain) AddTransaction(transaction *Transaction) error {
 
 	genesis, err := coordinationChain.GetGenesis() // Get genesis block
 
-	if err != nil { // Check for errors
+	if err != nil && err != ErrNilNode { // Check for errors
 		return err // Return error
 	}
 

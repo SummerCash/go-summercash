@@ -112,6 +112,25 @@ func (transaction *Transaction) Publish() error {
 	return nil // No error occurred, return nil
 }
 
+// MakeEncodingSafe - encode transaction to safe format
+func (transaction *Transaction) MakeEncodingSafe() error {
+	if transaction.Signature != nil { // Check has signature
+		encoded, err := x509.MarshalPKIXPublicKey(transaction.Signature.PublicKey) // Encode
+
+		if err != nil { // Check for errors
+			return err // Return error
+		}
+
+		pemEncodedPub := pem.EncodeToMemory(&pem.Block{Type: "PUBLIC KEY", Bytes: encoded}) // Encode PEM
+
+		(*(*transaction).Signature).SerializedPublicKey = pemEncodedPub // Write encoded
+
+		*(*transaction).Signature.PublicKey = ecdsa.PublicKey{} // Set nil
+	}
+
+	return nil // No error occurred, return nil
+}
+
 // Bytes - convert given transaction to byte array
 func (transaction *Transaction) Bytes() []byte {
 	publicKey := ecdsa.PublicKey{} // Init buffer

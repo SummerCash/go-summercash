@@ -17,6 +17,14 @@ func (chain *Chain) WriteToMemory() error {
 		return err // Return error
 	}
 
+	for _, transaction := range chain.Transactions { // Iterate through transactions
+		err = transaction.MakeEncodingSafe() // Make encoding safe
+
+		if err != nil { // Check for errors
+			return err // Return found error
+		}
+	}
+
 	err = common.WriteGob(fmt.Sprintf("%s/db/chain/chain_%s.gob", common.DataDir, chain.Account.String()), *chain) // Write gob
 
 	if err != nil { // Check for errors
