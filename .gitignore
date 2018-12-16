@@ -25,4 +25,4 @@ config/data/
 types/data/db/chain/
 common/data/keystore/
 data/db/chain
-types/data/db/coordination_chain/chain.gob
+types/data/db/coordination_chain/
