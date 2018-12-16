@@ -73,7 +73,7 @@ func (coordinationChain *CoordinationChain) AddNode(coordinationNode *Coordinati
 	if len(coordinationChain.Nodes) == 0 { // Check genesis
 		(*coordinationChain).Nodes = []*CoordinationNode{coordinationNode} // Initialize node list
 
-		return nil // No error occurred, return nil
+		return coordinationChain.WriteToMemory() // No error occurred, return nil
 	}
 
 	(*coordinationChain).Nodes = append((*coordinationChain).Nodes, coordinationNode) // Append node
@@ -149,7 +149,6 @@ func (coordinationChain *CoordinationChain) GetBalance(address common.Address) (
 	node, err := coordinationChain.QueryAddress(address) // Get node
 
 	if err != nil { // Check for errors
-		panic("test")
 		return 0, err // Return found error
 	}
 
