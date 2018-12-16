@@ -153,12 +153,13 @@ func (chain *Chain) AddTransaction(transaction *Transaction) error {
 		return err // Return found error
 	}
 
-	if balance < transaction.Amount { // Check balance insufficient
+	if balance < transaction.Amount && genesis.String() != nilCoordinationNode.String() { // Check balance insufficient
 		return ErrInsufficientBalance // Return error
 	}
 
 	if len(chain.Transactions) == 0 && transaction.Sender == nil { // Check is genesis
-		chain.Genesis = *transaction.Hash // Set genesis
+		chain.Genesis = *transaction.Hash                // Set genesis
+		chain.Transactions = []*Transaction{transaction} // Set transaction
 	} else if len(chain.Transactions) == 0 { // Check first index
 		chain.Transactions = []*Transaction{transaction} // Set transaction
 	} else {
@@ -265,6 +266,10 @@ func (chain *Chain) makeGenesis(genesis *config.ChainConfig) (common.Hash, error
 	}
 
 	err = chain.AddTransaction(genesisTx) // Add genesis
+
+	if err != nil { // Check for errors
+		return common.Hash{}, err // Return found error
+	}
 
 	lastTx := genesisTx // Set initial
 
