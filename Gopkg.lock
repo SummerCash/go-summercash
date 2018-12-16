@@ -26,12 +26,28 @@
   revision = "18b2b544842cab16f3ff418fb5290d8f2896a069"
 
 [[projects]]
+  branch = "master"
+  digest = "1:5d9b1e3100b760ccdb05b46568394f0e377392e7e537a875ec63b13601143aea"
+  name = "github.com/dowlandaiello/GoP2P"
+  packages = ["common"]
+  pruneopts = "UT"
+  revision = "3aaf84f30525338f7a874d7683ed3153dc6429da"
+
+[[projects]]
   digest = "1:865079840386857c809b72ce300be7580cb50d3d3129ce11bf9aa6ca2bc1934a"
   name = "github.com/fatih/color"
   packages = ["."]
   pruneopts = "UT"
   revision = "5b77d2a35fb0ede96d138fc9a99f5c9b6aef11b4"
   version = "v1.7.0"
+
+[[projects]]
+  digest = "1:af43bdaaf86655a2343f113e9b293bbc16b12099eaeb223982bbe4d4c22ba14d"
+  name = "github.com/fatih/structs"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "4966fc68f5b7593aafa6cbbba2d65ec6e1416047"
+  version = "v1.1.0"
 
 [[projects]]
   digest = "1:69148993c8baff35dbb0b5ec92eccb6b75b2b7255a4ad1257be38f51fff8f267"
@@ -60,6 +76,22 @@
   pruneopts = "UT"
   revision = "6ca4dbf54d38eea1a992b3c722a76a5d1c4cb25c"
   version = "v0.0.4"
+
+[[projects]]
+  digest = "1:53bc4cd4914cd7cd52139990d5170d6dc99067ae31c56530621b18b35fc30318"
+  name = "github.com/mitchellh/mapstructure"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "3536a929edddb9a5b34bd6861dc4a9647cb459fe"
+  version = "v1.1.2"
+
+[[projects]]
+  branch = "master"
+  digest = "1:9f3a60def1a1eb5ac184e71dde43c6f99606f54d106db7c95f8b8338629a777b"
+  name = "github.com/tatsushid/go-fastping"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "d7bb493dee3e090e2ffb6914adddf17c1e7c026c"
 
 [[projects]]
   digest = "1:bc5f818bb50c42b55721ab0ea9af6c28cad7d9e31db43eaa78d2ca487c9897ac"
@@ -109,12 +141,18 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:5193d913046443e59093d66a97a40c51f4a5ea4ceba60f3b3ecf89694de5d16f"
+  digest = "1:e3a60de00dec035b09828db328883a549ec4e6ab99e387c735e8413007ea70f9"
   name = "golang.org/x/net"
   packages = [
+    "bpf",
     "html",
     "html/atom",
     "html/charset",
+    "icmp",
+    "internal/iana",
+    "internal/socket",
+    "ipv4",
+    "ipv6",
   ]
   pruneopts = "UT"
   revision = "351d144fa1fc0bd934e2408202be0c29f25e35a0"
@@ -163,6 +201,7 @@
     "github.com/NebulousLabs/go-upnp",
     "github.com/briandowns/spinner",
     "github.com/common-nighthawk/go-figure",
+    "github.com/dowlandaiello/GoP2P/common",
     "github.com/golang/protobuf/jsonpb",
     "github.com/golang/protobuf/proto",
     "github.com/twitchtv/twirp",
