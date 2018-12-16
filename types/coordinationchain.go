@@ -149,6 +149,7 @@ func (coordinationChain *CoordinationChain) GetBalance(address common.Address) (
 	node, err := coordinationChain.QueryAddress(address) // Get node
 
 	if err != nil { // Check for errors
+		panic("test")
 		return 0, err // Return found error
 	}
 
