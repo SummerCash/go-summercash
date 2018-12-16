@@ -183,6 +183,32 @@ func (chain *Chain) CalculateBalance() float64 {
 	return balance // Return balance
 }
 
+// MakeEncodingSafe - make all transactions in chain encoding safe
+func (chain *Chain) MakeEncodingSafe() error {
+	for _, transaction := range chain.Transactions { // Iterate through transactions
+		err := transaction.MakeEncodingSafe() // Make encoding safe
+
+		if err != nil { // Check for errors
+			return err // Return found error
+		}
+	}
+
+	return nil // No error occurred, return nil
+}
+
+// RecoverSafeEncoding - recover chain from safely encoded
+func (chain *Chain) RecoverSafeEncoding() error {
+	for _, transaction := range chain.Transactions { // Iterate through transactions
+		err := transaction.RecoverSafeEncoding() // Recover
+
+		if err != nil { // Check for errors
+			return err // Return found error
+		}
+	}
+
+	return nil // No error occurred, return nil
+}
+
 // FromBytes - decode given byte array to chain
 func FromBytes(b []byte) (*Chain, error) {
 	chain := Chain{} // Init buffer

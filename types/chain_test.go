@@ -106,7 +106,7 @@ func TestAddTransaction(t *testing.T) {
 
 	t.Logf("added transaction: %s", transaction.Hash.String()) // Log signed
 
-	t.Log("success") // Log success
+	t.Log("success: " + chain.String()) // Log success
 }
 
 // TestBytesChain - test chain to bytes conversion

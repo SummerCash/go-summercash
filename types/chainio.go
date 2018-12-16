@@ -17,18 +17,22 @@ func (chain *Chain) WriteToMemory() error {
 		return err // Return error
 	}
 
-	for _, transaction := range chain.Transactions { // Iterate through transactions
-		err = transaction.MakeEncodingSafe() // Make encoding safe
+	err = chain.MakeEncodingSafe() // Make encoding safe
 
-		if err != nil { // Check for errors
-			return err // Return found error
-		}
+	if err != nil { // Check for errors
+		return err // Return error
 	}
 
-	err = common.WriteGob(fmt.Sprintf("%s/db/chain/chain_%s.gob", common.DataDir, chain.Account.String()), *chain) // Write gob
+	err = common.WriteGob(fmt.Sprintf("%s/db/chain/chain_%s.gob", common.DataDir, chain.Account.String()), chain) // Write gob
 
 	if err != nil { // Check for errors
 		return err // Return found error
+	}
+
+	err = chain.RecoverSafeEncoding() // Recover
+
+	if err != nil { // Check for errors
+		return err // Return error
 	}
 
 	return nil // No error occurred, return nil
@@ -44,12 +48,10 @@ func ReadChainFromMemory(address common.Address) (*Chain, error) {
 		return &Chain{}, err // Return error
 	}
 
-	for _, transaction := range chain.Transactions { // Iterate through transactions
-		err = transaction.RecoverSafeEncoding() // Recover from safe encoding
+	err = chain.RecoverSafeEncoding() // Recover
 
-		if err != nil { // Check for errors
-			return &Chain{}, err // Return found error
-		}
+	if err != nil { // Check for errors
+		return &Chain{}, err // Return error
 	}
 
 	return chain, nil // No error occurred, return read coordinationChain
