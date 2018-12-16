@@ -105,29 +105,39 @@ func NewChain(account common.Address) (*Chain, error) {
 
 // AddTransaction - append given transaction to chain
 func (chain *Chain) AddTransaction(transaction *Transaction) error {
-	if transaction.Signature == nil { // Check for nil signature
-		return ErrNilSignature // Return error
-	} else if *transaction.Recipient != chain.Account || *transaction.Sender != chain.Account { // Check irrelevant
-		return ErrIrrelevantTransaction // Return error
-	}
-
 	coordinationChain, err := ReadCoordinationChainFromMemory() // Read coordination chain from memory
 
 	if err != nil { // Check for errors
 		return err // Return error
 	}
 
-	signatureValid, err := VerifyTransactionSignature(transaction) // Verify signature
+	genesis, err := coordinationChain.GetGenesis() // Get genesis block
 
 	if err != nil { // Check for errors
-		return err // Return found error
-	} else if signatureValid != true { // Check bad signature
-		return ErrInvalidSignature // Return error
+		return err // Return error
 	}
 
-	if transaction.Recipient == nil || transaction.Recipient.String() == "" { // Check nil recipient
+	if transaction.Signature == nil && err == nil { // Check for nil signature
+		return ErrNilSignature // Return error
+	} else if *transaction.Recipient != chain.Account || *transaction.Sender != chain.Account { // Check irrelevant
+		return ErrIrrelevantTransaction // Return error
+	}
+
+	if err == nil { // Check not genesis
+		signatureValid, err := VerifyTransactionSignature(transaction) // Verify signature
+
+		if err != nil { // Check for errors
+			return err // Return found error
+		} else if signatureValid != true { // Check bad signature
+			return ErrInvalidSignature // Return error
+		}
+	}
+
+	nilCoordinationNode := CoordinationNode{} // Init nil buffer
+
+	if transaction.Recipient == nil || transaction.Recipient.String() == "0x0000000000000000000000000000000000000000" { // Check nil recipient
 		return ErrNilAddress // Return error
-	} else if transaction.Sender == nil && chain.Genesis != (common.Hash{}) { // Check genesis already exists
+	} else if transaction.Sender == nil && genesis.String() != nilCoordinationNode.String() { // Check genesis already exists
 		return ErrGenesisAlreadyExists // Return error
 	}
 
@@ -225,6 +235,8 @@ func (chain *Chain) makeGenesis(genesis *config.ChainConfig) (common.Hash, error
 	if err != nil { // Check for errors
 		return common.Hash{}, err // Return error
 	}
+
+	err = chain.AddTransaction(genesisTx) // Add genesis
 
 	lastTx := genesisTx // Set initial
 
