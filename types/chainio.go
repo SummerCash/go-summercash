@@ -44,6 +44,14 @@ func ReadChainFromMemory(address common.Address) (*Chain, error) {
 		return &Chain{}, err // Return error
 	}
 
+	for _, transaction := range chain.Transactions { // Iterate through transactions
+		err = transaction.RecoverSafeEncoding() // Recover from safe encoding
+
+		if err != nil { // Check for errors
+			return &Chain{}, err // Return found error
+		}
+	}
+
 	return chain, nil // No error occurred, return read coordinationChain
 }
 
