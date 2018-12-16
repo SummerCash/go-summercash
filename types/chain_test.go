@@ -225,7 +225,19 @@ func makeChainConfig(address common.Address) error {
 		return err // Return error
 	}
 
-	return config.WriteToMemory() // Write to memory
+	err = config.WriteToMemory() // Write to memory
+
+	if err != nil { // Check for errors
+		return err // Return error
+	}
+
+	coordinationChain, err := NewCoordinationChain() // Init coordinationChain
+
+	if err != nil { // Check for errors
+		return err // Return error
+	}
+
+	return coordinationChain.WriteToMemory() // Write to memory
 }
 
 /* END INTERNAL METHODS */
