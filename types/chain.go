@@ -72,6 +72,14 @@ func NewChain(account common.Address) (*Chain, error) {
 		return &Chain{}, err // Return found error
 	}
 
+	if coordinationChain.Nodes == nil || len(coordinationChain.Nodes) == 0 { // Check genesis
+		_, err := chain.makeGenesis(config) // Make genesis
+
+		if err != nil { // Check for errors
+			return &Chain{}, err // Return found error
+		}
+	}
+
 	node, err := NewCoordinationNode(account, []string{localIP}) // Initialize node
 
 	if err != nil { // Check for errors
@@ -82,14 +90,6 @@ func NewChain(account common.Address) (*Chain, error) {
 
 	if err != nil { // Check for errors
 		return &Chain{}, err // Return found error
-	}
-
-	if coordinationChain.Nodes == nil || len(coordinationChain.Nodes) == 0 { // Check genesis
-		_, err := chain.makeGenesis(config) // Make genesis
-
-		if err != nil { // Check for errors
-			return &Chain{}, err // Return found error
-		}
 	}
 
 	(*chain).ID = common.NewHash(crypto.Sha3(chain.Bytes())) // Set ID
@@ -252,7 +252,9 @@ func (chain *Chain) makeGenesis(genesis *config.ChainConfig) (common.Hash, error
 
 	genesisNode, _ := coordinationChain.GetGenesis() // Get genesis
 
-	if genesisNode != nil { // Check genesis already exists
+	emptyNode := CoordinationNode{} // Init empty buffer
+
+	if genesisNode.String() != emptyNode.String() { // Check genesis already exists
 		return common.Hash{}, ErrGenesisAlreadyExists // Return error
 	}
 
