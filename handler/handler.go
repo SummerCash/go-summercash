@@ -44,6 +44,8 @@ func handleConnection(conn net.Conn) error {
 
 	defer conn.Close() // Close connection
 
+	panic("test")
+
 	switch string(data)[0:9] { // Handle signatures
 	case "{" + `"` + "scope" + `"` + ":": // Check coordinationNode
 		return types.HandleReceivedCoordinationNode(data) // Handle received data
