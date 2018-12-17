@@ -76,6 +76,13 @@ func TestGetExtIPAddrWithoutUPnP(t *testing.T) {
 	t.Log(ip) // Log success
 }
 
+// TestConnected - test is connected to internet
+func TestConnected(t *testing.T) {
+	result := Connected() // Get is connected
+
+	t.Log(result) // Log success
+}
+
 // TestGetIPFromProvider - test functionality of getIPFromProvider() method
 func TestGetIPFromProvider(t *testing.T) {
 	ip, err := getIPFromProvider("http://checkip.amazonaws.com/") // Get IP from provider

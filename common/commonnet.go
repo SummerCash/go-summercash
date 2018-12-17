@@ -111,6 +111,10 @@ func GetExtIPAddrWithUPnP() (string, error) {
 
 // GetExtIPAddrWithoutUPnP - retrieve the external IP address of the current machine w/o upnp
 func GetExtIPAddrWithoutUPnP() (string, error) {
+	if len(ExtIPProviders) == 0 { // Check no providers
+		return "localhost", nil // Return localhost
+	}
+
 	addresses := []string{} // Init address buffer
 
 	finished := make(chan bool) // Init finished
@@ -124,6 +128,25 @@ func GetExtIPAddrWithoutUPnP() (string, error) {
 	close(finished) // Close channel
 
 	return getNonNilInStringSlice(addresses) // Return valid address
+}
+
+// Connected - check if connected to internet
+func Connected() (connected bool) {
+	resp, err := http.Get("http://clients3.google.com/generate_204") // Perform request
+
+	if err != nil { // Check for errors
+		return false // Return result
+	}
+
+	_, err = ioutil.ReadAll(resp.Body) // Read response
+
+	if err != nil { // Check for errors
+		return false // Return result
+	}
+
+	resp.Body.Close() // Close
+
+	return true // Return connected
 }
 
 /*
@@ -157,26 +180,34 @@ func getIPFromProvider(provider string) (string, error) {
 
 // getIPFromProviderAsync - asynchronously get IP address from given IP provider
 func getIPFromProviderAsync(provider string, buffer *[]string, finished chan bool) {
-	if len(*buffer) == 0 { // Check IP not already determined
-		resp, err := http.Get(provider) // Attempt to check IP via provider
+	if Connected() { // Check connected to internet
+		if len(*buffer) == 0 { // Check IP not already determined
+			resp, err := http.Get(provider) // Attempt to check IP via provider
 
-		if err != nil { // Check for errors
-			if len(*buffer) == 0 { // Double check IP not already determined
-				*buffer = append(*buffer, "") // Set IP
-				finished <- true              // Set finished
+			if err != nil { // Check for errors
+				if len(*buffer) == 0 { // Double check IP not already determined
+					*buffer = append(*buffer, "") // Set IP
+					finished <- true              // Set finished
+				}
+			} else {
+				defer resp.Body.Close() // Close connection
+
+				ip, _ := ioutil.ReadAll(resp.Body) // Read address
+
+				stringVal := string(ip[:]) // Fetch string value
+
+				if len(*buffer) == 0 { // Double check IP not already determined
+					*buffer = append(*buffer, strings.TrimSpace(stringVal)) // Set ip
+
+					finished <- true // Set finished
+				}
 			}
-		} else {
-			defer resp.Body.Close() // Close connection
+		}
+	} else {
+		if len(*buffer) == 0 {
+			*buffer = append(*buffer, "localhost") // Set localhost
 
-			ip, _ := ioutil.ReadAll(resp.Body) // Read address
-
-			stringVal := string(ip[:]) // Fetch string value
-
-			if len(*buffer) == 0 { // Double check IP not already determined
-				*buffer = append(*buffer, strings.TrimSpace(stringVal)) // Set ip
-
-				finished <- true // Set finished
-			}
+			finished <- true // Set finished
 		}
 	}
 }

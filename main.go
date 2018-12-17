@@ -19,19 +19,24 @@ import (
 )
 
 var (
-	terminalFlag   = flag.Bool("terminal", false, "launch node in terminal mode")                                                                                     // Init term flag
-	upnpFlag       = flag.Bool("no-upnp", false, "launch node without automatic UPnP port forwarding")                                                                // Init upnp flag
-	rpcPortFlag    = flag.Int("rpc-port", 8080, "launch node with specified RPC port")                                                                                // Init RPC port flag
-	forwardRPCFlag = flag.Bool("forward-rpc", false, "enables forwarding of node RPC terminal ports")                                                                 // Init forward RPC flag
-	rpcAddrFlag    = flag.String("rpc-address", fmt.Sprintf("localhost:%s", strconv.Itoa(*rpcPortFlag)), "connects to remote RPC terminal (default: localhost:8080)") // Init remote rpc addr flag
-	dataDirFlag    = flag.String("data-dir", common.DataDir, "performs all node i/o operations in given data directory")                                              // Init data dir flag
-	nodePortFlag   = flag.Int("node-port", common.DefaultNodePort, "launch node on give port")                                                                        // Init node port flag
+	terminalFlag       = flag.Bool("terminal", false, "launch node in terminal mode")                                                                                     // Init term flag
+	upnpFlag           = flag.Bool("no-upnp", false, "launch node without automatic UPnP port forwarding")                                                                // Init upnp flag
+	rpcPortFlag        = flag.Int("rpc-port", 8080, "launch node with specified RPC port")                                                                                // Init RPC port flag
+	forwardRPCFlag     = flag.Bool("forward-rpc", false, "enables forwarding of node RPC terminal ports")                                                                 // Init forward RPC flag
+	rpcAddrFlag        = flag.String("rpc-address", fmt.Sprintf("localhost:%s", strconv.Itoa(*rpcPortFlag)), "connects to remote RPC terminal (default: localhost:8080)") // Init remote rpc addr flag
+	dataDirFlag        = flag.String("data-dir", common.DataDir, "performs all node i/o operations in given data directory")                                              // Init data dir flag
+	nodePortFlag       = flag.Int("node-port", common.DefaultNodePort, "launch node on give port")                                                                        // Init node port flag
+	privateNetworkFlag = flag.Bool("private-net", false, "launch node in context of private network")                                                                     // Init private network flag
 )
 
 func main() {
 	flag.Parse() // Parse flags
 
 	common.DataDir = *dataDirFlag // Set data-dir
+
+	if *privateNetworkFlag {
+		common.ExtIPProviders = []string{} // Set nil providers
+	}
 
 	if !*upnpFlag { // Check for UPnP
 		if *forwardRPCFlag {
