@@ -177,12 +177,14 @@ func (chain *Chain) CalculateBalance() float64 {
 	balance := float64(0) // Init buffer
 
 	for _, transaction := range chain.Transactions { // Iterate through transactions
-		if chain.Genesis != *transaction.Hash {
+		if chain.Genesis != *transaction.Hash { // Check is not genesis
 			if *transaction.Sender == chain.Account { // Check is sender
 				balance -= transaction.Amount // Subtract value
 			} else if *transaction.Recipient == chain.Account { // Check is recipient
 				balance += transaction.Amount // Add value
 			}
+		} else if chain.Genesis == *transaction.Hash { // Check is genesis
+			balance += transaction.Amount // Add value
 		}
 	}
 

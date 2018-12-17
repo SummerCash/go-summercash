@@ -164,8 +164,6 @@ func (coordinationChain *CoordinationChain) GetBalance(address common.Address) (
 		return 0, err // Return found error
 	}
 
-	panic(chain.CalculateBalance())
-
 	return chain.CalculateBalance(), nil // No error occurred, return balance
 }
 

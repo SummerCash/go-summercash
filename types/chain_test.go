@@ -125,7 +125,14 @@ func TestAddTransaction(t *testing.T) {
 		t.FailNow()  // Panic
 	}
 
-	t.Log(coordinationChain.GetBalance(sender)) // Get balance
+	balance, err := coordinationChain.GetBalance(sender) // Get balance
+
+	if err != nil { // Check for errors
+		t.Error(err) // Log found error
+		t.FailNow()  // Panic
+	}
+
+	t.Log(balance) // Log balance
 }
 
 // TestBytesChain - test chain to bytes conversion
