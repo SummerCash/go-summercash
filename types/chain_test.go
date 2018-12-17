@@ -82,8 +82,6 @@ func TestAddTransaction(t *testing.T) {
 		t.FailNow()  // Panic
 	}
 
-	t.Logf("signed transaction: %s", transaction.Signature.String()) // Log signed
-
 	chain, err := NewChain(sender) // Initialize chain
 
 	if err != nil { // Check for errors
@@ -132,7 +130,7 @@ func TestAddTransaction(t *testing.T) {
 		t.FailNow()  // Panic
 	}
 
-	t.Log(balance) // Log balance
+	t.Logf("genesis: %d, chain: %s", int(balance), chain.String()) // Log chain state
 }
 
 // TestBytesChain - test chain to bytes conversion
@@ -217,7 +215,7 @@ func makeChainConfig(address common.Address) error {
 
 	alloc[address.String()] = make(map[string]string) // Init map
 
-	alloc[address.String()]["balance"] = "5000000000000" // Set balance
+	alloc[address.String()]["balance"] = "500000000000000" // Set balance
 
 	genesis := genesis{NetworkID: 0, Alloc: alloc} // Init genesis
 
