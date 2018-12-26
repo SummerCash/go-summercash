@@ -3,12 +3,15 @@ package common
 import (
 	"encoding/gob"
 	"os"
+	"path/filepath"
 )
 
 /* BEGIN EXPORTED METHODS */
 
 // CreateDirIfDoesNotExit - create given directory if does not exist
 func CreateDirIfDoesNotExit(dir string) error {
+	dir = filepath.FromSlash(dir) // Just to be safe
+
 	if _, err := os.Stat(dir); os.IsNotExist(err) { // Check dir exists
 		err = os.MkdirAll(dir, 0755) // Create directory
 
