@@ -99,4 +99,5 @@ func startNode() {
 /*
 	TODO:
 	- archival node flag
+	- readme
 */
