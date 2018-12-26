@@ -95,3 +95,8 @@ func startNode() {
 		panic(err) // Panic
 	}
 }
+
+/*
+	TODO:
+	- archival node flag
+*/

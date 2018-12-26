@@ -1,7 +1,10 @@
 package accounts
 
 import (
+	"bytes"
 	"crypto/ecdsa"
+	"crypto/elliptic"
+	"crypto/rand"
 	"crypto/x509"
 	"encoding/json"
 	"encoding/pem"
@@ -17,6 +20,23 @@ type Account struct {
 }
 
 /* BEGIN EXPORTED METHODS */
+
+// NewAccount - create new account
+func NewAccount() (*Account, error) {
+	privateKey, err := ecdsa.GenerateKey(elliptic.P521(), rand.Reader) // Generate private key
+
+	if err != nil { // Check for errors
+		return &Account{}, err // Return error
+	}
+
+	account, err := AccountFromKey(privateKey) // Generate account from key
+
+	if err != nil { // Check for errors
+		return &Account{}, err // Return error
+	}
+
+	return account, nil // Return initialized account
+}
 
 // AccountFromKey - generate account from given private key
 func AccountFromKey(privateKey *ecdsa.PrivateKey) (*Account, error) {
@@ -73,6 +93,15 @@ func (account *Account) String() string {
 	marshaled, _ := json.MarshalIndent(*account, "", "  ") // Marshal account
 
 	return string(marshaled) // Return marshaled
+}
+
+// Bytes - convert given account to byte array
+func (account *Account) Bytes() []byte {
+	buffer := new(bytes.Buffer) // Init buffer
+
+	json.NewEncoder(buffer).Encode(*account) // Serialize account
+
+	return buffer.Bytes() // Return serialized
 }
 
 /* END EXPORTED METHODS */
