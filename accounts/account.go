@@ -11,3 +11,19 @@ type Account struct {
 	Address    common.Address    `json:"address"`    // Account address
 	PrivateKey *ecdsa.PrivateKey `json:"privateKey"` // Account private key
 }
+
+// AccountFromKey - generate account from given private key
+func AccountFromKey(privateKey *ecdsa.PrivateKey) (*Account, error) {
+	address, err := common.NewAddress(privateKey) // Generate address
+
+	if err != nil { // Check for errors
+		return &Account{}, err // Return found error
+	}
+
+	account := Account{ // Init account from creds
+		Address:    address,
+		PrivateKey: privateKey,
+	}
+
+	return &account, nil // Return found account
+}
