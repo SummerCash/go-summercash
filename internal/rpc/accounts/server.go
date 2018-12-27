@@ -23,7 +23,7 @@ func (server *Server) NewAccount(ctx context.Context, req *accountsProto.General
 		return &accountsProto.GeneralResponse{}, err // Return found error
 	}
 
-	return &accountsProto.GeneralResponse{Message: account.Address.String()}, nil // No error occurred, return response
+	return &accountsProto.GeneralResponse{Message: fmt.Sprintf("\n%s", account.Address.String())}, nil // No error occurred, return response
 }
 
 // AccountFromKey - accounts.AccountFromKey RPC handler
@@ -50,7 +50,7 @@ func (server *Server) AccountFromKey(ctx context.Context, req *accountsProto.Gen
 		return nil, err // Return found error
 	}
 
-	return &accountsProto.GeneralResponse{Message: account.Address.String()}, nil // No error occurred, return response
+	return &accountsProto.GeneralResponse{Message: fmt.Sprintf("\n%s", account.Address.String())}, nil // No error occurred, return response
 }
 
 // GetAllAccounts - accounts.GetAllAccounts RPC handler
@@ -61,7 +61,7 @@ func (server *Server) GetAllAccounts(ctx context.Context, req *accountsProto.Gen
 		return nil, err // Return found error
 	}
 
-	return &accountsProto.GeneralResponse{Message: strings.Join(addresses, ", ")}, nil // No error occurred, return response
+	return &accountsProto.GeneralResponse{Message: fmt.Sprintf("\n%s", strings.Join(addresses, ", "))}, nil // No error occurred, return response
 }
 
 // MakeEncodingSafe - accounts.MakeEncodingSafe RPC handler
@@ -84,7 +84,7 @@ func (server *Server) MakeEncodingSafe(ctx context.Context, req *accountsProto.G
 		return nil, err // Return found error
 	}
 
-	return &accountsProto.GeneralResponse{Message: fmt.Sprintf("made account with address %s encoding safe", account.Address.String())}, nil // No error occurred, return response
+	return &accountsProto.GeneralResponse{Message: fmt.Sprintf("\nmade account with address %s encoding safe", account.Address.String())}, nil // No error occurred, return response
 }
 
 // RecoverSafeEncoding - accounts.RecoverSafeEncoding RPC handler
@@ -107,7 +107,7 @@ func (server *Server) RecoverSafeEncoding(ctx context.Context, req *accountsProt
 		return nil, err // Return found error
 	}
 
-	return &accountsProto.GeneralResponse{Message: fmt.Sprintf("recovered account with address %s from safe encoding", account.Address.String())}, nil // No error occurred, return response
+	return &accountsProto.GeneralResponse{Message: fmt.Sprintf("\nrecovered account with address %s from safe encoding", account.Address.String())}, nil // No error occurred, return response
 }
 
 // String - accounts.String RPC handler
@@ -124,7 +124,7 @@ func (server *Server) String(ctx context.Context, req *accountsProto.GeneralRequ
 		return nil, err // Return found error
 	}
 
-	return &accountsProto.GeneralResponse{Message: account.String()}, nil // No error occurred, return response
+	return &accountsProto.GeneralResponse{Message: fmt.Sprintf("\n%s", account.String())}, nil // No error occurred, return response
 }
 
 // Bytes - accounts.Bytes RPC handler
@@ -147,7 +147,7 @@ func (server *Server) Bytes(ctx context.Context, req *accountsProto.GeneralReque
 		return nil, err // Return found error
 	}
 
-	return &accountsProto.GeneralResponse{Message: encoded}, nil // No error occurred, return response
+	return &accountsProto.GeneralResponse{Message: fmt.Sprintf("\n%s", encoded)}, nil // No error occurred, return response
 }
 
 // ReadAccountFromMemory - account.ReadAccountFromMemory RPC handler
@@ -164,5 +164,5 @@ func (server *Server) ReadAccountFromMemory(ctx context.Context, req *accountsPr
 		return nil, err // Return found error
 	}
 
-	return &accountsProto.GeneralResponse{Message: account.String()}, nil // No error occurred, return response
+	return &accountsProto.GeneralResponse{Message: fmt.Sprintf("\n%s", account.String())}, nil // No error occurred, return response
 }
