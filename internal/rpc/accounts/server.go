@@ -89,7 +89,7 @@ func (server *Server) MakeEncodingSafe(ctx context.Context, req *accountsProto.G
 	account, err := accounts.ReadAccountFromMemory(address) // Read account
 
 	if err != nil { // Check for errors
-		return nil, err // Return found errore
+		return nil, err // Return found error
 	}
 
 	err = account.MakeEncodingSafe() // Make encoding safe
