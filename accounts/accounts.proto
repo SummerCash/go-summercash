@@ -15,7 +15,7 @@ service Accounts {
 /* BEGIN REQUESTS */
 
 message GeneralRequest {
-    uint32 accountIndex = 1; // Index of reference account
+    string address = 1; // Account address
 
     string privateKey = 2; // Private key
 }
