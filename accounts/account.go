@@ -81,17 +81,19 @@ func GetAllAccounts() ([]string, error) {
 
 // MakeEncodingSafe - make account safe for encoding
 func (account *Account) MakeEncodingSafe() error {
-	marshaledPrivateKey, err := x509.MarshalECPrivateKey(account.PrivateKey) // Marshal private key
+	if account.PrivateKey != nil { // Check has private key
+		marshaledPrivateKey, err := x509.MarshalECPrivateKey(account.PrivateKey) // Marshal private key
 
-	if err != nil { // Check for errors
-		return err // Return found error
+		if err != nil { // Check for errors
+			return err // Return found error
+		}
+
+		pemEncoded := pem.EncodeToMemory(&pem.Block{Type: "PRIVATE KEY", Bytes: marshaledPrivateKey}) // Encode to memory
+
+		(*account).SerializedPrivateKey = pemEncoded // Set serialized
+
+		*(*account).PrivateKey = ecdsa.PrivateKey{} // Set nil
 	}
-
-	pemEncoded := pem.EncodeToMemory(&pem.Block{Type: "PRIVATE KEY", Bytes: marshaledPrivateKey}) // Encode to memory
-
-	(*account).SerializedPrivateKey = pemEncoded // Set serialized
-
-	*(*account).PrivateKey = ecdsa.PrivateKey{} // Set nil
 
 	return nil // No error occurred, return nil
 }

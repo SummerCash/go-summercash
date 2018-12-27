@@ -85,7 +85,7 @@ func (server *Server) GetAllAccounts(ctx context.Context, req *accountsProto.Gen
 	addresses, err := accounts.GetAllAccounts() // Walk
 
 	if err != nil { // Check for errors
-		return nil, err // Return found error
+		return &accountsProto.GeneralResponse{}, err // Return found error
 	}
 
 	return &accountsProto.GeneralResponse{Message: fmt.Sprintf("\n%s", strings.Join(addresses, ", "))}, nil // No error occurred, return response
@@ -96,25 +96,25 @@ func (server *Server) MakeEncodingSafe(ctx context.Context, req *accountsProto.G
 	address, err := common.StringToAddress(req.Address) // Get address
 
 	if err != nil { // Check for errors
-		return nil, err // Return found error
+		return &accountsProto.GeneralResponse{}, err // Return found error
 	}
 
 	account, err := accounts.ReadAccountFromMemory(address) // Read account
 
 	if err != nil { // Check for errors
-		return nil, err // Return found error
+		return &accountsProto.GeneralResponse{}, err // Return found error
 	}
 
 	err = account.MakeEncodingSafe() // Make encoding safe
 
 	if err != nil { // Check for errors
-		return nil, err // Return found error
+		return &accountsProto.GeneralResponse{}, err // Return found error
 	}
 
 	marshaledVal, err := json.MarshalIndent(*account, "", "  ") // Marshal JSON
 
 	if err != nil { // Check for errors
-		return nil, err // Return found error
+		return &accountsProto.GeneralResponse{}, err // Return found error
 	}
 
 	return &accountsProto.GeneralResponse{Message: string(marshaledVal)}, nil // No error occurred, return response
@@ -125,25 +125,25 @@ func (server *Server) RecoverSafeEncoding(ctx context.Context, req *accountsProt
 	address, err := common.StringToAddress(req.Address) // Get address
 
 	if err != nil { // Check for errors
-		return nil, err // Return found error
+		return &accountsProto.GeneralResponse{}, err // Return found error
 	}
 
 	account, err := accounts.ReadAccountFromMemory(address) // Read account
 
 	if err != nil { // Check for errors
-		return nil, err // Return found error
+		return &accountsProto.GeneralResponse{}, err // Return found error
 	}
 
 	err = account.RecoverSafeEncoding() // Recover
 
 	if err != nil { // Check for errors
-		return nil, err // Return found error
+		return &accountsProto.GeneralResponse{}, err // Return found error
 	}
 
 	marshaledVal, err := json.MarshalIndent(*account, "", "  ") // Marshal JSON
 
 	if err != nil { // Check for errors
-		return nil, err // Return found error
+		return &accountsProto.GeneralResponse{}, err // Return found error
 	}
 
 	return &accountsProto.GeneralResponse{Message: string(marshaledVal)}, nil // No error occurred, return response
@@ -154,13 +154,13 @@ func (server *Server) String(ctx context.Context, req *accountsProto.GeneralRequ
 	address, err := common.StringToAddress(req.Address) // Get address
 
 	if err != nil { // Check for errors
-		return nil, err // Return found error
+		return &accountsProto.GeneralResponse{}, err // Return found error
 	}
 
 	account, err := accounts.ReadAccountFromMemory(address) // Read account
 
 	if err != nil { // Check for errors
-		return nil, err // Return found error
+		return &accountsProto.GeneralResponse{}, err // Return found error
 	}
 
 	return &accountsProto.GeneralResponse{Message: fmt.Sprintf("\n%s", account.String())}, nil // No error occurred, return response
@@ -171,19 +171,19 @@ func (server *Server) Bytes(ctx context.Context, req *accountsProto.GeneralReque
 	address, err := common.StringToAddress(req.Address) // Get address
 
 	if err != nil { // Check for errors
-		return nil, err // Return found error
+		return &accountsProto.GeneralResponse{}, err // Return found error
 	}
 
 	account, err := accounts.ReadAccountFromMemory(address) // Read account
 
 	if err != nil { // Check for errors
-		return nil, err // Return found error
+		return &accountsProto.GeneralResponse{}, err // Return found error
 	}
 
 	encoded, err := common.EncodeString(account.Bytes()) // Encode byte val
 
 	if err != nil { // Check for errors
-		return nil, err // Return found error
+		return &accountsProto.GeneralResponse{}, err // Return found error
 	}
 
 	return &accountsProto.GeneralResponse{Message: fmt.Sprintf("\n%s", encoded)}, nil // No error occurred, return response
@@ -194,14 +194,32 @@ func (server *Server) ReadAccountFromMemory(ctx context.Context, req *accountsPr
 	address, err := common.StringToAddress(req.Address) // Get address
 
 	if err != nil { // Check for errors
-		return nil, err // Return found error
+		return &accountsProto.GeneralResponse{}, err // Return found error
 	}
 
 	account, err := accounts.ReadAccountFromMemory(address) // Read account
 
 	if err != nil { // Check for errors
-		return nil, err // Return found error
+		return &accountsProto.GeneralResponse{}, err // Return found error
 	}
 
-	return &accountsProto.GeneralResponse{Message: fmt.Sprintf("\n%s", account.String())}, nil // No error occurred, return response
+	err = account.MakeEncodingSafe() // Make safe for encoding
+
+	if err != nil { // Check for errors
+		return &accountsProto.GeneralResponse{}, err // Return found error
+	}
+
+	encoded, err := common.EncodeString(account.SerializedPrivateKey) // Encode private key
+
+	if err != nil { // Check for errors
+		return &accountsProto.GeneralResponse{}, err // Return found error
+	}
+
+	err = account.RecoverSafeEncoding() // Reverse
+
+	if err != nil { // Check for errors
+		return &accountsProto.GeneralResponse{}, err // Return found error
+	}
+
+	return &accountsProto.GeneralResponse{Message: fmt.Sprintf("Address: %s, PrivateKey: %s", account.Address, encoded)}, nil // No error occurred, return response
 }
