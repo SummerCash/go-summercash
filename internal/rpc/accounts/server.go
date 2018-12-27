@@ -23,6 +23,12 @@ func (server *Server) NewAccount(ctx context.Context, req *accountsProto.General
 		return &accountsProto.GeneralResponse{}, err // Return found error
 	}
 
+	err = account.WriteToMemory() // Write to persistent memory
+
+	if err != nil { // Check for errors
+		return &accountsProto.GeneralResponse{}, err // Return found error
+	}
+
 	marshaledPrivateKey, err := x509.MarshalECPrivateKey(account.PrivateKey) // Marshal private key
 
 	if err != nil { // Check for errors
@@ -55,13 +61,19 @@ func (server *Server) AccountFromKey(ctx context.Context, req *accountsProto.Gen
 	privateKey, err := x509.ParseECPrivateKey(x509EncodedPrivateKey) // Parse private key
 
 	if err != nil { // Check for errors
-		return nil, err // Return found error
+		return &accountsProto.GeneralResponse{}, err // Return found error
 	}
 
 	account, err := accounts.AccountFromKey(privateKey) // Get account
 
 	if err != nil { // Check for errors
-		return nil, err // Return found error
+		return &accountsProto.GeneralResponse{}, err // Return found error
+	}
+
+	err = account.WriteToMemory() // Write to persistent memory
+
+	if err != nil { // Check for errors
+		return &accountsProto.GeneralResponse{}, err // Return found error
 	}
 
 	return &accountsProto.GeneralResponse{Message: fmt.Sprintf("\n%s", account.Address.String())}, nil // No error occurred, return response
