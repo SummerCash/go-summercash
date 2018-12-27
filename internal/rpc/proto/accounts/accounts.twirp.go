@@ -37,6 +37,8 @@ type Accounts interface {
 
 	AccountFromKey(context.Context, *GeneralRequest) (*GeneralResponse, error)
 
+	GetAllAccounts(context.Context, *GeneralRequest) (*GeneralResponse, error)
+
 	MakeEncodingSafe(context.Context, *GeneralRequest) (*GeneralResponse, error)
 
 	RecoverSafeEncoding(context.Context, *GeneralRequest) (*GeneralResponse, error)
@@ -54,16 +56,17 @@ type Accounts interface {
 
 type accountsProtobufClient struct {
 	client HTTPClient
-	urls   [7]string
+	urls   [8]string
 }
 
 // NewAccountsProtobufClient creates a Protobuf client that implements the Accounts interface.
 // It communicates using Protobuf and can be configured with a custom HTTPClient.
 func NewAccountsProtobufClient(addr string, client HTTPClient) Accounts {
 	prefix := urlBase(addr) + AccountsPathPrefix
-	urls := [7]string{
+	urls := [8]string{
 		prefix + "NewAccount",
 		prefix + "AccountFromKey",
+		prefix + "GetAllAccounts",
 		prefix + "MakeEncodingSafe",
 		prefix + "RecoverSafeEncoding",
 		prefix + "String",
@@ -106,12 +109,24 @@ func (c *accountsProtobufClient) AccountFromKey(ctx context.Context, in *General
 	return out, nil
 }
 
+func (c *accountsProtobufClient) GetAllAccounts(ctx context.Context, in *GeneralRequest) (*GeneralResponse, error) {
+	ctx = ctxsetters.WithPackageName(ctx, "accounts")
+	ctx = ctxsetters.WithServiceName(ctx, "Accounts")
+	ctx = ctxsetters.WithMethodName(ctx, "GetAllAccounts")
+	out := new(GeneralResponse)
+	err := doProtobufRequest(ctx, c.client, c.urls[2], in, out)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *accountsProtobufClient) MakeEncodingSafe(ctx context.Context, in *GeneralRequest) (*GeneralResponse, error) {
 	ctx = ctxsetters.WithPackageName(ctx, "accounts")
 	ctx = ctxsetters.WithServiceName(ctx, "Accounts")
 	ctx = ctxsetters.WithMethodName(ctx, "MakeEncodingSafe")
 	out := new(GeneralResponse)
-	err := doProtobufRequest(ctx, c.client, c.urls[2], in, out)
+	err := doProtobufRequest(ctx, c.client, c.urls[3], in, out)
 	if err != nil {
 		return nil, err
 	}
@@ -123,7 +138,7 @@ func (c *accountsProtobufClient) RecoverSafeEncoding(ctx context.Context, in *Ge
 	ctx = ctxsetters.WithServiceName(ctx, "Accounts")
 	ctx = ctxsetters.WithMethodName(ctx, "RecoverSafeEncoding")
 	out := new(GeneralResponse)
-	err := doProtobufRequest(ctx, c.client, c.urls[3], in, out)
+	err := doProtobufRequest(ctx, c.client, c.urls[4], in, out)
 	if err != nil {
 		return nil, err
 	}
@@ -135,7 +150,7 @@ func (c *accountsProtobufClient) String(ctx context.Context, in *GeneralRequest)
 	ctx = ctxsetters.WithServiceName(ctx, "Accounts")
 	ctx = ctxsetters.WithMethodName(ctx, "String")
 	out := new(GeneralResponse)
-	err := doProtobufRequest(ctx, c.client, c.urls[4], in, out)
+	err := doProtobufRequest(ctx, c.client, c.urls[5], in, out)
 	if err != nil {
 		return nil, err
 	}
@@ -147,7 +162,7 @@ func (c *accountsProtobufClient) Bytes(ctx context.Context, in *GeneralRequest) 
 	ctx = ctxsetters.WithServiceName(ctx, "Accounts")
 	ctx = ctxsetters.WithMethodName(ctx, "Bytes")
 	out := new(GeneralResponse)
-	err := doProtobufRequest(ctx, c.client, c.urls[5], in, out)
+	err := doProtobufRequest(ctx, c.client, c.urls[6], in, out)
 	if err != nil {
 		return nil, err
 	}
@@ -159,7 +174,7 @@ func (c *accountsProtobufClient) ReadAccountFromMemory(ctx context.Context, in *
 	ctx = ctxsetters.WithServiceName(ctx, "Accounts")
 	ctx = ctxsetters.WithMethodName(ctx, "ReadAccountFromMemory")
 	out := new(GeneralResponse)
-	err := doProtobufRequest(ctx, c.client, c.urls[6], in, out)
+	err := doProtobufRequest(ctx, c.client, c.urls[7], in, out)
 	if err != nil {
 		return nil, err
 	}
@@ -172,16 +187,17 @@ func (c *accountsProtobufClient) ReadAccountFromMemory(ctx context.Context, in *
 
 type accountsJSONClient struct {
 	client HTTPClient
-	urls   [7]string
+	urls   [8]string
 }
 
 // NewAccountsJSONClient creates a JSON client that implements the Accounts interface.
 // It communicates using JSON and can be configured with a custom HTTPClient.
 func NewAccountsJSONClient(addr string, client HTTPClient) Accounts {
 	prefix := urlBase(addr) + AccountsPathPrefix
-	urls := [7]string{
+	urls := [8]string{
 		prefix + "NewAccount",
 		prefix + "AccountFromKey",
+		prefix + "GetAllAccounts",
 		prefix + "MakeEncodingSafe",
 		prefix + "RecoverSafeEncoding",
 		prefix + "String",
@@ -224,12 +240,24 @@ func (c *accountsJSONClient) AccountFromKey(ctx context.Context, in *GeneralRequ
 	return out, nil
 }
 
+func (c *accountsJSONClient) GetAllAccounts(ctx context.Context, in *GeneralRequest) (*GeneralResponse, error) {
+	ctx = ctxsetters.WithPackageName(ctx, "accounts")
+	ctx = ctxsetters.WithServiceName(ctx, "Accounts")
+	ctx = ctxsetters.WithMethodName(ctx, "GetAllAccounts")
+	out := new(GeneralResponse)
+	err := doJSONRequest(ctx, c.client, c.urls[2], in, out)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *accountsJSONClient) MakeEncodingSafe(ctx context.Context, in *GeneralRequest) (*GeneralResponse, error) {
 	ctx = ctxsetters.WithPackageName(ctx, "accounts")
 	ctx = ctxsetters.WithServiceName(ctx, "Accounts")
 	ctx = ctxsetters.WithMethodName(ctx, "MakeEncodingSafe")
 	out := new(GeneralResponse)
-	err := doJSONRequest(ctx, c.client, c.urls[2], in, out)
+	err := doJSONRequest(ctx, c.client, c.urls[3], in, out)
 	if err != nil {
 		return nil, err
 	}
@@ -241,7 +269,7 @@ func (c *accountsJSONClient) RecoverSafeEncoding(ctx context.Context, in *Genera
 	ctx = ctxsetters.WithServiceName(ctx, "Accounts")
 	ctx = ctxsetters.WithMethodName(ctx, "RecoverSafeEncoding")
 	out := new(GeneralResponse)
-	err := doJSONRequest(ctx, c.client, c.urls[3], in, out)
+	err := doJSONRequest(ctx, c.client, c.urls[4], in, out)
 	if err != nil {
 		return nil, err
 	}
@@ -253,7 +281,7 @@ func (c *accountsJSONClient) String(ctx context.Context, in *GeneralRequest) (*G
 	ctx = ctxsetters.WithServiceName(ctx, "Accounts")
 	ctx = ctxsetters.WithMethodName(ctx, "String")
 	out := new(GeneralResponse)
-	err := doJSONRequest(ctx, c.client, c.urls[4], in, out)
+	err := doJSONRequest(ctx, c.client, c.urls[5], in, out)
 	if err != nil {
 		return nil, err
 	}
@@ -265,7 +293,7 @@ func (c *accountsJSONClient) Bytes(ctx context.Context, in *GeneralRequest) (*Ge
 	ctx = ctxsetters.WithServiceName(ctx, "Accounts")
 	ctx = ctxsetters.WithMethodName(ctx, "Bytes")
 	out := new(GeneralResponse)
-	err := doJSONRequest(ctx, c.client, c.urls[5], in, out)
+	err := doJSONRequest(ctx, c.client, c.urls[6], in, out)
 	if err != nil {
 		return nil, err
 	}
@@ -277,7 +305,7 @@ func (c *accountsJSONClient) ReadAccountFromMemory(ctx context.Context, in *Gene
 	ctx = ctxsetters.WithServiceName(ctx, "Accounts")
 	ctx = ctxsetters.WithMethodName(ctx, "ReadAccountFromMemory")
 	out := new(GeneralResponse)
-	err := doJSONRequest(ctx, c.client, c.urls[6], in, out)
+	err := doJSONRequest(ctx, c.client, c.urls[7], in, out)
 	if err != nil {
 		return nil, err
 	}
@@ -337,6 +365,9 @@ func (s *accountsServer) ServeHTTP(resp http.ResponseWriter, req *http.Request) 
 		return
 	case "/twirp/accounts.Accounts/AccountFromKey":
 		s.serveAccountFromKey(ctx, resp, req)
+		return
+	case "/twirp/accounts.Accounts/GetAllAccounts":
+		s.serveGetAllAccounts(ctx, resp, req)
 		return
 	case "/twirp/accounts.Accounts/MakeEncodingSafe":
 		s.serveMakeEncodingSafe(ctx, resp, req)
@@ -626,6 +657,150 @@ func (s *accountsServer) serveAccountFromKeyProtobuf(ctx context.Context, resp h
 	}
 	if respContent == nil {
 		s.writeError(ctx, resp, twirp.InternalError("received a nil *GeneralResponse and nil error while calling AccountFromKey. nil responses are not supported"))
+		return
+	}
+
+	ctx = callResponsePrepared(ctx, s.hooks)
+
+	respBytes, err := proto.Marshal(respContent)
+	if err != nil {
+		err = wrapErr(err, "failed to marshal proto response")
+		s.writeError(ctx, resp, twirp.InternalErrorWith(err))
+		return
+	}
+
+	ctx = ctxsetters.WithStatusCode(ctx, http.StatusOK)
+	resp.Header().Set("Content-Type", "application/protobuf")
+	resp.WriteHeader(http.StatusOK)
+	if n, err := resp.Write(respBytes); err != nil {
+		msg := fmt.Sprintf("failed to write response, %d of %d bytes written: %s", n, len(respBytes), err.Error())
+		twerr := twirp.NewError(twirp.Unknown, msg)
+		callError(ctx, s.hooks, twerr)
+	}
+	callResponseSent(ctx, s.hooks)
+}
+
+func (s *accountsServer) serveGetAllAccounts(ctx context.Context, resp http.ResponseWriter, req *http.Request) {
+	header := req.Header.Get("Content-Type")
+	i := strings.Index(header, ";")
+	if i == -1 {
+		i = len(header)
+	}
+	switch strings.TrimSpace(strings.ToLower(header[:i])) {
+	case "application/json":
+		s.serveGetAllAccountsJSON(ctx, resp, req)
+	case "application/protobuf":
+		s.serveGetAllAccountsProtobuf(ctx, resp, req)
+	default:
+		msg := fmt.Sprintf("unexpected Content-Type: %q", req.Header.Get("Content-Type"))
+		twerr := badRouteError(msg, req.Method, req.URL.Path)
+		s.writeError(ctx, resp, twerr)
+	}
+}
+
+func (s *accountsServer) serveGetAllAccountsJSON(ctx context.Context, resp http.ResponseWriter, req *http.Request) {
+	var err error
+	ctx = ctxsetters.WithMethodName(ctx, "GetAllAccounts")
+	ctx, err = callRequestRouted(ctx, s.hooks)
+	if err != nil {
+		s.writeError(ctx, resp, err)
+		return
+	}
+
+	reqContent := new(GeneralRequest)
+	unmarshaler := jsonpb.Unmarshaler{AllowUnknownFields: true}
+	if err = unmarshaler.Unmarshal(req.Body, reqContent); err != nil {
+		err = wrapErr(err, "failed to parse request json")
+		s.writeError(ctx, resp, twirp.InternalErrorWith(err))
+		return
+	}
+
+	// Call service method
+	var respContent *GeneralResponse
+	func() {
+		defer func() {
+			// In case of a panic, serve a 500 error and then panic.
+			if r := recover(); r != nil {
+				s.writeError(ctx, resp, twirp.InternalError("Internal service panic"))
+				panic(r)
+			}
+		}()
+		respContent, err = s.Accounts.GetAllAccounts(ctx, reqContent)
+	}()
+
+	if err != nil {
+		s.writeError(ctx, resp, err)
+		return
+	}
+	if respContent == nil {
+		s.writeError(ctx, resp, twirp.InternalError("received a nil *GeneralResponse and nil error while calling GetAllAccounts. nil responses are not supported"))
+		return
+	}
+
+	ctx = callResponsePrepared(ctx, s.hooks)
+
+	var buf bytes.Buffer
+	marshaler := &jsonpb.Marshaler{OrigName: true}
+	if err = marshaler.Marshal(&buf, respContent); err != nil {
+		err = wrapErr(err, "failed to marshal json response")
+		s.writeError(ctx, resp, twirp.InternalErrorWith(err))
+		return
+	}
+
+	ctx = ctxsetters.WithStatusCode(ctx, http.StatusOK)
+	resp.Header().Set("Content-Type", "application/json")
+	resp.WriteHeader(http.StatusOK)
+
+	respBytes := buf.Bytes()
+	if n, err := resp.Write(respBytes); err != nil {
+		msg := fmt.Sprintf("failed to write response, %d of %d bytes written: %s", n, len(respBytes), err.Error())
+		twerr := twirp.NewError(twirp.Unknown, msg)
+		callError(ctx, s.hooks, twerr)
+	}
+	callResponseSent(ctx, s.hooks)
+}
+
+func (s *accountsServer) serveGetAllAccountsProtobuf(ctx context.Context, resp http.ResponseWriter, req *http.Request) {
+	var err error
+	ctx = ctxsetters.WithMethodName(ctx, "GetAllAccounts")
+	ctx, err = callRequestRouted(ctx, s.hooks)
+	if err != nil {
+		s.writeError(ctx, resp, err)
+		return
+	}
+
+	buf, err := ioutil.ReadAll(req.Body)
+	if err != nil {
+		err = wrapErr(err, "failed to read request body")
+		s.writeError(ctx, resp, twirp.InternalErrorWith(err))
+		return
+	}
+	reqContent := new(GeneralRequest)
+	if err = proto.Unmarshal(buf, reqContent); err != nil {
+		err = wrapErr(err, "failed to parse request proto")
+		s.writeError(ctx, resp, twirp.InternalErrorWith(err))
+		return
+	}
+
+	// Call service method
+	var respContent *GeneralResponse
+	func() {
+		defer func() {
+			// In case of a panic, serve a 500 error and then panic.
+			if r := recover(); r != nil {
+				s.writeError(ctx, resp, twirp.InternalError("Internal service panic"))
+				panic(r)
+			}
+		}()
+		respContent, err = s.Accounts.GetAllAccounts(ctx, reqContent)
+	}()
+
+	if err != nil {
+		s.writeError(ctx, resp, err)
+		return
+	}
+	if respContent == nil {
+		s.writeError(ctx, resp, twirp.InternalError("received a nil *GeneralResponse and nil error while calling GetAllAccounts. nil responses are not supported"))
 		return
 	}
 
@@ -1798,21 +1973,22 @@ func callError(ctx context.Context, h *twirp.ServerHooks, err twirp.Error) conte
 }
 
 var twirpFileDescriptor0 = []byte{
-	// 250 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xa4, 0xd2, 0x41, 0x4b, 0xc3, 0x40,
-	0x10, 0x05, 0x60, 0x2b, 0x5a, 0xeb, 0x1c, 0xa2, 0xac, 0x08, 0xd1, 0x83, 0x48, 0x4e, 0x82, 0xd0,
-	0x83, 0xde, 0x15, 0x15, 0x2d, 0x5a, 0xdb, 0x43, 0xfa, 0x0b, 0xd6, 0xe4, 0x59, 0x8a, 0x66, 0x27,
-	0xce, 0x6c, 0x2b, 0xb9, 0xfa, 0xcb, 0xa5, 0x35, 0x29, 0x11, 0x3c, 0xad, 0xc7, 0xb7, 0xc3, 0x7e,
-	0xfb, 0x18, 0x96, 0x22, 0x9b, 0x65, 0x3c, 0x77, 0x5e, 0xfb, 0xa5, 0xb0, 0x67, 0xd3, 0x6b, 0x72,
-	0xf2, 0x44, 0xd1, 0x00, 0x0e, 0x62, 0xdf, 0x53, 0x7c, 0xcc, 0xa1, 0xde, 0xc4, 0xb4, 0x63, 0xf3,
-	0x5c, 0xa0, 0x1a, 0x77, 0x4e, 0x3b, 0x67, 0xbb, 0x69, 0x13, 0xcd, 0x09, 0x51, 0x29, 0xb3, 0x85,
-	0xf5, 0x18, 0xa2, 0x8a, 0x37, 0x57, 0xc3, 0xd6, 0x49, 0x72, 0x4e, 0x7b, 0x6b, 0x4b, 0x4b, 0x76,
-	0x8a, 0x25, 0x56, 0x40, 0xd5, 0x4e, 0xd1, 0x60, 0x75, 0xbc, 0xf8, 0xda, 0xa2, 0xde, 0x4d, 0xdd,
-	0xc2, 0xdc, 0x11, 0x8d, 0xf1, 0x59, 0x47, 0x13, 0xf7, 0xd7, 0x75, 0x7f, 0x77, 0x3b, 0x3e, 0xfa,
-	0x63, 0xf2, 0xf3, 0x52, 0xb2, 0x61, 0x06, 0x14, 0xd5, 0xc2, 0x83, 0x70, 0x31, 0x44, 0x15, 0x0a,
-	0x3d, 0xd2, 0xfe, 0xc8, 0xbe, 0xe1, 0xde, 0x65, 0x9c, 0xcf, 0xdc, 0x74, 0x62, 0x5f, 0x11, 0x4a,
-	0x3d, 0xd3, 0x41, 0x8a, 0x8c, 0x17, 0x90, 0xa5, 0xd2, 0x88, 0xa1, 0xda, 0x35, 0x75, 0x27, 0x5e,
-	0xfe, 0x01, 0x5c, 0xd1, 0xf6, 0x6d, 0xe5, 0xa1, 0xa1, 0xf7, 0xc7, 0x74, 0x98, 0xc2, 0xe6, 0xad,
-	0x35, 0x8f, 0x50, 0xb0, 0x84, 0x6e, 0xfa, 0xa5, 0xbb, 0xfa, 0x8e, 0x97, 0xdf, 0x01, 0x00, 0x00,
-	0xff, 0xff, 0x19, 0x08, 0x05, 0x78, 0xa0, 0x02, 0x00, 0x00,
+	// 259 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xa4, 0xd2, 0xc1, 0x4a, 0xc3, 0x40,
+	0x10, 0x06, 0x60, 0x2b, 0x5a, 0xeb, 0x1c, 0xa2, 0xac, 0x08, 0xd1, 0x83, 0x48, 0x4e, 0x82, 0xd0,
+	0x83, 0xde, 0x95, 0x2a, 0x1a, 0xb4, 0xb6, 0x87, 0xf4, 0x09, 0xd6, 0xe4, 0xb7, 0x14, 0x93, 0xdd,
+	0x38, 0xb3, 0xad, 0xe4, 0x19, 0x7d, 0x29, 0x69, 0x4d, 0x42, 0x85, 0x9e, 0xb6, 0xc7, 0x7f, 0x07,
+	0xbe, 0xfd, 0xd9, 0x59, 0x0a, 0x74, 0x9a, 0xda, 0xb9, 0x71, 0xd2, 0x2f, 0xd9, 0x3a, 0xab, 0x7a,
+	0x4d, 0x8e, 0x5e, 0x29, 0x88, 0x61, 0xc0, 0x3a, 0x4f, 0xf0, 0x35, 0x87, 0x38, 0x15, 0xd2, 0x81,
+	0xce, 0x32, 0x86, 0x48, 0xd8, 0xb9, 0xec, 0x5c, 0x1d, 0x26, 0x4d, 0x54, 0x17, 0x44, 0x25, 0xcf,
+	0x16, 0xda, 0x61, 0x88, 0x2a, 0xdc, 0x5d, 0x0d, 0xd7, 0x4e, 0xa2, 0x6b, 0x3a, 0x6a, 0x2d, 0x29,
+	0xad, 0x11, 0x2c, 0xb1, 0x02, 0x22, 0x7a, 0x8a, 0x06, 0xab, 0xe3, 0xcd, 0xcf, 0x1e, 0xf5, 0x06,
+	0x75, 0x0b, 0xf5, 0x48, 0x34, 0xc6, 0x77, 0x1d, 0x55, 0xd8, 0x6f, 0xeb, 0xfe, 0xef, 0x76, 0x7e,
+	0xb6, 0x61, 0xf2, 0x77, 0x53, 0xb4, 0xa3, 0x62, 0x0a, 0x6a, 0xe1, 0x99, 0x6d, 0x31, 0x44, 0xb5,
+	0x05, 0x14, 0xc3, 0x0d, 0xf2, 0xbc, 0xed, 0xe7, 0x09, 0xbd, 0xd0, 0xf1, 0x48, 0x7f, 0xe2, 0xc9,
+	0xa4, 0x36, 0x9b, 0x99, 0xe9, 0x44, 0x7f, 0xc0, 0x97, 0x7a, 0xa3, 0x93, 0x04, 0xa9, 0x5d, 0x80,
+	0x97, 0x4a, 0x23, 0xfa, 0x6a, 0xf7, 0xd4, 0x9d, 0x38, 0xde, 0x02, 0xb8, 0xa3, 0xfd, 0x87, 0xca,
+	0xc1, 0xfb, 0x65, 0xc6, 0x74, 0x9a, 0x40, 0x67, 0x6b, 0xfb, 0x1a, 0xa1, 0xb0, 0xec, 0xbb, 0xb2,
+	0xf7, 0xee, 0xea, 0x5f, 0xdf, 0xfe, 0x06, 0x00, 0x00, 0xff, 0xff, 0x0a, 0xf0, 0x24, 0x22, 0xe9,
+	0x02, 0x00, 0x00,
 }
