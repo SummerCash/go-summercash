@@ -38,6 +38,32 @@ func TestAccountFromKey(t *testing.T) {
 	t.Log(account.String()) // Log success
 }
 
+// TestGetAllAccounts - test functionality of keystore walk method
+func TestGetAllAccounts(t *testing.T) {
+	account, err := NewAccount() // Generate account
+
+	if err != nil { // Check for errors
+		t.Error(err) // Log found error
+		t.FailNow()  // Panic
+	}
+
+	err = account.WriteToMemory() // Make sure we have at least one account to walk
+
+	if err != nil { // Check for errors
+		t.Error(err) // Log found error
+		t.FailNow()  // Panic
+	}
+
+	addresses, err := GetAllAccounts() // Walk
+
+	if err != nil { // Check for errors
+		t.Error(err) // Log found error
+		t.FailNow()  // Panic
+	}
+
+	t.Log(addresses) // Log success
+}
+
 // TestMakeEncodingSafe - test functionality of safe account encoding
 func TestMakeEncodingSafe(t *testing.T) {
 	privateKey, err := ecdsa.GenerateKey(elliptic.P521(), rand.Reader) // Generate private key
