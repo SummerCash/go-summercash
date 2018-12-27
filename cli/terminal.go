@@ -15,6 +15,7 @@ import (
 	figure "github.com/common-nighthawk/go-figure"
 	"github.com/space55/summertech-blockchain/common"
 	"github.com/space55/summertech-blockchain/config"
+	accountsProto "github.com/space55/summertech-blockchain/internal/rpc/proto/accounts"
 	cryptoProto "github.com/space55/summertech-blockchain/internal/rpc/proto/crypto"
 	upnpProto "github.com/space55/summertech-blockchain/internal/rpc/proto/upnp"
 )
@@ -57,8 +58,9 @@ func NewTerminal(rpcPort uint, rpcAddress string) {
 
 // handleCommand - run handler for given receiver
 func handleCommand(receiver string, methodname string, params []string, rpcPort uint, rpcAddress string, transport *http.Transport) {
-	cryptoClient := cryptoProto.NewCryptoProtobufClient("https://"+rpcAddress+":"+strconv.Itoa(int(rpcPort)), &http.Client{Transport: transport}) // Init crypto client
-	upnpClient := upnpProto.NewUpnpProtobufClient("https://"+rpcAddress+":"+strconv.Itoa(int(rpcPort)), &http.Client{Transport: transport})       // Init upnp client
+	cryptoClient := cryptoProto.NewCryptoProtobufClient("https://"+rpcAddress+":"+strconv.Itoa(int(rpcPort)), &http.Client{Transport: transport})       // Init crypto client
+	upnpClient := upnpProto.NewUpnpProtobufClient("https://"+rpcAddress+":"+strconv.Itoa(int(rpcPort)), &http.Client{Transport: transport})             // Init upnp client
+	accountsClient := accountsProto.NewAccountsProtobufClient("https://"+rpcAddress+":"+strconv.Itoa(int(rpcPort)), &http.Client{Transport: transport}) // Init accounts client
 
 	switch receiver {
 	case "crypto":
@@ -69,6 +71,12 @@ func handleCommand(receiver string, methodname string, params []string, rpcPort 
 		}
 	case "upnp":
 		err := handleUpnp(&upnpClient, methodname, params) // Handle upnp
+
+		if err != nil { // Check for errors
+			fmt.Println("\n" + err.Error()) // Log found error
+		}
+	case "accounts":
+		err := handleAccounts(&accountsClient, methodname, params) // Handle accounts
 
 		if err != nil { // Check for errors
 			fmt.Println("\n" + err.Error()) // Log found error
@@ -146,6 +154,44 @@ func handleUpnp(upnpClient *upnpProto.Upnp, methodname string, params []string) 
 	result := reflect.ValueOf(*upnpClient).MethodByName(methodname).Call(reflectParams) // Call method
 
 	response := result[0].Interface().(*upnpProto.GeneralResponse) // Get response
+
+	if result[1].Interface() != nil { // Check for errors
+		return result[1].Interface().(error) // Return error
+	}
+
+	fmt.Println(response.Message) // Log response
+
+	return nil // No error occurred, return nil
+}
+
+// handleAccounts - handle accounts receiver
+func handleAccounts(accountsClient *accountsProto.Accounts, methodname string, params []string) error {
+	reflectParams := []reflect.Value{} // Init buffer
+
+	reflectParams = append(reflectParams, reflect.ValueOf(context.Background())) // Append request context
+
+	switch methodname {
+	case "NewAccount", "GetAllAccounts":
+		reflectParams = append(reflectParams, reflect.ValueOf(&accountsProto.GeneralRequest{})) // Append params
+	case "MakeEncodingSafe", "RecoverSafeEncoding", "String", "Bytes", "ReadAccountFromMemory":
+		if len(params) != 1 { // Check for invalid parameters
+			return errors.New("invalid parameters (requires string)") // Return error
+		}
+
+		reflectParams = append(reflectParams, reflect.ValueOf(&accountsProto.GeneralRequest{Address: params[0]})) // Append params
+	case "AccountFromKey":
+		if len(params) != 1 { // Check for invalid parameters
+			return errors.New("invalid parameters (requires string)") // Return error
+		}
+
+		reflectParams = append(reflectParams, reflect.ValueOf(&accountsProto.GeneralRequest{PrivateKey: params[0]})) // Append params
+	default:
+		return errors.New("illegal method: " + methodname + ", available methods: NewAccount(), GetAllAccounts(), MakeEncodingSafe(), RecoverSafeEncoding(), String(), Bytes(), ReadAccountFromMemory()") // Return error
+	}
+
+	result := reflect.ValueOf(*accountsClient).MethodByName(methodname).Call(reflectParams) // Call method
+
+	response := result[0].Interface().(*accountsProto.GeneralResponse) // Get response
 
 	if result[1].Interface() != nil { // Check for errors
 		return result[1].Interface().(error) // Return error
