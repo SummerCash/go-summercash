@@ -102,6 +102,7 @@ func startNode() {
 
 /*
 	TODO:
+	- terminal.go accounts service support
 	- archival node flag
 	- readme
 */
