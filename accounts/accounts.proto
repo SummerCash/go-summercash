@@ -1,0 +1,30 @@
+syntax = "proto3"; // Specify compiler version
+
+package accounts;
+
+service Accounts {
+    rpc NewAccount(GeneralRequest) returns (GeneralResponse) {} // Create new account
+    rpc AccountFromKey(GeneralRequest) returns (GeneralResponse) {} // Generate account from given private key
+    rpc MakeEncodingSafe(GeneralRequest) returns (GeneralResponse) {} // Hash specified byte array n times
+    rpc RecoverSafeEncoding(GeneralRequest) returns (GeneralResponse) {} // Hash specified byte array n times to string
+    rpc String(GeneralRequest) returns (GeneralResponse) {} // Hash specified byte array using sha3d algorithm
+    rpc Bytes(GeneralRequest) returns (GeneralResponse) {} // Hash specified byte array to string using sha3d algorithm
+}
+
+/* BEGIN REQUESTS */
+
+message GeneralRequest {
+    uint32 accountIndex = 1; // Index of reference account
+
+    string privateKey = 2; // Private key
+}
+
+/* END REQUESTS */
+
+/* BEGIN RESPONSES */
+
+message GeneralResponse {
+    string message = 1; // Response
+}
+
+/* END REPSONSES */
