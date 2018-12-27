@@ -32,6 +32,20 @@ func TestNewChain(t *testing.T) {
 		t.FailNow()  // Panic
 	}
 
+	coordinationChain, err := NewCoordinationChain() // Init coordinationChain
+
+	if err != nil { // Check for errors
+		t.Error(err) // Log found error
+		t.FailNow()  // Panic
+	}
+
+	err = coordinationChain.WriteToMemory() // Write to memory
+
+	if err != nil { // Check for errors
+		t.Error(err) // Log found error
+		t.FailNow()  // Panic
+	}
+
 	chain, err := NewChain(address) // Initialize chain
 
 	if err != nil { // Check for errors
