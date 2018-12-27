@@ -7,7 +7,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
-	"path/filepath"
 	"strings"
 	"testing"
 
@@ -89,16 +88,16 @@ func TestAddTransaction(t *testing.T) {
 		t.FailNow()  // Panic
 	}
 
-	abs, _ := filepath.Abs(filepath.FromSlash(fmt.Sprintf("../%s", common.DataDir)))
-
-	err = common.CreateDirIfDoesNotExit(fmt.Sprintf("%s/db/chain", abs)) // Create dir if necessary
+	err = common.CreateDirIfDoesNotExit(fmt.Sprintf("%s/db/chain", common.DataDir)) // Create dir if necessary
 
 	if err != nil { // Check for errors
 		t.Error(err) // Log found error
 		t.FailNow()  // Panic
 	}
 
-	err = common.WriteGob(fmt.Sprintf("%s/db/chain/chain_%s.gob", abs, chain.Account.String()), *chain) // Write gob
+	t.Log(chain.Account.String())
+
+	err = common.WriteGob(fmt.Sprintf("%s/db/chain/chain_%s.gob", common.DataDir, chain.Account.String()), *chain) // Write gob
 
 	if err != nil { // Check for errors
 		t.Error(err) // Log found error
