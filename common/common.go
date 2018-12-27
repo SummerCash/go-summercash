@@ -274,7 +274,7 @@ func getNonNilInStringSlice(slice []string) (string, error) {
 
 // getDataDir - get absolute data dir
 func getDataDir() string {
-	abs, _ := filepath.Abs("../data") // Get absolute dir
+	abs, _ := filepath.Abs("./data") // Get absolute dir
 
 	return filepath.FromSlash(abs) // Match slashes
 }
