@@ -97,16 +97,22 @@ func (transaction *Transaction) Publish() error {
 		return err // Return found error
 	}
 
-	address, err := coordinationChain.QueryAddress(*transaction.Recipient) // Get address
+	node, err := coordinationChain.QueryAddress(*transaction.Recipient) // Get address
 
 	if err != nil { // Check for errors
 		return err // Return found error
 	}
 
-	err = common.SendBytes(transaction.Bytes(), address.Addresses[0]+":"+strconv.Itoa(common.DefaultNodePort)) // Send transaction
+	err = common.SendBytes(transaction.Bytes(), node.Addresses[0]+":"+strconv.Itoa(common.DefaultNodePort)) // Send transaction
 
 	if err != nil { // Check for errors
 		return err // Return found error
+	}
+
+	for x, address := range node.Addresses { // Iterate through addresses
+		if x != 0 { // Skip first index
+			go common.SendBytes(transaction.Bytes(), address+":"+strconv.Itoa(common.DefaultNodePort)) // Send transaction
+		}
 	}
 
 	return nil // No error occurred, return nil
