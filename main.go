@@ -11,7 +11,9 @@ import (
 	"github.com/space55/summertech-blockchain/cli"
 	"github.com/space55/summertech-blockchain/common"
 	"github.com/space55/summertech-blockchain/handler"
+	accountsServer "github.com/space55/summertech-blockchain/internal/rpc/accounts"
 	cryptoServer "github.com/space55/summertech-blockchain/internal/rpc/crypto"
+	accountsProto "github.com/space55/summertech-blockchain/internal/rpc/proto/accounts"
 	cryptoProto "github.com/space55/summertech-blockchain/internal/rpc/proto/crypto"
 	upnpProto "github.com/space55/summertech-blockchain/internal/rpc/proto/upnp"
 	upnpServer "github.com/space55/summertech-blockchain/internal/rpc/upnp"
@@ -70,13 +72,15 @@ func startRPCServer() {
 		panic(err) // Panic
 	}
 
-	cryptoHandler := cryptoProto.NewCryptoServer(&cryptoServer.Server{}, nil) // Init handler
-	upnpHandler := upnpProto.NewUpnpServer(&upnpServer.Server{}, nil)         // Init handler
+	cryptoHandler := cryptoProto.NewCryptoServer(&cryptoServer.Server{}, nil)         // Init handler
+	upnpHandler := upnpProto.NewUpnpServer(&upnpServer.Server{}, nil)                 // Init handler
+	accountsHandler := accountsProto.NewAccountsServer(&accountsServer.Server{}, nil) // Init handler
 
 	mux := http.NewServeMux() // Init mux
 
-	mux.Handle(cryptoProto.CryptoPathPrefix, cryptoHandler) // Start mux node handler
-	mux.Handle(upnpProto.UpnpPathPrefix, upnpHandler)       // Start mux upnp handler
+	mux.Handle(cryptoProto.CryptoPathPrefix, cryptoHandler)       // Start mux node handler
+	mux.Handle(upnpProto.UpnpPathPrefix, upnpHandler)             // Start mux upnp handler
+	mux.Handle(accountsProto.AccountsPathPrefix, accountsHandler) // Start mux accounts handler
 
 	go http.ListenAndServeTLS(":"+strconv.Itoa(*rpcPortFlag), "termCert.pem", "termKey.pem", mux) // Start server
 }
