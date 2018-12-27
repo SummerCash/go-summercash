@@ -23,7 +23,21 @@ func (server *Server) NewAccount(ctx context.Context, req *accountsProto.General
 		return &accountsProto.GeneralResponse{}, err // Return found error
 	}
 
-	return &accountsProto.GeneralResponse{Message: fmt.Sprintf("\n%s", account.Address.String())}, nil // No error occurred, return response
+	marshaledPrivateKey, err := x509.MarshalECPrivateKey(account.PrivateKey) // Marshal private key
+
+	if err != nil { // Check for errors
+		return &accountsProto.GeneralResponse{}, err // Return found error
+	}
+
+	pemEncoded := pem.EncodeToMemory(&pem.Block{Type: "PRIVATE KEY", Bytes: marshaledPrivateKey}) // Encode to memory
+
+	stringEncoded, err := common.EncodeString(pemEncoded) // Encode to string
+
+	if err != nil { // Check for errors
+		return &accountsProto.GeneralResponse{}, err // Return found error
+	}
+
+	return &accountsProto.GeneralResponse{Message: fmt.Sprintf("\nAddress: %s, PrivateKey: %s", account.Address.String(), stringEncoded)}, nil // No error occurred, return response
 }
 
 // AccountFromKey - accounts.AccountFromKey RPC handler
@@ -75,7 +89,7 @@ func (server *Server) MakeEncodingSafe(ctx context.Context, req *accountsProto.G
 	account, err := accounts.ReadAccountFromMemory(address) // Read account
 
 	if err != nil { // Check for errors
-		return nil, err // Return found error
+		return nil, err // Return found errore
 	}
 
 	err = account.MakeEncodingSafe() // Make encoding safe
