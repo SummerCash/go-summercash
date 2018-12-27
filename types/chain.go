@@ -119,7 +119,7 @@ func (chain *Chain) AddTransaction(transaction *Transaction) error {
 
 	if transaction.Signature == nil && err == nil { // Check for nil signature
 		return ErrNilSignature // Return error
-	} else if *transaction.Recipient != chain.Account && *transaction.Sender != chain.Account { // Check irrelevant
+	} else if *transaction.Recipient != chain.Account && transaction.Sender != nil && *transaction.Sender != chain.Account { // Check irrelevant
 		return ErrIrrelevantTransaction // Return error
 	}
 
