@@ -31,4 +31,5 @@ types/data/db/coordination_chain/chain.gob
 types/genesis.json
 types/data/config/config.json
 accounts/data/
-data/keystore
+data/keystore/
+data/config/
