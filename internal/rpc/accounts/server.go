@@ -3,6 +3,7 @@ package accounts
 import (
 	"context"
 	"crypto/x509"
+	"encoding/json"
 	"encoding/pem"
 	"fmt"
 	"strings"
@@ -110,7 +111,13 @@ func (server *Server) MakeEncodingSafe(ctx context.Context, req *accountsProto.G
 		return nil, err // Return found error
 	}
 
-	return &accountsProto.GeneralResponse{Message: fmt.Sprintf("\nmade account with address %s encoding safe", account.Address.String())}, nil // No error occurred, return response
+	marshaledVal, err := json.MarshalIndent(*account, "", "  ") // Marshal JSON
+
+	if err != nil { // Check for errors
+		return nil, err // Return found error
+	}
+
+	return &accountsProto.GeneralResponse{Message: string(marshaledVal)}, nil // No error occurred, return response
 }
 
 // RecoverSafeEncoding - accounts.RecoverSafeEncoding RPC handler
@@ -133,7 +140,13 @@ func (server *Server) RecoverSafeEncoding(ctx context.Context, req *accountsProt
 		return nil, err // Return found error
 	}
 
-	return &accountsProto.GeneralResponse{Message: fmt.Sprintf("\nrecovered account with address %s from safe encoding", account.Address.String())}, nil // No error occurred, return response
+	marshaledVal, err := json.MarshalIndent(*account, "", "  ") // Marshal JSON
+
+	if err != nil { // Check for errors
+		return nil, err // Return found error
+	}
+
+	return &accountsProto.GeneralResponse{Message: string(marshaledVal)}, nil // No error occurred, return response
 }
 
 // String - accounts.String RPC handler
