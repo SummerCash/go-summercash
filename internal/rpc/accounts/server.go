@@ -4,6 +4,7 @@ import (
 	"context"
 	"crypto/x509"
 	"encoding/pem"
+	"fmt"
 
 	"github.com/space55/summertech-blockchain/accounts"
 	"github.com/space55/summertech-blockchain/common"
@@ -49,4 +50,27 @@ func (server *Server) AccountFromKey(ctx context.Context, req *accountsProto.Gen
 	}
 
 	return &accountsProto.GeneralResponse{Message: account.Address.String()}, nil // No error occurred, return response
+}
+
+// MakeEncodingSafe - accounts.MakeEncodingSafe RPC handler
+func (server *Server) MakeEncodingSafe(ctx context.Context, req *accountsProto.GeneralRequest) (*accountsProto.GeneralResponse, error) {
+	address, err := common.StringToAddress(req.Address) // Get address
+
+	if err != nil { // Check for errors
+		return nil, err // Return found error
+	}
+
+	account, err := accounts.ReadAccountFromMemory(address) // Read account
+
+	if err != nil { // Check for errors
+		return nil, err // Return found error
+	}
+
+	err = account.MakeEncodingSafe() // Make encoding safe
+
+	if err != nil { // Check for errors
+		return nil, err // Return found error
+	}
+
+	return &accountsProto.GeneralResponse{Message: fmt.Sprintf("made account with address %s encoding safe", account.Address.String())}, nil // No error occurred, return response
 }
