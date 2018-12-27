@@ -9,6 +9,7 @@ service Accounts {
     rpc RecoverSafeEncoding(GeneralRequest) returns (GeneralResponse) {} // Hash specified byte array n times to string
     rpc String(GeneralRequest) returns (GeneralResponse) {} // Hash specified byte array using sha3d algorithm
     rpc Bytes(GeneralRequest) returns (GeneralResponse) {} // Hash specified byte array to string using sha3d algorithm
+    rpc ReadAccountFromMemory(GeneralRequest) returns (GeneralResponse) {} // Read account from persistent memory
 }
 
 /* BEGIN REQUESTS */
