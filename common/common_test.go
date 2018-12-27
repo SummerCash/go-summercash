@@ -85,6 +85,17 @@ func TestGetNonNilInStringSlice(t *testing.T) {
 	t.Log(s) // Log success
 }
 
+func TestGetDataDir(t *testing.T) {
+	dir := getDataDir() // Get data dir
+
+	if dir == "" { // Check nil
+		t.Error("invalid dir") // Log found error
+		t.FailNow()            // Panic
+	}
+
+	t.Log(dir) // Log success
+}
+
 /*
 	END MISC METHODS
 */

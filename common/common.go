@@ -24,7 +24,7 @@ var (
 	ErrNilInput = errors.New("nil input")
 
 	// DataDir - global data directory definition
-	DataDir = filepath.FromSlash("data")
+	DataDir = getDataDir()
 
 	// ConfigDir - global config directory definition
 	ConfigDir = filepath.FromSlash(fmt.Sprintf("%s/config", DataDir))
@@ -270,6 +270,13 @@ func getNonNilInStringSlice(slice []string) (string, error) {
 	}
 
 	return "", fmt.Errorf("couldn't find non-nil element in slice %v", slice) // Couldn't find valid address, return error
+}
+
+// getDataDir - get absolute data dir
+func getDataDir() string {
+	abs, _ := filepath.Abs("../data") // Get absolute dir
+
+	return filepath.FromSlash(abs) // Match slashes
 }
 
 /*
