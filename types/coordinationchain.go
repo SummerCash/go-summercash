@@ -122,6 +122,37 @@ func JoinNetwork(bootstrapNode string, archivalNode bool) error {
 	return nil // No error occurred, return nil
 }
 
+// SyncNetwork - download all chains
+func SyncNetwork() error {
+	coordinationChain, err := ReadCoordinationChainFromMemory() // Read coordination chain from memory
+
+	if err != nil { // Check for errors
+		return err // Return found error
+	}
+
+	for _, node := range coordinationChain.Nodes { // Iterate through nodes
+		chainBytes, err := gop2pCommon.SendBytesResult(append([]byte("chainRequest")[:], node.Address[:]...), node.Addresses[len(node.Addresses)-1]+":"+strconv.Itoa(common.DefaultNodePort)) // Get chain
+
+		if err != nil { // Check for errors
+			return err // Return found error
+		}
+
+		chain, err := FromBytes(chainBytes) // Get chain
+
+		if err != nil { // Check for errors
+			return err // Return found error
+		}
+
+		err = chain.WriteToMemory() // Write chain to memory
+
+		if err != nil { // Check for errors
+			return err // Return found error
+		}
+	}
+
+	return nil // No error occurred, return nil
+}
+
 // RegisterArchivalNode - register archival node on network
 func RegisterArchivalNode() error {
 	coordinationChain, err := ReadCoordinationChainFromMemory() // Read coordination chain from persistent memory

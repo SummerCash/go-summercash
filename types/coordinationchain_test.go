@@ -67,6 +67,18 @@ func TestAddNode(t *testing.T) {
 	t.Log(*coordinationNode) // Log success
 }
 
+// TestJoinNetwork - test functionality of network joining
+func TestJoinNetwork(t *testing.T) {
+	err := JoinNetwork(common.BootstrapNodes[0], false) // Join network
+
+	if err != nil { // Check for errors
+		t.Error(err) // Log found error
+		t.FailNow()  // Panic
+	}
+
+	t.Log("success") // Log success
+}
+
 // TestQueryAddress - test QueryAddress() method
 func TestQueryAddress(t *testing.T) {
 	coordinationChain, err := NewCoordinationChain() // Init coordinationChain
