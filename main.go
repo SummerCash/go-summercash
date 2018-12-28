@@ -120,18 +120,18 @@ func registerArchivalNode() error {
 		return err // Return found error
 	}
 
-	_, err = coordinationChain.QueryNode(ip) // Check node already in network
+	_, err = coordinationChain.QueryArchivalNode(ip) // Check node already in network
 
 	if err != nil { // Check for errors
-		for x, node := range coordinationChain.Nodes { // Iterate through nodes
-			node, err := types.NewCoordinationNode(node.Address, ip) // Init node
+		for _, node := range coordinationChain.Nodes { // Iterate through nodes
+			node, err := types.NewCoordinationNode(node.Address, []string{ip}) // Init node
 
 			if err != nil { // Check for errors
 				return err // Return found error
 			}
 
+			coordinationChain.AddNode(node, true) // Add node
 		}
-		coordinationChain.AddNode()
 	}
 
 	return nil // No error occurred, return nil
