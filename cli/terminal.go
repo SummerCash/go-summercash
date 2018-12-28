@@ -16,6 +16,7 @@ import (
 	"github.com/space55/summertech-blockchain/common"
 	"github.com/space55/summertech-blockchain/config"
 	accountsProto "github.com/space55/summertech-blockchain/internal/rpc/proto/accounts"
+	configProto "github.com/space55/summertech-blockchain/internal/rpc/proto/config"
 	cryptoProto "github.com/space55/summertech-blockchain/internal/rpc/proto/crypto"
 	upnpProto "github.com/space55/summertech-blockchain/internal/rpc/proto/upnp"
 )
@@ -61,6 +62,7 @@ func handleCommand(receiver string, methodname string, params []string, rpcPort 
 	cryptoClient := cryptoProto.NewCryptoProtobufClient("https://"+rpcAddress+":"+strconv.Itoa(int(rpcPort)), &http.Client{Transport: transport})       // Init crypto client
 	upnpClient := upnpProto.NewUpnpProtobufClient("https://"+rpcAddress+":"+strconv.Itoa(int(rpcPort)), &http.Client{Transport: transport})             // Init upnp client
 	accountsClient := accountsProto.NewAccountsProtobufClient("https://"+rpcAddress+":"+strconv.Itoa(int(rpcPort)), &http.Client{Transport: transport}) // Init accounts client
+	configClient := configProto.NewConfigProtobufClient("https;//"+rpcAddress+":"+strconv.Itoa(int(rpcPort)), &http.Client{Transport: transport})       // Init config client
 
 	switch receiver {
 	case "crypto":
@@ -77,6 +79,12 @@ func handleCommand(receiver string, methodname string, params []string, rpcPort 
 		}
 	case "accounts":
 		err := handleAccounts(&accountsClient, methodname, params) // Handle accounts
+
+		if err != nil { // Check for errors
+			fmt.Println("\n" + err.Error()) // Log found error
+		}
+	case "config":
+		err := handleConfig(&configClient, methodname, params) // Handle config
 
 		if err != nil { // Check for errors
 			fmt.Println("\n" + err.Error()) // Log found error
@@ -192,6 +200,42 @@ func handleAccounts(accountsClient *accountsProto.Accounts, methodname string, p
 	result := reflect.ValueOf(*accountsClient).MethodByName(methodname).Call(reflectParams) // Call method
 
 	response := result[0].Interface().(*accountsProto.GeneralResponse) // Get response
+
+	if result[1].Interface() != nil { // Check for errors
+		return result[1].Interface().(error) // Return error
+	}
+
+	fmt.Println(response.Message) // Log response
+
+	return nil // No error occurred, return nil
+}
+
+// handleConfig - handle config receiver
+func handleConfig(configClient *configProto.Config, methodname string, params []string) error {
+	reflectParams := []reflect.Value{} // Init buffer
+
+	reflectParams = append(reflectParams, reflect.ValueOf(context.Background())) // Append request context
+
+	switch methodname {
+	case "NewChainConfig":
+		if len(params) != 1 { // Check for invalid parameters
+			return errors.New("invalid parameters (requires string)") // Return error
+		}
+
+		reflectParams = append(reflectParams, reflect.ValueOf(&configProto.GeneralRequest{GenesisPath: params[0]})) // Append params
+	case "Bytes", "String", "WriteToMemory", "ReadChainConfigFromMemory":
+		if len(params) != 0 { // Check for invalid parameters
+			return errors.New("invalid parameters (accepts 0 params)") // Return error
+		}
+
+		reflectParams = append(reflectParams, reflect.ValueOf(&configProto.GeneralRequest{})) // Append params
+	default:
+		return errors.New("illegal method: " + methodname + ", available methods: NewAccount(), GetAllAccounts(), MakeEncodingSafe(), RecoverSafeEncoding(), String(), Bytes(), ReadAccountFromMemory()") // Return error
+	}
+
+	result := reflect.ValueOf(*configClient).MethodByName(methodname).Call(reflectParams) // Call method
+
+	response := result[0].Interface().(*configProto.GeneralResponse) // Get response
 
 	if result[1].Interface() != nil { // Check for errors
 		return result[1].Interface().(error) // Return error
