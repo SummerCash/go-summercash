@@ -90,7 +90,11 @@ func startRPCServer() {
 // startNode - start necessary services for full node
 func startNode(archivalNode bool) {
 	if archivalNode { // Check
-		registerArchivalNode() // Register node
+		err := types.JoinNetwork(common.BootstrapNodes[0], true) // Register node
+
+		if err != nil { // Check for errors
+			panic(err) // Panic
+		}
 	}
 
 	ln, err := tls.Listen("tcp", ":"+strconv.Itoa(*nodePortFlag), common.GeneralTLSConfig) // Listen on port
@@ -104,37 +108,6 @@ func startNode(archivalNode bool) {
 	if err != nil { // Check for errors
 		panic(err) // Panic
 	}
-}
-
-// registerArchivalNode - join all address spaces on network
-func registerArchivalNode() error {
-	coordinationChain, err := types.ReadCoordinationChainFromMemory() // Read coordination chain from persistent memory
-
-	if err != nil { // Check for errors
-		return err // Return found error
-	}
-
-	ip, err := common.GetExtIPAddrWithoutUPnP() // Get IP
-
-	if err != nil { // Check for errors
-		return err // Return found error
-	}
-
-	_, err = coordinationChain.QueryArchivalNode(ip) // Check node already in network
-
-	if err != nil { // Check for errors
-		for _, node := range coordinationChain.Nodes { // Iterate through nodes
-			node, err := types.NewCoordinationNode(node.Address, []string{ip}) // Init node
-
-			if err != nil { // Check for errors
-				return err // Return found error
-			}
-
-			coordinationChain.AddNode(node, true) // Add node
-		}
-	}
-
-	return nil // No error occurred, return nil
 }
 
 /*
