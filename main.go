@@ -8,6 +8,7 @@ import (
 	"strconv"
 	"strings"
 
+	commonGoP2P "github.com/dowlandaiello/GoP2P/common"
 	"github.com/space55/summertech-blockchain/cli"
 	"github.com/space55/summertech-blockchain/common"
 	"github.com/space55/summertech-blockchain/handler"
@@ -89,7 +90,9 @@ func startRPCServer() {
 
 // startNode - start necessary services for full node
 func startNode(archivalNode bool) {
-	if archivalNode { // Check
+	ip, _ := common.GetExtIPAddrWithoutUPnP() // Get IP
+
+	if archivalNode && !commonGoP2P.StringInSlice(common.BootstrapNodes, ip) { // Check is not bootstrap node
 		err := types.JoinNetwork(common.BootstrapNodes[0], true) // Register node
 
 		if err != nil { // Check for errors
@@ -112,7 +115,6 @@ func startNode(archivalNode bool) {
 
 /*
 	TODO:
-	- terminal.go accounts service support
 	- archival node flag
 	- readme
 */
