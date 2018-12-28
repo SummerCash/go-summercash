@@ -61,6 +61,18 @@ func handleConnection(conn net.Conn) error {
 		}
 	case "{" + `"` + "nonce" + `"` + ":": // Check transaction
 		return types.HandleReceivedTransaction(data) // Handle received data
+	case "cChainReq": // Check coordinationChain request
+		chainBytes, err := types.HandleReceivedCoordinationChainRequest() // Handle chain request
+
+		if err != nil { // Check for errors
+			return err // Return found error
+		}
+
+		_, err = conn.Write(chainBytes) // Write chain
+
+		if err != nil { // Check for errors
+			return err // Return found error
+		}
 	}
 
 	return nil // No error occurred, return nil

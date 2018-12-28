@@ -36,3 +36,16 @@ func HandleReceivedCoordinationNode(b []byte) error {
 
 	return nil // No error occurred, return nil
 }
+
+// HandleReceivedCoordinationChainRequest - handle received byte value for coordination chain request
+func HandleReceivedCoordinationChainRequest() ([]byte, error) {
+	coordinationChain, err := ReadCoordinationChainFromMemory() // Read coordination chain
+
+	if err != nil { // Check for errors
+		return nil, err // Return found error
+	}
+
+	byteVal := coordinationChain.Bytes() // Get byte val
+
+	return byteVal, nil // Return found byte value
+}

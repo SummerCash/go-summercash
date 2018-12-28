@@ -57,3 +57,29 @@ func TestHandleReceivedCoordinationNode(t *testing.T) {
 
 	t.Log("success") // Log success
 }
+
+// TestHandleReceivedCoordinationChainRequest - test functionality of HandleReceivedCoordinationChainRequest() method
+func TestHandleReceivedCoordinationChainRequest(t *testing.T) {
+	coordinationChain, err := NewCoordinationChain() // Init coordinationChain
+
+	if err != nil { // Check for errors
+		t.Error(err) // Log found error
+		t.FailNow()  // Panic
+	}
+
+	err = coordinationChain.WriteToMemory() // Write coordination chain to memory
+
+	if err != nil { // Check for errors
+		t.Error(err) // Log found error
+		t.FailNow()  // Panic
+	}
+
+	chain, err := HandleReceivedCoordinationChainRequest() // Handle chain
+
+	if err != nil { // Check for errors
+		t.Error(err) // Log found error
+		t.FailNow()  // Panic
+	}
+
+	t.Log(chain) // Log success
+}
