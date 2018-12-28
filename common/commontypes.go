@@ -90,11 +90,13 @@ func (address Address) Bytes() []byte {
 
 // String - convert given address to string
 func (address Address) String() string {
-	enc := make([]byte, len(address)*2+2) // Init encoder buffer
+	noPrefix := address[2:] // Remove duplicate 0x prefix
+
+	enc := make([]byte, len(noPrefix)*2+2) // Init encoder buffer
 
 	copy(enc, "0x") // Copy prefix
 
-	hex.Encode(enc[2:], address[:]) // Encode given byte array
+	hex.Encode(enc[2:], noPrefix[:]) // Encode given byte array
 
 	return string(enc) // Return string val
 }

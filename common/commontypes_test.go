@@ -115,7 +115,7 @@ func TestString(t *testing.T) {
 		t.FailNow()  // Panic
 	}
 
-	t.Log(address) // Log success
+	t.Log(address.String()) // Log success
 }
 
 /*
