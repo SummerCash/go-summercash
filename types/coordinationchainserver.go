@@ -47,6 +47,12 @@ func HandleReceivedCoordinationChainRequest() ([]byte, error) {
 		if err != nil { // Check for errors
 			return nil, err // Return found error
 		}
+
+		err = coordinationChain.WriteToMemory() // Write to persistent memory
+
+		if err != nil { // Check for errors
+			return nil, err // Return found error
+		}
 	}
 
 	byteVal := coordinationChain.Bytes() // Get byte val
