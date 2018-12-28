@@ -42,7 +42,11 @@ func HandleReceivedCoordinationChainRequest() ([]byte, error) {
 	coordinationChain, err := ReadCoordinationChainFromMemory() // Read coordination chain
 
 	if err != nil { // Check for errors
-		return nil, err // Return found error
+		coordinationChain, err = NewCoordinationChain() // Init coordination chain
+
+		if err != nil { // Check for errors
+			return nil, err // Return found error
+		}
 	}
 
 	byteVal := coordinationChain.Bytes() // Get byte val
