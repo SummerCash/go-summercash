@@ -1,0 +1,27 @@
+syntax = "proto3"; // Specify compiler version
+
+package config;
+
+service Config {
+    rpc NewChainConfig(GeneralRequest) returns (GeneralResponse) {} // Generate new chainConfig from genesis.json file
+    rpc Bytes(GeneralRequest) returns (GeneralResponse) {} // Encode given config to byte array
+    rpc String(GeneralRequest) returns (GeneralResponse) {} // Encode given config to string
+    rpc WriteToMemory(GeneralRequest) returns (GeneralResponse) {} // Write given chain config to memory
+    rpc ReadChainConfigFromMemory(GeneralRequest) returns (GeneralResponse) {} // Read chain configuration from chain config json file
+}
+
+/* BEGIN REQUESTS */
+
+message GeneralRequest {
+    string genesisPath = 1; // Genesis path
+}
+
+/* END REQUESTS */
+
+/* BEGIN RESPONSES */
+
+message GeneralResponse {
+    string message = 1; // Response
+}
+
+/* END REPSONSES */
