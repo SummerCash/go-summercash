@@ -30,7 +30,7 @@ var (
 	dataDirFlag        = flag.String("data-dir", common.DataDir, "performs all node i/o operations in given data directory")                                              // Init data dir flag
 	nodePortFlag       = flag.Int("node-port", common.DefaultNodePort, "launch node on give port")                                                                        // Init node port flag
 	privateNetworkFlag = flag.Bool("private-net", false, "launch node in context of private network")                                                                     // Init private network flag
-	archivalNodeFlag   = flag.Bool("archival-node", false, "launch node in archival mode")                                                                                // Init archival node flag
+	archivalNodeFlag   = flag.Bool("archival", false, "launch node in archival mode")                                                                                     // Init archival node flag
 )
 
 func main() {
