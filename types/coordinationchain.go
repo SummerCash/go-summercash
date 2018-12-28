@@ -97,7 +97,7 @@ func (coordinationChain *CoordinationChain) AddNode(coordinationNode *Coordinati
 
 // JoinNetwork - join given network with bootstrap node address
 func JoinNetwork(bootstrapNode string, archivalNode bool) error {
-	coordinationChainBytes, err := gop2pCommon.SendBytesResult([]byte("chainRequest"), bootstrapNode+":"+strconv.Itoa(common.DefaultNodePort)) // Get coordination chain
+	coordinationChainBytes, err := gop2pCommon.SendBytesResult([]byte("cChainRequest"), bootstrapNode+":"+strconv.Itoa(common.DefaultNodePort)) // Get coordination chain
 
 	if err != nil { // Check for errors
 		return err // Return found error
