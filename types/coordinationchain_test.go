@@ -161,6 +161,53 @@ func TestQueryNode(t *testing.T) {
 	t.Log(*coordinationNode) // Log success
 }
 
+// TestQueryArchivalNode - test QueryArchivalNode() method
+func TestQueryArchivalNode(t *testing.T) {
+	coordinationChain, err := NewCoordinationChain() // Init coordinationChain
+
+	if err != nil { // Check for errors
+		t.Error(err) // Log found error
+		t.FailNow()  // Panic
+	}
+
+	privateKey, err := ecdsa.GenerateKey(elliptic.P521(), rand.Reader) // Generate private key
+
+	if err != nil { // Check for errors
+		t.Error(err) // Log found error
+		t.FailNow()  // Panic
+	}
+
+	address, err := common.NewAddress(privateKey) // Generate address
+
+	if err != nil { // Check for errors
+		t.Error(err) // Log found error
+		t.FailNow()  // Panic
+	}
+
+	coordinationNode, err := NewCoordinationNode(address, []string{"1.1.1.1"}) // Init coordination node
+
+	if err != nil { // Check for errors
+		t.Error(err) // Log found error
+		t.FailNow()  // Panic
+	}
+
+	err = coordinationChain.AddNode(coordinationNode, false) // Add node
+
+	if err != nil { // Check for errors
+		t.Error(err) // Log error
+		t.FailNow()  // panic
+	}
+
+	coordinationNodes, err := coordinationChain.QueryArchivalNode("1.1.1.1") // Query address
+
+	if err != nil { // Check for errors
+		t.Error(err) // Log error
+		t.FailNow()  // Panic
+	}
+
+	t.Log(coordinationNodes) // Log success
+}
+
 // TestPushNode - test PushNode() method
 func TestPushNode(t *testing.T) {
 	coordinationChain, err := NewCoordinationChain() // Init coordinationChain

@@ -122,13 +122,42 @@ func (coordinationChain *CoordinationChain) QueryNode(address string) (*Coordina
 		if node != nil { // Ensure safe pointer
 			for _, currentAddress := range node.Addresses { // Iterate through addresses
 				if currentAddress == address { // Check has address
-					return node, nil // Found math, return node
+					return node, nil // Found match, return node
 				}
 			}
 		}
 	}
 
 	return &CoordinationNode{}, ErrNilNode // Return error
+}
+
+// QueryArchivalNode - query for archival node address in coordination chain
+func (coordinationChain *CoordinationChain) QueryArchivalNode(address string) ([]*CoordinationNode, error) {
+	if address == "" { // Check for nil address
+		return nil, ErrNilAddress // Return error
+	}
+
+	matches := []*CoordinationNode{} // Init matches
+
+	for _, node := range coordinationChain.Nodes { // Iterate through nodes
+		if node != nil { // Ensure safe pointer
+			for _, currentAddress := range node.Addresses { // Iterate through addresses
+				if currentAddress == address { // Check has address
+					if len(matches) == 0 { // Check must init
+						matches = []*CoordinationNode{node} // Init matches
+					}
+
+					matches = append(matches, node) // Append found node
+				}
+			}
+		}
+	}
+
+	if float64(len(matches)) > 0.25*float64(len(coordinationChain.Nodes)) { // Check enough matches
+		return matches, nil // Return found matches
+	}
+
+	return []*CoordinationNode{}, ErrNilNode // Return error
 }
 
 // PushNode - send new node to addresses in coordination chain

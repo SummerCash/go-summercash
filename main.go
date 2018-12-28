@@ -17,6 +17,7 @@ import (
 	cryptoProto "github.com/space55/summertech-blockchain/internal/rpc/proto/crypto"
 	upnpProto "github.com/space55/summertech-blockchain/internal/rpc/proto/upnp"
 	upnpServer "github.com/space55/summertech-blockchain/internal/rpc/upnp"
+	"github.com/space55/summertech-blockchain/types"
 	"github.com/space55/summertech-blockchain/upnp"
 )
 
@@ -29,6 +30,7 @@ var (
 	dataDirFlag        = flag.String("data-dir", common.DataDir, "performs all node i/o operations in given data directory")                                              // Init data dir flag
 	nodePortFlag       = flag.Int("node-port", common.DefaultNodePort, "launch node on give port")                                                                        // Init node port flag
 	privateNetworkFlag = flag.Bool("private-net", false, "launch node in context of private network")                                                                     // Init private network flag
+	archivalNodeFlag   = flag.Bool("archival-node", false, "launch node in archival mode")                                                                                // Init archival node flag
 )
 
 func main() {
@@ -52,7 +54,7 @@ func main() {
 		startRPCServer() // Start RPC server
 	}
 
-	go startNode() // Start node
+	go startNode(*archivalNodeFlag) // Start node
 
 	if *terminalFlag { // Check for terminal
 		*rpcAddrFlag = strings.Split(*rpcAddrFlag, ":")[0] // Remove port
@@ -86,7 +88,11 @@ func startRPCServer() {
 }
 
 // startNode - start necessary services for full node
-func startNode() {
+func startNode(archivalNode bool) {
+	if archivalNode { // Check
+		registerArchivalNode() // Register node
+	}
+
 	ln, err := tls.Listen("tcp", ":"+strconv.Itoa(*nodePortFlag), common.GeneralTLSConfig) // Listen on port
 
 	if err != nil { // Check for errors
@@ -98,6 +104,37 @@ func startNode() {
 	if err != nil { // Check for errors
 		panic(err) // Panic
 	}
+}
+
+// registerArchivalNode - join all address spaces on network
+func registerArchivalNode() error {
+	coordinationChain, err := types.ReadCoordinationChainFromMemory() // Read coordination chain from persistent memory
+
+	if err != nil { // Check for errors
+		return err // Return found error
+	}
+
+	ip, err := common.GetExtIPAddrWithoutUPnP() // Get IP
+
+	if err != nil { // Check for errors
+		return err // Return found error
+	}
+
+	_, err = coordinationChain.QueryNode(ip) // Check node already in network
+
+	if err != nil { // Check for errors
+		for x, node := range coordinationChain.Nodes { // Iterate through nodes
+			node, err := types.NewCoordinationNode(node.Address, ip) // Init node
+
+			if err != nil { // Check for errors
+				return err // Return found error
+			}
+
+		}
+		coordinationChain.AddNode()
+	}
+
+	return nil // No error occurred, return nil
 }
 
 /*
