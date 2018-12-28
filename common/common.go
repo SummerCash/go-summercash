@@ -35,6 +35,11 @@ var (
 		InsecureSkipVerify: true,
 		ServerName:         "localhost",
 	}
+
+	// BootstrapNodes - global definition for set of bootstrap nodes
+	BootstrapNodes = []string{
+		"108.6.212.17", // Boot node 0
+	}
 )
 
 const (
