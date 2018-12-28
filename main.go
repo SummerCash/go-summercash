@@ -92,7 +92,7 @@ func startRPCServer() {
 func startNode(archivalNode bool) {
 	ip, _ := common.GetExtIPAddrWithoutUPnP() // Get IP
 
-	if archivalNode && !commonGoP2P.StringInSlice(common.BootstrapNodes, ip) { // Check is not bootstrap node
+	if archivalNode && !commonGoP2P.StringInSlice(common.BootstrapNodes, ip) && !*privateNetworkFlag { // Check is not bootstrap node
 		err := types.JoinNetwork(common.BootstrapNodes[0], true) // Register node
 
 		if err != nil { // Check for errors
