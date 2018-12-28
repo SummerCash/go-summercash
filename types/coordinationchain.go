@@ -112,6 +112,25 @@ func (coordinationChain *CoordinationChain) QueryAddress(queryAddress common.Add
 	return &CoordinationNode{}, ErrNilNode // Return error
 }
 
+// QueryNode - query for node address in coordination chain
+func (coordinationChain *CoordinationChain) QueryNode(address string) (*CoordinationNode, error) {
+	if address == "" { // Check for nil address
+		return nil, ErrNilAddress // Return error
+	}
+
+	for _, node := range coordinationChain.Nodes { // Iterate through nodes
+		if node != nil { // Ensure safe pointer
+			for _, currentAddress := range node.Addresses { // Iterate through addresses
+				if currentAddress == address { // Check has address
+					return node, nil // Found math, return node
+				}
+			}
+		}
+	}
+
+	return &CoordinationNode{}, ErrNilNode // Return error
+}
+
 // PushNode - send new node to addresses in coordination chain
 func (coordinationChain *CoordinationChain) PushNode(coordinationNode *CoordinationNode) error {
 	localIP, err := common.GetExtIPAddrWithoutUPnP() // Get IP address
