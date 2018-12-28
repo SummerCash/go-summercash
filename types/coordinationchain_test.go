@@ -255,6 +255,32 @@ func TestPushNode(t *testing.T) {
 	t.Log(*coordinationChain) // Log success
 }
 
+// TestCoordinationChainFromBytes - test bytes decoder for coordination c
+func TestCoordinationChainFromBytes(t *testing.T) {
+	coordinationChain, err := NewCoordinationChain() // Init coordinationChain
+
+	if err != nil { // Check for errors
+		t.Error(err) // Log found error
+		t.FailNow()  // Panic
+	}
+
+	byteVal := coordinationChain.Bytes() // Get byte val
+
+	if byteVal == nil { // Check for nil byte val
+		t.Errorf("invalid byte val") // Log found error
+		t.FailNow()                  // Panic
+	}
+
+	coordinationChain, err = CoordinationChainFromBytes(byteVal) // Decode byte value
+
+	if err != nil { // Check for errors
+		t.Error(err) // Log found error
+		t.FailNow()  // Panic
+	}
+
+	t.Log(coordinationChain.String()) // Log success
+}
+
 // TestBytesCoordinationChain - test functionality of coordinationChain Bytes() extension method
 func TestBytesCoordinationChain(t *testing.T) {
 	coordinationChain, err := NewCoordinationChain() // Init coordinationChain

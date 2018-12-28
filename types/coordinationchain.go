@@ -95,6 +95,64 @@ func (coordinationChain *CoordinationChain) AddNode(coordinationNode *Coordinati
 	return nil // No error occurred, return nil
 }
 
+// JoinNetwork - join given network with bootstrap node address
+func JoinNetwork(bootstrapNode string, archivalNode bool) error {
+	coordinationChainBytes, err := gop2pCommon.SendBytesResult([]byte("chainRequest"), bootstrapNode+":"+strconv.Itoa(common.DefaultNodePort)) // Get coordination chain
+
+	if err != nil { // Check for errors
+		return err // Return found error
+	}
+
+	coordinationChain, err := CoordinationChainFromBytes(coordinationChainBytes) // Decode result
+
+	if err != nil { // Check for errors
+		return err // Return found error
+	}
+
+	err = coordinationChain.WriteToMemory() // Write to persistent memory
+
+	if err != nil { // Check for errors
+		return err // Return found error
+	}
+
+	if archivalNode { // Check is registering archival node
+		return RegisterArchivalNode() // Register archival node
+	}
+
+	return nil // No error occurred, return nil
+}
+
+// RegisterArchivalNode - register archival node on network
+func RegisterArchivalNode() error {
+	coordinationChain, err := ReadCoordinationChainFromMemory() // Read coordination chain from persistent memory
+
+	if err != nil { // Check for errors
+		return err // Return found error
+	}
+
+	ip, err := common.GetExtIPAddrWithoutUPnP() // Get IP
+
+	if err != nil { // Check for errors
+		return err // Return found error
+	}
+
+	_, err = coordinationChain.QueryArchivalNode(ip) // Check node already in network
+
+	if err != nil { // Check for errors
+		for _, node := range coordinationChain.Nodes { // Iterate through nodes
+			node, err := NewCoordinationNode(node.Address, []string{ip}) // Init node
+
+			if err != nil { // Check for errors
+				return err // Return found error
+			}
+
+			coordinationChain.AddNode(node, true) // Add node
+		}
+	}
+
+	return nil // No error occurred, return nil
+}
+
 // QueryAddress - query for address in coordination chain
 func (coordinationChain *CoordinationChain) QueryAddress(queryAddress common.Address) (*CoordinationNode, error) {
 	if coordinationChain.Nodes == nil { // Check for nil nodes
@@ -213,6 +271,19 @@ func (coordinationChain *CoordinationChain) GetBalance(address common.Address) (
 	}
 
 	return chain.CalculateBalance(), nil // No error occurred, return balance
+}
+
+// CoordinationChainFromBytes - decode coordination chain from given byte array
+func CoordinationChainFromBytes(b []byte) (*CoordinationChain, error) {
+	coordinationChain := CoordinationChain{} // Init buffer
+
+	err := json.NewDecoder(bytes.NewReader(b)).Decode(&coordinationChain) // Decode into buffer
+
+	if err != nil { // Check for errors
+		return nil, err // Return found error
+	}
+
+	return &coordinationChain, nil // No error occurred, return read value
 }
 
 // Bytes - convert given coordinationChain to byte array
