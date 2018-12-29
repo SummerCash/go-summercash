@@ -62,7 +62,7 @@ func handleCommand(receiver string, methodname string, params []string, rpcPort 
 	cryptoClient := cryptoProto.NewCryptoProtobufClient("https://"+rpcAddress+":"+strconv.Itoa(int(rpcPort)), &http.Client{Transport: transport})       // Init crypto client
 	upnpClient := upnpProto.NewUpnpProtobufClient("https://"+rpcAddress+":"+strconv.Itoa(int(rpcPort)), &http.Client{Transport: transport})             // Init upnp client
 	accountsClient := accountsProto.NewAccountsProtobufClient("https://"+rpcAddress+":"+strconv.Itoa(int(rpcPort)), &http.Client{Transport: transport}) // Init accounts client
-	configClient := configProto.NewConfigProtobufClient("https;//"+rpcAddress+":"+strconv.Itoa(int(rpcPort)), &http.Client{Transport: transport})       // Init config client
+	configClient := configProto.NewConfigProtobufClient("https://"+rpcAddress+":"+strconv.Itoa(int(rpcPort)), &http.Client{Transport: transport})       // Init config client
 
 	switch receiver {
 	case "crypto":
