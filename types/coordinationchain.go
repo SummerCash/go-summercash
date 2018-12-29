@@ -77,9 +77,15 @@ func (coordinationChain *CoordinationChain) AddNode(coordinationNode *Coordinati
 		return coordinationChain.WriteToMemory() // No error occurred, return nil
 	}
 
-	(*coordinationChain).Nodes = append((*coordinationChain).Nodes, coordinationNode) // Append node
+	node, err := coordinationChain.QueryAddress(coordinationNode.Address) // Check node already exists
 
-	if updateRemote {
+	if err != nil { // Check for errors
+		(*coordinationChain).Nodes = append((*coordinationChain).Nodes, coordinationNode) // Append node
+	} else { // Node already exists
+		(*node).Addresses = append((*node).Addresses, coordinationNode.Addresses[len(coordinationNode.Addresses)-1]) // Append node
+	}
+
+	if updateRemote { // Check should update remote db
 		err := coordinationChain.PushNode(coordinationNode) // Push to remote chains
 
 		if err != nil { // Check for errors
@@ -87,7 +93,7 @@ func (coordinationChain *CoordinationChain) AddNode(coordinationNode *Coordinati
 		}
 	}
 
-	err := coordinationChain.WriteToMemory() // Save for persistency
+	err = coordinationChain.WriteToMemory() // Save for persistency
 
 	if err != nil { // Check for errors
 		return err // Return found error
@@ -178,11 +184,15 @@ func RegisterArchivalNode() error {
 				return err // Return found error
 			}
 
-			coordinationChain.AddNode(node, true) // Add node
+			err = coordinationChain.AddNode(node, true) // Add node
+
+			if err != nil { // Check for errors
+				return err // Return found error
+			}
 		}
 	}
 
-	return nil // No error occurred, return nil
+	return coordinationChain.WriteToMemory() // No error occurred, return nil
 }
 
 // QueryAddress - query for address in coordination chain
