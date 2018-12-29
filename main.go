@@ -18,7 +18,9 @@ import (
 	accountsProto "github.com/space55/summertech-blockchain/internal/rpc/proto/accounts"
 	configProto "github.com/space55/summertech-blockchain/internal/rpc/proto/config"
 	cryptoProto "github.com/space55/summertech-blockchain/internal/rpc/proto/crypto"
+	transactionProto "github.com/space55/summertech-blockchain/internal/rpc/proto/transaction"
 	upnpProto "github.com/space55/summertech-blockchain/internal/rpc/proto/upnp"
+	transactionServer "github.com/space55/summertech-blockchain/internal/rpc/transaction"
 	upnpServer "github.com/space55/summertech-blockchain/internal/rpc/upnp"
 	"github.com/space55/summertech-blockchain/types"
 	"github.com/space55/summertech-blockchain/upnp"
@@ -77,17 +79,19 @@ func startRPCServer() {
 		panic(err) // Panic
 	}
 
-	cryptoHandler := cryptoProto.NewCryptoServer(&cryptoServer.Server{}, nil)         // Init handler
-	upnpHandler := upnpProto.NewUpnpServer(&upnpServer.Server{}, nil)                 // Init handler
-	accountsHandler := accountsProto.NewAccountsServer(&accountsServer.Server{}, nil) // Init handler
-	configHandler := configProto.NewConfigServer(&configServer.Server{}, nil)         // Init handler
+	cryptoHandler := cryptoProto.NewCryptoServer(&cryptoServer.Server{}, nil)                     // Init handler
+	upnpHandler := upnpProto.NewUpnpServer(&upnpServer.Server{}, nil)                             // Init handler
+	accountsHandler := accountsProto.NewAccountsServer(&accountsServer.Server{}, nil)             // Init handler
+	configHandler := configProto.NewConfigServer(&configServer.Server{}, nil)                     // Init handler
+	transactionHandler := transactionProto.NewTransactionServer(&transactionServer.Server{}, nil) // Init handler
 
 	mux := http.NewServeMux() // Init mux
 
-	mux.Handle(cryptoProto.CryptoPathPrefix, cryptoHandler)       // Start mux node handler
-	mux.Handle(upnpProto.UpnpPathPrefix, upnpHandler)             // Start mux upnp handler
-	mux.Handle(accountsProto.AccountsPathPrefix, accountsHandler) // Start mux accounts handler
-	mux.Handle(configProto.ConfigPathPrefix, configHandler)       // Start mux config handler
+	mux.Handle(cryptoProto.CryptoPathPrefix, cryptoHandler)                // Start mux node handler
+	mux.Handle(upnpProto.UpnpPathPrefix, upnpHandler)                      // Start mux upnp handler
+	mux.Handle(accountsProto.AccountsPathPrefix, accountsHandler)          // Start mux accounts handler
+	mux.Handle(configProto.ConfigPathPrefix, configHandler)                // Start mux config handler
+	mux.Handle(transactionProto.TransactionPathPrefix, transactionHandler) // Start mux config handler
 
 	go http.ListenAndServeTLS(":"+strconv.Itoa(*rpcPortFlag), "termCert.pem", "termKey.pem", mux) // Start server
 }
