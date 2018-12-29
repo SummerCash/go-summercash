@@ -34,3 +34,4 @@ accounts/data/
 data/keystore/
 data/config/
 accounts/genesis.json
+data/db/coordination_chain/chain.json
