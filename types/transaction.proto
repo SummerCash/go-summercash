@@ -21,7 +21,7 @@ message GeneralRequest {
 
     string address2 = 3; // Second address
 
-    uint32 amount = 4; // Tx amount
+    double amount = 4; // Tx amount (actually a float64)
 
     bytes payload = 5; // Tx payload
 }
