@@ -282,7 +282,7 @@ func handleTransaction(transactionClient *transactionProto.Transaction, methodna
 
 		reflectParams = append(reflectParams, reflect.ValueOf(&transactionProto.GeneralRequest{Address: params[0]})) // Append params
 	default:
-		return errors.New("illegal method: " + methodname + ", available methods: NewChainConfig(), Bytes(), String(), WriteToMemory(), ReadChainConfigFromMemory()") // Return error
+		return errors.New("illegal method: " + methodname + ", available methods: NewTransaction(), TransactionFromBytes(), Publish(), Bytes(), String(), SignTransaction(), VerifyTransactionSignature()") // Return error
 	}
 
 	result := reflect.ValueOf(*transactionClient).MethodByName(methodname).Call(reflectParams) // Call method
