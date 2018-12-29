@@ -342,8 +342,8 @@ func TestWriteTransactionToMemory(t *testing.T) {
 	t.Log("success") // Log success
 }
 
-// TestWriteTransactionToMemory - test functionality of transaction outbound I/O
-func TestRead(t *testing.T) {
+// TestReadTransactionFromMemory - test functionality of transaction inbound I/O
+func TestReadTransactionFromMemory(t *testing.T) {
 	privateKey, err := ecdsa.GenerateKey(elliptic.P521(), rand.Reader) // Generate private key
 
 	if err != nil { // Check for errors
