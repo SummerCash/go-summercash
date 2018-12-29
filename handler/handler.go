@@ -45,7 +45,7 @@ func handleConnection(conn net.Conn) error {
 	defer conn.Close() // Close connection
 
 	switch string(data)[0:9] { // Handle signatures
-	case "{" + `"` + "scope" + `"` + ":": // Check coordinationNode
+	case "{" + `"` + "address": // Check coordinationNode
 		return types.HandleReceivedCoordinationNode(data) // Handle received data
 	case "chainRequ":
 		chain, err := types.HandleReceivedChainRequest(data) // Handle received chain request
