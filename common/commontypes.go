@@ -78,7 +78,7 @@ func StringToAddress(s string) (Address, error) {
 		return Address{}, err // Return found error
 	}
 
-	copy(address[:], decoded) // Copy decoded
+	copy(address[:], append([]byte("0x"), decoded...)) // Copy decoded
 
 	return address, nil // Return address
 }

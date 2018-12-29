@@ -77,6 +77,11 @@ func TestStringToAddress(t *testing.T) {
 		t.FailNow()  // Panic
 	}
 
+	if decoded.String() != address.String() { // Check for match
+		t.Error("addresses do not match") // Log found error
+		t.FailNow()                       // Panic
+	}
+
 	t.Log(decoded) // Log success
 }
 
