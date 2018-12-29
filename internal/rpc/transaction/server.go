@@ -27,29 +27,39 @@ func (server *Server) NewTransaction(ctx context.Context, req *transactionProto.
 		return &transactionProto.GeneralResponse{}, err // Return found error
 	}
 
+	transaction := types.Transaction{} // Init buffer
+
 	accountChain, err := types.ReadChainFromMemory(sender) // Read account chain from persistent memory
 
-	if err != nil { // CHeck for errors
-		return &transactionProto.GeneralResponse{}, err // Return found error
-	}
-
-	nonce := uint64(0)                      // Init nonce
-	lastTransaction := &types.Transaction{} // Init buffer
-
-	for _, transaction := range accountChain.Transactions { // Iterate through transactions
-		if *transaction.Sender == sender { // Check match
-			if transaction.AccountNonce == uint64(len(accountChain.Transactions)) { // Check is last transaction
-				lastTransaction = transaction // Set last transaction
-			}
-
-			nonce++ // Increment
-		}
-	}
-
-	transaction, err := types.NewTransaction(nonce, lastTransaction, &sender, &recipient, req.Amount, req.Payload) // Init transaction
-
 	if err != nil { // Check for errors
-		return &transactionProto.GeneralResponse{}, err // Return found error
+		newTransaction, err := types.NewTransaction(0, nil, &sender, &recipient, req.Amount, req.Payload) // Init transaction
+
+		if err != nil { // Check for errors
+			return &transactionProto.GeneralResponse{}, err // Return found error
+		}
+
+		transaction = *newTransaction // Write tx to buffer
+	} else {
+		nonce := uint64(0)                      // Init nonce
+		lastTransaction := &types.Transaction{} // Init buffer
+
+		for _, transaction := range accountChain.Transactions { // Iterate through transactions
+			if *transaction.Sender == sender { // Check match
+				if transaction.AccountNonce == uint64(len(accountChain.Transactions)) { // Check is last transaction
+					lastTransaction = transaction // Set last transaction
+				}
+
+				nonce++ // Increment
+			}
+		}
+
+		newTransaction, err := types.NewTransaction(nonce, lastTransaction, &sender, &recipient, req.Amount, req.Payload) // Init transaction
+
+		if err != nil { // Check for errors
+			return &transactionProto.GeneralResponse{}, err // Return found error
+		}
+
+		transaction = *newTransaction // Write tx to buffer
 	}
 
 	err = transaction.WriteToMemory() // Write transaction to persistent memory
@@ -58,7 +68,7 @@ func (server *Server) NewTransaction(ctx context.Context, req *transactionProto.
 		return &transactionProto.GeneralResponse{}, err // Return found error
 	}
 
-	return &transactionProto.GeneralResponse{Message: fmt.Sprintf("\n%s", transaction.String())}, nil // Return response
+	return &transactionProto.GeneralResponse{Message: fmt.Sprintf("\n%s\n\nhash: %s", transaction.String(), transaction.Hash.String())}, nil // Return response
 }
 
 // TransactionFromBytes - transaction.TransactionFromBytes RPC handler
