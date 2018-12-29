@@ -71,6 +71,7 @@ func (coordinationChain *CoordinationChain) AddNode(coordinationNode *Coordinati
 	}
 
 	if len(coordinationChain.Nodes) == 0 { // Check genesis
+		(*coordinationNode).Genesis = true                                 // Set genesis
 		(*coordinationChain).Nodes = []*CoordinationNode{coordinationNode} // Initialize node list
 
 		return coordinationChain.WriteToMemory() // No error occurred, return nil
