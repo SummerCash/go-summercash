@@ -14,6 +14,7 @@ import (
 	"strings"
 
 	"github.com/space55/summertech-blockchain/common"
+	"github.com/space55/summertech-blockchain/types"
 )
 
 // Account - container holding account metadata, private key
@@ -34,6 +35,22 @@ func NewAccount() (*Account, error) {
 	}
 
 	account, err := AccountFromKey(privateKey) // Generate account from key
+
+	if err != nil { // Check for errors
+		return &Account{}, err // Return error
+	}
+
+	chain, err := types.NewChain(account.Address) // Init account chain
+
+	if err != nil { // Check for errors
+		return &Account{}, err // Return error
+	}
+
+	if err != nil { // Check for errors
+		return &Account{}, err // Return error
+	}
+
+	err = chain.WriteToMemory() // Write chain to memory
 
 	if err != nil { // Check for errors
 		return &Account{}, err // Return error
