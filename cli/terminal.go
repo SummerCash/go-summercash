@@ -18,6 +18,7 @@ import (
 	accountsProto "github.com/space55/summertech-blockchain/internal/rpc/proto/accounts"
 	configProto "github.com/space55/summertech-blockchain/internal/rpc/proto/config"
 	cryptoProto "github.com/space55/summertech-blockchain/internal/rpc/proto/crypto"
+	transactionProto "github.com/space55/summertech-blockchain/internal/rpc/proto/transaction"
 	upnpProto "github.com/space55/summertech-blockchain/internal/rpc/proto/upnp"
 )
 
@@ -59,10 +60,11 @@ func NewTerminal(rpcPort uint, rpcAddress string) {
 
 // handleCommand - run handler for given receiver
 func handleCommand(receiver string, methodname string, params []string, rpcPort uint, rpcAddress string, transport *http.Transport) {
-	cryptoClient := cryptoProto.NewCryptoProtobufClient("https://"+rpcAddress+":"+strconv.Itoa(int(rpcPort)), &http.Client{Transport: transport})       // Init crypto client
-	upnpClient := upnpProto.NewUpnpProtobufClient("https://"+rpcAddress+":"+strconv.Itoa(int(rpcPort)), &http.Client{Transport: transport})             // Init upnp client
-	accountsClient := accountsProto.NewAccountsProtobufClient("https://"+rpcAddress+":"+strconv.Itoa(int(rpcPort)), &http.Client{Transport: transport}) // Init accounts client
-	configClient := configProto.NewConfigProtobufClient("https://"+rpcAddress+":"+strconv.Itoa(int(rpcPort)), &http.Client{Transport: transport})       // Init config client
+	cryptoClient := cryptoProto.NewCryptoProtobufClient("https://"+rpcAddress+":"+strconv.Itoa(int(rpcPort)), &http.Client{Transport: transport})                // Init crypto client
+	upnpClient := upnpProto.NewUpnpProtobufClient("https://"+rpcAddress+":"+strconv.Itoa(int(rpcPort)), &http.Client{Transport: transport})                      // Init upnp client
+	accountsClient := accountsProto.NewAccountsProtobufClient("https://"+rpcAddress+":"+strconv.Itoa(int(rpcPort)), &http.Client{Transport: transport})          // Init accounts client
+	configClient := configProto.NewConfigProtobufClient("https://"+rpcAddress+":"+strconv.Itoa(int(rpcPort)), &http.Client{Transport: transport})                // Init config client
+	transactionClient := transactionProto.NewTransactionProtobufClient("https://"+rpcAddress+":"+strconv.Itoa(int(rpcPort)), &http.Client{Transport: transport}) // Init transaction client
 
 	switch receiver {
 	case "crypto":
@@ -85,6 +87,12 @@ func handleCommand(receiver string, methodname string, params []string, rpcPort 
 		}
 	case "config":
 		err := handleConfig(&configClient, methodname, params) // Handle config
+
+		if err != nil { // Check for errors
+			fmt.Println("\n" + err.Error()) // Log found error
+		}
+	case "transaction":
+		err := handleTransaction(&transactionClient, methodname, params) // Handle tx
 
 		if err != nil { // Check for errors
 			fmt.Println("\n" + err.Error()) // Log found error
@@ -236,6 +244,50 @@ func handleConfig(configClient *configProto.Config, methodname string, params []
 	result := reflect.ValueOf(*configClient).MethodByName(methodname).Call(reflectParams) // Call method
 
 	response := result[0].Interface().(*configProto.GeneralResponse) // Get response
+
+	if result[1].Interface() != nil { // Check for errors
+		return result[1].Interface().(error) // Return error
+	}
+
+	fmt.Println(response.Message) // Log response
+
+	return nil // No error occurred, return nil
+}
+
+// handleTransaction - handle transaction receiver
+func handleTransaction(transactionClient *transactionProto.Transaction, methodname string, params []string) error {
+	reflectParams := []reflect.Value{} // Init buffer
+
+	reflectParams = append(reflectParams, reflect.ValueOf(context.Background())) // Append request context
+
+	switch methodname {
+	case "NewTransaction":
+		if len(params) != 4 { // Check for invalid parameters
+			return errors.New("invalid parameters (require string, string, float64, []byte)") // Return error
+		}
+
+		intVal, _ := strconv.Atoi(params[2]) // Get int val
+
+		reflectParams = append(reflectParams, reflect.ValueOf(&transactionProto.GeneralRequest{Address: params[0], Address2: params[1], Amount: float64(intVal), Payload: []byte(params[3])})) // Append params
+	case "TransactionFromBytes":
+		if len(params) != 1 { // Check for invalid parameters
+			return errors.New("invalid parameters (require []byte)") // Return error
+		}
+
+		reflectParams = append(reflectParams, reflect.ValueOf(&transactionProto.GeneralRequest{Payload: []byte(params[0])})) // Append params
+	case "Publish", "Bytes", "String", "SignTransaction", "VerifyTransactionSignature":
+		if len(params) != 1 {
+			return errors.New("invalid parameters (requires string)") // Return error
+		}
+
+		reflectParams = append(reflectParams, reflect.ValueOf(&transactionProto.GeneralRequest{Address: params[0]})) // Append params
+	default:
+		return errors.New("illegal method: " + methodname + ", available methods: NewChainConfig(), Bytes(), String(), WriteToMemory(), ReadChainConfigFromMemory()") // Return error
+	}
+
+	result := reflect.ValueOf(*transactionClient).MethodByName(methodname).Call(reflectParams) // Call method
+
+	response := result[0].Interface().(*transactionProto.GeneralResponse) // Get response
 
 	if result[1].Interface() != nil { // Check for errors
 		return result[1].Interface().(error) // Return error
