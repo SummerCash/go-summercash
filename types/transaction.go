@@ -94,6 +94,10 @@ func TransactionFromBytes(b []byte) (*Transaction, error) {
 
 // Publish - publish given transaction
 func (transaction *Transaction) Publish() error {
+	if transaction.Signature == nil { // Check nil pointer
+		return ErrNilSignature // Return error
+	}
+
 	coordinationChain, err := ReadCoordinationChainFromMemory() // Read coordination chain
 
 	if err != nil { // Check for errors
