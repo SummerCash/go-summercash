@@ -207,6 +207,12 @@ func (transaction *Transaction) WriteToMemory() error {
 		return err // Return error
 	}
 
+	err = transaction.MakeEncodingSafe() // Make encoding safe
+
+	if err != nil { // Check for errors
+		return err // Return error
+	}
+
 	json, err := json.MarshalIndent(*transaction, "", "  ") // Marshal JSOn
 
 	if err != nil { // Check for errors
@@ -217,6 +223,12 @@ func (transaction *Transaction) WriteToMemory() error {
 
 	if err != nil { // Check for errors
 		return err // Return error
+	}
+
+	err = transaction.RecoverSafeEncoding() // Recover
+
+	if err != nil { // Check for errors
+		return err // Return found error
 	}
 
 	return nil // No error occurred, return nil
@@ -233,6 +245,12 @@ func ReadTransactionFromMemory(hash common.Hash) (*Transaction, error) {
 	buffer := &Transaction{} // Initialize buffer
 
 	err = json.Unmarshal(data, buffer) // Read json into buffer
+
+	if err != nil { // Check for errors
+		return &Transaction{}, err // Return error
+	}
+
+	err = buffer.RecoverSafeEncoding() // Recover
 
 	if err != nil { // Check for errors
 		return &Transaction{}, err // Return error
