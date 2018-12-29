@@ -86,10 +86,16 @@ func NewChain(account common.Address) (*Chain, error) {
 		return &Chain{}, err // Return found error
 	}
 
-	err = coordinationChain.AddNode(node, false) // Add node
+	foundNode, err := coordinationChain.QueryAddress(node.Address) // Check node already exists
 
-	if err != nil { // Check for errors
-		return &Chain{}, err // Return found error
+	if err == nil { // Check already exists
+		(*foundNode).Addresses = append((*foundNode).Addresses, node.Addresses[len(node.Addresses)-1]) // Append node
+	} else {
+		err = coordinationChain.AddNode(node, false) // Add node
+
+		if err != nil { // Check for errors
+			return &Chain{}, err // Return found error
+		}
 	}
 
 	(*chain).ID = common.NewHash(crypto.Sha3(chain.Bytes())) // Set ID
