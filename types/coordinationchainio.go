@@ -23,7 +23,7 @@ func (coordinationChain *CoordinationChain) WriteToMemory() error {
 		return err // Return error
 	}
 
-	err = ioutil.WriteFile(fmt.Sprintf("%s/db/coordination_chain/chain.gob", common.DataDir), json, 0644) // Write json
+	err = ioutil.WriteFile(fmt.Sprintf("%s/db/coordination_chain/chain.json", common.DataDir), json, 0644) // Write json
 
 	if err != nil { // Check for errors
 		return err // Return found error
@@ -36,7 +36,7 @@ func (coordinationChain *CoordinationChain) WriteToMemory() error {
 func ReadCoordinationChainFromMemory() (*CoordinationChain, error) {
 	coordinationChain := &CoordinationChain{} // Init buffer
 
-	data, err := ioutil.ReadFile(filepath.FromSlash(fmt.Sprintf("%s/db/coordination_chain/chain.gob", common.DataDir))) // Read file
+	data, err := ioutil.ReadFile(filepath.FromSlash(fmt.Sprintf("%s/db/coordination_chain/chain.json", common.DataDir))) // Read file
 
 	if err != nil { // Check for errors
 		return &CoordinationChain{}, err // Return error
