@@ -55,9 +55,9 @@ func main() {
 
 	if strings.Contains(*rpcAddrFlag, "localhost") { // Check for default RPC address
 		startRPCServer() // Start RPC server
-	}
 
-	go startNode(*archivalNodeFlag) // Start node
+		go startNode(*archivalNodeFlag) // Start node
+	}
 
 	if *terminalFlag { // Check for terminal
 		*rpcAddrFlag = strings.Split(*rpcAddrFlag, ":")[0] // Remove port
