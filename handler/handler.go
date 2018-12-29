@@ -3,7 +3,6 @@ package handler
 import (
 	"errors"
 	"net"
-	"fmt"
 
 	"github.com/space55/summertech-blockchain/common"
 	"github.com/space55/summertech-blockchain/types"
@@ -68,8 +67,6 @@ func handleConnection(conn net.Conn) error {
 		if err != nil { // Check for errors
 			return err // Return found error
 		}
-
-		fmt.Println("test")
 
 		_, err = conn.Write(chainBytes) // Write chain
 
