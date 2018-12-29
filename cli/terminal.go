@@ -230,7 +230,7 @@ func handleConfig(configClient *configProto.Config, methodname string, params []
 
 		reflectParams = append(reflectParams, reflect.ValueOf(&configProto.GeneralRequest{})) // Append params
 	default:
-		return errors.New("illegal method: " + methodname + ", available methods: NewAccount(), GetAllAccounts(), MakeEncodingSafe(), RecoverSafeEncoding(), String(), Bytes(), ReadAccountFromMemory()") // Return error
+		return errors.New("illegal method: " + methodname + ", available methods: NewChainConfig(), Bytes(), String(), WriteToMemory(), ReadChainConfigFromMemory()") // Return error
 	}
 
 	result := reflect.ValueOf(*configClient).MethodByName(methodname).Call(reflectParams) // Call method
