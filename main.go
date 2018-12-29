@@ -123,6 +123,5 @@ func startNode(archivalNode bool) {
 
 /*
 	TODO:
-	- archival node flag
 	- readme
 */

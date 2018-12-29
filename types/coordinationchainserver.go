@@ -1,5 +1,14 @@
 package types
 
+import (
+	"fmt"
+	"io/ioutil"
+	"path/filepath"
+
+	"github.com/space55/summertech-blockchain/common"
+	"github.com/space55/summertech-blockchain/config"
+)
+
 // HandleReceivedCoordinationNode - handle received node
 func HandleReceivedCoordinationNode(b []byte) error {
 	coordinationChain, err := ReadCoordinationChainFromMemory() // Read coordination chain
@@ -46,6 +55,36 @@ func HandleReceivedCoordinationChainRequest() ([]byte, error) {
 
 		if err != nil { // Check for errors
 			return nil, err // Return found error
+		}
+
+		chainConfig, err := config.ReadChainConfigFromMemory() // Read chain config
+
+		if err != nil { // Check for errors
+			return nil, err // Return found error
+		}
+
+		ip, err := common.GetExtIPAddrWithoutUPnP() // Get ext IP addr
+
+		if err != nil { // Check for errors
+			return nil, err // Return found error
+		}
+
+		for _, address := range chainConfig.AllocAddresses { // Iterate through alloc
+			_, err := ioutil.ReadFile(filepath.FromSlash(fmt.Sprintf("%s/keystore/account_%s.json", common.DataDir, address.String()))) // Read account file
+
+			if err == nil { // Check for errors
+				coordinationNode, err := NewCoordinationNode(address, []string{ip}) // Init node
+
+				if err != nil { // Check for errors
+					return nil, err // Return found error
+				}
+
+				err = coordinationChain.AddNode(coordinationNode, false) // Add node
+
+				if err != nil { // Check for errors
+					return nil, err // Return found error
+				}
+			}
 		}
 
 		err = coordinationChain.WriteToMemory() // Write to persistent memory
