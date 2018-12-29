@@ -46,10 +46,6 @@ func NewAccount() (*Account, error) {
 		return &Account{}, err // Return error
 	}
 
-	if err != nil { // Check for errors
-		return &Account{}, err // Return error
-	}
-
 	err = chain.WriteToMemory() // Write chain to memory
 
 	if err != nil { // Check for errors

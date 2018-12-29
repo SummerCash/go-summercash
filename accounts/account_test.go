@@ -4,11 +4,31 @@ import (
 	"crypto/ecdsa"
 	"crypto/elliptic"
 	"crypto/rand"
+	"encoding/json"
+	"io/ioutil"
 	"testing"
+
+	"github.com/space55/summertech-blockchain/common"
+	"github.com/space55/summertech-blockchain/config"
+	"github.com/space55/summertech-blockchain/types"
 )
 
 // TestNewAccount - test functionality of account generation
 func TestNewAccount(t *testing.T) {
+	address, err := common.StringToAddress("0x040028d536d5351e83fbbec320c194629ace") // Get addr value
+
+	if err != nil { // Check for errors
+		t.Error(err) // Log found error
+		t.FailNow()  // Panic
+	}
+
+	err = makeChainConfig(address) // Make config
+
+	if err != nil { // Check for errors
+		t.Error(err) // Log found error
+		t.FailNow()  // Panic
+	}
+
 	account, err := NewAccount() // Generate account
 
 	if err != nil { // Check for errors
@@ -173,4 +193,53 @@ func TestBytes(t *testing.T) {
 	}
 
 	t.Log(byteVal) // Log success
+}
+
+type genesis struct {
+	NetworkID uint `json:"networkID"`
+
+	Alloc map[string]map[string]string `json:"alloc"`
+}
+
+// makeChainConfig - generate necessary config files
+func makeChainConfig(address common.Address) error {
+	alloc := make(map[string]map[string]string) // Init map
+
+	alloc[address.String()] = make(map[string]string) // Init map
+
+	alloc[address.String()]["balance"] = "500000000000000" // Set balance
+
+	genesis := genesis{NetworkID: 0, Alloc: alloc} // Init genesis
+
+	json, err := json.MarshalIndent(genesis, "", "  ") // Marshal genesis
+
+	if err != nil { // Check for errors
+		return err // Return error
+	}
+
+	err = ioutil.WriteFile("genesis.json", json, 0644) // Write genesis to JSON
+
+	if err != nil { // Check for errors
+		return err // Return error
+	}
+
+	config, err := config.NewChainConfig("genesis.json") // Generate config
+
+	if err != nil { // Check for errors
+		return err // Return error
+	}
+
+	err = config.WriteToMemory() // Write to memory
+
+	if err != nil { // Check for errors
+		return err // Return error
+	}
+
+	coordinationChain, err := types.NewCoordinationChain() // Init coordinationChain
+
+	if err != nil { // Check for errors
+		return err // Return error
+	}
+
+	return coordinationChain.WriteToMemory() // Write to memory
 }
