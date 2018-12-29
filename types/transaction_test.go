@@ -308,3 +308,76 @@ func TestString(t *testing.T) {
 
 	t.Log(stringVal) // Log success
 }
+
+// TestWriteTransactionToMemory - test functionality of transaction outbound I/O
+func TestWriteTransactionToMemory(t *testing.T) {
+	privateKey, err := ecdsa.GenerateKey(elliptic.P521(), rand.Reader) // Generate private key
+
+	if err != nil { // Check for errors
+		t.Error(err) // Log found error
+		t.FailNow()  // Panic
+	}
+
+	sender, err := common.NewAddress(privateKey) // Initialize address from private key
+
+	if err != nil { // Check for errors
+		t.Error(err) // Log found error
+		t.FailNow()  // Panic
+	}
+
+	transaction, err := NewTransaction(0, nil, &sender, &sender, 0, []byte("test")) // Initialize transaction
+
+	if err != nil { // Check for errors
+		t.Error(err) // Log found error
+		t.FailNow()  // Panic
+	}
+
+	err = transaction.WriteToMemory() // Write transaction to memory
+
+	if err != nil { // Check for errors
+		t.Error(err) // Log found error
+		t.FailNow()  // Panic
+	}
+
+	t.Log("success") // Log success
+}
+
+// TestWriteTransactionToMemory - test functionality of transaction outbound I/O
+func TestRead(t *testing.T) {
+	privateKey, err := ecdsa.GenerateKey(elliptic.P521(), rand.Reader) // Generate private key
+
+	if err != nil { // Check for errors
+		t.Error(err) // Log found error
+		t.FailNow()  // Panic
+	}
+
+	sender, err := common.NewAddress(privateKey) // Initialize address from private key
+
+	if err != nil { // Check for errors
+		t.Error(err) // Log found error
+		t.FailNow()  // Panic
+	}
+
+	transaction, err := NewTransaction(0, nil, &sender, &sender, 0, []byte("test")) // Initialize transaction
+
+	if err != nil { // Check for errors
+		t.Error(err) // Log found error
+		t.FailNow()  // Panic
+	}
+
+	err = transaction.WriteToMemory() // Write transaction to memory
+
+	if err != nil { // Check for errors
+		t.Error(err) // Log found error
+		t.FailNow()  // Panic
+	}
+
+	transaction, err = ReadTransactionFromMemory(*transaction.Hash) // Read TX
+
+	if err != nil { // Check for errors
+		t.Error(err) // Log found error
+		t.FailNow()  // Panic
+	}
+
+	t.Log("success") // Log success
+}
