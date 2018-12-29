@@ -7,6 +7,9 @@ import (
 	"encoding/json"
 	"encoding/pem"
 	"errors"
+	"fmt"
+	"io/ioutil"
+	"path/filepath"
 	"strconv"
 
 	"github.com/space55/summertech-blockchain/common"
@@ -190,6 +193,48 @@ func (transaction *Transaction) String() string {
 	marshaled, _ := json.MarshalIndent(*transaction, "", "  ") // Marshal tx
 
 	return string(marshaled) // Return marshaled
+}
+
+// WriteToMemory - write given transaction to memory
+func (transaction *Transaction) WriteToMemory() error {
+	err := common.CreateDirIfDoesNotExit(fmt.Sprintf("%s/mem/pending_tx", common.DataDir)) // Create dir if necessary
+
+	if err != nil { // Check for errors
+		return err // Return error
+	}
+
+	json, err := json.MarshalIndent(*transaction, "", "  ") // Marshal JSOn
+
+	if err != nil { // Check for errors
+		return err // Return found error
+	}
+
+	err = ioutil.WriteFile(filepath.FromSlash(fmt.Sprintf("%s/mem/pending_tx/tx_%s.gob", common.DataDir, transaction.Hash.String())), json, 0644) // Write chainConfig to JSON
+
+	if err != nil { // Check for errors
+		return err // Return error
+	}
+
+	return nil // No error occurred, return nil
+}
+
+// ReadTransactionFromMemory - read transaction from memory
+func ReadTransactionFromMemory(hash common.Hash) (*Transaction, error) {
+	data, err := ioutil.ReadFile(filepath.FromSlash(fmt.Sprintf("%s/mem/pending_tx/tx_%s.gob", common.DataDir, hash.String()))) // Read file
+
+	if err != nil { // Check for errors
+		return &Transaction{}, err // Return error
+	}
+
+	buffer := &Transaction{} // Initialize buffer
+
+	err = json.Unmarshal(data, buffer) // Read json into buffer
+
+	if err != nil { // Check for errors
+		return &Transaction{}, err // Return error
+	}
+
+	return buffer, nil // No error occurred, return read tx
 }
 
 /* END EXPORTED METHODS */
