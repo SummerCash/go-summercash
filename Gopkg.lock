@@ -27,11 +27,11 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:5d9b1e3100b760ccdb05b46568394f0e377392e7e537a875ec63b13601143aea"
+  digest = "1:48bcfb025fba92ee104091561af469628e5f3d49c3b21d5c5ddff82219cf866e"
   name = "github.com/dowlandaiello/GoP2P"
   packages = ["common"]
   pruneopts = "UT"
-  revision = "3aaf84f30525338f7a874d7683ed3153dc6429da"
+  revision = "f862914e558b0f684ccc201aa07e1fa3f4b69427"
 
 [[projects]]
   digest = "1:865079840386857c809b72ce300be7580cb50d3d3129ce11bf9aa6ca2bc1934a"
@@ -94,7 +94,7 @@
   revision = "d7bb493dee3e090e2ffb6914adddf17c1e7c026c"
 
 [[projects]]
-  digest = "1:bc5f818bb50c42b55721ab0ea9af6c28cad7d9e31db43eaa78d2ca487c9897ac"
+  digest = "1:1cc64dd62b73781ccbd6b3dd4c893e97b4437e9d0710916d0c3129c3a66cfac7"
   name = "github.com/twitchtv/twirp"
   packages = [
     ".",
@@ -102,8 +102,8 @@
     "internal/contextkeys",
   ]
   pruneopts = "UT"
-  revision = "d08b9415baf292b016ed9c55c37e66154c46c221"
-  version = "v5.5.0"
+  revision = "89e10d8c51c4ee477a43a6f817f1958b90fecff9"
+  version = "v5.5.1"
 
 [[projects]]
   branch = "master"
@@ -137,11 +137,11 @@
     "sha3",
   ]
   pruneopts = "UT"
-  revision = "eb0de9b17e854e9b1ccd9963efafc79862359959"
+  revision = "505ab145d0a99da450461ae2c1a9f6cd10d1f447"
 
 [[projects]]
   branch = "master"
-  digest = "1:e3a60de00dec035b09828db328883a549ec4e6ab99e387c735e8413007ea70f9"
+  digest = "1:f645b90e8244e48486e609758df4fc60235f91ddffc10a6b9c7c08de3f3c23ff"
   name = "golang.org/x/net"
   packages = [
     "bpf",
@@ -155,18 +155,18 @@
     "ipv6",
   ]
   pruneopts = "UT"
-  revision = "351d144fa1fc0bd934e2408202be0c29f25e35a0"
+  revision = "927f97764cc334a6575f4b7a1584a147864d5723"
 
 [[projects]]
   branch = "master"
-  digest = "1:b5822e8b1920b7225e6282614078af440c70f0a2243676063a571f715cd77d58"
+  digest = "1:40efb75e7c2681e4fb5d886930a7074d0c2918334ea0e62a0fc8661245d9a7c8"
   name = "golang.org/x/sys"
   packages = [
     "cpu",
     "unix",
   ]
   pruneopts = "UT"
-  revision = "4ed8d59d0b35e1e29334a206d1b3f38b1e5dfb31"
+  revision = "9a3f9b0469bbc6b8802087ae5c0af9f61502de01"
 
 [[projects]]
   digest = "1:aa4d6967a3237f8367b6bf91503964a77183ecf696f1273e8ad3551bb4412b5f"

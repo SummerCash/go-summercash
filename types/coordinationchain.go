@@ -139,7 +139,7 @@ func JoinNetwork(bootstrapNode string, archivalNode bool) error {
 		return err // Return found error
 	}
 
-	common.Logf("== SUCCESS == received chain config %s from bootstrap node %s\n", config.String()[:10], bootstrapNode) // Log success
+	common.Logf("== SUCCESS == received chain config with network ID %d from bootstrap node %s\n", config.NetworkID, bootstrapNode) // Log success
 
 	err = config.WriteToMemory() // Write config to persistent memory
 
@@ -168,7 +168,7 @@ func SyncNetwork() error {
 		return err // Return found error
 	}
 
-	common.Logf("== NODE == syncing with network %s", coordinationChain.ChainID.String()) // Log sync
+	common.Logf("== NODE == syncing with network %s\n", coordinationChain.ChainID.String()) // Log sync
 
 	for _, node := range coordinationChain.Nodes { // Iterate through nodes
 		common.Logf("== NETWORK == requesting account chain for address %s\n", node.Address.String()) // Log req
