@@ -122,7 +122,7 @@ func JoinNetwork(bootstrapNode string, archivalNode bool) error {
 		return err // Return found error
 	}
 
-	configBytes, err := gop2pCommon.SendBytesResult([]byte("configReq"), bootstrapNode+":"+strconv.Itoa(common.DefaultNodePort)) // Get chain config
+	configBytes, err := gop2pCommon.SendBytesResult([]byte("configReq"), bootstrapNode) // Get chain config
 
 	if err != nil { // Check for errors
 		return err // Return found error
