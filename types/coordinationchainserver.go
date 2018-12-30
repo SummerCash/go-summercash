@@ -57,13 +57,13 @@ func HandleReceivedCoordinationChainRequest() ([]byte, error) {
 			return nil, err // Return found error
 		}
 
-		chainConfig, err := config.ReadChainConfigFromMemory() // Read chain config
+		err = coordinationChain.WriteToMemory() // Write to persistent memory
 
 		if err != nil { // Check for errors
 			return nil, err // Return found error
 		}
 
-		ip, err := common.GetExtIPAddrWithoutUPnP() // Get ext IP addr
+		chainConfig, err := config.ReadChainConfigFromMemory() // Read chain config
 
 		if err != nil { // Check for errors
 			return nil, err // Return found error
@@ -73,24 +73,12 @@ func HandleReceivedCoordinationChainRequest() ([]byte, error) {
 			_, err := ioutil.ReadFile(filepath.FromSlash(fmt.Sprintf("%s/keystore/account_%s.json", common.DataDir, address.String()))) // Read account file
 
 			if err == nil { // Check for errors
-				coordinationNode, err := NewCoordinationNode(address, []string{ip}) // Init node
+				_, err := NewChain(address) // Init chain
 
-				if err != nil { // Check for errors
-					return nil, err // Return found error
-				}
-
-				err = coordinationChain.AddNode(coordinationNode, false) // Add node
-
-				if err != nil { // Check for errors
+				if err != nil { // Check for err`ors
 					return nil, err // Return found error
 				}
 			}
-		}
-
-		err = coordinationChain.WriteToMemory() // Write to persistent memory
-
-		if err != nil { // Check for errors
-			return nil, err // Return found error
 		}
 	}
 
