@@ -104,6 +104,8 @@ func (coordinationChain *CoordinationChain) AddNode(coordinationNode *Coordinati
 
 // JoinNetwork - join given network with bootstrap node address
 func JoinNetwork(bootstrapNode string, archivalNode bool) error {
+	common.Logf("-- NETWORK -- requesting coordination chain from bootstrap node %s", bootstrapNode) // Log init
+
 	coordinationChainBytes, err := gop2pCommon.SendBytesResult([]byte("cChainRequest"), bootstrapNode) // Get coordination chain
 
 	if err != nil { // Check for errors
@@ -122,6 +124,9 @@ func JoinNetwork(bootstrapNode string, archivalNode bool) error {
 		return err // Return found error
 	}
 
+	common.Logf("-- SUCCESS -- received coordination chain %s from bootstrap node %s", coordinationChain.ChainID.String(), bootstrapNode) // Log success
+	common.Logf("-- NETWORK -- requesting chain config from bootstrap node %s", bootstrapNode)                                            // Log request config
+
 	configBytes, err := gop2pCommon.SendBytesResult([]byte("configReq"), bootstrapNode) // Get chain config
 
 	if err != nil { // Check for errors
@@ -133,6 +138,8 @@ func JoinNetwork(bootstrapNode string, archivalNode bool) error {
 	if err != nil { // Check for errors
 		return err // Return found error
 	}
+
+	common.Logf("-- SUCCESS -- received chain config %s from bootstrap node %s", config.String()[:10], bootstrapNode) // Log success
 
 	err = config.WriteToMemory() // Write config to persistent memory
 
@@ -161,7 +168,11 @@ func SyncNetwork() error {
 		return err // Return found error
 	}
 
+	common.Logf("-- NODE -- syncing with network %s", coordinationChain.ChainID.String()) // Log sync
+
 	for _, node := range coordinationChain.Nodes { // Iterate through nodes
+		common.Logf("-- NETWORK -- requesting account chain for address %s", node.Address.String()) // Log req
+
 		chainBytes, err := gop2pCommon.SendBytesResult(append([]byte("chainRequest")[:], node.Address[:]...), node.Addresses[len(node.Addresses)-1]+":"+strconv.Itoa(common.DefaultNodePort)) // Get chain
 
 		if err != nil { // Check for errors
@@ -181,6 +192,8 @@ func SyncNetwork() error {
 		}
 	}
 
+	common.Log("-- NODE -- finished syncing") // Log success
+
 	return nil // No error occurred, return nil
 }
 
@@ -198,6 +211,8 @@ func RegisterArchivalNode() error {
 		return err // Return found error
 	}
 
+	common.Logf("-- NODE -- registering local archival node with external IP %s", ip) // Log register
+
 	_, err = coordinationChain.QueryArchivalNode(ip) // Check node already in network
 
 	if err != nil { // Check for errors
@@ -214,6 +229,8 @@ func RegisterArchivalNode() error {
 				return err // Return found error
 			}
 		}
+
+		common.Log("-- NETWORK -- finished registering archval node") // Log success
 	}
 
 	return coordinationChain.WriteToMemory() // No error occurred, return nil

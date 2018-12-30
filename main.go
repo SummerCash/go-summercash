@@ -102,6 +102,8 @@ func startRPCServer() {
 func startNode(archivalNode bool) {
 	ip, _ := common.GetExtIPAddrWithoutUPnP() // Get IP
 
+	common.Logf("-- NODE -- starting on port %d with external IP %s", *nodePortFlag, ip) // Log init
+
 	coordinationChain, err := types.ReadCoordinationChainFromMemory() // Read coordination chain
 
 	if err == nil { // Check no error
@@ -110,6 +112,8 @@ func startNode(archivalNode bool) {
 
 	if err != nil { // Check for errors
 		if archivalNode && !commonGoP2P.StringInSlice(common.BootstrapNodesRaw, ip) && !*privateNetworkFlag { // Check is not bootstrap node
+			common.Logf("-- NETWORK -- joining with bootstrap node %s", common.BootstrapNodes[0]) // Log join
+
 			err := types.JoinNetwork(common.BootstrapNodes[0], true) // Register node
 
 			if err != nil { // Check for errors
