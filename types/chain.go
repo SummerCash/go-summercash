@@ -290,6 +290,8 @@ func (chain *Chain) makeGenesis(genesis *config.ChainConfig) (common.Hash, error
 	err = chain.AddTransaction(genesisTx) // Add genesis tx
 
 	if err != nil { // Check for errors
+		common.Logf("== ERROR == error making genesis block: %s", err.Error()) // Log error
+
 		return common.Hash{}, err // Return found error
 	}
 
