@@ -122,6 +122,24 @@ func JoinNetwork(bootstrapNode string, archivalNode bool) error {
 		return err // Return found error
 	}
 
+	configBytes, err := gop2pCommon.SendBytesResult([]byte("configReq"), bootstrapNode+":"+strconv.Itoa(common.DefaultNodePort)) // Get chain config
+
+	if err != nil { // Check for errors
+		return err // Return found error
+	}
+
+	config, err := config.FromBytes(configBytes) // Decode config
+
+	if err != nil { // Check for errors
+		return err // Return found error
+	}
+
+	err = config.WriteToMemory() // Write config to persistent memory
+
+	if err != nil { // Check for errors
+		return err // Return found error
+	}
+
 	if archivalNode { // Check is registering archival node
 		return RegisterArchivalNode() // Register archival node
 	}

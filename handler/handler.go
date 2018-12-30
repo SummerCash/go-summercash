@@ -5,6 +5,7 @@ import (
 	"net"
 
 	"github.com/space55/summertech-blockchain/common"
+	"github.com/space55/summertech-blockchain/config"
 	"github.com/space55/summertech-blockchain/types"
 )
 
@@ -69,6 +70,18 @@ func handleConnection(conn net.Conn) error {
 		}
 
 		_, err = conn.Write(chainBytes) // Write chain
+
+		if err != nil { // Check for errors
+			return err // Return found error
+		}
+	case "configReq":
+		configBytes, err := config.HandleReceivedConfigRequest() // Handle config request
+
+		if err != nil { // Check for errors
+			return err // Return found error
+		}
+
+		_, err = conn.Write(configBytes) // Write chain
 
 		if err != nil { // Check for errors
 			return err // Return found error
