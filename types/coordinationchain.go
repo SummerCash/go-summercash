@@ -162,7 +162,21 @@ func JoinNetwork(bootstrapNode string, archivalNode bool) error {
 
 // SyncNetwork - download all chains
 func SyncNetwork() error {
-	coordinationChain, err := ReadCoordinationChainFromMemory() // Read coordination chain from memory
+	common.Logf("== NETWORK == requesting coordination chain from bootstrap node %s\n", common.BootstrapNodes[0]) // Log init
+
+	coordinationChainBytes, err := gop2pCommon.SendBytesResult([]byte("cChainRequest"), common.BootstrapNodes[0]) // Get coordination chain
+
+	if err != nil { // Check for errors
+		return err // Return found error
+	}
+
+	coordinationChain, err := CoordinationChainFromBytes(coordinationChainBytes) // Decode result
+
+	if err != nil { // Check for errors
+		return err // Return found error
+	}
+
+	err = coordinationChain.WriteToMemory() // Write to persistent memory
 
 	if err != nil { // Check for errors
 		return err // Return found error

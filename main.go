@@ -119,6 +119,12 @@ func startNode(archivalNode bool) {
 			if err != nil { // Check for errors
 				panic(err) // Panic
 			}
+		} else {
+			err := types.SyncNetwork() // Sync network
+
+			if err != nil { // Check for errors
+				panic(err) // Panic
+			}
 		}
 	}
 
