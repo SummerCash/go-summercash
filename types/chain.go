@@ -66,6 +66,8 @@ func NewChain(account common.Address) (*Chain, error) {
 		NetworkID:    config.NetworkID,
 	}
 
+	(*chain).ID = common.NewHash(crypto.Sha3(chain.Bytes())) // Set ID
+
 	common.Logf("== ACCOUNT == initialized account chain with account address %s", chain.Account.String()) // Log init
 
 	localIP, err := common.GetExtIPAddrWithoutUPnP() // Get IP addr
@@ -101,8 +103,6 @@ func NewChain(account common.Address) (*Chain, error) {
 			return &Chain{}, err // Return found error
 		}
 	}
-
-	(*chain).ID = common.NewHash(crypto.Sha3(chain.Bytes())) // Set ID
 
 	err = chain.WriteToMemory() // Write to memory
 
