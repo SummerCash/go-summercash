@@ -119,7 +119,7 @@ func startNode(archivalNode bool) {
 			if err != nil { // Check for errors
 				panic(err) // Panic
 			}
-		} else {
+		} else if !commonGoP2P.StringInSlice(common.BootstrapNodesRaw, ip) { // Plz, no recursion
 			err := types.SyncNetwork() // Sync network
 
 			if err != nil { // Check for errors
