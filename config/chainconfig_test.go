@@ -52,6 +52,27 @@ func TestBytesChainConfig(t *testing.T) {
 	t.Log(byteVal) // Log string value
 }
 
+// TestFromBytes - test decode byte array into chain config
+func TestFromBytes(t *testing.T) {
+	chainConfig, err := NewChainConfig("genesis.json") // Initialize chain configuration
+
+	if err != nil { // Check for errors
+		t.Error(err) // Log found error
+		t.FailNow()  // Panic
+	}
+
+	byteVal := chainConfig.Bytes() // Get byte value
+
+	chainConfig, err = FromBytes(byteVal) // Decode bytes
+
+	if err != nil { // Check for errors
+		t.Error(err) // Log found error
+		t.FailNow()  // Panic
+	}
+
+	t.Log(*chainConfig) // Log success
+}
+
 // TestWriteToMemoryChainConfig - test i/o for chainConfig
 func TestWriteToMemoryChainConfig(t *testing.T) {
 	chainConfig, err := NewChainConfig("genesis.json") // Initialize chain configuration

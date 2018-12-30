@@ -92,6 +92,19 @@ func (chainConfig *ChainConfig) Bytes() []byte {
 	return buffer.Bytes() // Return serialized
 }
 
+// FromBytes - decode byte array into chain config
+func FromBytes(b []byte) (*ChainConfig, error) {
+	buffer := &ChainConfig{} // Initialize buffer
+
+	err := json.Unmarshal(b, buffer) // Read json into buffer
+
+	if err != nil { // Check for errors
+		return &ChainConfig{}, err // Return error
+	}
+
+	return buffer, nil // No error occurred, return read config
+}
+
 // String - convert given chainConfig to string
 func (chainConfig *ChainConfig) String() string {
 	marshaled, _ := json.MarshalIndent(*chainConfig, "", "  ") // Marshal config
