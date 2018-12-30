@@ -178,13 +178,13 @@ func RegisterArchivalNode() error {
 
 	if err != nil { // Check for errors
 		for _, node := range coordinationChain.Nodes { // Iterate through nodes
-			node, err := NewCoordinationNode(node.Address, []string{ip}) // Init node
+			nodeInstance, err := NewCoordinationNode(node.Address, []string{ip}) // Init node
 
 			if err != nil { // Check for errors
 				return err // Return found error
 			}
 
-			err = coordinationChain.AddNode(node, true) // Add node
+			err = coordinationChain.AddNode(nodeInstance, true) // Add node
 
 			if err != nil { // Check for errors
 				return err // Return found error
