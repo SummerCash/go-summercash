@@ -37,6 +37,8 @@ func StartHandler(ln *net.Listener) error {
 
 // handleConnection - attempt to handle given connection
 func handleConnection(conn net.Conn) error {
+	common.Logf("-- CONNECTION -- incoming connection from peer %s", conn.RemoteAddr().String()) // Log conn
+
 	data, err := common.ReadConnectionWaitAsyncNoTLS(conn) // Read data
 
 	if err != nil { // Check for errors
