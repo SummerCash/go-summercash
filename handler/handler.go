@@ -49,8 +49,12 @@ func handleConnection(conn net.Conn) error {
 
 	switch string(data)[0:9] { // Handle signatures
 	case "{" + `"` + "address": // Check coordinationNode
+		common.Logf("== NETWORK == received peer coordination node info %s\n", string(data)[:15]) // Log node
+
 		return types.HandleReceivedCoordinationNode(data) // Handle received data
 	case "chainRequ":
+		common.Logf("== NETWORK == received chain request from peer %s\n", conn.RemoteAddr().String()) // Log request
+
 		chain, err := types.HandleReceivedChainRequest(data) // Handle received chain request
 
 		if err != nil { // Check for errors
@@ -63,8 +67,12 @@ func handleConnection(conn net.Conn) error {
 			return err // Return found error
 		}
 	case "{" + `"` + "nonce" + `"` + ":": // Check transaction
+		common.Logf("== NETWORK == received transaction from peer %s\n", conn.RemoteAddr().String()) // Log tx
+
 		return types.HandleReceivedTransaction(data) // Handle received data
 	case "cChainReq": // Check coordinationChain request
+		common.Logf("== NETWORK == received coordination chain request from peer %s\n", conn.RemoteAddr().String()) // Log request
+
 		chainBytes, err := types.HandleReceivedCoordinationChainRequest() // Handle chain request
 
 		if err != nil { // Check for errors
@@ -77,6 +85,8 @@ func handleConnection(conn net.Conn) error {
 			return err // Return found error
 		}
 	case "configReq":
+		common.Logf("== NETWORK == received chain config request from peer %s\n", conn.RemoteAddr().String()) // Log request
+
 		configBytes, err := config.HandleReceivedConfigRequest() // Handle config request
 
 		if err != nil { // Check for errors
