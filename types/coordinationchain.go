@@ -141,7 +141,13 @@ func JoinNetwork(bootstrapNode string, archivalNode bool) error {
 	}
 
 	if archivalNode { // Check is registering archival node
-		return RegisterArchivalNode() // Register archival node
+		err = RegisterArchivalNode() // Register archival node
+
+		if err != nil { // Check for errors
+			return err // Return found error
+		}
+
+		return SyncNetwork() // Register archival node
 	}
 
 	return nil // No error occurred, return nil
