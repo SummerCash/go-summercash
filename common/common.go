@@ -41,6 +41,11 @@ var (
 		"108.6.212.17:3000", // Boot node 0
 		"108.6.212.17:6000", // Boot node 1
 	}
+
+	// BootstrapNodesRaw - global definition for set of bootstrap nodes
+	BootstrapNodesRaw = []string{
+		"108.6.212.17", // Boot node 0
+	}
 )
 
 const (

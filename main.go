@@ -107,7 +107,7 @@ func startNode(archivalNode bool) {
 	}
 
 	if err != nil { // Check for errors
-		if archivalNode && !commonGoP2P.StringInSlice(common.BootstrapNodes, ip) && !*privateNetworkFlag { // Check is not bootstrap node
+		if archivalNode && !commonGoP2P.StringInSlice(common.BootstrapNodesRaw, ip) && !*privateNetworkFlag { // Check is not bootstrap node
 			err := types.JoinNetwork(common.BootstrapNodes[0], true) // Register node
 
 			if err != nil { // Check for errors
