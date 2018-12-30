@@ -284,18 +284,18 @@ func (chain *Chain) makeGenesis(genesis *config.ChainConfig) (common.Hash, error
 		return common.Hash{}, err // Return error
 	}
 
-	common.Logf("== NETWORK == initialized genesis transaction %s", genesisTx.Hash.String())     // Log genesis TX
-	common.Logf("== NETWORK == adding genesis transaction %s to chain", genesisTx.Hash.String()) // Log add
+	common.Logf("== NETWORK == initialized genesis transaction %s\n", genesisTx.Hash.String())     // Log genesis TX
+	common.Logf("== NETWORK == adding genesis transaction %s to chain\n", genesisTx.Hash.String()) // Log add
 
 	err = chain.AddTransaction(genesisTx) // Add genesis tx
 
 	if err != nil { // Check for errors
-		common.Logf("== ERROR == error making genesis block: %s", err.Error()) // Log error
+		common.Logf("== ERROR == error making genesis block: %s\n", err.Error()) // Log error
 
 		return common.Hash{}, err // Return found error
 	}
 
-	common.Logf("== SUCCESS == added genesis tx %s to chain %s", genesisTx.Hash.String(), chain.ID.String()) // Log success
+	common.Logf("== SUCCESS == added genesis tx %s to chain %s\n", genesisTx.Hash.String(), chain.ID.String()) // Log success
 
 	lastTx := genesisTx // Set initial
 
@@ -309,7 +309,7 @@ func (chain *Chain) makeGenesis(genesis *config.ChainConfig) (common.Hash, error
 				return common.Hash{}, err // Return error
 			}
 
-			common.Logf("== CHAIN == initialized genesis child transaction %s for alloc address %s", lastTx.Hash.String(), genesis.AllocAddresses[x]) // Log init
+			common.Logf("== CHAIN == initialized genesis child transaction %s for alloc address %s\n", lastTx.Hash.String(), genesis.AllocAddresses[x]) // Log init
 
 			err = chain.AddTransaction(lastTx) // Add tx
 
@@ -317,7 +317,7 @@ func (chain *Chain) makeGenesis(genesis *config.ChainConfig) (common.Hash, error
 				return common.Hash{}, err // Return error
 			}
 
-			common.Logf("== SUCCESS == added genesis child tx %s to chain %s", lastTx.Hash.String(), chain.ID.String()) // Log success
+			common.Logf("== SUCCESS == added genesis child tx %s to chain %s\n", lastTx.Hash.String(), chain.ID.String()) // Log success
 		}
 	}
 
