@@ -8,6 +8,26 @@ import "testing"
 	BEGIN TERMINAL METHODS
 */
 
+// TestLog - test functionality of fmt.Println wrapper
+func TestLog(t *testing.T) {
+	_, err := Log("test") // Log test
+
+	if err != nil { // Check for errors
+		t.Error(err) // Log found error
+		t.FailNow()  // Panic
+	}
+}
+
+// TestLogf - test functionality of fmt.Printf wrapper
+func TestLogf(t *testing.T) {
+	_, err := Logf("test: %s", "test") // Log test
+
+	if err != nil { // Check for errors
+		t.Error(err) // Log found error
+		t.FailNow()  // Panic
+	}
+}
+
 // TestParseStringMethodCall - test functionality of ParseStringMethodCall() function
 func TestParseStringMethodCall(t *testing.T) {
 	input := "crypto.Sha3(test)" // Init input

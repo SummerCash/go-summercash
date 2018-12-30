@@ -23,6 +23,9 @@ var (
 	// ErrNilInput - error definition describing input of 0 char length
 	ErrNilInput = errors.New("nil input")
 
+	// ErrVerboseNotAllowed - error definition describing config preventing print call
+	ErrVerboseNotAllowed = errors.New("verbose output not allowed")
+
 	// DataDir - global data directory definition
 	DataDir = getDataDir()
 
@@ -46,6 +49,9 @@ var (
 	BootstrapNodesRaw = []string{
 		"108.6.212.17", // Boot node 0
 	}
+
+	// Silent - silent config
+	Silent = false
 )
 
 const (
@@ -58,6 +64,24 @@ const (
 /*
 	BEGIN TERMINAL METHODS
 */
+
+// Log - fmt.Println wrapper
+func Log(a ...interface{}) (int, error) {
+	if !Silent { // Check verbose allowed
+		return fmt.Println(a...) // Log
+	}
+
+	return 0, ErrVerboseNotAllowed // Return error
+}
+
+// Logf - fmt.Printf wrapper
+func Logf(format string, a ...interface{}) (int, error) {
+	if !Silent { // Check verbose allowed
+		return fmt.Printf(format, a...) // Print
+	}
+
+	return 0, ErrVerboseNotAllowed // Return error
+}
 
 // ParseStringMethodCall - attempt to parse string as method call, returning receiver, method name, and params
 func ParseStringMethodCall(input string) (string, string, []string, error) {
