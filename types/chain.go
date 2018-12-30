@@ -66,6 +66,8 @@ func NewChain(account common.Address) (*Chain, error) {
 		NetworkID:    config.NetworkID,
 	}
 
+	common.Logf("== ACCOUNT == initialized account chain with account address %s", chain.Account.String()) // Log init
+
 	localIP, err := common.GetExtIPAddrWithoutUPnP() // Get IP addr
 
 	if err != nil { // Check for errors
@@ -73,6 +75,8 @@ func NewChain(account common.Address) (*Chain, error) {
 	}
 
 	if coordinationChain.Nodes == nil || len(coordinationChain.Nodes) == 0 { // Check genesis
+		common.Log("== NETWORK == making genesis block") // Log genesis block
+
 		_, err := chain.makeGenesis(config) // Make genesis
 
 		if err != nil { // Check for errors
@@ -269,6 +273,8 @@ func (chain *Chain) makeGenesis(genesis *config.ChainConfig) (common.Hash, error
 	emptyNode := CoordinationNode{} // Init empty buffer
 
 	if genesisNode.String() != emptyNode.String() { // Check genesis already exists
+		common.Log("== ERROR == genesis block already exists") // Log already exists
+
 		return common.Hash{}, ErrGenesisAlreadyExists // Return error
 	}
 
@@ -278,19 +284,38 @@ func (chain *Chain) makeGenesis(genesis *config.ChainConfig) (common.Hash, error
 		return common.Hash{}, err // Return error
 	}
 
-	err = chain.AddTransaction(genesisTx) // Add genesis
+	common.Logf("== NETWORK == initialized genesis transaction %s", genesisTx.Hash.String())     // Log genesis TX
+	common.Logf("== NETWORK == adding genesis transaction %s to chain", genesisTx.Hash.String()) // Log add
+
+	err = chain.AddTransaction(genesisTx) // Add genesis tx
 
 	if err != nil { // Check for errors
 		return common.Hash{}, err // Return found error
 	}
 
+	common.Logf("== SUCCESS == added genesis tx %s to chain %s", genesisTx.Hash.String(), chain.ID.String()) // Log success
+
 	lastTx := genesisTx // Set initial
 
-	for x := 1; x != len(genesis.AllocAddresses); x++ { // Iterate through allocations
-		lastTx, err = NewTransaction(uint64(x+1), lastTx, nil, &genesis.AllocAddresses[x], genesis.Alloc[genesis.AllocAddresses[x].String()], []byte("genesisChild")) // Init transaction
+	if len(genesis.AllocAddresses) > 1 { // Check needs genesis children
+		common.Log("== CHAIN == initializing gensis children") // Log genesis children
 
-		if err != nil { // Check for errors
-			return common.Hash{}, err // Return error
+		for x := 1; x != len(genesis.AllocAddresses); x++ { // Iterate through allocations
+			lastTx, err = NewTransaction(uint64(x+1), lastTx, nil, &genesis.AllocAddresses[x], genesis.Alloc[genesis.AllocAddresses[x].String()], []byte("genesisChild")) // Init transaction
+
+			if err != nil { // Check for errors
+				return common.Hash{}, err // Return error
+			}
+
+			common.Logf("== CHAIN == initialized genesis child transaction %s for alloc address %s", lastTx.Hash.String(), genesis.AllocAddresses[x]) // Log init
+
+			err = chain.AddTransaction(lastTx) // Add tx
+
+			if err != nil { // Check for errors
+				return common.Hash{}, err // Return error
+			}
+
+			common.Logf("== SUCCESS == added genesis child tx %s to chain %s", lastTx.Hash.String(), chain.ID.String()) // Log success
 		}
 	}
 
