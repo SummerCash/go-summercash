@@ -221,5 +221,5 @@ func (server *Server) ReadAccountFromMemory(ctx context.Context, req *accountsPr
 		return &accountsProto.GeneralResponse{}, err // Return found error
 	}
 
-	return &accountsProto.GeneralResponse{Message: fmt.Sprintf("Address: %s, PrivateKey: %s", account.Address, encoded)}, nil // No error occurred, return response
+	return &accountsProto.GeneralResponse{Message: fmt.Sprintf("\nAddress: %s, PrivateKey: %s", account.Address, encoded)}, nil // No error occurred, return response
 }
