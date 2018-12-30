@@ -36,12 +36,14 @@ var (
 	nodePortFlag       = flag.Int("node-port", common.DefaultNodePort, "launch node on give port")                                                                        // Init node port flag
 	privateNetworkFlag = flag.Bool("private-net", false, "launch node in context of private network")                                                                     // Init private network flag
 	archivalNodeFlag   = flag.Bool("archival", false, "launch node in archival mode")                                                                                     // Init archival node flag
+	silent             = flag.Bool("silent", false, "silence all fmt.Print calls")                                                                                        // Init silent flag
 )
 
 func main() {
 	flag.Parse() // Parse flags
 
 	common.DataDir = *dataDirFlag // Set data-dir
+	common.Silent = *silent       // Set is silent
 
 	if *privateNetworkFlag {
 		common.ExtIPProviders = []string{} // Set nil providers
