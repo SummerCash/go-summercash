@@ -80,6 +80,12 @@ func HandleReceivedCoordinationChainRequest() ([]byte, error) {
 				}
 			}
 		}
+
+		coordinationChain, err = ReadCoordinationChainFromMemory() // Sync
+
+		if err != nil { // Check for errors
+			return nil, err // Return found error
+		}
 	}
 
 	byteVal := coordinationChain.Bytes() // Get byte val
