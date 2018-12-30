@@ -173,7 +173,17 @@ func SyncNetwork() error {
 	for _, node := range coordinationChain.Nodes { // Iterate through nodes
 		common.Logf("== NETWORK == requesting account chain for address %s\n", node.Address.String()) // Log req
 
-		chainBytes, err := gop2pCommon.SendBytesResult(append([]byte("chainRequest")[:], node.Address[:]...), node.Addresses[len(node.Addresses)-1]+":"+strconv.Itoa(common.DefaultNodePort)) // Get chain
+		chainBytes := []byte{} // Init buffer
+
+		var err error // Init error buffer
+
+		for _, address := range node.Addresses { // Iterate through node providers
+			chainBytes, err = gop2pCommon.SendBytesResult(append([]byte("chainRequest")[:], node.Address[:]...), address+":"+strconv.Itoa(common.DefaultNodePort)) // Get chain
+
+			if err == nil { // Check for errors
+				break // Break
+			}
+		}
 
 		if err != nil { // Check for errors
 			return err // Return found error
