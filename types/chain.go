@@ -134,17 +134,19 @@ func NewChain(account common.Address) (*Chain, error) {
 			return nil, err // Return found error
 		}
 
-		if nodes[0] != localIP+":"+strconv.Itoa(common.NodePort) { // Check not current node
-			err := common.SendBytes(chain.Bytes(), nodes[0]) // Send chain
+		if len(nodes) > 0 {
+			if nodes[0] != localIP+":"+strconv.Itoa(common.NodePort) { // Check not current node
+				err := common.SendBytes(chain.Bytes(), nodes[0]) // Send chain
 
-			if err != nil { // Check for errors
-				return nil, err // Return found error
+				if err != nil { // Check for errors
+					return nil, err // Return found error
+				}
 			}
-		}
 
-		for x, address := range nodes { // Iterate through addresses
-			if x != 0 && address != localIP+":"+strconv.Itoa(common.NodePort) { // Check not first index and not current node
-				go common.SendBytes(chain.Bytes(), address) // Send chain
+			for x, address := range nodes { // Iterate through addresses
+				if x != 0 && address != localIP+":"+strconv.Itoa(common.NodePort) { // Check not first index and not current node
+					go common.SendBytes(chain.Bytes(), address) // Send chain
+				}
 			}
 		}
 	}
