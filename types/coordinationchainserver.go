@@ -39,6 +39,8 @@ func HandleReceivedCoordinationNode(b []byte) error {
 	}
 
 	if !commonGoP2P.StringInSlice(node.Addresses, ip) { // Check is not in node
+		common.Logf("== NETWORK == adding self to coordination node %s\n", node.Address.String()) // Log add self
+
 		(*node).Addresses = append((*node).Addresses, ip) // Append current IP
 
 		err = coordinationChain.AddNode(coordinationNode, true) // Add node
@@ -47,6 +49,8 @@ func HandleReceivedCoordinationNode(b []byte) error {
 			return err // Return found error
 		}
 	} else {
+		common.Logf("== NETWORK == added coordination node %s to local coordination chain %s\n", node.Address.String(), coordinationChain.ChainID.String()) // Log add to local chain
+
 		err = coordinationChain.AddNode(coordinationNode, false) // Add node
 
 		if err != nil { // Check for errors
