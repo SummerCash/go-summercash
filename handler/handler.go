@@ -104,6 +104,10 @@ func handleConnection(conn net.Conn) error {
 		if err != nil { // Check for errors
 			return err // Return found error
 		}
+	case "{" + `"` + "account":
+		common.Logf("== NETWORK == received account chain from peer %s\n", conn.RemoteAddr().String()) // Log post
+
+		return types.HandleReceivedChain(data) // Handle received data
 	}
 
 	return nil // No error occurred, return nil
