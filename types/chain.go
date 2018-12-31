@@ -87,7 +87,7 @@ func NewChain(account common.Address) (*Chain, error) {
 		}
 	}
 
-	common.Log("== CHAIN == initializing account chain coordination node\n") // Log coordination node init
+	common.Log("== CHAIN == initializing account chain coordination node") // Log coordination node init
 
 	node, err := NewCoordinationNode(account, []string{localIP + ":" + strconv.Itoa(common.NodePort)}) // Initialize node
 
@@ -113,7 +113,7 @@ func NewChain(account common.Address) (*Chain, error) {
 
 			common.Logf("== SUCCESS == appended node %s to local chain\n", node.ID.String()) // Log coordination node init
 		} else {
-			common.Log("== CHAIN == appending new coordination node to remote chains\n") // Log coordination node append
+			common.Log("== CHAIN == appending new coordination node to remote chains") // Log coordination node append
 
 			err = coordinationChain.AddNode(node, true) // Add node
 
