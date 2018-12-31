@@ -45,6 +45,7 @@ func (server *Server) NewTransaction(ctx context.Context, req *transactionProto.
 
 		if len(accountChain.Transactions) > 0 { // Check is not 0 index
 			for _, transaction := range accountChain.Transactions { // Iterate through transactions
+				fmt.Println(transaction.String())
 				if *transaction.Sender == sender { // Check match
 					if transaction.AccountNonce == uint64(len(accountChain.Transactions)) { // Check is last transaction
 						lastTransaction = transaction // Set last transaction
