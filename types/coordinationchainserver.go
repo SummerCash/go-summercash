@@ -52,6 +52,8 @@ func HandleReceivedCoordinationNode(b []byte) error {
 
 			return err // Return found error
 		}
+
+		common.Logf("== SUCCESS == successfully pushed coordination node %s\n to network", node.Address.String()) // Log success
 	} else {
 		common.Logf("== NETWORK == added coordination node %s to local coordination chain %s\n", node.Address.String(), coordinationChain.ChainID.String()) // Log add to local chain
 
@@ -62,6 +64,8 @@ func HandleReceivedCoordinationNode(b []byte) error {
 
 			return err // Return found error
 		}
+
+		common.Logf("== SUCCESS == successfully pushed coordination node %s\n to local coordination chain", node.Address.String()) // Log success
 	}
 
 	err = coordinationChain.WriteToMemory() // Write coordinationChain to memory
