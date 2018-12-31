@@ -49,9 +49,11 @@ func HandleReceivedCoordinationNode(b []byte) error {
 	}
 
 	if !commonGoP2P.StringInSlice(node.Addresses, ipPortIncluded) { // Check is not in node
-		common.Logf("== NETWORK == adding self to coordination node %s\n", node.Address.String()) // Log add self
+		common.Logf("== NETWORK == adding self %s to coordination node %s\n", ipPortIncluded, node.Address.String()) // Log add self
 
 		(*node).Addresses = append((*node).Addresses, ipPortIncluded) // Append current IP
+
+		common.Logf("== CHAIN == node addresses %s", (*node).Address) // Log addrs
 
 		common.Logf("== NETWORK == pushing coordination node %s\n", node.Address.String()) // Log push
 
