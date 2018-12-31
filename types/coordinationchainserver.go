@@ -29,9 +29,11 @@ func HandleReceivedCoordinationNode(b []byte) error {
 	node, err := coordinationChain.QueryAddress(coordinationNode.Address) // Check node already exists
 
 	if err == nil { // Check already exists
-		(*node).Addresses = append((*node).Addresses, coordinationNode.Addresses[len(coordinationNode.Addresses)-1]) // Append node
+		if !commonGoP2P.StringInSlice(node.Addresses, coordinationNode.Addresses[len(coordinationNode.Addresses)-1]) { // Check not already in node
+			(*node).Addresses = append((*node).Addresses, coordinationNode.Addresses[len(coordinationNode.Addresses)-1]) // Append node
 
-		return coordinationChain.WriteToMemory() // Write coordinationChain to memory
+			return coordinationChain.WriteToMemory() // Write coordinationChain to memory
+		}
 	}
 
 	ip, err := common.GetExtIPAddrWithoutUPnP() // Get IP
@@ -48,14 +50,14 @@ func HandleReceivedCoordinationNode(b []byte) error {
 		ipPortIncluded = ip + ":" + strconv.Itoa(common.NodePort) // Add port
 	}
 
-	if !commonGoP2P.StringInSlice(node.Addresses, ipPortIncluded) { // Check is not in node
-		common.Logf("== NETWORK == adding self %s to coordination node %s\n", ipPortIncluded, node.Address.String()) // Log add self
+	if !commonGoP2P.StringInSlice(coordinationNode.Addresses, ipPortIncluded) { // Check is not in node
+		common.Logf("== NETWORK == adding self %s to coordination node %s\n", ipPortIncluded, coordinationNode.Address.String()) // Log add self
 
-		(*node).Addresses = append((*node).Addresses, ipPortIncluded) // Append current IP
+		(*coordinationNode).Addresses = append((*coordinationNode).Addresses, ipPortIncluded) // Append current IP
 
-		common.Logf("== CHAIN == node addresses %s\n", (*node).Addresses) // Log addrs
+		common.Logf("== CHAIN == node addresses %s\n", (*coordinationNode).Addresses) // Log addrs
 
-		common.Logf("== NETWORK == pushing coordination node %s\n", node.Address.String()) // Log push
+		common.Logf("== NETWORK == pushing coordination node %s\n", coordinationNode.Address.String()) // Log push
 
 		err = coordinationChain.AddNode(coordinationNode, true) // Add node
 
@@ -65,9 +67,9 @@ func HandleReceivedCoordinationNode(b []byte) error {
 			return err // Return found error
 		}
 
-		common.Logf("== SUCCESS == successfully pushed coordination node %s to network\n", node.Address.String()) // Log success
+		common.Logf("== SUCCESS == successfully pushed coordination node %s to network\n", coordinationNode.Address.String()) // Log success
 	} else {
-		common.Logf("== NETWORK == added coordination node %s to local coordination chain %s\n", node.Address.String(), coordinationChain.ChainID.String()) // Log add to local chain
+		common.Logf("== NETWORK == added coordination node %s to local coordination chain %s\n", coordinationNode.Address.String(), coordinationChain.ChainID.String()) // Log add to local chain
 
 		err = coordinationChain.AddNode(coordinationNode, false) // Add node
 
@@ -77,7 +79,7 @@ func HandleReceivedCoordinationNode(b []byte) error {
 			return err // Return found error
 		}
 
-		common.Logf("== SUCCESS == successfully pushed coordination node %s\n to local coordination chain", node.Address.String()) // Log success
+		common.Logf("== SUCCESS == successfully pushed coordination node %s\n to local coordination chain", coordinationNode.Address.String()) // Log success
 	}
 
 	err = coordinationChain.WriteToMemory() // Write coordinationChain to memory

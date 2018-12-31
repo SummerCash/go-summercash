@@ -352,7 +352,7 @@ func (coordinationChain *CoordinationChain) PushNode(coordinationNode *Coordinat
 		if node != coordinationNode { // Plz no recursion
 			for _, address := range node.Addresses { // Iterate through node addresses
 				if address != localIP { // Plz, plz no recursion
-					common.Logf("== NETWORK == pushing coordination chain node %s to node %s", coordinationNode.Address.String(), address) // Log push
+					common.Logf("== NETWORK == pushing coordination chain node %s to peer %s\n", coordinationNode.Address.String(), address) // Log push
 
 					go common.SendBytes(coordinationNode.Bytes(), address) // Send new node
 				}
