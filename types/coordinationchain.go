@@ -4,6 +4,9 @@ import (
 	"bytes"
 	"encoding/json"
 	"errors"
+	"fmt"
+	"io/ioutil"
+	"path/filepath"
 	"strconv"
 	"strings"
 	"time"
@@ -214,6 +217,36 @@ func SyncNetwork() error {
 
 		if err != nil { // Check for errors
 			return err // Return found error
+		}
+	}
+
+	files, err := ioutil.ReadDir(filepath.FromSlash(fmt.Sprintf("%s/data/chain", common.DataDir))) // Walk keystore dir
+
+	if err != nil { // Check for errors
+		return err // Return found error
+	}
+
+	for _, file := range files { // Iterate through files
+		data, err := ioutil.ReadFile(file.Name()) // Read file JSON bytes
+
+		if err != nil { // Check for errors
+			return err // Return found error
+		}
+
+		chain, err := FromBytes(data) // Read chain from bytes
+
+		if err != nil { // Check for errors
+			return err // Return found error
+		}
+
+		node, err := coordinationChain.QueryAddress(chain.Account) // Query address
+
+		if err != nil { // Check for errors
+			return err // Return found error
+		}
+
+		for _, address := range node.Addresses { // Iterate through addresses
+			go common.SendBytes(data, address) // Send chain
 		}
 	}
 
