@@ -125,6 +125,28 @@ func NewChain(account common.Address) (*Chain, error) {
 		}
 	}
 
+	if coordinationChain.Nodes != nil || len(coordinationChain.Nodes) > 0 { // Check not genesis
+		node, err := coordinationChain.QueryAddress(chain.Account) // Query address
+
+		if err != nil { // Check for errors
+			return nil, err // Return found error
+		}
+
+		if node.Addresses[0] != localIP+":"+strconv.Itoa(common.NodePort) { // Check not current node
+			err := common.SendBytes(chain.Bytes(), node.Addresses[0]) // Send chain
+
+			if err != nil { // Check for errors
+				return nil, err // Return found error
+			}
+		}
+
+		for x, address := range node.Addresses { // Iterate through addresses
+			if x != 0 && address != localIP+":"+strconv.Itoa(common.NodePort) { // Check not first index and not current node
+				go common.SendBytes(chain.Bytes(), address) // Send chain
+			}
+		}
+	}
+
 	err = chain.WriteToMemory() // Write to memory
 
 	if err != nil { // Check for errors

@@ -245,8 +245,24 @@ func SyncNetwork() error {
 			return err // Return found error
 		}
 
-		for _, address := range node.Addresses { // Iterate through addresses
-			go common.SendBytes(data, address) // Send chain
+		ip, err := common.GetExtIPAddrWithoutUPnP() // Get IP
+
+		if err != nil { // Check for errors
+			return err // Return found error
+		}
+
+		if node.Addresses[0] != ip+":"+strconv.Itoa(common.NodePort) { // Check not current node
+			err := common.SendBytes(data, node.Addresses[0]) // Send chain
+
+			if err != nil { // Check for errors
+				return err // Return found error
+			}
+		}
+
+		for x, address := range node.Addresses { // Iterate through addresses
+			if x != 0 && address != ip+":"+strconv.Itoa(common.NodePort) { // Check not first index and not current addr
+				go common.SendBytes(data, address) // Send chain
+			}
 		}
 	}
 
