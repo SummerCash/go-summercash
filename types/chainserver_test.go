@@ -101,6 +101,39 @@ func TestHandleReceivedTransaction(t *testing.T) {
 	t.Log("success") // Log success
 }
 
+// TestHandleReceivedChain - test received chain handler
+func TestHandleReceivedChain(t *testing.T) {
+	privateKey, err := ecdsa.GenerateKey(elliptic.P521(), rand.Reader) // Generate private key
+
+	if err != nil { // Check for errors
+		t.Error(err) // Log found error
+		t.FailNow()  // Panic
+	}
+
+	sender, err := common.NewAddress(privateKey) // Initialize address from private key
+
+	if err != nil { // Check for errors
+		t.Error(err) // Log found error
+		t.FailNow()  // Panic
+	}
+
+	chain, err := NewChain(sender) // Initialize chain
+
+	if err != nil { // Check for errors
+		t.Error(err) // Log found error
+		t.FailNow()  // Panic
+	}
+
+	err = HandleReceivedChain(chain.Bytes()) // Handle received
+
+	if err != nil { // Check for errors
+		t.Error(err) // Log found error
+		t.FailNow()  // Panic
+	}
+
+	t.Log("success") // Log success
+}
+
 /* END EXPORTED METHODS */
 
 /* BEGIN INTERNAL METHODS */

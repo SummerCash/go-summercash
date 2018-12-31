@@ -1,7 +1,14 @@
 package types
 
 import (
+	"errors"
+
 	"github.com/space55/summertech-blockchain/common"
+)
+
+var (
+	// ErrBadChain - error describing input chain with tx length shorter than current
+	ErrBadChain = errors.New("chain out of date")
 )
 
 /* BEGIN EXPORTED METHODS */
@@ -39,6 +46,31 @@ func HandleReceivedTransaction(b []byte) error {
 
 	if err != nil { // Check for errors
 		return err // Return found error
+	}
+
+	return nil // No error occurred, return nil
+}
+
+// HandleReceivedChain - handle received chain
+func HandleReceivedChain(b []byte) error {
+	chain, err := FromBytes(b) // Marshal bytes to chain
+
+	if err != nil { // Check for errors
+		return err // Return error
+	}
+
+	oldChain, err := ReadChainFromMemory(chain.Account) // Check for conflicts
+
+	if err == nil { // Check for errors
+		if len(oldChain.Transactions) > len(chain.Transactions) { // Check bad chain
+			return ErrBadChain // Return error
+		}
+	}
+
+	err = chain.WriteToMemory() // Write chain to memory
+
+	if err != nil { // Check for errors
+		return err // Return error
 	}
 
 	return nil // No error occurred, return nil
