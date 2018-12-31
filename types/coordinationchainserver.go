@@ -45,7 +45,7 @@ func HandleReceivedCoordinationNode(b []byte) error {
 	if strings.Contains(ip, ":") { // Check is IPv6
 		ipPortIncluded = "[" + ip + "]" + ":" + strconv.Itoa(common.NodePort) // Add port
 	} else {
-		ipPortIncluded = ip + strconv.Itoa(common.NodePort) // Add port
+		ipPortIncluded = ip + ":" + strconv.Itoa(common.NodePort) // Add port
 	}
 
 	if !commonGoP2P.StringInSlice(node.Addresses, ipPortIncluded) { // Check is not in node

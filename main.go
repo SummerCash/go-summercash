@@ -114,7 +114,7 @@ func startNode(archivalNode bool) {
 	if strings.Contains(ip, ":") { // Check is IPv6
 		ip = "[" + ip + "]" + ":" + strconv.Itoa(common.NodePort) // Add port
 	} else {
-		ip = ip + strconv.Itoa(common.NodePort) // Add port
+		ip = ip + ":" + strconv.Itoa(common.NodePort) // Add port
 	}
 
 	if err != nil { // Check for errors
