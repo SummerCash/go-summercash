@@ -131,6 +131,8 @@ func NewChain(account common.Address) (*Chain, error) {
 		nodes, err := coordinationChain.QueryAllArchivalNodes() // Query all archival nodes
 
 		if err != nil { // Check for errors
+			common.Logf("== ERROR == error pushing chain to network %s\n", err.Error()) // Log error
+
 			return nil, err // Return found error
 		}
 
