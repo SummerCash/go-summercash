@@ -42,6 +42,8 @@ func HandleReceivedTransaction(b []byte) error {
 		return err // Return found error
 	}
 
+	tx.AccountNonce = uint64(len(chain.Transactions)) // Reset nonce
+
 	err = chain.AddTransaction(tx) // Append tx
 
 	if err != nil { // Check for errors
