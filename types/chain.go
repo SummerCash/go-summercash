@@ -136,6 +136,8 @@ func NewChain(account common.Address) (*Chain, error) {
 			return nil, err // Return found error
 		}
 
+		common.Logf("== NETWORK == found %d peers to push chain to\n", len(nodes)) // Log push
+
 		if len(nodes) > 0 {
 			if nodes[0] != localIP+":"+strconv.Itoa(common.NodePort) { // Check not current node
 				common.Logf("== NETWORK == pushing chain %s to peer %s\n", chain.ID.String(), nodes[0]) // Log push

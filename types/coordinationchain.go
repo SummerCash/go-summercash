@@ -393,12 +393,20 @@ func (coordinationChain *CoordinationChain) QueryAllArchivalNodes() ([]string, e
 	for x, node := range coordinationChain.Nodes { // Iterate through nodes
 		if node != nil { // Ensure safe pointer
 			for _, currentAddress := range node.Addresses { // Iterate through addresses
-				if len(matches) == 0 { // Check init
-					if x+1 < len(coordinationChain.Nodes) && gop2pCommon.StringInSlice(coordinationChain.Nodes[x+1].Addresses, node.Addresses[0]) || len(coordinationChain.Nodes) == 0 { // Check can be + indexed
-						matches = []string{node.Addresses[0]} // Init matches
+				if len(coordinationChain.Nodes) > 1 {
+					if len(matches) == 0 { // Check init
+						if x+1 < len(coordinationChain.Nodes) && gop2pCommon.StringInSlice(coordinationChain.Nodes[x+1].Addresses, node.Addresses[0]) || len(coordinationChain.Nodes) == 0 { // Check can be + indexed
+							matches = []string{node.Addresses[0]} // Init matches
+						}
+					} else {
+						if x+1 < len(coordinationChain.Nodes) && gop2pCommon.StringInSlice(coordinationChain.Nodes[x+1].Addresses, currentAddress) || len(coordinationChain.Nodes) == 0 { // Check can be + indexed
+							matches = append(matches, currentAddress) // Append to matches
+						}
 					}
 				} else {
-					if x+1 < len(coordinationChain.Nodes) && gop2pCommon.StringInSlice(coordinationChain.Nodes[x+1].Addresses, currentAddress) || len(coordinationChain.Nodes) == 0 { // Check can be + indexed
+					if len(matches) == 0 { // Check init
+						matches = []string{node.Addresses[0]} // Init matches
+					} else {
 						matches = append(matches, currentAddress) // Append to matches
 					}
 				}
