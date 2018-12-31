@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"io/ioutil"
 	"path/filepath"
+	"strconv"
+	"strings"
 
 	commonGoP2P "github.com/dowlandaiello/GoP2P/common"
 	"github.com/space55/summertech-blockchain/common"
@@ -38,7 +40,15 @@ func HandleReceivedCoordinationNode(b []byte) error {
 		return err // Return error
 	}
 
-	if !commonGoP2P.StringInSlice(node.Addresses, ip) { // Check is not in node
+	ipPortIncluded := "" // Init buffer
+
+	if strings.Contains(ip, ":") { // Check is IPv6
+		ipPortIncluded = "[" + ip + "]" + ":" + strconv.Itoa(common.NodePort) // Add port
+	} else {
+		ipPortIncluded = ip + strconv.Itoa(common.NodePort) // Add port
+	}
+
+	if !commonGoP2P.StringInSlice(node.Addresses, ipPortIncluded) { // Check is not in node
 		common.Logf("== NETWORK == adding self to coordination node %s\n", node.Address.String()) // Log add self
 
 		(*node).Addresses = append((*node).Addresses, ip) // Append current IP
