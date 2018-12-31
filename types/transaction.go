@@ -10,7 +10,6 @@ import (
 	"fmt"
 	"io/ioutil"
 	"path/filepath"
-	"strconv"
 
 	"github.com/space55/summertech-blockchain/common"
 	"github.com/space55/summertech-blockchain/crypto"
@@ -110,7 +109,7 @@ func (transaction *Transaction) Publish() error {
 		return err // Return found error
 	}
 
-	err = common.SendBytes(transaction.Bytes(), node.Addresses[0]+":"+strconv.Itoa(common.DefaultNodePort)) // Send transaction
+	err = common.SendBytes(transaction.Bytes(), node.Addresses[0]) // Send transaction
 
 	if err != nil { // Check for errors
 		return err // Return found error
@@ -118,7 +117,7 @@ func (transaction *Transaction) Publish() error {
 
 	for x, address := range node.Addresses { // Iterate through addresses
 		if x != 0 { // Skip first index
-			go common.SendBytes(transaction.Bytes(), address+":"+strconv.Itoa(common.DefaultNodePort)) // Send transaction
+			go common.SendBytes(transaction.Bytes(), address) // Send transaction
 		}
 	}
 

@@ -192,7 +192,7 @@ func SyncNetwork() error {
 		var err error // Init error buffer
 
 		for _, address := range node.Addresses { // Iterate through node providers
-			chainBytes, err = gop2pCommon.SendBytesResult(append([]byte("chainRequest")[:], node.Address[:]...), address+":"+strconv.Itoa(common.DefaultNodePort)) // Get chain
+			chainBytes, err = gop2pCommon.SendBytesResult(append([]byte("chainRequest")[:], node.Address[:]...), address) // Get chain
 
 			if err == nil { // Check for errors
 				break // Break
@@ -241,7 +241,7 @@ func RegisterArchivalNode() error {
 
 	if err != nil { // Check for errors
 		for _, node := range coordinationChain.Nodes { // Iterate through nodes
-			nodeInstance, err := NewCoordinationNode(node.Address, []string{ip}) // Init node
+			nodeInstance, err := NewCoordinationNode(node.Address, []string{ip + ":" + strconv.Itoa(common.NodePort)}) // Init node
 
 			if err != nil { // Check for errors
 				return err // Return found error
@@ -337,7 +337,7 @@ func (coordinationChain *CoordinationChain) PushNode(coordinationNode *Coordinat
 		if node != coordinationNode { // Plz no recursion
 			for _, address := range node.Addresses { // Iterate through node addresses
 				if address != localIP { // Plz, plz no recursion
-					go common.SendBytes(coordinationNode.Bytes(), address+":"+strconv.Itoa(common.DefaultNodePort)) // Send new node
+					go common.SendBytes(coordinationNode.Bytes(), address) // Send new node
 				}
 			}
 		}
@@ -365,7 +365,7 @@ func (coordinationChain *CoordinationChain) GetBalance(address common.Address) (
 		return 0, err // Return found error
 	}
 
-	result, err := gop2pCommon.SendBytesResult(append([]byte("chainRequest")[:], node.Address[:]...), node.Addresses[len(node.Addresses)-1]+":"+strconv.Itoa(common.DefaultNodePort)) // Get chain
+	result, err := gop2pCommon.SendBytesResult(append([]byte("chainRequest")[:], node.Address[:]...), node.Addresses[len(node.Addresses)-1]) // Get chain
 
 	if err != nil { // Check for errors
 		return 0, err // Return found error

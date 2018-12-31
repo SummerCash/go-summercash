@@ -52,11 +52,9 @@ var (
 
 	// Silent - silent config
 	Silent = false
-)
 
-const (
-	// DefaultNodePort - global port definition
-	DefaultNodePort = 3000
+	// NodePort - global port definition
+	NodePort = 3000
 )
 
 /* BEGIN EXPORTED METHODS */

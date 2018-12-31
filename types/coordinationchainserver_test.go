@@ -4,6 +4,7 @@ import (
 	"crypto/ecdsa"
 	"crypto/elliptic"
 	"crypto/rand"
+	"strconv"
 	"testing"
 
 	"github.com/space55/summertech-blockchain/common"
@@ -39,7 +40,7 @@ func TestHandleReceivedCoordinationNode(t *testing.T) {
 		t.FailNow()  // Panic
 	}
 
-	coordinationNode, err := NewCoordinationNode(address, []string{"1.1.1.1"}) // Init coordination node
+	coordinationNode, err := NewCoordinationNode(address, []string{"1.1.1.1:" + strconv.Itoa(common.NodePort)}) // Init coordination node
 
 	if err != nil { // Check for errors
 		t.Error(err) // Log found error

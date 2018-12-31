@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"errors"
+	"strconv"
 
 	"github.com/space55/summertech-blockchain/common"
 	"github.com/space55/summertech-blockchain/config"
@@ -86,7 +87,7 @@ func NewChain(account common.Address) (*Chain, error) {
 		}
 	}
 
-	node, err := NewCoordinationNode(account, []string{localIP}) // Initialize node
+	node, err := NewCoordinationNode(account, []string{localIP + ":" + strconv.Itoa(common.NodePort)}) // Initialize node
 
 	if err != nil { // Check for errors
 		return &Chain{}, err // Return found error
