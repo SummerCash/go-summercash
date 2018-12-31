@@ -43,9 +43,13 @@ func HandleReceivedCoordinationNode(b []byte) error {
 
 		(*node).Addresses = append((*node).Addresses, ip) // Append current IP
 
+		common.Logf("== NETWORK == pushing coordination node %s\n", node.Address.String()) // Log push
+
 		err = coordinationChain.AddNode(coordinationNode, true) // Add node
 
 		if err != nil { // Check for errors
+			common.Logf("== ERROR == error pushing coordination node %s\n", err.Error()) // Log error
+
 			return err // Return found error
 		}
 	} else {
@@ -54,6 +58,8 @@ func HandleReceivedCoordinationNode(b []byte) error {
 		err = coordinationChain.AddNode(coordinationNode, false) // Add node
 
 		if err != nil { // Check for errors
+			common.Logf("== ERROR == error adding coordination node to local coordination chain %s\n", err.Error()) // Log error
+
 			return err // Return found error
 		}
 	}
