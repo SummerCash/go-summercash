@@ -53,7 +53,7 @@ func HandleReceivedCoordinationNode(b []byte) error {
 
 		(*node).Addresses = append((*node).Addresses, ipPortIncluded) // Append current IP
 
-		common.Logf("== CHAIN == node addresses %s", (*node).Address) // Log addrs
+		common.Logf("== CHAIN == node addresses %s\n", (*node).Addresses) // Log addrs
 
 		common.Logf("== NETWORK == pushing coordination node %s\n", node.Address.String()) // Log push
 
