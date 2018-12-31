@@ -61,6 +61,8 @@ func handleConnection(conn net.Conn) error {
 			return err // Return found error
 		}
 
+		common.Logf("== NETWORK == responding to chain request from peer %s\n", conn.RemoteAddr().String()) // Log request
+
 		_, err = conn.Write(chain.Bytes()) // Write chain
 
 		if err != nil { // Check for errors
@@ -79,6 +81,8 @@ func handleConnection(conn net.Conn) error {
 			return err // Return found error
 		}
 
+		common.Logf("== NETWORK == responding to coordination chain request from peer %s\n", conn.RemoteAddr().String()) // Log request
+
 		_, err = conn.Write(chainBytes) // Write chain
 
 		if err != nil { // Check for errors
@@ -92,6 +96,8 @@ func handleConnection(conn net.Conn) error {
 		if err != nil { // Check for errors
 			return err // Return found error
 		}
+
+		common.Logf("== NETWORK == responding to chain config request from peer %s\n", conn.RemoteAddr().String()) // Log request
 
 		_, err = conn.Write(configBytes) // Write chain
 
