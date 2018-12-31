@@ -220,7 +220,7 @@ func SyncNetwork() error {
 		}
 	}
 
-	files, err := ioutil.ReadDir(filepath.FromSlash(fmt.Sprintf("%s/data/chain", common.DataDir))) // Walk keystore dir
+	files, err := ioutil.ReadDir(filepath.FromSlash(fmt.Sprintf("%s/chain", common.DataDir))) // Walk keystore dir
 
 	if err != nil { // Check for errors
 		return err // Return found error
