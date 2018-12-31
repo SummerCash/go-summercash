@@ -222,46 +222,44 @@ func SyncNetwork() error {
 
 	files, err := ioutil.ReadDir(filepath.FromSlash(fmt.Sprintf("%s/chain", common.DataDir))) // Walk keystore dir
 
-	if err != nil { // Check for errors
-		return err // Return found error
-	}
-
-	for _, file := range files { // Iterate through files
-		data, err := ioutil.ReadFile(file.Name()) // Read file JSON bytes
-
-		if err != nil { // Check for errors
-			return err // Return found error
-		}
-
-		chain, err := FromBytes(data) // Read chain from bytes
-
-		if err != nil { // Check for errors
-			return err // Return found error
-		}
-
-		node, err := coordinationChain.QueryAddress(chain.Account) // Query address
-
-		if err != nil { // Check for errors
-			return err // Return found error
-		}
-
-		ip, err := common.GetExtIPAddrWithoutUPnP() // Get IP
-
-		if err != nil { // Check for errors
-			return err // Return found error
-		}
-
-		if node.Addresses[0] != ip+":"+strconv.Itoa(common.NodePort) { // Check not current node
-			err := common.SendBytes(data, node.Addresses[0]) // Send chain
+	if err == nil { // Check no error
+		for _, file := range files { // Iterate through files
+			data, err := ioutil.ReadFile(file.Name()) // Read file JSON bytes
 
 			if err != nil { // Check for errors
 				return err // Return found error
 			}
-		}
 
-		for x, address := range node.Addresses { // Iterate through addresses
-			if x != 0 && address != ip+":"+strconv.Itoa(common.NodePort) { // Check not first index and not current addr
-				go common.SendBytes(data, address) // Send chain
+			chain, err := FromBytes(data) // Read chain from bytes
+
+			if err != nil { // Check for errors
+				return err // Return found error
+			}
+
+			node, err := coordinationChain.QueryAddress(chain.Account) // Query address
+
+			if err != nil { // Check for errors
+				return err // Return found error
+			}
+
+			ip, err := common.GetExtIPAddrWithoutUPnP() // Get IP
+
+			if err != nil { // Check for errors
+				return err // Return found error
+			}
+
+			if node.Addresses[0] != ip+":"+strconv.Itoa(common.NodePort) { // Check not current node
+				err := common.SendBytes(data, node.Addresses[0]) // Send chain
+
+				if err != nil { // Check for errors
+					return err // Return found error
+				}
+			}
+
+			for x, address := range node.Addresses { // Iterate through addresses
+				if x != 0 && address != ip+":"+strconv.Itoa(common.NodePort) { // Check not first index and not current addr
+					go common.SendBytes(data, address) // Send chain
+				}
 			}
 		}
 	}
