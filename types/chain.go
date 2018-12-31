@@ -97,10 +97,18 @@ func NewChain(account common.Address) (*Chain, error) {
 	if err == nil { // Check already exists
 		(*foundNode).Addresses = append((*foundNode).Addresses, node.Addresses[len(node.Addresses)-1]) // Append node
 	} else {
-		err = coordinationChain.AddNode(node, false) // Add node
+		if coordinationChain.Nodes == nil || len(coordinationChain.Nodes) == 0 { // Check is genesis
+			err = coordinationChain.AddNode(node, false) // Add node
 
-		if err != nil { // Check for errors
-			return &Chain{}, err // Return found error
+			if err != nil { // Check for errors
+				return &Chain{}, err // Return found error
+			}
+		} else {
+			err = coordinationChain.AddNode(node, true) // Add node
+
+			if err != nil { // Check for errors
+				return &Chain{}, err // Return found error
+			}
 		}
 	}
 
