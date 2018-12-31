@@ -10,6 +10,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"path/filepath"
+	"time"
 
 	"github.com/space55/summertech-blockchain/common"
 	"github.com/space55/summertech-blockchain/crypto"
@@ -41,6 +42,8 @@ type Transaction struct {
 
 	ParentTx *Transaction `json:"-"` // Parent transaction
 
+	Timestamp time.Time `json:"time"` // Transaction timestamp
+
 	Genesis bool `json:"genesis"` // Genesis
 
 	Hash *common.Hash `json:"hash"` // Transaction hash
@@ -51,12 +54,13 @@ type Transaction struct {
 // NewTransaction - attempt to initialize transaction primitive
 func NewTransaction(nonce uint64, parentTx *Transaction, sender *common.Address, destination *common.Address, amount float64, payload []byte) (*Transaction, error) {
 	transaction := Transaction{ // Init tx
-		AccountNonce: nonce,       // Set nonce
-		Sender:       sender,      // Set sender
-		Recipient:    destination, // Set recipient
-		Amount:       amount,      // Set amount
-		Payload:      payload,     // Set tx payload
-		ParentTx:     parentTx,    // Set parent
+		AccountNonce: nonce,            // Set nonce
+		Sender:       sender,           // Set sender
+		Recipient:    destination,      // Set recipient
+		Amount:       amount,           // Set amount
+		Payload:      payload,          // Set tx payload
+		ParentTx:     parentTx,         // Set parent
+		Timestamp:    time.Now().UTC(), // Set timestamp
 	}
 
 	hash := common.NewHash(crypto.Sha3(transaction.Bytes())) // Hash transaction
