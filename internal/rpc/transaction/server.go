@@ -43,13 +43,15 @@ func (server *Server) NewTransaction(ctx context.Context, req *transactionProto.
 		nonce := uint64(0)                      // Init nonce
 		lastTransaction := &types.Transaction{} // Init buffer
 
-		for _, transaction := range accountChain.Transactions { // Iterate through transactions
-			if *transaction.Sender == sender { // Check match
-				if transaction.AccountNonce == uint64(len(accountChain.Transactions)) { // Check is last transaction
-					lastTransaction = transaction // Set last transaction
-				}
+		if len(accountChain.Transactions) > 0 { // Check is not 0 index
+			for _, transaction := range accountChain.Transactions { // Iterate through transactions
+				if *transaction.Sender == sender { // Check match
+					if transaction.AccountNonce == uint64(len(accountChain.Transactions)) { // Check is last transaction
+						lastTransaction = transaction // Set last transaction
+					}
 
-				nonce++ // Increment
+					nonce++ // Increment
+				}
 			}
 		}
 
