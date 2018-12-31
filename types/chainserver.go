@@ -48,6 +48,16 @@ func HandleReceivedTransaction(b []byte) error {
 		return err // Return found error
 	}
 
+	if tx.Sender != nil { // Check has sender
+		chain, err = ReadChainFromMemory(*tx.Sender) // Read tx sender chain
+
+		if err != nil { // Check for errors
+			return err // Return found error
+		}
+
+		err = chain.AddTransaction(tx) // Append tx
+	}
+
 	return nil // No error occurred, return nil
 }
 
