@@ -5,6 +5,7 @@ import (
 	"io/ioutil"
 	"path/filepath"
 
+	commonGoP2P "github.com/dowlandaiello/GoP2P/common"
 	"github.com/space55/summertech-blockchain/common"
 	"github.com/space55/summertech-blockchain/config"
 )
@@ -31,10 +32,26 @@ func HandleReceivedCoordinationNode(b []byte) error {
 		return coordinationChain.WriteToMemory() // Write coordinationChain to memory
 	}
 
-	err = coordinationChain.AddNode(coordinationNode, false) // Add node
+	ip, err := common.GetExtIPAddrWithoutUPnP() // Get IP
 
 	if err != nil { // Check for errors
-		return err // Return found error
+		return err // Return error
+	}
+
+	if !commonGoP2P.StringInSlice(node.Addresses, ip) { // Check is not in node
+		(*node).Addresses = append((*node).Addresses, ip) // Append current IP
+
+		err = coordinationChain.AddNode(coordinationNode, true) // Add node
+
+		if err != nil { // Check for errors
+			return err // Return found error
+		}
+	} else {
+		err = coordinationChain.AddNode(coordinationNode, false) // Add node
+
+		if err != nil { // Check for errors
+			return err // Return found error
+		}
 	}
 
 	err = coordinationChain.WriteToMemory() // Write coordinationChain to memory
