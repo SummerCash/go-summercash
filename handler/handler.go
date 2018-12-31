@@ -49,7 +49,7 @@ func handleConnection(conn net.Conn) error {
 
 	switch string(data)[0:9] { // Handle signatures
 	case "{" + `"` + "address": // Check coordinationNode
-		common.Logf("== NETWORK == received peer coordination node info %s\n", string(data)[:175]) // Log node
+		common.Logf("== NETWORK == received peer coordination node info %s\n", string(data)) // Log node
 
 		return types.HandleReceivedCoordinationNode(data) // Handle received data
 	case "chainRequ":

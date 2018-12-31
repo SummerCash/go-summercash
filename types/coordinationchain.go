@@ -334,7 +334,7 @@ func (coordinationChain *CoordinationChain) QueryArchivalNode(address string) ([
 
 // PushNode - send new node to addresses in coordination chain
 func (coordinationChain *CoordinationChain) PushNode(coordinationNode *CoordinationNode) error {
-	common.Logf("== NETWORK == pushing coordination chain node %s to network", coordinationNode.Address.String()) // Log push
+	common.Logf("== NETWORK == pushing coordination chain node %s to network\n", coordinationNode.Address.String()) // Log push
 
 	localIP, err := common.GetExtIPAddrWithoutUPnP() // Get IP address
 
