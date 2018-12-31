@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"errors"
 	"strconv"
+	"strings"
 	"time"
 
 	gop2pCommon "github.com/dowlandaiello/GoP2P/common"
@@ -237,11 +238,17 @@ func RegisterArchivalNode() error {
 
 	common.Logf("== NODE == registering local archival node with external IP %s\n", ip) // Log register
 
+	if strings.Contains(ip, ":") { // Check is IPv6
+		ip = "[" + ip + "]" + ":" + strconv.Itoa(common.NodePort) // Add port
+	} else {
+		ip = ip + ":" + strconv.Itoa(common.NodePort) // Add port
+	}
+
 	_, err = coordinationChain.QueryArchivalNode(ip) // Check node already in network
 
 	if err != nil { // Check for errors
 		for _, node := range coordinationChain.Nodes { // Iterate through nodes
-			nodeInstance, err := NewCoordinationNode(node.Address, []string{ip + ":" + strconv.Itoa(common.NodePort)}) // Init node
+			nodeInstance, err := NewCoordinationNode(node.Address, []string{ip}) // Init node
 
 			if err != nil { // Check for errors
 				return err // Return found error
@@ -331,6 +338,12 @@ func (coordinationChain *CoordinationChain) PushNode(coordinationNode *Coordinat
 
 	if err != nil { // Check for errors
 		return err // Return error
+	}
+
+	if strings.Contains(localIP, ":") { // Check is IPv6
+		localIP = "[" + localIP + "]" + ":" + strconv.Itoa(common.NodePort) // Add port
+	} else {
+		localIP = localIP + ":" + strconv.Itoa(common.NodePort) // Add port
 	}
 
 	for _, node := range coordinationChain.Nodes { // Iterate through nodes

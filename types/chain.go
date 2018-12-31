@@ -69,7 +69,7 @@ func NewChain(account common.Address) (*Chain, error) {
 
 	(*chain).ID = common.NewHash(crypto.Sha3(chain.Bytes())) // Set ID
 
-	common.Logf("== ACCOUNT == initialized account chain with account address %s", chain.Account.String()) // Log init
+	common.Logf("== ACCOUNT == initialized account chain with account address %s\n", chain.Account.String()) // Log init
 
 	localIP, err := common.GetExtIPAddrWithoutUPnP() // Get IP addr
 
@@ -87,11 +87,15 @@ func NewChain(account common.Address) (*Chain, error) {
 		}
 	}
 
+	common.Log("== CHAIN == initializing account chain coordination node\n") // Log coordination node init
+
 	node, err := NewCoordinationNode(account, []string{localIP + ":" + strconv.Itoa(common.NodePort)}) // Initialize node
 
 	if err != nil { // Check for errors
 		return &Chain{}, err // Return found error
 	}
+
+	common.Logf("== SUCCESS == initialized account chain coordination node %s\n", node.ID.String()) // Log coordination node init
 
 	foundNode, err := coordinationChain.QueryAddress(node.Address) // Check node already exists
 
@@ -99,17 +103,25 @@ func NewChain(account common.Address) (*Chain, error) {
 		(*foundNode).Addresses = append((*foundNode).Addresses, node.Addresses[len(node.Addresses)-1]) // Append node
 	} else {
 		if coordinationChain.Nodes == nil || len(coordinationChain.Nodes) == 0 { // Check is genesis
+			common.Log("== CHAIN == appending genesis coordination node to local chain\n") // Log coordination node init
+
 			err = coordinationChain.AddNode(node, false) // Add node
 
 			if err != nil { // Check for errors
 				return &Chain{}, err // Return found error
 			}
+
+			common.Logf("== SUCCESS == appended node %s to local chain\n", node.ID.String()) // Log coordination node init
 		} else {
+			common.Log("== CHAIN == appending new coordination node to remote chains\n") // Log coordination node append
+
 			err = coordinationChain.AddNode(node, true) // Add node
 
 			if err != nil { // Check for errors
 				return &Chain{}, err // Return found error
 			}
+
+			common.Logf("== SUCCESS == appended node %s to remote chain\n", node.ID.String()) // Log coordination node append
 		}
 	}
 
