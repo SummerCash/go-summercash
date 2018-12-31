@@ -221,6 +221,81 @@ func TestQueryArchivalNode(t *testing.T) {
 	t.Log(coordinationNodes) // Log success
 }
 
+// TestQueryAllArchivalNodes - test QueryAllArchivalNodes() method
+func TestQueryAllArchivalNodes(t *testing.T) {
+	coordinationChain, err := NewCoordinationChain() // Init coordinationChain
+
+	if err != nil { // Check for errors
+		t.Error(err) // Log found error
+		t.FailNow()  // Panic
+	}
+
+	privateKey, err := ecdsa.GenerateKey(elliptic.P521(), rand.Reader) // Generate private key
+
+	if err != nil { // Check for errors
+		t.Error(err) // Log found error
+		t.FailNow()  // Panic
+	}
+
+	address, err := common.NewAddress(privateKey) // Generate address
+
+	if err != nil { // Check for errors
+		t.Error(err) // Log found error
+		t.FailNow()  // Panic
+	}
+
+	privateKey2, err := ecdsa.GenerateKey(elliptic.P521(), rand.Reader) // Generate private key
+
+	if err != nil { // Check for errors
+		t.Error(err) // Log found error
+		t.FailNow()  // Panic
+	}
+
+	address2, err := common.NewAddress(privateKey2) // Generate address
+
+	if err != nil { // Check for errors
+		t.Error(err) // Log found error
+		t.FailNow()  // Panic
+	}
+
+	coordinationNode, err := NewCoordinationNode(address, []string{"1.1.1.1:" + strconv.Itoa(common.NodePort), "2.2.2.2:" + strconv.Itoa(common.NodePort)}) // Init coordination node
+
+	if err != nil { // Check for errors
+		t.Error(err) // Log found error
+		t.FailNow()  // Panic
+	}
+
+	coordinationNode2, err := NewCoordinationNode(address2, []string{"1.1.1.1:" + strconv.Itoa(common.NodePort), "2.2.2.2:" + strconv.Itoa(common.NodePort)}) // Init coordination node
+
+	if err != nil { // Check for errors
+		t.Error(err) // Log found error
+		t.FailNow()  // Panic
+	}
+
+	err = coordinationChain.AddNode(coordinationNode, false) // Add node
+
+	if err != nil { // Check for errors
+		t.Error(err) // Log error
+		t.FailNow()  // panic
+	}
+
+	err = coordinationChain.AddNode(coordinationNode2, false) // Add node
+
+	if err != nil { // Check for errors
+		t.Error(err) // Log error
+		t.FailNow()  // panic
+	}
+
+	coordinationNodes, err := coordinationChain.QueryAllArchivalNodes() // Query addresses
+
+	if err != nil { // Check for errors
+		t.Error(err) // Log error
+		t.FailNow()  // Panic
+	}
+
+	t.Log(coordinationNodes) // Log success
+}
+
 // TestPushNode - test PushNode() method
 func TestPushNode(t *testing.T) {
 	coordinationChain, err := NewCoordinationChain() // Init coordinationChain
