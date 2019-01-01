@@ -1,6 +1,6 @@
 # SummerCash
 
-Go implementation of the SummerCash node.
+Go implementation of the SummerCash protocol.
 
 [![Godoc Reference](https://img.shields.io/badge/godoc-reference-%23516aa0.svg)](https://godoc.org/github.com/SummerCash/go-summercash)
 [![Go Report Card](https://goreportcard.com/badge/github.com/summercash/go-summercash)](https://goreportcard.com/report/github.com/summercash/go-summercash)
