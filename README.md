@@ -2,6 +2,8 @@
 
 Go implementation of the SummerCash node
 
+[![asciicast](https://asciinema.org/a/WyyI9GF7ycacyVm6x3G5IBtAk.svg)](https://asciinema.org/a/WyyI9GF7ycacyVm6x3G5IBtAk)
+
 ## Installation
 
 To install the go-summercash node for direct source use, run:
