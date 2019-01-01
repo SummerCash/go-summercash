@@ -46,13 +46,21 @@ func HandleReceivedTransaction(b []byte) error {
 
 	tx.AccountNonce = uint64(len(chain.Transactions)) // Reset nonce
 
+	common.Logf("== CHAIN == adding transaction %s to chain\n", tx.Hash.String()) // Log add tx
+
 	err = chain.AddTransaction(tx) // Append tx
 
 	if err != nil { // Check for errors
+		common.Logf("== ERROR == error adding transaction to chain %s\n", err.Error()) // Log error
+
 		return err // Return found error
 	}
 
+	common.Logf("== SUCCESS == added transaction %s to chain\n", tx.Hash.String()) // Log add tx
+
 	if tx.Sender != nil { // Check has sender
+		common.Logf("== CHAIN == adding transaction %s to sender chain\n", tx.Hash.String()) // Log add tx
+
 		chain, err = ReadChainFromMemory(*tx.Sender) // Read tx sender chain
 
 		if err != nil { // Check for errors
@@ -62,6 +70,14 @@ func HandleReceivedTransaction(b []byte) error {
 		tx.AccountNonce = oldNonce // Set to old nonce
 
 		err = chain.AddTransaction(tx) // Append tx
+
+		if err != nil { // Check for errors
+			common.Logf("== ERROR == error adding transaction to sender chain %s\n", err.Error()) // Log error
+
+			return err // Return found error
+		}
+
+		common.Logf("== SUCCESS == added transaction %s to sender chain\n", tx.Hash.String()) // Log add tx
 	}
 
 	return nil // No error occurred, return nil
