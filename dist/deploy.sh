@@ -6,10 +6,6 @@ go build
 
 mv go-summercash dist/go-summercash-$1
 
-git add .
-git commit -m "Deployed"
-git push
-
 cd dist
 
 if [ "$1" = "macOS" ]
@@ -20,3 +16,8 @@ then
     zip go-summercash-$1.zip go-summercash-$1.exe
 else
     tar -cvzf go-summercash-$1.tar.gz go-summercash-$1
+fi
+
+git add .
+git commit -m "Deployed"
+git push
