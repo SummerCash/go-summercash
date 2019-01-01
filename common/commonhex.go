@@ -4,7 +4,7 @@ import (
 	"encoding/hex"
 	"errors"
 
-	"github.com/space55/summertech-blockchain/crypto"
+	"github.com/SummerCash/go-summercash/crypto"
 )
 
 var (

@@ -9,7 +9,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/space55/summertech-blockchain/common"
+	"github.com/SummerCash/go-summercash/common"
 )
 
 // TestNewTransaction - test functionality of tx initializer

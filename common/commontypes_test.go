@@ -6,7 +6,7 @@ import (
 	"crypto/rand"
 	"testing"
 
-	"github.com/space55/summertech-blockchain/crypto"
+	"github.com/SummerCash/go-summercash/crypto"
 )
 
 /* BEGIN EXPORTED METHODS */

@@ -6,9 +6,9 @@ import (
 	"errors"
 	"strconv"
 
-	"github.com/space55/summertech-blockchain/common"
-	"github.com/space55/summertech-blockchain/config"
-	"github.com/space55/summertech-blockchain/crypto"
+	"github.com/SummerCash/go-summercash/common"
+	"github.com/SummerCash/go-summercash/config"
+	"github.com/SummerCash/go-summercash/crypto"
 )
 
 // Chain - account transactions chain

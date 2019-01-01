@@ -12,9 +12,9 @@ import (
 	"time"
 
 	gop2pCommon "github.com/dowlandaiello/GoP2P/common"
-	"github.com/space55/summertech-blockchain/common"
-	"github.com/space55/summertech-blockchain/config"
-	"github.com/space55/summertech-blockchain/crypto"
+	"github.com/SummerCash/go-summercash/common"
+	"github.com/SummerCash/go-summercash/config"
+	"github.com/SummerCash/go-summercash/crypto"
 )
 
 // CoordinationChain - "master" chain holding metadata regarding all address-spaces

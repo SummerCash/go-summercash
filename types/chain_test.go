@@ -10,8 +10,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/space55/summertech-blockchain/common"
-	"github.com/space55/summertech-blockchain/config"
+	"github.com/SummerCash/go-summercash/common"
+	"github.com/SummerCash/go-summercash/config"
 )
 
 /* BEGIN EXPORTED METHODS */

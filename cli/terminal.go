@@ -13,13 +13,13 @@ import (
 	"strings"
 
 	figure "github.com/common-nighthawk/go-figure"
-	"github.com/space55/summertech-blockchain/common"
-	"github.com/space55/summertech-blockchain/config"
-	accountsProto "github.com/space55/summertech-blockchain/internal/rpc/proto/accounts"
-	configProto "github.com/space55/summertech-blockchain/internal/rpc/proto/config"
-	cryptoProto "github.com/space55/summertech-blockchain/internal/rpc/proto/crypto"
-	transactionProto "github.com/space55/summertech-blockchain/internal/rpc/proto/transaction"
-	upnpProto "github.com/space55/summertech-blockchain/internal/rpc/proto/upnp"
+	"github.com/SummerCash/go-summercash/common"
+	"github.com/SummerCash/go-summercash/config"
+	accountsProto "github.com/SummerCash/go-summercash/internal/rpc/proto/accounts"
+	configProto "github.com/SummerCash/go-summercash/internal/rpc/proto/config"
+	cryptoProto "github.com/SummerCash/go-summercash/internal/rpc/proto/crypto"
+	transactionProto "github.com/SummerCash/go-summercash/internal/rpc/proto/transaction"
+	upnpProto "github.com/SummerCash/go-summercash/internal/rpc/proto/upnp"
 )
 
 var (

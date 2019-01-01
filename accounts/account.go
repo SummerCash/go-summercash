@@ -13,8 +13,8 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/space55/summertech-blockchain/common"
-	"github.com/space55/summertech-blockchain/types"
+	"github.com/SummerCash/go-summercash/common"
+	"github.com/SummerCash/go-summercash/types"
 )
 
 // Account - container holding account metadata, private key

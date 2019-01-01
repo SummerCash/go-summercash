@@ -8,7 +8,7 @@ import (
 	"encoding/json"
 	"errors"
 
-	"github.com/space55/summertech-blockchain/crypto"
+	"github.com/SummerCash/go-summercash/crypto"
 )
 
 // Address - []byte wrapper for addresses

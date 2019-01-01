@@ -5,7 +5,7 @@ jobs:
     docker:
       - image: circleci/golang:1.9 # Specify golang version
 
-    working_directory: /go/src/github.com/space55/summertech-blockchain
+    working_directory: /go/src/github.com/SummerCash/go-summercash
     steps:
       - checkout
 

@@ -4,9 +4,9 @@ import (
 	"errors"
 	"net"
 
-	"github.com/space55/summertech-blockchain/common"
-	"github.com/space55/summertech-blockchain/config"
-	"github.com/space55/summertech-blockchain/types"
+	"github.com/SummerCash/go-summercash/common"
+	"github.com/SummerCash/go-summercash/config"
+	"github.com/SummerCash/go-summercash/types"
 )
 
 var (

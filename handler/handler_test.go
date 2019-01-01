@@ -6,7 +6,7 @@ import (
 	"strconv"
 	"testing"
 
-	"github.com/space55/summertech-blockchain/common"
+	"github.com/SummerCash/go-summercash/common"
 )
 
 // TestStartHandler - test StartHandler() method

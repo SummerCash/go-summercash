@@ -8,8 +8,8 @@ import (
 	"errors"
 	"math/big"
 
-	"github.com/space55/summertech-blockchain/common"
-	"github.com/space55/summertech-blockchain/crypto"
+	"github.com/SummerCash/go-summercash/common"
+	"github.com/SummerCash/go-summercash/crypto"
 )
 
 // Signature - struct containing signature values

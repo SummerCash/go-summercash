@@ -6,8 +6,8 @@ import (
 	"fmt"
 	"strconv"
 
-	upnpProto "github.com/space55/summertech-blockchain/internal/rpc/proto/upnp"
-	"github.com/space55/summertech-blockchain/upnp"
+	upnpProto "github.com/SummerCash/go-summercash/internal/rpc/proto/upnp"
+	"github.com/SummerCash/go-summercash/upnp"
 )
 
 // Server - RPC server

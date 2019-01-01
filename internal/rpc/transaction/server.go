@@ -4,10 +4,10 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/space55/summertech-blockchain/accounts"
-	"github.com/space55/summertech-blockchain/common"
-	transactionProto "github.com/space55/summertech-blockchain/internal/rpc/proto/transaction"
-	"github.com/space55/summertech-blockchain/types"
+	"github.com/SummerCash/go-summercash/accounts"
+	"github.com/SummerCash/go-summercash/common"
+	transactionProto "github.com/SummerCash/go-summercash/internal/rpc/proto/transaction"
+	"github.com/SummerCash/go-summercash/types"
 )
 
 // Server - RPC server

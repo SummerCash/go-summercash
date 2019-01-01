@@ -6,7 +6,7 @@ import (
 	"io/ioutil"
 	"path/filepath"
 
-	"github.com/space55/summertech-blockchain/common"
+	"github.com/SummerCash/go-summercash/common"
 )
 
 // WriteToMemory - write given account to persistent memory

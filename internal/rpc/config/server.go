@@ -4,9 +4,9 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/space55/summertech-blockchain/common"
-	"github.com/space55/summertech-blockchain/config"
-	configProto "github.com/space55/summertech-blockchain/internal/rpc/proto/config"
+	"github.com/SummerCash/go-summercash/common"
+	"github.com/SummerCash/go-summercash/config"
+	configProto "github.com/SummerCash/go-summercash/internal/rpc/proto/config"
 )
 
 // Server - RPC server

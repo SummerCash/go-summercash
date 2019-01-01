@@ -3,7 +3,7 @@ package types
 import (
 	"errors"
 
-	"github.com/space55/summertech-blockchain/common"
+	"github.com/SummerCash/go-summercash/common"
 )
 
 var (

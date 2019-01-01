@@ -5,8 +5,8 @@ import (
 	"encoding/hex"
 	"fmt"
 
-	"github.com/space55/summertech-blockchain/crypto"
-	cryptoProto "github.com/space55/summertech-blockchain/internal/rpc/proto/crypto"
+	"github.com/SummerCash/go-summercash/crypto"
+	cryptoProto "github.com/SummerCash/go-summercash/internal/rpc/proto/crypto"
 )
 
 // Server - RPC server

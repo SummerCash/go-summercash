@@ -7,7 +7,7 @@ import (
 	"strconv"
 	"testing"
 
-	"github.com/space55/summertech-blockchain/common"
+	"github.com/SummerCash/go-summercash/common"
 )
 
 // TestHandleReceivedCoordinationNode - test functionality of HandleReceivedCoordinationNode() method

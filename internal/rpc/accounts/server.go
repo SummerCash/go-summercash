@@ -8,9 +8,9 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/space55/summertech-blockchain/accounts"
-	"github.com/space55/summertech-blockchain/common"
-	accountsProto "github.com/space55/summertech-blockchain/internal/rpc/proto/accounts"
+	"github.com/SummerCash/go-summercash/accounts"
+	"github.com/SummerCash/go-summercash/common"
+	accountsProto "github.com/SummerCash/go-summercash/internal/rpc/proto/accounts"
 )
 
 // Server - RPC server
