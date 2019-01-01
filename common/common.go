@@ -45,11 +45,6 @@ var (
 		"108.41.124.60:6000", // Boot node 1
 	}
 
-	// BootstrapNodesRaw - global definition for set of bootstrap nodes
-	BootstrapNodesRaw = []string{
-		"108.41.124.60", // Boot node 0
-	}
-
 	// Silent - silent config
 	Silent = false
 
