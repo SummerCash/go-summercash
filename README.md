@@ -2,16 +2,14 @@
 
 Go implementation of the SummerCash node.
 
-[![Godoc Reference](
-https://img.shields.io/badge/godoc-reference-%23516aa0.svg
-)](https://godoc.org/github.com/SummerCash/go-summercash)
+[![Godoc Reference](https://img.shields.io/badge/godoc-reference-%23516aa0.svg)](https://godoc.org/github.com/SummerCash/go-summercash)
 [![Go Report Card](https://goreportcard.com/badge/github.com/summercash/go-summercash)](https://goreportcard.com/report/github.com/summercash/go-summercash)
 [![Build Status](https://travis-ci.com/SummerCash/go-summercash.svg?branch=master)](https://travis-ci.com/SummerCash/go-summercash)
 [![Gluten Status](https://img.shields.io/badge/gluten-free-brightgreen.svg)](https://img.shields.io/badge/gluten-free-brightgreen.svg)
 
 ## Installation
 
-To install the go-summercash node for direct source use, run:
+### Getting the Source
 
 ```BASH
 go get -u github.com/SummerCash/go-summercash
@@ -22,6 +20,10 @@ To install the go-summercash node for use in the Go bin, run:
 ```BASH
 go get -u github.com/SummerCash/go-summercash && go install github.com/SummerCash/go-summercash
 ```
+
+### Pre-compiled Binaries
+
+For pre-compiled executable binaries, check the [![releases](https://github.com/SummerCash/go-summercash/releases/latest)] page.
 
 ## Demo
 
