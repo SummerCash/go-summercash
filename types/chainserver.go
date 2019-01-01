@@ -48,8 +48,6 @@ func HandleReceivedTransaction(b []byte) error {
 
 	tx.AccountNonce = uint64(len(chain.Transactions)) // Reset nonce
 
-	common.Log(tx.String())
-
 	common.Logf("== CHAIN == adding transaction %s to chain %s\n", tx.Hash.String(), chain.ID.String()) // Log add tx
 
 	err = chain.AddTransaction(tx) // Append tx
