@@ -2,10 +2,6 @@
 
 Go implementation of the SummerCash node
 
-## Demo
-
-[![asciicast](https://asciinema.org/a/WyyI9GF7ycacyVm6x3G5IBtAk.svg)](https://asciinema.org/a/WyyI9GF7ycacyVm6x3G5IBtAk)
-
 ## Installation
 
 To install the go-summercash node for direct source use, run:
@@ -19,6 +15,10 @@ To install the go-summercash node for use in the Go bin, run:
 ```BASH
 go get -u github.com/SummerCash/go-summercash && go install github.com/SummerCash/go-summercash
 ```
+
+## Demo
+
+[![asciicast](https://asciinema.org/a/WyyI9GF7ycacyVm6x3G5IBtAk.svg)](https://asciinema.org/a/WyyI9GF7ycacyVm6x3G5IBtAk)
 
 ## Usage
 
