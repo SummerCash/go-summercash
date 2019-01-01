@@ -2,6 +2,8 @@
 
 Go implementation of the SummerCash node
 
+## Demo
+
 [![asciicast](https://asciinema.org/a/WyyI9GF7ycacyVm6x3G5IBtAk.svg)](https://asciinema.org/a/WyyI9GF7ycacyVm6x3G5IBtAk)
 
 ## Installation
