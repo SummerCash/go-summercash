@@ -12,7 +12,6 @@ import (
 	"strconv"
 	"strings"
 
-	figure "github.com/common-nighthawk/go-figure"
 	"github.com/SummerCash/go-summercash/common"
 	"github.com/SummerCash/go-summercash/config"
 	accountsProto "github.com/SummerCash/go-summercash/internal/rpc/proto/accounts"
@@ -20,6 +19,7 @@ import (
 	cryptoProto "github.com/SummerCash/go-summercash/internal/rpc/proto/crypto"
 	transactionProto "github.com/SummerCash/go-summercash/internal/rpc/proto/transaction"
 	upnpProto "github.com/SummerCash/go-summercash/internal/rpc/proto/upnp"
+	figure "github.com/common-nighthawk/go-figure"
 )
 
 var (

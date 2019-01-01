@@ -11,10 +11,10 @@ import (
 	"strings"
 	"time"
 
-	gop2pCommon "github.com/dowlandaiello/GoP2P/common"
 	"github.com/SummerCash/go-summercash/common"
 	"github.com/SummerCash/go-summercash/config"
 	"github.com/SummerCash/go-summercash/crypto"
+	gop2pCommon "github.com/dowlandaiello/GoP2P/common"
 )
 
 // CoordinationChain - "master" chain holding metadata regarding all address-spaces

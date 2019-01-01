@@ -7,9 +7,9 @@ import (
 	"strconv"
 	"strings"
 
-	commonGoP2P "github.com/dowlandaiello/GoP2P/common"
 	"github.com/SummerCash/go-summercash/common"
 	"github.com/SummerCash/go-summercash/config"
+	commonGoP2P "github.com/dowlandaiello/GoP2P/common"
 )
 
 // HandleReceivedCoordinationNode - handle received node

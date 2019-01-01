@@ -8,7 +8,6 @@ import (
 	"strconv"
 	"strings"
 
-	commonGoP2P "github.com/dowlandaiello/GoP2P/common"
 	"github.com/SummerCash/go-summercash/cli"
 	"github.com/SummerCash/go-summercash/common"
 	"github.com/SummerCash/go-summercash/handler"
@@ -24,6 +23,7 @@ import (
 	upnpServer "github.com/SummerCash/go-summercash/internal/rpc/upnp"
 	"github.com/SummerCash/go-summercash/types"
 	"github.com/SummerCash/go-summercash/upnp"
+	commonGoP2P "github.com/dowlandaiello/GoP2P/common"
 )
 
 var (

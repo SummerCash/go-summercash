@@ -17,7 +17,7 @@ var (
 func HandleReceivedChainRequest(b []byte) (*Chain, error) {
 	var address common.Address // Init buffer
 
-	copy(address[:], b[12:len(b)][:]) // Copy read address
+	copy(address[:], b[12:][:]) // Copy read address
 
 	chain, err := ReadChainFromMemory(address) // Read chain from memory
 
