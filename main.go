@@ -128,12 +128,22 @@ func startNode(archivalNode bool) {
 
 	if err != nil { // Check for errors
 		if archivalNode && !commonGoP2P.StringInSlice(common.BootstrapNodes, ip) && !*privateNetworkFlag { // Check is not bootstrap node
-			common.Logf("== NETWORK == joining with bootstrap node %s\n", common.BootstrapNodes[0]) // Log join
+			x := 0 // Init iterator
 
-			err := types.JoinNetwork(common.BootstrapNodes[0], true) // Register node
+			for {
+				if x >= len(common.BootstrapNodes) { // Check is not out of bounds
+					panic("== ERROR == no available bootstrap nodes") // Panic
+				}
 
-			if err != nil { // Check for errors
-				panic(err) // Panic
+				common.Logf("== NETWORK == joining with bootstrap node %s\n", common.BootstrapNodes[x]) // Log join
+
+				err := types.JoinNetwork(common.BootstrapNodes[x], true) // Register node
+
+				if err == nil { // Check for errors
+					break // Break for loop
+				}
+
+				x++ // Increment
 			}
 		} else if !commonGoP2P.StringInSlice(common.BootstrapNodes, ip) { // Plz, no recursion TODO: fix ipv6
 			err := types.SyncNetwork() // Sync network

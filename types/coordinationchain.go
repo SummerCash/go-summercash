@@ -169,12 +169,25 @@ func JoinNetwork(bootstrapNode string, archivalNode bool) error {
 
 // SyncNetwork - download all chains
 func SyncNetwork() error {
-	common.Logf("== NETWORK == requesting coordination chain from bootstrap node %s\n", common.BootstrapNodes[0]) // Log init
+	var coordinationChainBytes []byte // Init buffer
+	var err error                     // Init error buffer
 
-	coordinationChainBytes, err := gop2pCommon.SendBytesResult([]byte("cChainRequest"), common.BootstrapNodes[0]) // Get coordination chain
+	x := 0 // Init iterator
 
-	if err != nil { // Check for errors
-		return err // Return found error
+	for {
+		if x >= len(common.BootstrapNodes) { // Check is not out of bounds
+			panic("== ERROR == no available bootstrap nodes") // Panic
+		}
+
+		common.Logf("== NETWORK == requesting coordination chain from bootstrap node %s\n", common.BootstrapNodes[x]) // Log req
+
+		coordinationChainBytes, err = gop2pCommon.SendBytesResult([]byte("cChainRequest"), common.BootstrapNodes[x]) // Get coordination chain
+
+		if err == nil { // Check for errors
+			break // Break loop
+		}
+
+		x++ // Increment
 	}
 
 	coordinationChain, err := CoordinationChainFromBytes(coordinationChainBytes) // Decode result
