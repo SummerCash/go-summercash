@@ -1,0 +1,26 @@
+syntax = "proto3"; // Specify compiler version
+
+package coordinationchain;
+
+service CoordinationChain {
+    rpc GetBalance(GeneralRequest) returns (GeneralResponse) {} // Get account chain balance
+    rpc Bytes(GeneralRequest) returns (GeneralResponse) {} // Encode chain to byte array
+    rpc String(GeneralRequest) returns (GeneralResponse) {} // Encode chain to string
+    rpc ReadChainFromMemory(GeneralRequest) returns (GeneralResponse) {} // Read chain from memory
+}
+
+/* BEGIN REQUESTS */
+
+message GeneralRequest {
+    string address = 1; // Chain account
+}
+
+/* END REQUESTS */
+
+/* BEGIN RESPONSES */
+
+message GeneralResponse {
+    string message = 1; // Response
+}
+
+/* END REPSONSES */
