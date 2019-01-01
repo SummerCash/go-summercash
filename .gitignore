@@ -18,6 +18,7 @@
 .vscode/settings.json
 
 # Testing files
+server.sh
 genesis_test.json
 
 # Runtime-Generated Support Files
