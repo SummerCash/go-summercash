@@ -36,6 +36,8 @@ func HandleReceivedTransaction(b []byte) error {
 		return err // Return error
 	}
 
+	tx.RecoverSafeEncoding() // Recover from safe encoding
+
 	chain, err := ReadChainFromMemory(*tx.Recipient) // Read chain
 
 	if err != nil { // Check for errors

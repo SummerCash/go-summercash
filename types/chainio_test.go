@@ -7,6 +7,7 @@ import (
 	"testing"
 
 	"github.com/SummerCash/go-summercash/common"
+	"github.com/SummerCash/go-summercash/crypto"
 )
 
 /* BEGIN EXPORTED METHODS */
@@ -60,12 +61,31 @@ func TestReadChainFromMemory(t *testing.T) {
 		t.FailNow()  // Panic
 	}
 
-	chain, err := NewChain(address) // Initialize chain
+	chain := &Chain{ // Init chain
+		Account:      address,
+		Transactions: []*Transaction{},
+		NetworkID:    0,
+	}
+
+	(*chain).ID = common.NewHash(crypto.Sha3(chain.Bytes())) // Set ID
+
+	transaction, err := NewTransaction(0, nil, &address, &address, 0, []byte("test")) // Initialize transaction
 
 	if err != nil { // Check for errors
 		t.Error(err) // Log found error
 		t.FailNow()  // Panic
 	}
+
+	t.Logf("created transaction: %s", transaction.Hash.String()) // Log issued tx
+
+	err = SignTransaction(transaction, privateKey) // Sign transaction
+
+	if err != nil { // Check for errors
+		t.Error(err) // Log found error
+		t.FailNow()  // Panic
+	}
+
+	chain.Transactions = []*Transaction{transaction} // Init arr
 
 	err = chain.WriteToMemory() // Write chain to memory
 
