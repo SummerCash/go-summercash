@@ -17,6 +17,7 @@ import (
 	accountsProto "github.com/SummerCash/go-summercash/internal/rpc/proto/accounts"
 	chainProto "github.com/SummerCash/go-summercash/internal/rpc/proto/chain"
 	configProto "github.com/SummerCash/go-summercash/internal/rpc/proto/config"
+	coordinationChainProto "github.com/SummerCash/go-summercash/internal/rpc/proto/coordinationchain"
 	cryptoProto "github.com/SummerCash/go-summercash/internal/rpc/proto/crypto"
 	transactionProto "github.com/SummerCash/go-summercash/internal/rpc/proto/transaction"
 	upnpProto "github.com/SummerCash/go-summercash/internal/rpc/proto/upnp"
@@ -61,12 +62,13 @@ func NewTerminal(rpcPort uint, rpcAddress string) {
 
 // handleCommand - run handler for given receiver
 func handleCommand(receiver string, methodname string, params []string, rpcPort uint, rpcAddress string, transport *http.Transport) {
-	cryptoClient := cryptoProto.NewCryptoProtobufClient("https://"+rpcAddress+":"+strconv.Itoa(int(rpcPort)), &http.Client{Transport: transport})                // Init crypto client
-	upnpClient := upnpProto.NewUpnpProtobufClient("https://"+rpcAddress+":"+strconv.Itoa(int(rpcPort)), &http.Client{Transport: transport})                      // Init upnp client
-	accountsClient := accountsProto.NewAccountsProtobufClient("https://"+rpcAddress+":"+strconv.Itoa(int(rpcPort)), &http.Client{Transport: transport})          // Init accounts client
-	configClient := configProto.NewConfigProtobufClient("https://"+rpcAddress+":"+strconv.Itoa(int(rpcPort)), &http.Client{Transport: transport})                // Init config client
-	transactionClient := transactionProto.NewTransactionProtobufClient("https://"+rpcAddress+":"+strconv.Itoa(int(rpcPort)), &http.Client{Transport: transport}) // Init transaction client
-	chainClient := chainProto.NewChainProtobufClient("https://"+rpcAddress+":"+strconv.Itoa(int(rpcPort)), &http.Client{Transport: transport})                   // Init chain client
+	cryptoClient := cryptoProto.NewCryptoProtobufClient("https://"+rpcAddress+":"+strconv.Itoa(int(rpcPort)), &http.Client{Transport: transport})                                  // Init crypto client
+	upnpClient := upnpProto.NewUpnpProtobufClient("https://"+rpcAddress+":"+strconv.Itoa(int(rpcPort)), &http.Client{Transport: transport})                                        // Init upnp client
+	accountsClient := accountsProto.NewAccountsProtobufClient("https://"+rpcAddress+":"+strconv.Itoa(int(rpcPort)), &http.Client{Transport: transport})                            // Init accounts client
+	configClient := configProto.NewConfigProtobufClient("https://"+rpcAddress+":"+strconv.Itoa(int(rpcPort)), &http.Client{Transport: transport})                                  // Init config client
+	transactionClient := transactionProto.NewTransactionProtobufClient("https://"+rpcAddress+":"+strconv.Itoa(int(rpcPort)), &http.Client{Transport: transport})                   // Init transaction client
+	chainClient := chainProto.NewChainProtobufClient("https://"+rpcAddress+":"+strconv.Itoa(int(rpcPort)), &http.Client{Transport: transport})                                     // Init chain client
+	coordinationChainClient := coordinationChainProto.NewCoordinationChainProtobufClient("https://"+rpcAddress+":"+strconv.Itoa(int(rpcPort)), &http.Client{Transport: transport}) // Init coordinationChain client
 
 	switch receiver {
 	case "crypto":
@@ -105,8 +107,14 @@ func handleCommand(receiver string, methodname string, params []string, rpcPort 
 		if err != nil { // Check for errors
 			fmt.Println("\n" + err.Error()) // Log found error
 		}
+	case "coordinationChain":
+		err := handleCoordinationChain(&coordinationChainClient, methodname, params) // Handle coordination chain
+
+		if err != nil { // Check for errors
+			fmt.Println("\n" + err.Error()) // Log found error
+		}
 	default:
-		fmt.Println("\n" + "Unrecognized namespace " + `"` + receiver + `"` + ", available namespaces: crypto, upnp, accounts, config, transaction, chain") // Log invalid namespace
+		fmt.Println("\n" + "unrecognized namespace " + `"` + receiver + `"` + ", available namespaces: crypto, upnp, accounts, config, transaction, chain") // Log invalid namespace
 	}
 }
 
@@ -328,6 +336,36 @@ func handleChain(chainClient *chainProto.Chain, methodname string, params []stri
 	result := reflect.ValueOf(*chainClient).MethodByName(methodname).Call(reflectParams) // Call method
 
 	response := result[0].Interface().(*chainProto.GeneralResponse) // Get response
+
+	if result[1].Interface() != nil { // Check for errors
+		return result[1].Interface().(error) // Return error
+	}
+
+	fmt.Println(response.Message) // Log response
+
+	return nil // No error occurred, return nil
+}
+
+// handleCoordinationChain - handle chain receiver
+func handleCoordinationChain(chainClient *coordinationChainProto.CoordinationChain, methodname string, params []string) error {
+	reflectParams := []reflect.Value{} // Init buffer
+
+	reflectParams = append(reflectParams, reflect.ValueOf(context.Background())) // Append request context
+
+	switch methodname {
+	case "SyncNetwork", "GetPeers", "Bytes", "String":
+		if len(params) != 0 {
+			return errors.New("invalid parameters (accepts no parameters)") // Return error
+		}
+
+		reflectParams = append(reflectParams, reflect.ValueOf(&coordinationChainProto.GeneralRequest{})) // Append params
+	default:
+		return errors.New("illegal method: " + methodname + ", available methods: SyncNetwork(), GetPeers(), Bytes(), String()") // Return error
+	}
+
+	result := reflect.ValueOf(*chainClient).MethodByName(methodname).Call(reflectParams) // Call method
+
+	response := result[0].Interface().(*coordinationChainProto.GeneralResponse) // Get response
 
 	if result[1].Interface() != nil { // Check for errors
 		return result[1].Interface().(error) // Return error
