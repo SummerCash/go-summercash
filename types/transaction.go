@@ -89,7 +89,7 @@ func TransactionFromBytes(b []byte) (*Transaction, error) {
 
 		publicKey := genericPublicKey.(*ecdsa.PublicKey) // Get public key value
 
-		(*(*transaction.Signature).PublicKey) = *publicKey // Set public key
+		((*transaction.Signature).PublicKey) = publicKey // Set public key
 	}
 
 	return &transaction, nil // No error occurred, return read value
