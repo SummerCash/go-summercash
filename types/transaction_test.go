@@ -365,6 +365,13 @@ func TestReadTransactionFromMemory(t *testing.T) {
 		t.FailNow()  // Panic
 	}
 
+	err = SignTransaction(transaction, privateKey) // Sign transaction
+
+	if err != nil { // Check for errors
+		t.Error(err) // Log found error
+		t.FailNow()  // Panic
+	}
+
 	err = transaction.WriteToMemory() // Write transaction to memory
 
 	if err != nil { // Check for errors
@@ -379,5 +386,5 @@ func TestReadTransactionFromMemory(t *testing.T) {
 		t.FailNow()  // Panic
 	}
 
-	t.Log("success") // Log success
+	t.Log(transaction.String()) // Log success
 }

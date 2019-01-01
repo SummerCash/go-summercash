@@ -162,7 +162,7 @@ func (transaction *Transaction) RecoverSafeEncoding() error {
 
 		publicKey := genericPublicKey.(*ecdsa.PublicKey) // Get public key value
 
-		(*(*transaction.Signature).PublicKey) = *publicKey // Set public key
+		((*transaction.Signature).PublicKey) = publicKey // Set public key
 	}
 
 	return nil // No error occurred, return nil

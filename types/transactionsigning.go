@@ -14,7 +14,7 @@ import (
 
 // Signature - struct containing signature values
 type Signature struct {
-	PublicKey           *ecdsa.PublicKey // Public key
+	PublicKey           *ecdsa.PublicKey `json:"-"` // Public key
 	SerializedPublicKey []byte           // Serialized public key
 
 	V []byte   // Hash signature value
