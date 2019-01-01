@@ -6,6 +6,7 @@ service Chain {
     rpc GetBalance(GeneralRequest) returns (GeneralResponse) {} // Get account chain balance
     rpc Bytes(GeneralRequest) returns (GeneralResponse) {} // Encode chain to byte array
     rpc String(GeneralRequest) returns (GeneralResponse) {} // Encode chain to string
+    rpc ReadChainFromMemory(GeneralRequest) returns (GeneralResponse) {} // Read chain from memory
 }
 
 /* BEGIN REQUESTS */
