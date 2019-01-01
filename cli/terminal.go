@@ -15,6 +15,7 @@ import (
 	"github.com/SummerCash/go-summercash/common"
 	"github.com/SummerCash/go-summercash/config"
 	accountsProto "github.com/SummerCash/go-summercash/internal/rpc/proto/accounts"
+	chainProto "github.com/SummerCash/go-summercash/internal/rpc/proto/chain"
 	configProto "github.com/SummerCash/go-summercash/internal/rpc/proto/config"
 	cryptoProto "github.com/SummerCash/go-summercash/internal/rpc/proto/crypto"
 	transactionProto "github.com/SummerCash/go-summercash/internal/rpc/proto/transaction"
@@ -51,7 +52,7 @@ func NewTerminal(rpcPort uint, rpcAddress string) {
 		if err != nil { // Check for errors
 			fmt.Println(err.Error()) // Log found error
 
-			continue
+			continue // Continue
 		}
 
 		handleCommand(receiver, methodname, params, rpcPort, rpcAddress, transport) // Handle command
@@ -65,6 +66,7 @@ func handleCommand(receiver string, methodname string, params []string, rpcPort 
 	accountsClient := accountsProto.NewAccountsProtobufClient("https://"+rpcAddress+":"+strconv.Itoa(int(rpcPort)), &http.Client{Transport: transport})          // Init accounts client
 	configClient := configProto.NewConfigProtobufClient("https://"+rpcAddress+":"+strconv.Itoa(int(rpcPort)), &http.Client{Transport: transport})                // Init config client
 	transactionClient := transactionProto.NewTransactionProtobufClient("https://"+rpcAddress+":"+strconv.Itoa(int(rpcPort)), &http.Client{Transport: transport}) // Init transaction client
+	chainClient := chainProto.NewChainProtobufClient("https://"+rpcAddress+":"+strconv.Itoa(int(rpcPort)), &http.Client{Transport: transport})                   // Init chain client
 
 	switch receiver {
 	case "crypto":
@@ -97,6 +99,14 @@ func handleCommand(receiver string, methodname string, params []string, rpcPort 
 		if err != nil { // Check for errors
 			fmt.Println("\n" + err.Error()) // Log found error
 		}
+	case "chain":
+		err := handleChain(&chainClient, methodname, params) // Handle chain
+
+		if err != nil { // Check for errors
+			fmt.Println("\n" + err.Error()) // Log found error
+		}
+	default:
+		fmt.Println("\n" + "Unrecognized namespace " + `"` + receiver + `"` + ", available namespaces: crypto, upnp, accounts, config, transaction, chain") // Log invalid namespace
 	}
 }
 
@@ -288,6 +298,36 @@ func handleTransaction(transactionClient *transactionProto.Transaction, methodna
 	result := reflect.ValueOf(*transactionClient).MethodByName(methodname).Call(reflectParams) // Call method
 
 	response := result[0].Interface().(*transactionProto.GeneralResponse) // Get response
+
+	if result[1].Interface() != nil { // Check for errors
+		return result[1].Interface().(error) // Return error
+	}
+
+	fmt.Println(response.Message) // Log response
+
+	return nil // No error occurred, return nil
+}
+
+// handleChain - handle chain receiver
+func handleChain(chainClient *chainProto.Chain, methodname string, params []string) error {
+	reflectParams := []reflect.Value{} // Init buffer
+
+	reflectParams = append(reflectParams, reflect.ValueOf(context.Background())) // Append request context
+
+	switch methodname {
+	case "GetBalance", "Bytes", "String", "ReadChainFromMemory":
+		if len(params) != 1 {
+			return errors.New("invalid parameters (requires string)") // Return error
+		}
+
+		reflectParams = append(reflectParams, reflect.ValueOf(&chainProto.GeneralRequest{Address: params[0]})) // Append params
+	default:
+		return errors.New("illegal method: " + methodname + ", available methods: GetBalance(), Bytes(), String(), ReadChainFromMemory()") // Return error
+	}
+
+	result := reflect.ValueOf(*chainClient).MethodByName(methodname).Call(reflectParams) // Call method
+
+	response := result[0].Interface().(*chainProto.GeneralResponse) // Get response
 
 	if result[1].Interface() != nil { // Check for errors
 		return result[1].Interface().(error) // Return error
