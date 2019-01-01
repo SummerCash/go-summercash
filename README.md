@@ -30,16 +30,16 @@ go get -u github.com/SummerCash/go-summercash && go install github.com/SummerCas
 sudo go run main.go --archival
 ```
 
+or, from the Go bin (same steps apply for all other bin commands):
+
+```BASH
+sudo go-summercash --archival
+```
+
 #### Running a Light Personal Node
 
 ```BASH
 sudo go run main.go
-```
-
-or, from the Go bin:
-
-```BASH
-sudo go-summercash
 ```
 
 #### Running the Node With Terminal Input
