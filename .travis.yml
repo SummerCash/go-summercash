@@ -34,8 +34,9 @@ before_script:
 script:
   - test -z $(gofmt -s -l $GO_FILES)                                 # Fail if a .go file hasn't been formatted with gofmt
   - go vet ./...                                                     # go vet is the official Go static analyzer
-  - go run main.go & chmod +x ./test.sh && ./test.sh                 # Run unit tests
+  - chmod +x ./test.sh && ./test.sh                                  # Run unit tests
   - go build                                                         # Build
+  - go run main.go --archival --exit-on-join                         # Join network
 
 after_success:
   - bash <(curl -s https://codecov.io/bash)

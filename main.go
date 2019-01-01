@@ -37,6 +37,7 @@ var (
 	privateNetworkFlag = flag.Bool("private-net", false, "launch node in context of private network")                                                                     // Init private network flag
 	archivalNodeFlag   = flag.Bool("archival", false, "launch node in archival mode")                                                                                     // Init archival node flag
 	silent             = flag.Bool("silent", false, "silence all fmt.Print calls")                                                                                        // Init silent flag
+	exitOnJoin         = flag.Bool("exit-on-join", false, "exit node on network join")                                                                                    // Init exit on join flag
 )
 
 func main() {
@@ -135,16 +136,18 @@ func startNode(archivalNode bool) {
 		}
 	}
 
-	ln, err := tls.Listen("tcp", ":"+strconv.Itoa(*nodePortFlag), common.GeneralTLSConfig) // Listen on port
+	if !*exitOnJoin { // Check should not exit on join
+		ln, err := tls.Listen("tcp", ":"+strconv.Itoa(*nodePortFlag), common.GeneralTLSConfig) // Listen on port
 
-	if err != nil { // Check for errors
-		panic(err) // Panic
-	}
+		if err != nil { // Check for errors
+			panic(err) // Panic
+		}
 
-	err = handler.StartHandler(&ln) // Start handler
+		err = handler.StartHandler(&ln) // Start handler
 
-	if err != nil { // Check for errors
-		panic(err) // Panic
+		if err != nil { // Check for errors
+			panic(err) // Panic
+		}
 	}
 }
 
