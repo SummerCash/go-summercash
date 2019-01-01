@@ -1,6 +1,6 @@
 # SummerCash
 
-Go implementation of the SummerTech digital currency
+Go implementation of the SummerCash node
 
 ## Usage
 
