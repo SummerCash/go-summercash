@@ -10,6 +10,7 @@ import (
 
 	"github.com/SummerCash/go-summercash/cli"
 	"github.com/SummerCash/go-summercash/common"
+	"github.com/SummerCash/go-summercash/config"
 	"github.com/SummerCash/go-summercash/handler"
 	accountsServer "github.com/SummerCash/go-summercash/internal/rpc/accounts"
 	chainServer "github.com/SummerCash/go-summercash/internal/rpc/chain"
@@ -41,6 +42,7 @@ var (
 	archivalNodeFlag   = flag.Bool("archival", false, "launch node in archival mode")                                                                                     // Init archival node flag
 	silent             = flag.Bool("silent", false, "silence all fmt.Print calls")                                                                                        // Init silent flag
 	exitOnJoin         = flag.Bool("exit-on-join", false, "exit node on network join")                                                                                    // Init exit on join flag
+	version            = flag.Bool("version", false, "get node software version")                                                                                         // Init version flag
 )
 
 func main() {
@@ -49,6 +51,10 @@ func main() {
 	common.DataDir = *dataDirFlag   // Set data-dir
 	common.Silent = *silent         // Set is silent
 	common.NodePort = *nodePortFlag // Set node port
+
+	if *version { // Check needs version
+		fmt.Print(config.Version) // Log version
+	}
 
 	if *privateNetworkFlag {
 		common.ExtIPProviders = []string{} // Set nil providers
