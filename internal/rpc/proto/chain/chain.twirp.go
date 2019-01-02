@@ -40,6 +40,8 @@ type Chain interface {
 	String(context.Context, *GeneralRequest) (*GeneralResponse, error)
 
 	ReadChainFromMemory(context.Context, *GeneralRequest) (*GeneralResponse, error)
+
+	QueryTransaction(context.Context, *GeneralRequest) (*GeneralResponse, error)
 }
 
 // =====================
@@ -48,18 +50,19 @@ type Chain interface {
 
 type chainProtobufClient struct {
 	client HTTPClient
-	urls   [4]string
+	urls   [5]string
 }
 
 // NewChainProtobufClient creates a Protobuf client that implements the Chain interface.
 // It communicates using Protobuf and can be configured with a custom HTTPClient.
 func NewChainProtobufClient(addr string, client HTTPClient) Chain {
 	prefix := urlBase(addr) + ChainPathPrefix
-	urls := [4]string{
+	urls := [5]string{
 		prefix + "GetBalance",
 		prefix + "Bytes",
 		prefix + "String",
 		prefix + "ReadChainFromMemory",
+		prefix + "QueryTransaction",
 	}
 	if httpClient, ok := client.(*http.Client); ok {
 		return &chainProtobufClient{
@@ -121,24 +124,37 @@ func (c *chainProtobufClient) ReadChainFromMemory(ctx context.Context, in *Gener
 	return out, nil
 }
 
+func (c *chainProtobufClient) QueryTransaction(ctx context.Context, in *GeneralRequest) (*GeneralResponse, error) {
+	ctx = ctxsetters.WithPackageName(ctx, "chain")
+	ctx = ctxsetters.WithServiceName(ctx, "Chain")
+	ctx = ctxsetters.WithMethodName(ctx, "QueryTransaction")
+	out := new(GeneralResponse)
+	err := doProtobufRequest(ctx, c.client, c.urls[4], in, out)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // =================
 // Chain JSON Client
 // =================
 
 type chainJSONClient struct {
 	client HTTPClient
-	urls   [4]string
+	urls   [5]string
 }
 
 // NewChainJSONClient creates a JSON client that implements the Chain interface.
 // It communicates using JSON and can be configured with a custom HTTPClient.
 func NewChainJSONClient(addr string, client HTTPClient) Chain {
 	prefix := urlBase(addr) + ChainPathPrefix
-	urls := [4]string{
+	urls := [5]string{
 		prefix + "GetBalance",
 		prefix + "Bytes",
 		prefix + "String",
 		prefix + "ReadChainFromMemory",
+		prefix + "QueryTransaction",
 	}
 	if httpClient, ok := client.(*http.Client); ok {
 		return &chainJSONClient{
@@ -194,6 +210,18 @@ func (c *chainJSONClient) ReadChainFromMemory(ctx context.Context, in *GeneralRe
 	ctx = ctxsetters.WithMethodName(ctx, "ReadChainFromMemory")
 	out := new(GeneralResponse)
 	err := doJSONRequest(ctx, c.client, c.urls[3], in, out)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *chainJSONClient) QueryTransaction(ctx context.Context, in *GeneralRequest) (*GeneralResponse, error) {
+	ctx = ctxsetters.WithPackageName(ctx, "chain")
+	ctx = ctxsetters.WithServiceName(ctx, "Chain")
+	ctx = ctxsetters.WithMethodName(ctx, "QueryTransaction")
+	out := new(GeneralResponse)
+	err := doJSONRequest(ctx, c.client, c.urls[4], in, out)
 	if err != nil {
 		return nil, err
 	}
@@ -259,6 +287,9 @@ func (s *chainServer) ServeHTTP(resp http.ResponseWriter, req *http.Request) {
 		return
 	case "/twirp/chain.Chain/ReadChainFromMemory":
 		s.serveReadChainFromMemory(ctx, resp, req)
+		return
+	case "/twirp/chain.Chain/QueryTransaction":
+		s.serveQueryTransaction(ctx, resp, req)
 		return
 	default:
 		msg := fmt.Sprintf("no handler for path %q", req.URL.Path)
@@ -844,6 +875,150 @@ func (s *chainServer) serveReadChainFromMemoryProtobuf(ctx context.Context, resp
 	callResponseSent(ctx, s.hooks)
 }
 
+func (s *chainServer) serveQueryTransaction(ctx context.Context, resp http.ResponseWriter, req *http.Request) {
+	header := req.Header.Get("Content-Type")
+	i := strings.Index(header, ";")
+	if i == -1 {
+		i = len(header)
+	}
+	switch strings.TrimSpace(strings.ToLower(header[:i])) {
+	case "application/json":
+		s.serveQueryTransactionJSON(ctx, resp, req)
+	case "application/protobuf":
+		s.serveQueryTransactionProtobuf(ctx, resp, req)
+	default:
+		msg := fmt.Sprintf("unexpected Content-Type: %q", req.Header.Get("Content-Type"))
+		twerr := badRouteError(msg, req.Method, req.URL.Path)
+		s.writeError(ctx, resp, twerr)
+	}
+}
+
+func (s *chainServer) serveQueryTransactionJSON(ctx context.Context, resp http.ResponseWriter, req *http.Request) {
+	var err error
+	ctx = ctxsetters.WithMethodName(ctx, "QueryTransaction")
+	ctx, err = callRequestRouted(ctx, s.hooks)
+	if err != nil {
+		s.writeError(ctx, resp, err)
+		return
+	}
+
+	reqContent := new(GeneralRequest)
+	unmarshaler := jsonpb.Unmarshaler{AllowUnknownFields: true}
+	if err = unmarshaler.Unmarshal(req.Body, reqContent); err != nil {
+		err = wrapErr(err, "failed to parse request json")
+		s.writeError(ctx, resp, twirp.InternalErrorWith(err))
+		return
+	}
+
+	// Call service method
+	var respContent *GeneralResponse
+	func() {
+		defer func() {
+			// In case of a panic, serve a 500 error and then panic.
+			if r := recover(); r != nil {
+				s.writeError(ctx, resp, twirp.InternalError("Internal service panic"))
+				panic(r)
+			}
+		}()
+		respContent, err = s.Chain.QueryTransaction(ctx, reqContent)
+	}()
+
+	if err != nil {
+		s.writeError(ctx, resp, err)
+		return
+	}
+	if respContent == nil {
+		s.writeError(ctx, resp, twirp.InternalError("received a nil *GeneralResponse and nil error while calling QueryTransaction. nil responses are not supported"))
+		return
+	}
+
+	ctx = callResponsePrepared(ctx, s.hooks)
+
+	var buf bytes.Buffer
+	marshaler := &jsonpb.Marshaler{OrigName: true}
+	if err = marshaler.Marshal(&buf, respContent); err != nil {
+		err = wrapErr(err, "failed to marshal json response")
+		s.writeError(ctx, resp, twirp.InternalErrorWith(err))
+		return
+	}
+
+	ctx = ctxsetters.WithStatusCode(ctx, http.StatusOK)
+	resp.Header().Set("Content-Type", "application/json")
+	resp.WriteHeader(http.StatusOK)
+
+	respBytes := buf.Bytes()
+	if n, err := resp.Write(respBytes); err != nil {
+		msg := fmt.Sprintf("failed to write response, %d of %d bytes written: %s", n, len(respBytes), err.Error())
+		twerr := twirp.NewError(twirp.Unknown, msg)
+		callError(ctx, s.hooks, twerr)
+	}
+	callResponseSent(ctx, s.hooks)
+}
+
+func (s *chainServer) serveQueryTransactionProtobuf(ctx context.Context, resp http.ResponseWriter, req *http.Request) {
+	var err error
+	ctx = ctxsetters.WithMethodName(ctx, "QueryTransaction")
+	ctx, err = callRequestRouted(ctx, s.hooks)
+	if err != nil {
+		s.writeError(ctx, resp, err)
+		return
+	}
+
+	buf, err := ioutil.ReadAll(req.Body)
+	if err != nil {
+		err = wrapErr(err, "failed to read request body")
+		s.writeError(ctx, resp, twirp.InternalErrorWith(err))
+		return
+	}
+	reqContent := new(GeneralRequest)
+	if err = proto.Unmarshal(buf, reqContent); err != nil {
+		err = wrapErr(err, "failed to parse request proto")
+		s.writeError(ctx, resp, twirp.InternalErrorWith(err))
+		return
+	}
+
+	// Call service method
+	var respContent *GeneralResponse
+	func() {
+		defer func() {
+			// In case of a panic, serve a 500 error and then panic.
+			if r := recover(); r != nil {
+				s.writeError(ctx, resp, twirp.InternalError("Internal service panic"))
+				panic(r)
+			}
+		}()
+		respContent, err = s.Chain.QueryTransaction(ctx, reqContent)
+	}()
+
+	if err != nil {
+		s.writeError(ctx, resp, err)
+		return
+	}
+	if respContent == nil {
+		s.writeError(ctx, resp, twirp.InternalError("received a nil *GeneralResponse and nil error while calling QueryTransaction. nil responses are not supported"))
+		return
+	}
+
+	ctx = callResponsePrepared(ctx, s.hooks)
+
+	respBytes, err := proto.Marshal(respContent)
+	if err != nil {
+		err = wrapErr(err, "failed to marshal proto response")
+		s.writeError(ctx, resp, twirp.InternalErrorWith(err))
+		return
+	}
+
+	ctx = ctxsetters.WithStatusCode(ctx, http.StatusOK)
+	resp.Header().Set("Content-Type", "application/protobuf")
+	resp.WriteHeader(http.StatusOK)
+	if n, err := resp.Write(respBytes); err != nil {
+		msg := fmt.Sprintf("failed to write response, %d of %d bytes written: %s", n, len(respBytes), err.Error())
+		twerr := twirp.NewError(twirp.Unknown, msg)
+		callError(ctx, s.hooks, twerr)
+	}
+	callResponseSent(ctx, s.hooks)
+}
+
 func (s *chainServer) ServiceDescriptor() ([]byte, int) {
 	return twirpFileDescriptor0, 0
 }
@@ -1273,17 +1448,19 @@ func callError(ctx context.Context, h *twirp.ServerHooks, err twirp.Error) conte
 }
 
 var twirpFileDescriptor0 = []byte{
-	// 191 bytes of a gzipped FileDescriptorProto
+	// 213 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe2, 0xe2, 0x4e, 0xce, 0x48, 0xcc,
 	0xcc, 0xd3, 0x2b, 0x28, 0xca, 0x2f, 0xc9, 0x17, 0x62, 0x05, 0x73, 0x94, 0xb4, 0xb8, 0xf8, 0xdc,
 	0x53, 0xf3, 0x52, 0x8b, 0x12, 0x73, 0x82, 0x52, 0x0b, 0x4b, 0x53, 0x8b, 0x4b, 0x84, 0x24, 0xb8,
 	0xd8, 0x13, 0x53, 0x52, 0x8a, 0x52, 0x8b, 0x8b, 0x25, 0x18, 0x15, 0x18, 0x35, 0x38, 0x83, 0x60,
 	0x5c, 0x25, 0x6d, 0x2e, 0x7e, 0xb8, 0xda, 0xe2, 0x82, 0xfc, 0xbc, 0xe2, 0x54, 0x90, 0xe2, 0xdc,
-	0xd4, 0xe2, 0xe2, 0xc4, 0xf4, 0x54, 0x98, 0x62, 0x28, 0xd7, 0xa8, 0x99, 0x89, 0x8b, 0xd5, 0x19,
-	0x64, 0x85, 0x90, 0x2d, 0x17, 0x97, 0x7b, 0x6a, 0x89, 0x53, 0x62, 0x4e, 0x62, 0x5e, 0x72, 0xaa,
-	0x90, 0xa8, 0x1e, 0xc4, 0x15, 0xa8, 0xb6, 0x4a, 0x89, 0xa1, 0x0b, 0x43, 0x2c, 0x50, 0x62, 0x10,
-	0xb2, 0xe0, 0x62, 0x75, 0xaa, 0x2c, 0x49, 0x2d, 0x26, 0x5d, 0xa7, 0x25, 0x17, 0x5b, 0x70, 0x49,
-	0x51, 0x66, 0x5e, 0x3a, 0xe9, 0x5a, 0xdd, 0xb8, 0x84, 0x83, 0x52, 0x13, 0x53, 0xc0, 0x1e, 0x70,
-	0x2b, 0xca, 0xcf, 0xf5, 0x4d, 0xcd, 0xcd, 0x2f, 0xaa, 0x24, 0xd9, 0x9c, 0x24, 0x36, 0x70, 0x60,
-	0x1b, 0x03, 0x02, 0x00, 0x00, 0xff, 0xff, 0x64, 0x81, 0xab, 0x24, 0x7b, 0x01, 0x00, 0x00,
+	0xd4, 0xe2, 0xe2, 0xc4, 0xf4, 0x54, 0x98, 0x62, 0x28, 0xd7, 0xe8, 0x04, 0x13, 0x17, 0xab, 0x33,
+	0xc8, 0x0a, 0x21, 0x5b, 0x2e, 0x2e, 0xf7, 0xd4, 0x12, 0xa7, 0xc4, 0x9c, 0xc4, 0xbc, 0xe4, 0x54,
+	0x21, 0x51, 0x3d, 0x88, 0x2b, 0x50, 0x6d, 0x95, 0x12, 0x43, 0x17, 0x86, 0x58, 0xa0, 0xc4, 0x20,
+	0x64, 0xc1, 0xc5, 0xea, 0x54, 0x59, 0x92, 0x5a, 0x4c, 0xba, 0x4e, 0x4b, 0x2e, 0xb6, 0xe0, 0x92,
+	0xa2, 0xcc, 0xbc, 0x74, 0xd2, 0xb5, 0xba, 0x71, 0x09, 0x07, 0xa5, 0x26, 0xa6, 0x80, 0x3d, 0xe0,
+	0x56, 0x94, 0x9f, 0xeb, 0x9b, 0x9a, 0x9b, 0x5f, 0x54, 0x49, 0xba, 0x39, 0xce, 0x5c, 0x02, 0x81,
+	0xa5, 0xa9, 0x45, 0x95, 0x21, 0x45, 0x89, 0x79, 0xc5, 0x89, 0xc9, 0x25, 0x99, 0xf9, 0x79, 0x24,
+	0x1b, 0x92, 0xc4, 0x06, 0x8e, 0x31, 0x63, 0x40, 0x00, 0x00, 0x00, 0xff, 0xff, 0x72, 0x2b, 0x57,
+	0x48, 0xc0, 0x01, 0x00, 0x00,
 }
