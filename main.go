@@ -151,7 +151,7 @@ func startNode(archivalNode bool) {
 		}
 	}
 
-	if ip != common.BootstrapNodes[0] && !alreadySynced { // Plz, no recursion TODO: fix ipv6
+	if !alreadySynced { // Plz, no recursion TODO: fix ipv6
 		err := types.SyncNetwork() // Sync network
 
 		if err != nil { // Check for errors
