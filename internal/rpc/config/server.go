@@ -84,3 +84,20 @@ func (server *Server) ReadChainConfigFromMemory(ctx context.Context, req *config
 
 	return &configProto.GeneralResponse{Message: fmt.Sprintf("\n%s", chainConfig.String())}, nil // Return response
 }
+
+// GetTotalSupply - config.GetTotalSupply RPC handler
+func (server *Server) GetTotalSupply(ctx context.Context, req *configProto.GeneralRequest) (*configProto.GeneralResponse, error) {
+	chainConfig, err := config.ReadChainConfigFromMemory() // Read chain config from memory
+
+	if err != nil { // Check for errors
+		return &configProto.GeneralResponse{}, err // Return found error
+	}
+
+	supply := float64(0) // Init supply
+
+	for _, address := range chainConfig.AllocAddresses { // Iterate through alloc
+		supply += chainConfig.Alloc[address.String()] // Add alloc value
+	}
+
+	return &configProto.GeneralResponse{Message: fmt.Sprintf("\n%f", supply)}, nil // Return response
+}

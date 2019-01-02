@@ -249,14 +249,14 @@ func handleConfig(configClient *configProto.Config, methodname string, params []
 		}
 
 		reflectParams = append(reflectParams, reflect.ValueOf(&configProto.GeneralRequest{GenesisPath: params[0]})) // Append params
-	case "Bytes", "String", "WriteToMemory", "ReadChainConfigFromMemory":
+	case "Bytes", "String", "WriteToMemory", "ReadChainConfigFromMemory", "GetTotalSupply":
 		if len(params) != 0 { // Check for invalid parameters
 			return errors.New("invalid parameters (accepts 0 params)") // Return error
 		}
 
 		reflectParams = append(reflectParams, reflect.ValueOf(&configProto.GeneralRequest{})) // Append params
 	default:
-		return errors.New("illegal method: " + methodname + ", available methods: NewChainConfig(), Bytes(), String(), WriteToMemory(), ReadChainConfigFromMemory()") // Return error
+		return errors.New("illegal method: " + methodname + ", available methods: NewChainConfig(), Bytes(), String(), WriteToMemory(), ReadChainConfigFromMemory(), GetTotalSupply()") // Return error
 	}
 
 	result := reflect.ValueOf(*configClient).MethodByName(methodname).Call(reflectParams) // Call method

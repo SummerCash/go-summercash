@@ -50,7 +50,7 @@ func NewChainConfig(genesisFilePath string) (*ChainConfig, error) {
 	x := 0 // Init iterator
 
 	for key, value := range readJSON["alloc"].(map[string]interface{}) { // Iterate through genesis addresses
-		intVal, err := strconv.Atoi(value.(map[string]interface{})["balance"].(string)) // Get int val
+		floatVal, err := strconv.ParseFloat(value.(map[string]interface{})["balance"].(string), 64) // Get float val
 
 		if err != nil { // Check for errors
 			return &ChainConfig{}, err // Return error
@@ -68,7 +68,7 @@ func NewChainConfig(genesisFilePath string) (*ChainConfig, error) {
 			allocAddresses = append(allocAddresses, address) // Append address
 		}
 
-		alloc[key] = float64(intVal) // Set int val
+		alloc[key] = float64(floatVal) // Set int val
 
 		x++ // Increment iterator
 	}
