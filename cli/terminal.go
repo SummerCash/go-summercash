@@ -338,7 +338,7 @@ func handleChain(chainClient *chainProto.Chain, methodname string, params []stri
 
 		reflectParams = append(reflectParams, reflect.ValueOf(&chainProto.GeneralRequest{Address: params[0]})) // Append params
 	default:
-		return errors.New("illegal method: " + methodname + ", available methods: GetBalance(), Bytes(), String(), ReadChainFromMemory(), QueryTransaction()") // Return error
+		return errors.New("illegal method: " + methodname + ", available methods: GetBalance(), Bytes(), String(), ReadChainFromMemory(), QueryTransaction(), GetNumTransactions()") // Return error
 	}
 
 	result := reflect.ValueOf(*chainClient).MethodByName(methodname).Call(reflectParams) // Call method
