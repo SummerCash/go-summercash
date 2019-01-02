@@ -331,7 +331,7 @@ func handleChain(chainClient *chainProto.Chain, methodname string, params []stri
 	reflectParams = append(reflectParams, reflect.ValueOf(context.Background())) // Append request context
 
 	switch methodname {
-	case "GetBalance", "Bytes", "String", "ReadChainFromMemory", "QueryTransaction":
+	case "GetBalance", "Bytes", "String", "ReadChainFromMemory", "QueryTransaction", "GetNumTransactions":
 		if len(params) != 1 {
 			return errors.New("invalid parameters (requires string)") // Return error
 		}

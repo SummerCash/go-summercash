@@ -125,3 +125,26 @@ func (server *Server) QueryTransaction(ctx context.Context, req *chainProto.Gene
 
 	return &chainProto.GeneralResponse{}, types.ErrNilTransaction // Return error
 }
+
+// GetNumTransactions - get total number of transactions in given account chain
+func (server *Server) GetNumTransactions(ctx context.Context, req *chainProto.GeneralRequest) (*chainProto.GeneralResponse, error) {
+	address, err := common.StringToAddress(req.Address) // Get address primitive value
+
+	if err != nil { // Check for errors
+		return &chainProto.GeneralResponse{}, err // Return found error
+	}
+
+	chain, err := types.ReadChainFromMemory(address) // Read chain from persistent memory
+
+	if err != nil { // Check for errors
+		return &chainProto.GeneralResponse{}, err // Return found error
+	}
+
+	numTx := 0 // Init counter
+
+	for range chain.Transactions { // Iterate through transactions
+		numTx++ // Increment
+	}
+
+	return &chainProto.GeneralResponse{Message: fmt.Sprintf("\n%d", numTx)}, nil // Return response
+}
