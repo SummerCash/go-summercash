@@ -16,6 +16,7 @@ import (
 	"github.com/SummerCash/go-summercash/config"
 	accountsProto "github.com/SummerCash/go-summercash/internal/rpc/proto/accounts"
 	chainProto "github.com/SummerCash/go-summercash/internal/rpc/proto/chain"
+	commonProto "github.com/SummerCash/go-summercash/internal/rpc/proto/common"
 	configProto "github.com/SummerCash/go-summercash/internal/rpc/proto/config"
 	coordinationChainProto "github.com/SummerCash/go-summercash/internal/rpc/proto/coordinationchain"
 	cryptoProto "github.com/SummerCash/go-summercash/internal/rpc/proto/crypto"
@@ -69,6 +70,7 @@ func handleCommand(receiver string, methodname string, params []string, rpcPort 
 	transactionClient := transactionProto.NewTransactionProtobufClient("https://"+rpcAddress+":"+strconv.Itoa(int(rpcPort)), &http.Client{Transport: transport})                   // Init transaction client
 	chainClient := chainProto.NewChainProtobufClient("https://"+rpcAddress+":"+strconv.Itoa(int(rpcPort)), &http.Client{Transport: transport})                                     // Init chain client
 	coordinationChainClient := coordinationChainProto.NewCoordinationChainProtobufClient("https://"+rpcAddress+":"+strconv.Itoa(int(rpcPort)), &http.Client{Transport: transport}) // Init coordinationChain client
+	commonClient := commonProto.NewCommonProtobufClient("https://"+rpcAddress+":"+strconv.Itoa(int(rpcPort)), &http.Client{Transport: transport})                                  // Init common client
 
 	switch receiver {
 	case "crypto":
@@ -113,8 +115,14 @@ func handleCommand(receiver string, methodname string, params []string, rpcPort 
 		if err != nil { // Check for errors
 			fmt.Println("\n" + err.Error()) // Log found error
 		}
+	case "common":
+		err := handleCommon(&commonClient, methodname, params) // Handle common
+
+		if err != nil { // Check for errors
+			fmt.Println("\n" + err.Error()) // Log found error
+		}
 	default:
-		fmt.Println("\n" + "unrecognized namespace " + `"` + receiver + `"` + ", available namespaces: crypto, upnp, accounts, config, transaction, chain, coordinationChain") // Log invalid namespace
+		fmt.Println("\n" + "unrecognized namespace " + `"` + receiver + `"` + ", available namespaces: crypto, upnp, accounts, config, transaction, chain, coordinationChain, common") // Log invalid namespace
 	}
 }
 
@@ -366,6 +374,42 @@ func handleCoordinationChain(chainClient *coordinationChainProto.CoordinationCha
 	result := reflect.ValueOf(*chainClient).MethodByName(methodname).Call(reflectParams) // Call method
 
 	response := result[0].Interface().(*coordinationChainProto.GeneralResponse) // Get response
+
+	if result[1].Interface() != nil { // Check for errors
+		return result[1].Interface().(error) // Return error
+	}
+
+	fmt.Println(response.Message) // Log response
+
+	return nil // No error occurred, return nil
+}
+
+// handleCommon - handle common receiver
+func handleCommon(commonClient *commonProto.Common, methodname string, params []string) error {
+	reflectParams := []reflect.Value{} // Init buffer
+
+	reflectParams = append(reflectParams, reflect.ValueOf(context.Background())) // Append request context
+
+	switch methodname {
+	case "Encode", "EncodeString", "Decode":
+		if len(params) != 0 { // Check for invalid params
+			return errors.New("invalid parameters (requires []byte)") // Return error
+		}
+
+		reflectParams = append(reflectParams, reflect.ValueOf(&commonProto.GeneralRequest{Input: []byte(params[0])})) // Append params
+	case "DecodeString":
+		if len(params) != 1 { // Check for invalid params
+			return errors.New("invalid parameters (requires string)") // Return error
+		}
+
+		reflectParams = append(reflectParams, reflect.ValueOf(&commonProto.GeneralRequest{S: params[0]}))
+	default:
+		return errors.New("illegal method: " + methodname + ", available methods: Encode(), EncodeString(), Decode(), DecodeString()") // Return error
+	}
+
+	result := reflect.ValueOf(*commonClient).MethodByName(methodname).Call(reflectParams) // Call method
+
+	response := result[0].Interface().(*commonProto.GeneralResponse) // Get response
 
 	if result[1].Interface() != nil { // Check for errors
 		return result[1].Interface().(error) // Return error
