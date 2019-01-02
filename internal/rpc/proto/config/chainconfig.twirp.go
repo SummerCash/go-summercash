@@ -42,6 +42,8 @@ type Config interface {
 	WriteToMemory(context.Context, *GeneralRequest) (*GeneralResponse, error)
 
 	ReadChainConfigFromMemory(context.Context, *GeneralRequest) (*GeneralResponse, error)
+
+	GetTotalSupply(context.Context, *GeneralRequest) (*GeneralResponse, error)
 }
 
 // ======================
@@ -50,19 +52,20 @@ type Config interface {
 
 type configProtobufClient struct {
 	client HTTPClient
-	urls   [5]string
+	urls   [6]string
 }
 
 // NewConfigProtobufClient creates a Protobuf client that implements the Config interface.
 // It communicates using Protobuf and can be configured with a custom HTTPClient.
 func NewConfigProtobufClient(addr string, client HTTPClient) Config {
 	prefix := urlBase(addr) + ConfigPathPrefix
-	urls := [5]string{
+	urls := [6]string{
 		prefix + "NewChainConfig",
 		prefix + "Bytes",
 		prefix + "String",
 		prefix + "WriteToMemory",
 		prefix + "ReadChainConfigFromMemory",
+		prefix + "GetTotalSupply",
 	}
 	if httpClient, ok := client.(*http.Client); ok {
 		return &configProtobufClient{
@@ -136,25 +139,38 @@ func (c *configProtobufClient) ReadChainConfigFromMemory(ctx context.Context, in
 	return out, nil
 }
 
+func (c *configProtobufClient) GetTotalSupply(ctx context.Context, in *GeneralRequest) (*GeneralResponse, error) {
+	ctx = ctxsetters.WithPackageName(ctx, "config")
+	ctx = ctxsetters.WithServiceName(ctx, "Config")
+	ctx = ctxsetters.WithMethodName(ctx, "GetTotalSupply")
+	out := new(GeneralResponse)
+	err := doProtobufRequest(ctx, c.client, c.urls[5], in, out)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // ==================
 // Config JSON Client
 // ==================
 
 type configJSONClient struct {
 	client HTTPClient
-	urls   [5]string
+	urls   [6]string
 }
 
 // NewConfigJSONClient creates a JSON client that implements the Config interface.
 // It communicates using JSON and can be configured with a custom HTTPClient.
 func NewConfigJSONClient(addr string, client HTTPClient) Config {
 	prefix := urlBase(addr) + ConfigPathPrefix
-	urls := [5]string{
+	urls := [6]string{
 		prefix + "NewChainConfig",
 		prefix + "Bytes",
 		prefix + "String",
 		prefix + "WriteToMemory",
 		prefix + "ReadChainConfigFromMemory",
+		prefix + "GetTotalSupply",
 	}
 	if httpClient, ok := client.(*http.Client); ok {
 		return &configJSONClient{
@@ -228,6 +244,18 @@ func (c *configJSONClient) ReadChainConfigFromMemory(ctx context.Context, in *Ge
 	return out, nil
 }
 
+func (c *configJSONClient) GetTotalSupply(ctx context.Context, in *GeneralRequest) (*GeneralResponse, error) {
+	ctx = ctxsetters.WithPackageName(ctx, "config")
+	ctx = ctxsetters.WithServiceName(ctx, "Config")
+	ctx = ctxsetters.WithMethodName(ctx, "GetTotalSupply")
+	out := new(GeneralResponse)
+	err := doJSONRequest(ctx, c.client, c.urls[5], in, out)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // =====================
 // Config Server Handler
 // =====================
@@ -290,6 +318,9 @@ func (s *configServer) ServeHTTP(resp http.ResponseWriter, req *http.Request) {
 		return
 	case "/twirp/config.Config/ReadChainConfigFromMemory":
 		s.serveReadChainConfigFromMemory(ctx, resp, req)
+		return
+	case "/twirp/config.Config/GetTotalSupply":
+		s.serveGetTotalSupply(ctx, resp, req)
 		return
 	default:
 		msg := fmt.Sprintf("no handler for path %q", req.URL.Path)
@@ -1019,6 +1050,150 @@ func (s *configServer) serveReadChainConfigFromMemoryProtobuf(ctx context.Contex
 	callResponseSent(ctx, s.hooks)
 }
 
+func (s *configServer) serveGetTotalSupply(ctx context.Context, resp http.ResponseWriter, req *http.Request) {
+	header := req.Header.Get("Content-Type")
+	i := strings.Index(header, ";")
+	if i == -1 {
+		i = len(header)
+	}
+	switch strings.TrimSpace(strings.ToLower(header[:i])) {
+	case "application/json":
+		s.serveGetTotalSupplyJSON(ctx, resp, req)
+	case "application/protobuf":
+		s.serveGetTotalSupplyProtobuf(ctx, resp, req)
+	default:
+		msg := fmt.Sprintf("unexpected Content-Type: %q", req.Header.Get("Content-Type"))
+		twerr := badRouteError(msg, req.Method, req.URL.Path)
+		s.writeError(ctx, resp, twerr)
+	}
+}
+
+func (s *configServer) serveGetTotalSupplyJSON(ctx context.Context, resp http.ResponseWriter, req *http.Request) {
+	var err error
+	ctx = ctxsetters.WithMethodName(ctx, "GetTotalSupply")
+	ctx, err = callRequestRouted(ctx, s.hooks)
+	if err != nil {
+		s.writeError(ctx, resp, err)
+		return
+	}
+
+	reqContent := new(GeneralRequest)
+	unmarshaler := jsonpb.Unmarshaler{AllowUnknownFields: true}
+	if err = unmarshaler.Unmarshal(req.Body, reqContent); err != nil {
+		err = wrapErr(err, "failed to parse request json")
+		s.writeError(ctx, resp, twirp.InternalErrorWith(err))
+		return
+	}
+
+	// Call service method
+	var respContent *GeneralResponse
+	func() {
+		defer func() {
+			// In case of a panic, serve a 500 error and then panic.
+			if r := recover(); r != nil {
+				s.writeError(ctx, resp, twirp.InternalError("Internal service panic"))
+				panic(r)
+			}
+		}()
+		respContent, err = s.Config.GetTotalSupply(ctx, reqContent)
+	}()
+
+	if err != nil {
+		s.writeError(ctx, resp, err)
+		return
+	}
+	if respContent == nil {
+		s.writeError(ctx, resp, twirp.InternalError("received a nil *GeneralResponse and nil error while calling GetTotalSupply. nil responses are not supported"))
+		return
+	}
+
+	ctx = callResponsePrepared(ctx, s.hooks)
+
+	var buf bytes.Buffer
+	marshaler := &jsonpb.Marshaler{OrigName: true}
+	if err = marshaler.Marshal(&buf, respContent); err != nil {
+		err = wrapErr(err, "failed to marshal json response")
+		s.writeError(ctx, resp, twirp.InternalErrorWith(err))
+		return
+	}
+
+	ctx = ctxsetters.WithStatusCode(ctx, http.StatusOK)
+	resp.Header().Set("Content-Type", "application/json")
+	resp.WriteHeader(http.StatusOK)
+
+	respBytes := buf.Bytes()
+	if n, err := resp.Write(respBytes); err != nil {
+		msg := fmt.Sprintf("failed to write response, %d of %d bytes written: %s", n, len(respBytes), err.Error())
+		twerr := twirp.NewError(twirp.Unknown, msg)
+		callError(ctx, s.hooks, twerr)
+	}
+	callResponseSent(ctx, s.hooks)
+}
+
+func (s *configServer) serveGetTotalSupplyProtobuf(ctx context.Context, resp http.ResponseWriter, req *http.Request) {
+	var err error
+	ctx = ctxsetters.WithMethodName(ctx, "GetTotalSupply")
+	ctx, err = callRequestRouted(ctx, s.hooks)
+	if err != nil {
+		s.writeError(ctx, resp, err)
+		return
+	}
+
+	buf, err := ioutil.ReadAll(req.Body)
+	if err != nil {
+		err = wrapErr(err, "failed to read request body")
+		s.writeError(ctx, resp, twirp.InternalErrorWith(err))
+		return
+	}
+	reqContent := new(GeneralRequest)
+	if err = proto.Unmarshal(buf, reqContent); err != nil {
+		err = wrapErr(err, "failed to parse request proto")
+		s.writeError(ctx, resp, twirp.InternalErrorWith(err))
+		return
+	}
+
+	// Call service method
+	var respContent *GeneralResponse
+	func() {
+		defer func() {
+			// In case of a panic, serve a 500 error and then panic.
+			if r := recover(); r != nil {
+				s.writeError(ctx, resp, twirp.InternalError("Internal service panic"))
+				panic(r)
+			}
+		}()
+		respContent, err = s.Config.GetTotalSupply(ctx, reqContent)
+	}()
+
+	if err != nil {
+		s.writeError(ctx, resp, err)
+		return
+	}
+	if respContent == nil {
+		s.writeError(ctx, resp, twirp.InternalError("received a nil *GeneralResponse and nil error while calling GetTotalSupply. nil responses are not supported"))
+		return
+	}
+
+	ctx = callResponsePrepared(ctx, s.hooks)
+
+	respBytes, err := proto.Marshal(respContent)
+	if err != nil {
+		err = wrapErr(err, "failed to marshal proto response")
+		s.writeError(ctx, resp, twirp.InternalErrorWith(err))
+		return
+	}
+
+	ctx = ctxsetters.WithStatusCode(ctx, http.StatusOK)
+	resp.Header().Set("Content-Type", "application/protobuf")
+	resp.WriteHeader(http.StatusOK)
+	if n, err := resp.Write(respBytes); err != nil {
+		msg := fmt.Sprintf("failed to write response, %d of %d bytes written: %s", n, len(respBytes), err.Error())
+		twerr := twirp.NewError(twirp.Unknown, msg)
+		callError(ctx, s.hooks, twerr)
+	}
+	callResponseSent(ctx, s.hooks)
+}
+
 func (s *configServer) ServiceDescriptor() ([]byte, int) {
 	return twirpFileDescriptor0, 0
 }
@@ -1448,19 +1623,20 @@ func callError(ctx context.Context, h *twirp.ServerHooks, err twirp.Error) conte
 }
 
 var twirpFileDescriptor0 = []byte{
-	// 212 bytes of a gzipped FileDescriptorProto
+	// 229 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe2, 0x12, 0x4c, 0xce, 0x48, 0xcc,
 	0xcc, 0x4b, 0xce, 0xcf, 0x4b, 0xcb, 0x4c, 0xd7, 0x2b, 0x28, 0xca, 0x2f, 0xc9, 0x17, 0x62, 0x83,
 	0xf0, 0x94, 0x8c, 0xb8, 0xf8, 0xdc, 0x53, 0xf3, 0x52, 0x8b, 0x12, 0x73, 0x82, 0x52, 0x0b, 0x4b,
 	0x53, 0x8b, 0x4b, 0x84, 0x14, 0xb8, 0xb8, 0xd3, 0x53, 0xf3, 0x52, 0x8b, 0x33, 0x8b, 0x03, 0x12,
 	0x4b, 0x32, 0x24, 0x18, 0x15, 0x18, 0x35, 0x38, 0x83, 0x90, 0x85, 0x94, 0xb4, 0xb9, 0xf8, 0xe1,
 	0x7a, 0x8a, 0x0b, 0xf2, 0xf3, 0x8a, 0x53, 0x85, 0x24, 0xb8, 0xd8, 0x73, 0x53, 0x8b, 0x8b, 0x13,
-	0xd3, 0x53, 0xa1, 0x1a, 0x60, 0x5c, 0xa3, 0x5b, 0x4c, 0x5c, 0x6c, 0xce, 0x60, 0xbb, 0x84, 0x9c,
+	0xd3, 0x53, 0xa1, 0x1a, 0x60, 0x5c, 0xa3, 0xf9, 0xcc, 0x5c, 0x6c, 0xce, 0x60, 0xbb, 0x84, 0x9c,
 	0xb9, 0xf8, 0xfc, 0x52, 0xcb, 0x9d, 0x41, 0x6e, 0x81, 0x8a, 0x88, 0xe9, 0x41, 0x1d, 0x85, 0xea,
 	0x06, 0x29, 0x71, 0x0c, 0x71, 0x88, 0x3d, 0x4a, 0x0c, 0x42, 0x56, 0x5c, 0xac, 0x4e, 0x95, 0x25,
 	0xa9, 0xc5, 0xe4, 0xe8, 0xb5, 0xe6, 0x62, 0x0b, 0x2e, 0x29, 0xca, 0xcc, 0x23, 0xcb, 0x62, 0x27,
 	0x2e, 0xde, 0xf0, 0xa2, 0xcc, 0x92, 0xd4, 0x90, 0x7c, 0xdf, 0xd4, 0xdc, 0xfc, 0xa2, 0x4a, 0x72,
-	0xcc, 0xf0, 0xe3, 0x92, 0x0c, 0x4a, 0x4d, 0x4c, 0x41, 0x0a, 0x02, 0xb7, 0xa2, 0xfc, 0x5c, 0xb2,
-	0xcd, 0x4b, 0x62, 0x03, 0x47, 0xa6, 0x31, 0x20, 0x00, 0x00, 0xff, 0xff, 0xc9, 0x41, 0xd2, 0x17,
-	0xe1, 0x01, 0x00, 0x00,
+	0xcc, 0xf0, 0xe3, 0x92, 0x0c, 0x4a, 0x4d, 0x4c, 0x41, 0x0a, 0x02, 0xb7, 0xa2, 0xfc, 0x5c, 0xf2,
+	0xcd, 0x73, 0x06, 0xc5, 0x5e, 0x49, 0x48, 0x7e, 0x49, 0x62, 0x4e, 0x70, 0x69, 0x41, 0x41, 0x0e,
+	0x39, 0x86, 0x24, 0xb1, 0x81, 0x53, 0x84, 0x31, 0x20, 0x00, 0x00, 0xff, 0xff, 0x32, 0xcc, 0x39,
+	0x18, 0x26, 0x02, 0x00, 0x00,
 }

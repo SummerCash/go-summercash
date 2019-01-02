@@ -5,19 +5,23 @@ import (
 	"flag"
 	"fmt"
 	"net/http"
+	"os"
 	"strconv"
 	"strings"
 
 	"github.com/SummerCash/go-summercash/cli"
 	"github.com/SummerCash/go-summercash/common"
+	"github.com/SummerCash/go-summercash/config"
 	"github.com/SummerCash/go-summercash/handler"
 	accountsServer "github.com/SummerCash/go-summercash/internal/rpc/accounts"
 	chainServer "github.com/SummerCash/go-summercash/internal/rpc/chain"
+	commonServer "github.com/SummerCash/go-summercash/internal/rpc/common"
 	configServer "github.com/SummerCash/go-summercash/internal/rpc/config"
 	coordinationChainServer "github.com/SummerCash/go-summercash/internal/rpc/coordinationchain"
 	cryptoServer "github.com/SummerCash/go-summercash/internal/rpc/crypto"
 	accountsProto "github.com/SummerCash/go-summercash/internal/rpc/proto/accounts"
 	chainProto "github.com/SummerCash/go-summercash/internal/rpc/proto/chain"
+	commonProto "github.com/SummerCash/go-summercash/internal/rpc/proto/common"
 	configProto "github.com/SummerCash/go-summercash/internal/rpc/proto/config"
 	coordinationChainProto "github.com/SummerCash/go-summercash/internal/rpc/proto/coordinationchain"
 	cryptoProto "github.com/SummerCash/go-summercash/internal/rpc/proto/crypto"
@@ -41,6 +45,7 @@ var (
 	archivalNodeFlag   = flag.Bool("archival", false, "launch node in archival mode")                                                                                     // Init archival node flag
 	silent             = flag.Bool("silent", false, "silence all fmt.Print calls")                                                                                        // Init silent flag
 	exitOnJoin         = flag.Bool("exit-on-join", false, "exit node on network join")                                                                                    // Init exit on join flag
+	version            = flag.Bool("version", false, "get node software version")                                                                                         // Init version flag
 )
 
 func main() {
@@ -49,6 +54,12 @@ func main() {
 	common.DataDir = *dataDirFlag   // Set data-dir
 	common.Silent = *silent         // Set is silent
 	common.NodePort = *nodePortFlag // Set node port
+
+	if *version { // Check needs version
+		fmt.Println(config.Version) // Log version
+
+		os.Exit(0) // Stop execution
+	}
 
 	if *privateNetworkFlag {
 		common.ExtIPProviders = []string{} // Set nil providers
@@ -93,6 +104,7 @@ func startRPCServer() {
 	transactionHandler := transactionProto.NewTransactionServer(&transactionServer.Server{}, nil)                         // Init handler
 	chainHandler := chainProto.NewChainServer(&chainServer.Server{}, nil)                                                 // Init handler
 	coordinationChainHandler := coordinationChainProto.NewCoordinationChainServer(&coordinationChainServer.Server{}, nil) // Init handler
+	commonHandler := commonProto.NewCommonServer(&commonServer.Server{}, nil)                                             // Init handler
 
 	mux := http.NewServeMux() // Init mux
 
@@ -103,6 +115,7 @@ func startRPCServer() {
 	mux.Handle(transactionProto.TransactionPathPrefix, transactionHandler)                   // Start mux config handler
 	mux.Handle(chainProto.ChainPathPrefix, chainHandler)                                     // Start mux chain handler
 	mux.Handle(coordinationChainProto.CoordinationChainPathPrefix, coordinationChainHandler) // Start mux coordinationChain handler
+	mux.Handle(commonProto.CommonPathPrefix, commonHandler)                                  // Start mux common handler
 
 	go http.ListenAndServeTLS(":"+strconv.Itoa(*rpcPortFlag), "termCert.pem", "termKey.pem", mux) // Start server
 }

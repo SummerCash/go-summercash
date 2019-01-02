@@ -113,11 +113,7 @@ func (transaction *Transaction) Publish() error {
 		return err // Return found error
 	}
 
-	err = common.SendBytes(transaction.Bytes(), node.Addresses[0]) // Send transaction
-
-	if err != nil { // Check for errors
-		return err // Return found error
-	}
+	common.SendBytes(transaction.Bytes(), node.Addresses[0]) // Send transaction
 
 	for x, address := range node.Addresses { // Iterate through addresses
 		if x != 0 { // Skip first index
@@ -130,7 +126,7 @@ func (transaction *Transaction) Publish() error {
 
 // MakeEncodingSafe - encode transaction to safe format
 func (transaction *Transaction) MakeEncodingSafe() error {
-	if transaction.Signature != nil { // Check has signature
+	if transaction.Signature != nil && transaction.Signature.PublicKey != nil { // Check has signature
 		encoded, err := x509.MarshalPKIXPublicKey(transaction.Signature.PublicKey) // Encode
 
 		if err != nil { // Check for errors

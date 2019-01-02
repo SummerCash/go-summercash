@@ -7,6 +7,7 @@ service Chain {
     rpc Bytes(GeneralRequest) returns (GeneralResponse) {} // Encode chain to byte array
     rpc String(GeneralRequest) returns (GeneralResponse) {} // Encode chain to string
     rpc ReadChainFromMemory(GeneralRequest) returns (GeneralResponse) {} // Read chain from memory
+    rpc QueryTransaction(GeneralRequest) returns (GeneralResponse) {} // Query for transaction
 }
 
 /* BEGIN REQUESTS */

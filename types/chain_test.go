@@ -146,6 +146,87 @@ func TestAddTransaction(t *testing.T) {
 	t.Logf("genesis: %d, chain: %s", int(balance), chain.String()) // Log chain state
 }
 
+// TestQueryTransaction - test tx querying
+func TestQueryTransaction(t *testing.T) {
+	privateKey, err := ecdsa.GenerateKey(elliptic.P521(), rand.Reader) // Generate private key
+
+	if err != nil { // Check for errors
+		t.Error(err) // Log found error
+		t.FailNow()  // Panic
+	}
+
+	sender, err := common.NewAddress(privateKey) // Initialize address from private key
+
+	if err != nil { // Check for errors
+		t.Error(err) // Log found error
+		t.FailNow()  // Panic
+	}
+
+	err = makeChainConfig(sender) // Make config
+
+	if err != nil { // Check for errors
+		t.Error(err) // Log found error
+		t.FailNow()  // Panic
+	}
+
+	transaction, err := NewTransaction(0, nil, &sender, &sender, 0, []byte("test")) // Initialize transaction
+
+	if err != nil { // Check for errors
+		t.Error(err) // Log found error
+		t.FailNow()  // Panic
+	}
+
+	t.Logf("created transaction: %s", transaction.Hash.String()) // Log issued tx
+
+	err = SignTransaction(transaction, privateKey) // Sign transaction
+
+	if err != nil { // Check for errors
+		t.Error(err) // Log found error
+		t.FailNow()  // Panic
+	}
+
+	chain, err := NewChain(sender) // Initialize chain
+
+	if err != nil { // Check for errors
+		t.Error(err) // Log found error
+		t.FailNow()  // Panic
+	}
+
+	err = common.CreateDirIfDoesNotExit(fmt.Sprintf("%s/db/chain", common.DataDir)) // Create dir if necessary
+
+	if err != nil { // Check for errors
+		t.Error(err) // Log found error
+		t.FailNow()  // Panic
+	}
+
+	t.Log(chain.Account.String())
+
+	err = common.WriteGob(fmt.Sprintf("%s/db/chain/chain_%s.gob", common.DataDir, chain.Account.String()), *chain) // Write gob
+
+	if err != nil { // Check for errors
+		t.Error(err) // Log found error
+		t.FailNow()  // Panic
+	}
+
+	t.Logf("created chain: %s", chain.ID.String()) // Log init
+
+	err = chain.AddTransaction(transaction) // Add transaction
+
+	if err != nil && !strings.Contains(err.Error(), "timed out") { // Check for errors
+		t.Error(err) // Log found error
+		t.FailNow()  // Panic
+	}
+
+	transaction, err = chain.QueryTransaction(*transaction.Hash) // Query hash
+
+	if err != nil { // Check for errors
+		t.Error(err) // Log found error
+		t.FailNow()  // Panic
+	}
+
+	t.Log(transaction.String()) // Log success
+}
+
 // TestBytesChain - test chain to bytes conversion
 func TestBytesChain(t *testing.T) {
 	privateKey, err := ecdsa.GenerateKey(elliptic.P521(), rand.Reader) // Generate private key

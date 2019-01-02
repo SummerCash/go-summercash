@@ -33,8 +33,11 @@ var (
 	// ErrIrrelevantTransaction - error definition describing a transaction outside the scope of the given chain
 	ErrIrrelevantTransaction = errors.New("irrelevant transaction")
 
-	// ErrInsufficientBalance - error definition describing a transaction worth less than the sender's balance
+	// ErrInsufficientBalance - error definition describing a transaction worth more than the sender's balance
 	ErrInsufficientBalance = errors.New("insufficient transaction sender balance")
+
+	// ErrNilTransaction - error definition describing a query for a non-existent transaction
+	ErrNilTransaction = errors.New("couldn't find transaction with given hash")
 )
 
 /* BEGIN EXPORTED METHODS */
@@ -142,11 +145,7 @@ func NewChain(account common.Address) (*Chain, error) {
 			if nodes[0] != localIP+":"+strconv.Itoa(common.NodePort) { // Check not current node
 				common.Logf("== NETWORK == pushing chain %s to peer %s\n", chain.ID.String(), nodes[0]) // Log push
 
-				err := common.SendBytes(chain.Bytes(), nodes[0]) // Send chain
-
-				if err != nil { // Check for errors
-					return nil, err // Return found error
-				}
+				common.SendBytes(chain.Bytes(), nodes[0]) // Send chain
 			}
 
 			for x, address := range nodes { // Iterate through addresses
@@ -235,6 +234,17 @@ func (chain *Chain) AddTransaction(transaction *Transaction) error {
 	}
 
 	return chain.WriteToMemory() // No error occurred, return nil
+}
+
+// QueryTransaction - attempt to fetch transaction metadata in chain by hash
+func (chain *Chain) QueryTransaction(hash common.Hash) (*Transaction, error) {
+	for _, transaction := range chain.Transactions { // Iterate through transactions
+		if *transaction.Hash == hash { // Check for match
+			return transaction, nil // Return found transaction
+		}
+	}
+
+	return &Transaction{}, ErrNilTransaction
 }
 
 // CalculateBalance - iterate through tx set, return balance

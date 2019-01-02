@@ -1,0 +1,28 @@
+syntax = "proto3"; // Specify compiler version
+
+package common;
+
+service Common {
+    rpc Encode(GeneralRequest) returns (GeneralResponse) {} // Encode specified byte array to hex format
+    rpc EncodeString(GeneralRequest) returns (GeneralResponse) {} // Encode given byte array to string hex format
+    rpc Decode(GeneralRequest) returns (GeneralResponse) {} // Decode given hex-formatted byte array to standard byte array
+    rpc DecodeString(GeneralRequest) returns (GeneralResponse) {} // Decode given hex-formatted string to byte array
+}
+
+/* BEGIN REQUESTS */
+
+message GeneralRequest {
+    bytes input = 1; // Input to be hashed
+
+    string s = 2; // s
+}
+
+/* END REQUESTS */
+
+/* BEGIN RESPONSES */
+
+message GeneralResponse {
+    string message = 1; // Response
+}
+
+/* END REPSONSES */

@@ -23,7 +23,7 @@ go get -u github.com/SummerCash/go-summercash && go install github.com/SummerCas
 
 ### Pre-compiled Binaries
 
-For pre-compiled executable binaries, check the [![releases](https://github.com/SummerCash/go-summercash/releases/latest)] page.
+For pre-compiled executable binaries, check the [releases](https://github.com/SummerCash/go-summercash/releases/latest) page.
 
 ## Demo
 

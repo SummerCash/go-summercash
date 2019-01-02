@@ -79,7 +79,7 @@ func HandleReceivedCoordinationNode(b []byte) error {
 			return err // Return found error
 		}
 
-		common.Logf("== SUCCESS == successfully pushed coordination node %s\n to local coordination chain", coordinationNode.Address.String()) // Log success
+		common.Logf("== SUCCESS == successfully pushed coordination node %s to local coordination chain\n", coordinationNode.Address.String()) // Log success
 	}
 
 	err = coordinationChain.WriteToMemory() // Write coordinationChain to memory
