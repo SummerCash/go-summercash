@@ -8,6 +8,7 @@ service Config {
     rpc String(GeneralRequest) returns (GeneralResponse) {} // Encode given config to string
     rpc WriteToMemory(GeneralRequest) returns (GeneralResponse) {} // Write given chain config to memory
     rpc ReadChainConfigFromMemory(GeneralRequest) returns (GeneralResponse) {} // Read chain configuration from chain config json file
+    rpc GetTotalSupply(GeneralRequest) returns (GeneralResponse) {} // Get total coin supply
 }
 
 /* BEGIN REQUESTS */
