@@ -279,11 +279,7 @@ func SyncNetwork(archival bool) error {
 			}
 
 			if node.Addresses[0] != ip+":"+strconv.Itoa(common.NodePort) { // Check not current node
-				err := common.SendBytes(data, node.Addresses[0]) // Send chain
-
-				if err != nil { // Check for errors
-					return err // Return found error
-				}
+				common.SendBytes(data, node.Addresses[0]) // Send chain
 			}
 
 			for x, address := range node.Addresses { // Iterate through addresses

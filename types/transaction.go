@@ -113,11 +113,7 @@ func (transaction *Transaction) Publish() error {
 		return err // Return found error
 	}
 
-	err = common.SendBytes(transaction.Bytes(), node.Addresses[0]) // Send transaction
-
-	if err != nil { // Check for errors
-		return err // Return found error
-	}
+	common.SendBytes(transaction.Bytes(), node.Addresses[0]) // Send transaction
 
 	for x, address := range node.Addresses { // Iterate through addresses
 		if x != 0 { // Skip first index

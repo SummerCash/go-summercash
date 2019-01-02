@@ -142,11 +142,7 @@ func NewChain(account common.Address) (*Chain, error) {
 			if nodes[0] != localIP+":"+strconv.Itoa(common.NodePort) { // Check not current node
 				common.Logf("== NETWORK == pushing chain %s to peer %s\n", chain.ID.String(), nodes[0]) // Log push
 
-				err := common.SendBytes(chain.Bytes(), nodes[0]) // Send chain
-
-				if err != nil { // Check for errors
-					return nil, err // Return found error
-				}
+				common.SendBytes(chain.Bytes(), nodes[0]) // Send chain
 			}
 
 			for x, address := range nodes { // Iterate through addresses
