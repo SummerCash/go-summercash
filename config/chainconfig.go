@@ -18,8 +18,9 @@ type ChainConfig struct {
 
 	AllocAddresses []common.Address // Account addresses
 
-	NetworkID uint        `json:"network"` // Network ID (0: mainnet, 1: testnet, etc...)
-	ChainID   common.Hash `json:"id"`      // Hashed networkID, genesisSignature
+	NetworkID    uint        `json:"network"` // Network ID (0: mainnet, 1: testnet, etc...)
+	ChainID      common.Hash `json:"id"`      // Hashed networkID, genesisSignature
+	ChainVersion string      `json:"version"` // Network version
 }
 
 const (
@@ -78,6 +79,7 @@ func NewChainConfig(genesisFilePath string) (*ChainConfig, error) {
 		AllocAddresses: allocAddresses,
 		NetworkID:      uint(readJSON["networkID"].(float64)),
 		ChainID:        common.NewHash(crypto.Sha3(append(rawJSON, []byte(strconv.Itoa(int(readJSON["networkID"].(float64))))...))), // Generate chainID
+		ChainVersion:   Version,                                                                                                     // Set version
 	}
 
 	return config, nil // Return initialized chainConfig

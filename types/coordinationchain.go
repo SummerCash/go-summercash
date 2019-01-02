@@ -46,6 +46,9 @@ var (
 
 	// ErrNilCoordinationChain - error definition describing a coordination chain that is nil in value
 	ErrNilCoordinationChain = errors.New("nil coordination chain")
+
+	// ErrClientOutOfDate - error definition describing a client that is out of date
+	ErrClientOutOfDate = errors.New("client out of date (must upgrade client)")
 )
 
 /* BEGIN EXPORTED METHODS */
@@ -204,6 +207,12 @@ func SyncNetwork(archival bool) error {
 		} else {
 			x++ // Increment
 		}
+	}
+
+	err = syncChainConfig() // Sync chain config
+
+	if err != nil { // Check for errors
+		return err // Return found error
 	}
 
 	coordinationChain, err := CoordinationChainFromBytes(coordinationChainBytes) // Decode result
@@ -593,3 +602,48 @@ func (coordinationNode *CoordinationNode) String() string {
 */
 
 /* END EXPORTED METHODS */
+
+/* BEGIN INTERNAL METHODS */
+
+func syncChainConfig() error {
+	var configBytes []byte // Init config buffer
+	var err error          // Init error buffer
+
+	for _, bootstrapNode := range common.BootstrapNodes { // Iterate through bootstrap nodes
+		common.Logf("== NETWORK == requesting chain config from bootstrap node %s\n", bootstrapNode) // Log request config
+
+		configBytes, err = gop2pCommon.SendBytesResult([]byte("configReq"), bootstrapNode) // Get chain config
+
+		if err != nil { // Check for errors
+			continue // Continue
+		} else {
+			break // Break
+		}
+	}
+
+	remoteConfig, err := config.FromBytes(configBytes) // Get config from bytes
+
+	if err != nil { // Check for errors
+		return err // Return found error
+	}
+
+	localConfig, err := config.ReadChainConfigFromMemory() // Read local chain config
+
+	if err != nil {
+		return remoteConfig.WriteToMemory() // Write config to persistent memory
+	}
+
+	softForkRemote, _ := strconv.Atoi(strings.Split(remoteConfig.ChainVersion, ".")[1]) // Get remote soft fork version int val
+	softForkLocal, _ := strconv.Atoi(strings.Split(localConfig.ChainVersion, ".")[1])   // Get local soft fork version int val
+
+	hardForkRemote, _ := strconv.Atoi(strings.Split(remoteConfig.ChainVersion, ".")[0]) // Get remote hard fork version int val
+	hardForkLocal, _ := strconv.Atoi(strings.Split(localConfig.ChainVersion, ".")[0])   // Get remote hard fork version int val
+
+	if softForkRemote-softForkLocal > 4 && hardForkRemote == hardForkLocal || hardForkRemote > hardForkLocal { // Check too out-of-date
+		return ErrClientOutOfDate // Return out-of-date error
+	}
+
+	return nil // No error occurred, return nil
+}
+
+/* END INTERNAL METHODS */
