@@ -16,7 +16,7 @@ type Server struct{}
 
 // SyncNetwork - coordinationChain.SyncNetwork RPC handler
 func (server *Server) SyncNetwork(ctx context.Context, req *coordinationChainProto.GeneralRequest) (*coordinationChainProto.GeneralResponse, error) {
-	err := types.SyncNetwork() // Sync network
+	err := types.SyncNetwork(true) // Sync network
 
 	if err != nil { // Check for errors
 		return &coordinationChainProto.GeneralResponse{}, err // Return found error
