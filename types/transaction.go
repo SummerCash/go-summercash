@@ -126,7 +126,7 @@ func (transaction *Transaction) Publish() error {
 
 // MakeEncodingSafe - encode transaction to safe format
 func (transaction *Transaction) MakeEncodingSafe() error {
-	if transaction.Signature != nil { // Check has signature
+	if transaction.Signature != nil && transaction.Signature.PublicKey != nil { // Check has signature
 		encoded, err := x509.MarshalPKIXPublicKey(transaction.Signature.PublicKey) // Encode
 
 		if err != nil { // Check for errors
