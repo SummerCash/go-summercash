@@ -5,6 +5,7 @@ import (
 	"flag"
 	"fmt"
 	"net/http"
+	"os"
 	"strconv"
 	"strings"
 
@@ -54,6 +55,8 @@ func main() {
 
 	if *version { // Check needs version
 		fmt.Print(config.Version) // Log version
+
+		os.Exit(0) // Stop execution
 	}
 
 	if *privateNetworkFlag {
