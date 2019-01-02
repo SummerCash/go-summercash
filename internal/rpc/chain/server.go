@@ -3,6 +3,9 @@ package chain
 import (
 	"context"
 	"fmt"
+	"io/ioutil"
+	"path/filepath"
+	"strings"
 
 	"github.com/SummerCash/go-summercash/common"
 	chainProto "github.com/SummerCash/go-summercash/internal/rpc/proto/chain"
@@ -86,4 +89,39 @@ func (server *Server) ReadChainFromMemory(ctx context.Context, req *chainProto.G
 	}
 
 	return &chainProto.GeneralResponse{Message: fmt.Sprintf("\n%s", chain.String())}, nil // Return response
+}
+
+// QueryTransaction - chain.QueryTransaction RPC handler
+func (server *Server) QueryTransaction(ctx context.Context, req *chainProto.GeneralRequest) (*chainProto.GeneralResponse, error) {
+	files, err := ioutil.ReadDir(filepath.FromSlash(fmt.Sprintf("%s/db/chain", common.DataDir))) // Walk chain dir
+
+	if err != nil { // Check for errors
+		return &chainProto.GeneralResponse{}, err // Return found error
+	}
+
+	hash, err := common.StringToHash(req.Address) // Get hash value
+
+	if err != nil { // Check for errors
+		return &chainProto.GeneralResponse{}, err // Return found error
+	}
+
+	for _, file := range files { // Iterate through files
+		address, err := common.StringToAddress(strings.Split(strings.Split(file.Name(), "chain_")[1], ".json")[0]) // Get address value
+
+		if err == nil { // Check for success
+			chain, err := types.ReadChainFromMemory(address) // Read chain
+
+			if err == nil { // Check successfully read
+				transaction, err := chain.QueryTransaction(hash) // Query for transaction
+
+				if err != nil { // Check for errors
+					continue
+				}
+
+				return &chainProto.GeneralResponse{Message: fmt.Sprintf("\n%s", transaction.String())}, nil // Return response
+			}
+		}
+	}
+
+	return &chainProto.GeneralResponse{}, types.ErrNilTransaction // Return error
 }
