@@ -27,7 +27,6 @@ import (
 	upnpServer "github.com/SummerCash/go-summercash/internal/rpc/upnp"
 	"github.com/SummerCash/go-summercash/types"
 	"github.com/SummerCash/go-summercash/upnp"
-	commonGoP2P "github.com/dowlandaiello/GoP2P/common"
 )
 
 var (
@@ -127,7 +126,7 @@ func startNode(archivalNode bool) {
 	}
 
 	if err != nil { // Check for errors
-		if archivalNode && !commonGoP2P.StringInSlice(common.BootstrapNodes, ip) && !*privateNetworkFlag { // Check is not bootstrap node
+		if archivalNode && ip != common.BootstrapNodes[0] && !*privateNetworkFlag { // Check is not bootstrap node
 			x := 0 // Init iterator
 
 			for {
@@ -145,7 +144,7 @@ func startNode(archivalNode bool) {
 
 				x++ // Increment
 			}
-		} else if !commonGoP2P.StringInSlice(common.BootstrapNodes, ip) { // Plz, no recursion TODO: fix ipv6
+		} else if ip != common.BootstrapNodes[0] { // Plz, no recursion TODO: fix ipv6
 			err := types.SyncNetwork() // Sync network
 
 			if err != nil { // Check for errors
