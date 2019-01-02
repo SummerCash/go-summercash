@@ -12,6 +12,7 @@ A clear and concise description of what the bug is.
 
 **To Reproduce**
 Steps to reproduce the behavior:
+
 1. Go to '...'
 2. Click on '....'
 3. Scroll down to '....'
@@ -24,15 +25,20 @@ A clear and concise description of what you expected to happen.
 If applicable, add screenshots to help explain your problem.
 
 **Desktop (please complete the following information):**
- - OS: [e.g. iOS]
- - Browser [e.g. chrome, safari]
- - Version [e.g. 22]
 
-**Smartphone (please complete the following information):**
- - Device: [e.g. iPhone6]
- - OS: [e.g. iOS8.1]
- - Browser [e.g. stock browser, safari]
- - Version [e.g. 22]
+- OS: [e.g. darwin]
+- Platform: [e.g. raspberry-pi]
+
+**Network:**
+
+- Internet Protocol Type: [e.g. IPv4]
+- Internet Connection: [e.g. ethernet]
+- UPnP Router Support: [e.g. no upnp]
+
+**Client:**
+
+- Version: [e.g. v0.1.0]
+- Address: [e.g. 0x040028d536d5351e83fbbec320c194629ace]
 
 **Additional context**
 Add any other context about the problem here.
