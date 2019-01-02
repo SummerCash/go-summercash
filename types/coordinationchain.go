@@ -161,16 +161,28 @@ func JoinNetwork(bootstrapNode string, archivalNode bool) error {
 			return err // Return found error
 		}
 
-		return SyncNetwork() // Register archival node
+		return SyncNetwork(archivalNode) // Register archival node
 	}
 
 	return nil // No error occurred, return nil
 }
 
 // SyncNetwork - download all chains
-func SyncNetwork() error {
+func SyncNetwork(archival bool) error {
 	var coordinationChainBytes []byte // Init buffer
 	var err error                     // Init error buffer
+
+	ip, err := common.GetExtIPAddrWithoutUPnP() // Get IP
+
+	if err != nil { // Check for errors
+		return err // Return found error
+	}
+
+	if strings.Contains(ip, ":") { // Check is IPv6
+		ip = "[" + ip + "]" + ":" + strconv.Itoa(common.NodePort) // Add port
+	} else {
+		ip = ip + ":" + strconv.Itoa(common.NodePort) // Add port
+	}
 
 	x := 0 // Init iterator
 
@@ -181,13 +193,17 @@ func SyncNetwork() error {
 
 		common.Logf("== NETWORK == requesting coordination chain from bootstrap node %s\n", common.BootstrapNodes[x]) // Log req
 
-		coordinationChainBytes, err = gop2pCommon.SendBytesResult([]byte("cChainRequest"), common.BootstrapNodes[x]) // Get coordination chain
+		if common.BootstrapNodes[x] != ip { // Prevent recursion
+			coordinationChainBytes, err = gop2pCommon.SendBytesResult([]byte("cChainRequest"), common.BootstrapNodes[x]) // Get coordination chain
 
-		if err == nil { // Check for errors
-			break // Break loop
+			if err == nil { // Check for errors
+				break // Break loop
+			}
+
+			x++ // Increment
+		} else {
+			x++ // Increment
 		}
-
-		x++ // Increment
 	}
 
 	coordinationChain, err := CoordinationChainFromBytes(coordinationChainBytes) // Decode result
@@ -204,35 +220,39 @@ func SyncNetwork() error {
 
 	common.Logf("== NODE == syncing with network %s\n", coordinationChain.ChainID.String()) // Log sync
 
-	for _, node := range coordinationChain.Nodes { // Iterate through nodes
-		common.Logf("== NETWORK == requesting account chain for address %s\n", node.Address.String()) // Log req
+	if archival { // Check is archival node
+		for _, node := range coordinationChain.Nodes { // Iterate through nodes
+			common.Logf("== NETWORK == requesting account chain for address %s\n", node.Address.String()) // Log req
 
-		chainBytes := []byte{} // Init buffer
+			chainBytes := []byte{} // Init buffer
 
-		var err error // Init error buffer
+			var err error // Init error buffer
 
-		for _, address := range node.Addresses { // Iterate through node providers
-			chainBytes, err = gop2pCommon.SendBytesResult(append([]byte("chainRequest")[:], node.Address[:]...), address) // Get chain
+			for _, address := range node.Addresses { // Iterate through node providers
+				if address != ip { // Prevent recursive node lookup
+					chainBytes, err = gop2pCommon.SendBytesResult(append([]byte("chainRequest")[:], node.Address[:]...), address) // Get chain
 
-			if err == nil { // Check for errors
-				break // Break
+					if err == nil { // Check for errors
+						break // Break
+					}
+				}
 			}
-		}
 
-		if err != nil { // Check for errors
-			return err // Return found error
-		}
+			if err != nil { // Check for errors
+				return err // Return found error
+			}
 
-		chain, err := FromBytes(chainBytes) // Get chain
+			chain, err := FromBytes(chainBytes) // Get chain
 
-		if err != nil { // Check for errors
-			return err // Return found error
-		}
+			if err != nil { // Check for errors
+				return err // Return found error
+			}
 
-		err = chain.WriteToMemory() // Write chain to memory
+			err = chain.WriteToMemory() // Write chain to memory
 
-		if err != nil { // Check for errors
-			return err // Return found error
+			if err != nil { // Check for errors
+				return err // Return found error
+			}
 		}
 	}
 
@@ -253,12 +273,6 @@ func SyncNetwork() error {
 			}
 
 			node, err := coordinationChain.QueryAddress(chain.Account) // Query address
-
-			if err != nil { // Check for errors
-				return err // Return found error
-			}
-
-			ip, err := common.GetExtIPAddrWithoutUPnP() // Get IP
 
 			if err != nil { // Check for errors
 				return err // Return found error
