@@ -8,6 +8,7 @@ service Chain {
     rpc String(GeneralRequest) returns (GeneralResponse) {} // Encode chain to string
     rpc ReadChainFromMemory(GeneralRequest) returns (GeneralResponse) {} // Read chain from memory
     rpc QueryTransaction(GeneralRequest) returns (GeneralResponse) {} // Query for transaction
+    rpc GetNumTransactions(GeneralRequest) returns (GeneralResponse) {} // Get # of transactions in chain
 }
 
 /* BEGIN REQUESTS */
