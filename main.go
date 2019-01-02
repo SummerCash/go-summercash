@@ -54,7 +54,7 @@ func main() {
 	common.NodePort = *nodePortFlag // Set node port
 
 	if *version { // Check needs version
-		fmt.Print(config.Version) // Log version
+		fmt.Println(config.Version) // Log version
 
 		os.Exit(0) // Stop execution
 	}
