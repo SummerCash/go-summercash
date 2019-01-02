@@ -148,6 +148,8 @@ func startNode(archivalNode bool) {
 
 				x++ // Increment
 			}
+		} else if ip == common.BootstrapNodes[0] && err != nil { // Check is genesis bootstrap node
+			alreadySynced = true // Set already synced
 		}
 	}
 
