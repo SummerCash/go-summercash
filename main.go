@@ -111,6 +111,8 @@ func startRPCServer() {
 func startNode(archivalNode bool) {
 	ip, _ := common.GetExtIPAddrWithoutUPnP() // Get IP
 
+	alreadySynced := false // Init bool
+
 	common.Logf("== NODE == starting on port %d with external IP %s\n", *nodePortFlag, ip) // Log init
 
 	coordinationChain, err := types.ReadCoordinationChainFromMemory() // Read coordination chain
@@ -139,17 +141,21 @@ func startNode(archivalNode bool) {
 				err := types.JoinNetwork(common.BootstrapNodes[x], true) // Register node
 
 				if err == nil { // Check for errors
+					alreadySynced = true // Set already synced
+
 					break // Break for loop
 				}
 
 				x++ // Increment
 			}
-		} else if ip != common.BootstrapNodes[0] { // Plz, no recursion TODO: fix ipv6
-			err := types.SyncNetwork() // Sync network
+		}
+	}
 
-			if err != nil { // Check for errors
-				panic(err) // Panic
-			}
+	if ip != common.BootstrapNodes[0] && !alreadySynced { // Plz, no recursion TODO: fix ipv6
+		err := types.SyncNetwork() // Sync network
+
+		if err != nil { // Check for errors
+			panic(err) // Panic
 		}
 	}
 
