@@ -190,7 +190,7 @@ func Forever() {
 
 // generateTLSKey - generates necessary TLS key
 func generateTLSKey(namePrefix string) (*ecdsa.PrivateKey, error) {
-	privateKey, err := ecdsa.GenerateKey(elliptic.P521(), rand.Reader) // Generate private key
+	privateKey, err := ecdsa.GenerateKey(elliptic.P256(), rand.Reader) // Generate private key
 
 	if err != nil { // Check for errors
 		return nil, err // Return found error
