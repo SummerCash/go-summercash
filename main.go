@@ -177,7 +177,7 @@ func startNode(archivalNode bool) {
 	}
 
 	if !alreadySynced { // Plz, no recursion TODO: fix ipv6
-		err := types.SyncNetwork(*archivalNodeFlag) // Sync network
+		err := types.SyncNetwork(*archivalNodeFlag, true) // Sync network
 
 		if err != nil { // Check for errors
 			panic(err) // Panic

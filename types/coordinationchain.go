@@ -164,14 +164,14 @@ func JoinNetwork(bootstrapNode string, archivalNode bool) error {
 			return err // Return found error
 		}
 
-		return SyncNetwork(archivalNode) // Register archival node
+		return SyncNetwork(archivalNode, false) // Register archival node
 	}
 
 	return nil // No error occurred, return nil
 }
 
 // SyncNetwork - download all chains
-func SyncNetwork(archival bool) error {
+func SyncNetwork(archival bool, updateRemote bool) error {
 	var coordinationChainBytes []byte // Init buffer
 	var err error                     // Init error buffer
 
@@ -258,6 +258,14 @@ func SyncNetwork(archival bool) error {
 			}
 
 			err = chain.WriteToMemory() // Write chain to memory
+
+			if err != nil { // Check for errors
+				return err // Return found error
+			}
+		}
+
+		if updateRemote { // Check needs to re-register archival node
+			err = RegisterArchivalNode() // Register archival node
 
 			if err != nil { // Check for errors
 				return err // Return found error
