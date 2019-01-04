@@ -507,10 +507,14 @@ func (coordinationChain *CoordinationChain) GetBalance(address common.Address) (
 		return 0, err // Return found error
 	}
 
-	result, err := gop2pCommon.SendBytesResult(append([]byte("chainRequest")[:], node.Address[:]...), node.Addresses[len(node.Addresses)-1]) // Get chain
+	var result []byte // Init buffer
 
-	if err != nil { // Check for errors
-		return 0, err // Return found error
+	for _, nodeAddress := range node.Addresses { // Iterate through node addresses
+		result, err = gop2pCommon.SendBytesResult(append([]byte("chainRequest")[:], node.Address[:]...), nodeAddress) // Get chain
+
+		if err != nil { // Check for errors
+			return 0, err // Return found error
+		}
 	}
 
 	chain, err := FromBytes(result) // Get chain from bytes
