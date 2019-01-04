@@ -38,6 +38,9 @@ var (
 
 	// ErrNilTransaction - error definition describing a query for a non-existent transaction
 	ErrNilTransaction = errors.New("couldn't find transaction with given hash")
+
+	// ErrDuplicateTransaction - error definition describing a transaction that already exists in a given chain
+	ErrDuplicateTransaction = errors.New("duplicate transaction")
 )
 
 /* BEGIN EXPORTED METHODS */
@@ -220,6 +223,12 @@ func (chain *Chain) AddTransaction(transaction *Transaction) error {
 
 		if balance < transaction.Amount && genesis.String() != nilCoordinationNode.String() { // Check balance insufficient
 			return ErrInsufficientBalance // Return error
+		}
+	}
+
+	for _, currentTransaction := range chain.Transactions { // Check for duplicate transaction
+		if currentTransaction.Hash == transaction.Hash { // Check for matching hash
+			return ErrDuplicateTransaction // Return error
 		}
 	}
 
