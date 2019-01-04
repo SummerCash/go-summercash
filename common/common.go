@@ -42,7 +42,6 @@ var (
 	// BootstrapNodes - global definition for set of bootstrap nodes
 	BootstrapNodes = []string{
 		"108.41.124.60:3000", // Boot node 0
-		"108.41.124.60:6000", // Boot node 1
 	}
 
 	// Silent - silent config
