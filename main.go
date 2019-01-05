@@ -46,6 +46,7 @@ var (
 	silent             = flag.Bool("silent", false, "silence all fmt.Print calls")                                                                                        // Init silent flag
 	exitOnJoin         = flag.Bool("exit-on-join", false, "exit node on network join")                                                                                    // Init exit on join flag
 	version            = flag.Bool("version", false, "get node software version")                                                                                         // Init version flag
+	bootstrapNode      = flag.String("bootstrap-node", "", "launch node with provided bootstrap node")                                                                    // Init bootstrap node flag
 )
 
 func main() {
@@ -63,6 +64,10 @@ func main() {
 
 	if *privateNetworkFlag {
 		common.ExtIPProviders = []string{} // Set nil providers
+	}
+
+	if *bootstrapNode != "" { // Check needs bootstrap node
+		common.BootstrapNodes = []string{*bootstrapNode} // Set bootstrap node
 	}
 
 	if !*upnpFlag { // Check for UPnP
