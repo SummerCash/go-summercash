@@ -129,9 +129,9 @@ func (coordinationChain *CoordinationChain) ClearCache() error {
 
 		for _, address := range node.Addresses { // Iterate through providing addresses
 			if !gop2pCommon.StringInSlice(verifiedNodes, address) { // Check must be tested
-				_, err := gop2pCommon.SendBytesResult([]byte("cChainRequest"), address) // Get coordination chain
+				coordinationChainBytes, err := gop2pCommon.SendBytesResult([]byte("cChainRequest"), address) // Get coordination chain
 
-				if err == nil { // Check no errors
+				if err == nil && coordinationChainBytes != nil { // Check no errors
 					verifiedNodes = append(verifiedNodes, address) // Append verified node address
 				}
 			}

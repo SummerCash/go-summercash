@@ -68,6 +68,53 @@ func TestAddNode(t *testing.T) {
 	t.Log(*coordinationNode) // Log success
 }
 
+// TestClearCache - test functionality of coordination chain clear cache
+func TestClearCache(t *testing.T) {
+	coordinationChain, err := NewCoordinationChain() // Init coordinationChain
+
+	if err != nil { // Check for errors
+		t.Error(err) // Log found error
+		t.FailNow()  // Panic
+	}
+
+	privateKey, err := ecdsa.GenerateKey(elliptic.P521(), rand.Reader) // Generate private key
+
+	if err != nil { // Check for errors
+		t.Error(err) // Log found error
+		t.FailNow()  // Panic
+	}
+
+	address, err := common.NewAddress(privateKey) // Generate address
+
+	if err != nil { // Check for errors
+		t.Error(err) // Log found error
+		t.FailNow()  // Panic
+	}
+
+	coordinationNode, err := NewCoordinationNode(address, []string{"1.1.1.1:" + strconv.Itoa(3000)}) // Init coordination node
+
+	if err != nil { // Check for errors
+		t.Error(err) // Log found error
+		t.FailNow()  // Panic
+	}
+
+	err = coordinationChain.AddNode(coordinationNode, false) // Add node
+
+	if err != nil { // Check for errors
+		t.Error(err) // Log error
+		t.FailNow()  // panic
+	}
+
+	err = coordinationChain.ClearCache() // Attempt to clear cache
+
+	if err != nil { // Check for errors
+		t.Error(err) // Log error
+		t.FailNow()  // panic
+	}
+
+	t.Log(coordinationChain.String()) // Log success
+}
+
 // TestJoinNetwork - test functionality of network joining
 func TestJoinNetwork(t *testing.T) {
 	err := JoinNetwork(common.BootstrapNodes[0], false) // Join network
