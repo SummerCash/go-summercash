@@ -49,6 +49,12 @@ var (
 
 	// ErrClientOutOfDate - error definition describing a client that is out of date
 	ErrClientOutOfDate = errors.New("client out of date (must upgrade client)")
+
+	// ErrNoBootstrapNodes - error definition describing a network having no bootstrap nodes
+	ErrNoBootstrapNodes = errors.New("== WARNING == no available bootstrap nodes")
+
+	// ErrNilCoordinationChainCache - error definition describing a coordination chain that is nil in value, but must have its cache cleared
+	ErrNilCoordinationChainCache = errors.New("nil coordination chain; nothing to clear")
 )
 
 /* BEGIN EXPORTED METHODS */
@@ -104,6 +110,37 @@ func (coordinationChain *CoordinationChain) AddNode(coordinationNode *Coordinati
 	}
 
 	err = coordinationChain.WriteToMemory() // Save for persistency
+
+	if err != nil { // Check for errors
+		return err // Return found error
+	}
+
+	return nil // No error occurred, return nil
+}
+
+// ClearCache - remove unresponsive nodes from given coordinationChain
+func (coordinationChain *CoordinationChain) ClearCache() error {
+	if coordinationChain.Nodes == nil || len(coordinationChain.Nodes) == 0 { // Check nothing to clear
+		return ErrNilCoordinationChain // Return error
+	}
+
+	for _, node := range coordinationChain.Nodes { // Iterate through nodes
+		verifiedNodes := []string{} // Init buffer
+
+		for _, address := range node.Addresses { // Iterate through providing addresses
+			if !gop2pCommon.StringInSlice(verifiedNodes, address) { // Check must be tested
+				_, err := gop2pCommon.SendBytesResult([]byte("cChainRequest"), address) // Get coordination chain
+
+				if err == nil { // Check no errors
+					verifiedNodes = append(verifiedNodes, address) // Append verified node address
+				}
+			}
+		}
+
+		(*node).Addresses = verifiedNodes // Set to cleared
+	}
+
+	err := coordinationChain.WriteToMemory() // Write to memory
 
 	if err != nil { // Check for errors
 		return err // Return found error
@@ -181,6 +218,8 @@ func SyncNetwork(archival bool, updateRemote bool) error {
 		return err // Return found error
 	}
 
+	coordinationChain, _ := ReadCoordinationChainFromMemory() // Read coordination chain
+
 	if strings.Contains(ip, ":") { // Check is IPv6
 		ip = "[" + ip + "]" + ":" + strconv.Itoa(common.NodePort) // Add port
 	} else {
@@ -191,7 +230,17 @@ func SyncNetwork(archival bool, updateRemote bool) error {
 
 	for {
 		if x >= len(common.BootstrapNodes) { // Check is not out of bounds
-			panic("== ERROR == no available bootstrap nodes") // Panic
+			if coordinationChain == nil { // Check nodes available
+				return ErrNoBootstrapNodes // Panic
+			}
+
+			archivalNodes, err := coordinationChain.QueryAllArchivalNodes() // Query all archival nodes
+
+			if err != nil { // Check for errors
+				return err // Return found error
+			}
+
+			common.BootstrapNodes = append(common.BootstrapNodes, archivalNodes...) // Append archival nodes
 		}
 
 		common.Logf("== NETWORK == requesting coordination chain from bootstrap node %s\n", common.BootstrapNodes[x]) // Log req
@@ -215,7 +264,7 @@ func SyncNetwork(archival bool, updateRemote bool) error {
 		return err // Return found error
 	}
 
-	coordinationChain, err := CoordinationChainFromBytes(coordinationChainBytes) // Decode result
+	coordinationChain, err = CoordinationChainFromBytes(coordinationChainBytes) // Decode result
 
 	if err != nil { // Check for errors
 		return err // Return found error
