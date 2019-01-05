@@ -34,20 +34,21 @@ import (
 )
 
 var (
-	terminalFlag       = flag.Bool("terminal", false, "launch node in terminal mode")                                                                                     // Init term flag
-	upnpFlag           = flag.Bool("no-upnp", false, "launch node without automatic UPnP port forwarding")                                                                // Init upnp flag
-	rpcPortFlag        = flag.Int("rpc-port", 8080, "launch node with specified RPC port")                                                                                // Init RPC port flag
-	forwardRPCFlag     = flag.Bool("forward-rpc", false, "enables forwarding of node RPC terminal ports")                                                                 // Init forward RPC flag
-	rpcAddrFlag        = flag.String("rpc-address", fmt.Sprintf("localhost:%s", strconv.Itoa(*rpcPortFlag)), "connects to remote RPC terminal (default: localhost:8080)") // Init remote rpc addr flag
-	dataDirFlag        = flag.String("data-dir", common.DataDir, "performs all node i/o operations in given data directory")                                              // Init data dir flag
-	nodePortFlag       = flag.Int("node-port", common.NodePort, "launch node on give port")                                                                               // Init node port flag
-	privateNetworkFlag = flag.Bool("private-net", false, "launch node in context of private network")                                                                     // Init private network flag
-	archivalNodeFlag   = flag.Bool("archival", false, "launch node in archival mode")                                                                                     // Init archival node flag
-	silent             = flag.Bool("silent", false, "silence all fmt.Print calls")                                                                                        // Init silent flag
-	exitOnJoin         = flag.Bool("exit-on-join", false, "exit node on network join")                                                                                    // Init exit on join flag
-	version            = flag.Bool("version", false, "get node software version")                                                                                         // Init version flag
-	bootstrapNode      = flag.String("bootstrap-node", "", "launch node with provided bootstrap node")                                                                    // Init bootstrap node flag
-	bootstrapHost      = flag.Bool("bootstrap", false, "launch node as a genesis boostrap node")                                                                          // Init bootstrap host flag
+	terminalFlag        = flag.Bool("terminal", false, "launch node in terminal mode")                                                                                     // Init term flag
+	upnpFlag            = flag.Bool("no-upnp", false, "launch node without automatic UPnP port forwarding")                                                                // Init upnp flag
+	rpcPortFlag         = flag.Int("rpc-port", 8080, "launch node with specified RPC port")                                                                                // Init RPC port flag
+	forwardRPCFlag      = flag.Bool("forward-rpc", false, "enables forwarding of node RPC terminal ports")                                                                 // Init forward RPC flag
+	rpcAddrFlag         = flag.String("rpc-address", fmt.Sprintf("localhost:%s", strconv.Itoa(*rpcPortFlag)), "connects to remote RPC terminal (default: localhost:8080)") // Init remote rpc addr flag
+	dataDirFlag         = flag.String("data-dir", common.DataDir, "performs all node i/o operations in given data directory")                                              // Init data dir flag
+	nodePortFlag        = flag.Int("node-port", common.NodePort, "launch node on give port")                                                                               // Init node port flag
+	privateNetworkFlag  = flag.Bool("private-net", false, "launch node in context of private network")                                                                     // Init private network flag
+	archivalNodeFlag    = flag.Bool("archival", false, "launch node in archival mode")                                                                                     // Init archival node flag
+	silent              = flag.Bool("silent", false, "silence all fmt.Print calls")                                                                                        // Init silent flag
+	exitOnJoin          = flag.Bool("exit-on-join", false, "exit node on network join")                                                                                    // Init exit on join flag
+	version             = flag.Bool("version", false, "get node software version")                                                                                         // Init version flag
+	bootstrapNode       = flag.String("bootstrap-node", "", "launch node with provided bootstrap node")                                                                    // Init bootstrap node flag
+	bootstrapHost       = flag.Bool("bootstrap", false, "launch node as a genesis boostrap node")                                                                          // Init bootstrap host flag
+	disableLogTimeStamp = flag.Bool("silence-timestamps", false, "launch node without terminal timestamp output")                                                          // Init disable log timestamp flag
 )
 
 func main() {
@@ -56,6 +57,10 @@ func main() {
 	common.DataDir = *dataDirFlag   // Set data-dir
 	common.Silent = *silent         // Set is silent
 	common.NodePort = *nodePortFlag // Set node port
+
+	if *disableLogTimeStamp { // Check must disable timestamps
+		common.DisableTimestamps = true // Set timestamps disabled
+	}
 
 	if *version { // Check needs version
 		fmt.Println(config.Version) // Log version

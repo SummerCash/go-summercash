@@ -32,6 +32,9 @@ var (
 	// ConfigDir - global config directory definition
 	ConfigDir = filepath.FromSlash(fmt.Sprintf("%s/config", DataDir))
 
+	// DisableTimestamps - global declaration for timestamp format config
+	DisableTimestamps = false
+
 	// GeneralTLSConfig - general global GoP2P TLS Config
 	GeneralTLSConfig = &tls.Config{ // Init TLS config
 		Certificates:       []tls.Certificate{getTLSCerts("general")},
@@ -69,6 +72,12 @@ func Log(a ...interface{}) (int, error) {
 // Logf - fmt.Printf wrapper
 func Logf(format string, a ...interface{}) (int, error) {
 	if !Silent { // Check verbose allowed
+		if !DisableTimestamps { // Check timestamps not disabled
+			if strings.Contains(format, "==") { // Check room for formatting
+				format = time.Now().String() + format // Append current time
+			}
+		}
+
 		return fmt.Printf(format, a...) // Print
 	}
 
