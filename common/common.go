@@ -74,7 +74,7 @@ func Logf(format string, a ...interface{}) (int, error) {
 	if !Silent { // Check verbose allowed
 		if !DisableTimestamps { // Check timestamps not disabled
 			if strings.Contains(format, "==") { // Check room for formatting
-				format = time.Now().String() + format // Append current time
+				format = fmt.Sprintf("[%s] ", time.Now().Format("Jan 2 03:04:05PM 2006")) + format // Append current time
 			}
 		}
 
