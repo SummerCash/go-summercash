@@ -8,6 +8,7 @@ import (
 	"io/ioutil"
 	"net"
 	"net/http"
+	"os"
 	"strings"
 	"time"
 
@@ -16,7 +17,14 @@ import (
 
 var (
 	// ExtIPProviders - preset macro defining list of available external IP checking services
-	ExtIPProviders = []string{"http://checkip.amazonaws.com/", "http://icanhazip.com/", "http://www.trackip.net/ip", "http://bot.whatismyipaddress.com/", "https://ipecho.net/plain", "http://myexternalip.com/raw"}
+	ExtIPProviders = []string{
+		"http://checkip.amazonaws.com/",
+		"http://icanhazip.com/",
+		"http://www.trackip.net/ip",
+		"http://bot.whatismyipaddress.com/",
+		"https://ipecho.net/plain",
+		"http://myexternalip.com/raw",
+	}
 )
 
 /* BEGIN EXPORTED METHODS */
@@ -112,6 +120,26 @@ func GetExtIPAddrWithUPnP() (string, error) {
 // GetExtIPAddrWithoutUPnP - retrieve the external IP address of the current machine w/o upnp
 func GetExtIPAddrWithoutUPnP() (string, error) {
 	if len(ExtIPProviders) == 0 { // Check no providers
+		host, err := os.Hostname() // Get host
+
+		if err != nil { // Check for errors
+			return "localhost", err // Return found error
+		}
+
+		addrs, err := net.LookupIP(host) // Get IP
+
+		if err != nil { // Check for errors
+			return "localhost", err // Return found error
+		}
+
+		for _, addr := range addrs { // Iterate through addresses
+			if ipv4 := addr.To4(); ipv4 != nil { // Get IPv4 representation
+				return ipv4.String(), nil // Return IP
+			}
+
+			return addr.String(), nil // Return raw IP
+		}
+
 		return "localhost", nil // Return localhost
 	}
 

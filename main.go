@@ -62,7 +62,7 @@ func main() {
 		os.Exit(0) // Stop execution
 	}
 
-	if *privateNetworkFlag {
+	if *privateNetworkFlag { // Check private network
 		common.ExtIPProviders = []string{} // Set nil providers
 	}
 
