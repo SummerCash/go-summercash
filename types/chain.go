@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"errors"
 	"strconv"
+	"strings"
 
 	"github.com/SummerCash/go-summercash/common"
 	"github.com/SummerCash/go-summercash/config"
@@ -95,7 +96,13 @@ func NewChain(account common.Address) (*Chain, error) {
 
 	common.Log("== CHAIN == initializing account chain coordination node") // Log coordination node init
 
-	node, err := NewCoordinationNode(account, []string{localIP + ":" + strconv.Itoa(common.NodePort)}) // Initialize node
+	if strings.Contains(localIP, ":") { // Check is IPv6
+		localIP = "[" + localIP + "]" + ":" + strconv.Itoa(common.NodePort) // Add port
+	} else {
+		localIP = localIP + ":" + strconv.Itoa(common.NodePort) // Add port
+	}
+
+	node, err := NewCoordinationNode(account, []string{localIP}) // Initialize node
 
 	if err != nil { // Check for errors
 		return &Chain{}, err // Return found error
@@ -145,14 +152,14 @@ func NewChain(account common.Address) (*Chain, error) {
 		common.Logf("== NETWORK == found %d peers to push chain to\n", len(nodes)) // Log push
 
 		if len(nodes) > 0 {
-			if nodes[0] != localIP+":"+strconv.Itoa(common.NodePort) { // Check not current node
+			if nodes[0] != localIP { // Check not current node
 				common.Logf("== NETWORK == pushing chain %s to peer %s\n", chain.ID.String(), nodes[0]) // Log push
 
 				common.SendBytes(chain.Bytes(), nodes[0]) // Send chain
 			}
 
 			for x, address := range nodes { // Iterate through addresses
-				if x != 0 && address != localIP+":"+strconv.Itoa(common.NodePort) { // Check not first index and not current node
+				if x != 0 && address != localIP { // Check not first index and not current node
 					common.Logf("== NETWORK == pushing chain %s to peer %s\n", chain.ID.String(), address) // Log push
 
 					go common.SendBytes(chain.Bytes(), address) // Send chain

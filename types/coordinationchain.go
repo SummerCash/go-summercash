@@ -320,8 +320,6 @@ func SyncNetwork(archival bool, updateRemote bool) error {
 
 			for _, address := range node.Addresses { // Iterate through node providers
 				if address != ip { // Prevent recursive node lookup
-					fmt.Println(address)
-					fmt.Println(ip)
 					chainBytes, err = gop2pCommon.SendBytesResult(append([]byte("chainRequest")[:], node.Address[:]...), address) // Get chain
 
 					if err == nil { // Check for errors
