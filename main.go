@@ -78,7 +78,7 @@ func main() {
 			panic(err) // Panic
 		}
 
-		common.BootstrapNodes = []string{ipAddr} // Set bootstrap nodes to local host
+		common.BootstrapNodes = []string{ipAddr + ":" + strconv.Itoa(*nodePortFlag)} // Set bootstrap nodes to local host
 	}
 
 	if !*upnpFlag { // Check for UPnP
