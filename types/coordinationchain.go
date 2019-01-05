@@ -402,6 +402,8 @@ func SyncNetwork(archival bool, updateRemote bool) error {
 // StartManagedSync - start repeated intermittent sync
 func StartManagedSync(archival bool) {
 	for range time.Tick(30 * time.Second) { // Sync every 30 seconds
+		common.Logf("== NODE == starting intermittent managed sync") // Log intermittent sync
+
 		go SyncNetwork(archival, true) // Sync network
 	}
 }
