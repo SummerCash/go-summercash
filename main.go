@@ -212,6 +212,8 @@ func startNode(archivalNode bool) {
 			panic(err) // Panic
 		}
 
+		go types.StartManagedSync(*archivalNodeFlag) // Start managed sync
+
 		err = handler.StartHandler(&ln) // Start handler
 
 		if err != nil { // Check for errors

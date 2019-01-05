@@ -399,6 +399,13 @@ func SyncNetwork(archival bool, updateRemote bool) error {
 	return nil // No error occurred, return nil
 }
 
+// StartManagedSync - start repeated intermittent sync
+func StartManagedSync(archival bool) {
+	for range time.Tick(30 * time.Second) { // Sync every 30 seconds
+		go SyncNetwork(archival, true) // Sync network
+	}
+}
+
 // RegisterArchivalNode - register archival node on network
 func RegisterArchivalNode() error {
 	coordinationChain, err := ReadCoordinationChainFromMemory() // Read coordination chain from persistent memory

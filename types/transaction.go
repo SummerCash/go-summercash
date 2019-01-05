@@ -116,7 +116,7 @@ func (transaction *Transaction) Publish() error {
 	err = common.SendBytes(transaction.Bytes(), node.Addresses[0]) // Send transaction
 
 	if err != nil { // Check for errors
-		common.Logf("== ERROR == error pushing transaction %s to peer %s %s", transaction.Hash.String(), node.Addresses[0], err.Error()) // Log error pushing
+		common.Logf("== ERROR == error pushing transaction %s to peer %s %s\n", transaction.Hash.String(), node.Addresses[0], err.Error()) // Log error pushing
 	}
 
 	common.Logf("== NETWORK == pushing transaction %s to node %s\n", transaction.Hash.String(), node.Addresses[0]) // Log push
