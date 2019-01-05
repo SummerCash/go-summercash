@@ -113,16 +113,10 @@ func (transaction *Transaction) Publish() error {
 		return err // Return found error
 	}
 
-	common.SendBytes(transaction.Bytes(), node.Addresses[0]) // Send transaction
-
-	common.Logf("== NETWORK == pushing transaction %s to node %s\n", transaction.Hash.String(), node.Addresses[0]) // Log push
-
-	for x, address := range node.Addresses { // Iterate through addresses
+	for _, address := range node.Addresses { // Iterate through addresses
 		common.Logf("== NETWORK == pushing transaction %s to node %s\n", transaction.Hash.String(), address) // Log push
 
-		if x != 0 { // Skip first index
-			go common.SendBytes(transaction.Bytes(), address) // Send transaction
-		}
+		common.SendBytes(transaction.Bytes(), address) // Send transaction
 	}
 
 	return nil // No error occurred, return nil
