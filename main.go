@@ -8,6 +8,7 @@ import (
 	"os"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/SummerCash/go-summercash/cli"
 	"github.com/SummerCash/go-summercash/common"
@@ -212,7 +213,9 @@ func startNode(archivalNode bool) {
 			panic(err) // Panic
 		}
 
-		go types.StartManagedSync(*archivalNodeFlag) // Start managed sync
+		if !*bootstrapHost { // Check is not genesis bootstrap node
+			go types.StartManagedSync(*archivalNodeFlag, 30*time.Second) // Start managed sync
+		}
 
 		err = handler.StartHandler(&ln) // Start handler
 

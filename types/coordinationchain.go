@@ -320,6 +320,8 @@ func SyncNetwork(archival bool, updateRemote bool) error {
 
 			for _, address := range node.Addresses { // Iterate through node providers
 				if address != ip { // Prevent recursive node lookup
+					fmt.Println(address)
+					fmt.Println(ip)
 					chainBytes, err = gop2pCommon.SendBytesResult(append([]byte("chainRequest")[:], node.Address[:]...), address) // Get chain
 
 					if err == nil { // Check for errors
@@ -400,9 +402,9 @@ func SyncNetwork(archival bool, updateRemote bool) error {
 }
 
 // StartManagedSync - start repeated intermittent sync
-func StartManagedSync(archival bool) {
-	for range time.Tick(30 * time.Second) { // Sync every 30 seconds
-		common.Logf("== NODE == starting intermittent managed sync") // Log intermittent sync
+func StartManagedSync(archival bool, duration time.Duration) {
+	for range time.Tick(duration) { // Sync every duration seconds
+		common.Logf("== NODE == starting intermittent managed sync\n") // Log intermittent sync
 
 		go SyncNetwork(archival, true) // Sync network
 	}
