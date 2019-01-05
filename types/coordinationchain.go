@@ -55,6 +55,9 @@ var (
 
 	// ErrNilCoordinationChainCache - error definition describing a coordination chain that is nil in value, but must have its cache cleared
 	ErrNilCoordinationChainCache = errors.New("nil coordination chain; nothing to clear")
+
+	// ErrNilCoordinationChainPush - error definition describing a coordination chain that is nil in value, but must be pushed
+	ErrNilCoordinationChainPush = errors.New("nil coordination chain; nothing to push")
 )
 
 /* BEGIN EXPORTED METHODS */
@@ -144,6 +147,29 @@ func (coordinationChain *CoordinationChain) ClearCache() error {
 
 	if err != nil { // Check for errors
 		return err // Return found error
+	}
+
+	return nil // No error occurred, return nil
+}
+
+// UpdateRemotes - update remote coordinationChain instances
+func (coordinationChain *CoordinationChain) UpdateRemotes() error {
+	if coordinationChain.Nodes == nil || len(coordinationChain.Nodes) == 0 { // Check for errors
+		return ErrNilCoordinationChainPush // Return error
+	}
+
+	pushedNodes := []string{} // Init buffer
+
+	for _, node := range coordinationChain.Nodes { // Iterate through nodes
+		for _, address := range node.Addresses { // Iterate through providing addresses
+			if !gop2pCommon.StringInSlice(pushedNodes, address) { // Check must be tested
+				err := common.SendBytes(coordinationChain.Bytes(), address) // Push
+
+				if err == nil { // Check no errors
+					pushedNodes = append(pushedNodes, address) // Append verified node address
+				}
+			}
+		}
 	}
 
 	return nil // No error occurred, return nil
