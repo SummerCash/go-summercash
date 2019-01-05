@@ -438,7 +438,7 @@ func RegisterArchivalNode() error {
 			}
 		}
 
-		common.Log("== NETWORK == finished registering archval node") // Log success
+		common.Log("== NETWORK == finished registering archival node") // Log success
 	}
 
 	return coordinationChain.WriteToMemory() // No error occurred, return nil
