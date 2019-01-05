@@ -47,6 +47,7 @@ var (
 	exitOnJoin         = flag.Bool("exit-on-join", false, "exit node on network join")                                                                                    // Init exit on join flag
 	version            = flag.Bool("version", false, "get node software version")                                                                                         // Init version flag
 	bootstrapNode      = flag.String("bootstrap-node", "", "launch node with provided bootstrap node")                                                                    // Init bootstrap node flag
+	bootstrapHost      = flag.Bool("bootstrap", false, "launch node as a genesis boostrap node")                                                                          // Init bootstrap host flag
 )
 
 func main() {
@@ -68,6 +69,16 @@ func main() {
 
 	if *bootstrapNode != "" { // Check needs bootstrap node
 		common.BootstrapNodes = []string{*bootstrapNode} // Set bootstrap node
+	}
+
+	if *bootstrapHost { // Check is bootstrap host
+		ipAddr, err := common.GetExtIPAddrWithoutUPnP() // Get IP
+
+		if err != nil { // Check for errors
+			panic(err) // Panic
+		}
+
+		common.BootstrapNodes = []string{ipAddr} // Set bootstrap nodes to local host
 	}
 
 	if !*upnpFlag { // Check for UPnP
