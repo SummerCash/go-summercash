@@ -599,8 +599,8 @@ func (coordinationChain *CoordinationChain) GetBalance(address common.Address) (
 	for _, nodeAddress := range node.Addresses { // Iterate through node addresses
 		result, err = gop2pCommon.SendBytesResult(append([]byte("chainRequest")[:], node.Address[:]...), nodeAddress) // Get chain
 
-		if err != nil { // Check for errors
-			return 0, err // Return found error
+		if err == nil { // Check no errors
+			break // Break
 		}
 	}
 
