@@ -149,6 +149,12 @@ func (coordinationChain *CoordinationChain) ClearCache() error {
 		return err // Return found error
 	}
 
+	err = coordinationChain.UpdateRemotes() // Update remote instances
+
+	if err != nil { // Check for errors
+		return err // Return found error
+	}
+
 	return nil // No error occurred, return nil
 }
 
@@ -380,6 +386,12 @@ func SyncNetwork(archival bool, updateRemote bool) error {
 				}
 			}
 		}
+	}
+
+	err = coordinationChain.ClearCache() // Clear cooridnation chain cache
+
+	if err != nil { // Check for errors
+		return err // Return found error
 	}
 
 	common.Log("== NODE == finished syncing") // Log success
