@@ -218,6 +218,8 @@ func (chain *Chain) AddTransaction(transaction *Transaction) error {
 		balance, err := coordinationChain.GetBalance(*transaction.Sender) // Get sender balance
 
 		if err != nil { // Check for errors
+			common.Logf("== ERROR == error fetching balance for address %s %s", transaction.Sender.String(), err.Error()) // Log error
+
 			return err // Return found error
 		}
 
