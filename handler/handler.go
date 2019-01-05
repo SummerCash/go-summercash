@@ -58,6 +58,8 @@ func handleConnection(conn net.Conn) error {
 		chain, err := types.HandleReceivedChainRequest(data) // Handle received chain request
 
 		if err != nil { // Check for errors
+			common.Logf("== ERROR == error handling chain request from peer %s %s\n", conn.RemoteAddr().String(), err.Error()) // Log request
+
 			return err // Return found error
 		}
 
@@ -78,6 +80,8 @@ func handleConnection(conn net.Conn) error {
 		chainBytes, err := types.HandleReceivedCoordinationChainRequest() // Handle chain request
 
 		if err != nil { // Check for errors
+			common.Logf("== ERROR == error handling coordination chain request from peer %s %s\n", conn.RemoteAddr().String(), err.Error()) // Log request
+
 			return err // Return found error
 		}
 
@@ -94,6 +98,8 @@ func handleConnection(conn net.Conn) error {
 		configBytes, err := config.HandleReceivedConfigRequest() // Handle config request
 
 		if err != nil { // Check for errors
+			common.Logf("== ERROR == error handling chain config request from peer %s %s\n", conn.RemoteAddr().String(), err.Error()) // Log request
+
 			return err // Return found error
 		}
 
