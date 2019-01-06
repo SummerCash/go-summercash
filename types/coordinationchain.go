@@ -273,10 +273,6 @@ func SyncNetwork(archival bool, updateRemote bool) error {
 			}
 
 			common.BootstrapNodes = append(common.BootstrapNodes, archivalNodes...) // Append archival nodes
-
-			if x >= len(common.BootstrapNodes) { // Check still out of bounds
-				return ErrNilNode // Return error
-			}
 		}
 
 		common.Logf("== NETWORK == requesting coordination chain from node %s\n", common.BootstrapNodes[x]) // Log req
