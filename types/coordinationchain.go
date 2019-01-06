@@ -388,7 +388,7 @@ func SyncNetwork(archival bool, updateRemote bool) error {
 		}
 	}
 
-	err = coordinationChain.ClearCache() // Clear cooridnation chain cache
+	err = coordinationChain.ClearCache() // Clear coordination chain cache
 
 	if err != nil { // Check for errors
 		return err // Return found error
