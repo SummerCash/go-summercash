@@ -183,7 +183,7 @@ func (coordinationChain *CoordinationChain) UpdateRemotes() error {
 
 // JoinNetwork - join given network with bootstrap node address
 func JoinNetwork(bootstrapNode string, archivalNode bool) error {
-	common.Logf("== NETWORK == requesting coordination chain from bootstrap node %s\n", bootstrapNode) // Log init
+	common.Logf("== NETWORK == requesting coordination chain from node %s\n", bootstrapNode) // Log req
 
 	coordinationChainBytes, err := gop2pCommon.SendBytesResult([]byte("cChainRequest"), bootstrapNode) // Get coordination chain
 
@@ -203,8 +203,8 @@ func JoinNetwork(bootstrapNode string, archivalNode bool) error {
 		return err // Return found error
 	}
 
-	common.Logf("== SUCCESS == received coordination chain %s from bootstrap node %s\n", coordinationChain.ChainID.String(), bootstrapNode) // Log success
-	common.Logf("== NETWORK == requesting chain config from bootstrap node %s\n", bootstrapNode)                                            // Log request config
+	common.Logf("== SUCCESS == received coordination chain %s from node %s\n", coordinationChain.ChainID.String(), bootstrapNode) // Log success
+	common.Logf("== NETWORK == requesting chain config from node %s\n", bootstrapNode)                                            // Log request config
 
 	configBytes, err := gop2pCommon.SendBytesResult([]byte("configReq"), bootstrapNode) // Get chain config
 
@@ -218,7 +218,7 @@ func JoinNetwork(bootstrapNode string, archivalNode bool) error {
 		return err // Return found error
 	}
 
-	common.Logf("== SUCCESS == received chain config with network ID %d from bootstrap node %s\n", config.NetworkID, bootstrapNode) // Log success
+	common.Logf("== SUCCESS == received chain config with network ID %d from node %s\n", config.NetworkID, bootstrapNode) // Log success
 
 	err = config.WriteToMemory() // Write config to persistent memory
 
@@ -273,9 +273,13 @@ func SyncNetwork(archival bool, updateRemote bool) error {
 			}
 
 			common.BootstrapNodes = append(common.BootstrapNodes, archivalNodes...) // Append archival nodes
+
+			if x >= len(common.BootstrapNodes) { // Check still out of bounds
+				return ErrNilNode // Return error
+			}
 		}
 
-		common.Logf("== NETWORK == requesting coordination chain from bootstrap node %s\n", common.BootstrapNodes[x]) // Log req
+		common.Logf("== NETWORK == requesting coordination chain from node %s\n", common.BootstrapNodes[x]) // Log req
 
 		if common.BootstrapNodes[x] != ip { // Prevent recursion
 			coordinationChainBytes, err = gop2pCommon.SendBytesResult([]byte("cChainRequest"), common.BootstrapNodes[x]) // Get coordination chain
@@ -718,7 +722,7 @@ func syncChainConfig() error {
 	var err error          // Init error buffer
 
 	for _, bootstrapNode := range common.BootstrapNodes { // Iterate through bootstrap nodes
-		common.Logf("== NETWORK == requesting chain config from bootstrap node %s\n", bootstrapNode) // Log request config
+		common.Logf("== NETWORK == requesting chain config from node %s\n", bootstrapNode) // Log request config
 
 		configBytes, err = gop2pCommon.SendBytesResult([]byte("configReq"), bootstrapNode) // Get chain config
 

@@ -213,9 +213,7 @@ func startNode(archivalNode bool) {
 			panic(err) // Panic
 		}
 
-		if !*bootstrapHost && ip != common.BootstrapNodes[0] { // Check is not genesis bootstrap node
-			go types.StartManagedSync(*archivalNodeFlag, 30*time.Second) // Start managed sync
-		}
+		go types.StartManagedSync(*archivalNodeFlag, 30*time.Second) // Start managed sync
 
 		err = handler.StartHandler(&ln) // Start handler
 
