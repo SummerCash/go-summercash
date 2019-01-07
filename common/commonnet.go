@@ -56,6 +56,39 @@ func SendBytes(b []byte, address string) error {
 	return nil // No error occurred, return nil
 }
 
+// SendBytesResult - gop2pCommon.SendBytesResult performance-optimized wrapper
+func SendBytesResult(b []byte, address string) ([]byte, error) {
+	if strings.Count(address, ":") > 1 { // Check IPv6
+		address = "[" + address[:strings.LastIndex(address, ":")] + "]" + address[strings.LastIndex(address, ":"):] // Set address
+	}
+
+	connection, err := tls.Dial("tcp", address, GeneralTLSConfig) // Connect to given address
+
+	if err != nil { // Check for errors
+		return nil, err // Return found error
+	}
+
+	_, err = connection.Write(b) // Write data to connection
+
+	if err != nil { // Check for errors
+		return nil, err // Return found error
+	}
+
+	requestStartTime := time.Now() // Get start time
+
+	var response []byte // Init buffer
+
+	for response == nil || len(response) == 0 { // Keep reading until buffer isn't nil
+		response, err = ioutil.ReadAll(connection) // Read connection
+
+		if err != nil && time.Now().Sub(requestStartTime) > 10*time.Second { // Check for errors after timeout
+			return nil, err // Return found error
+		}
+	}
+
+	return response, nil // Return response
+}
+
 // ReadConnectionWaitAsyncNoTLS - attempt to read from connection in an asynchronous fashion, after waiting for peer to write
 func ReadConnectionWaitAsyncNoTLS(conn net.Conn) ([]byte, error) {
 	data := make(chan []byte) // Init buffer
