@@ -98,7 +98,11 @@ func main() {
 	if strings.Contains(*rpcAddrFlag, "localhost") { // Check for default RPC address
 		startRPCServer() // Start RPC server
 
-		go startNode(*archivalNodeFlag) // Start node
+		if !*terminalFlag { // Check only daemon
+			startNode(*archivalNodeFlag) // Start node
+		} else { // Check with terminal
+			go startNode(*archivalNodeFlag) // Start node
+		}
 	}
 
 	if *terminalFlag { // Check for terminal
@@ -106,9 +110,6 @@ func main() {
 
 		cli.NewTerminal(uint(*rpcPortFlag), *rpcAddrFlag) // Initialize terminal
 	}
-
-	go common.Forever() // Prevent main from closing
-	select {}           // Prevent main from closing
 }
 
 // startRPCServer - start RPC server
