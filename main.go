@@ -229,5 +229,4 @@ func startNode(archivalNode bool) {
 /*
 	TODO:
 	- readme
-	- better CPU usage/general performance SendBytesResult()
 */
