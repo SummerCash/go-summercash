@@ -392,7 +392,7 @@ func handleCommon(commonClient *commonProto.Common, methodname string, params []
 
 	switch methodname {
 	case "Encode", "EncodeString", "Decode":
-		if len(params) != 0 { // Check for invalid params
+		if len(params) == 0 { // Check for invalid params
 			return errors.New("invalid parameters (requires []byte)") // Return error
 		}
 
