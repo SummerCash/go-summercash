@@ -1,10 +1,7 @@
 package common
 
 import (
-	"bytes"
 	"crypto/tls"
-	"errors"
-	"io"
 	"io/ioutil"
 	"net"
 	"net/http"
@@ -91,43 +88,20 @@ func SendBytesResult(b []byte, address string) ([]byte, error) {
 
 // ReadConnectionWaitAsyncNoTLS - attempt to read from connection in an asynchronous fashion, after waiting for peer to write
 func ReadConnectionWaitAsyncNoTLS(conn net.Conn) ([]byte, error) {
-	data := make(chan []byte) // Init buffer
-	err := make(chan error)   // Init error buffer
+	requestStartTime := time.Now() // Get start time
 
-	conn.SetReadDeadline(time.Now().Add(2 * time.Second)) // Set read deadline
+	var response []byte // Init buffer
+	var err error       // Init error buffer
 
-	go func(data chan []byte, err chan error) {
-		reads := 0 // Init reads buffer
+	for response == nil || len(response) == 0 { // Keep reading until buffer isn't nil
+		response, err = ioutil.ReadAll(conn) // Read connection
 
-		for {
-			reads++ // Increment read
-
-			var buffer bytes.Buffer // Init buffer
-
-			readData, readErr := io.Copy(&buffer, conn) // Read connection
-
-			if readErr != nil && readErr != io.EOF && reads > 3 { // Check for errors
-				err <- readErr // Write read error
-			} else if readData == 0 { // Check for nil readData
-				continue // Continue
-			}
-
-			data <- buffer.Bytes() // Write read data
-		}
-	}(data, err)
-
-	ticker := time.Tick(3 * time.Second) // Init ticker
-
-	for { // Continuously read from connection
-		select {
-		case readData := <-data: // Read data from connection
-			return readData, nil // Return read data
-		case readErr := <-err: // Error on read
-			return []byte{}, readErr // Return error
-		case <-ticker: // Timed out
-			return []byte{}, errors.New("timed out") // Return timed out error
+		if err != nil && time.Now().Sub(requestStartTime) > 10*time.Second { // Check for errors after timeout
+			return nil, err // Return found error
 		}
 	}
+
+	return response, nil // Return response
 }
 
 /*
