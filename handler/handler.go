@@ -45,13 +45,17 @@ func handleConnection(conn net.Conn) error {
 		return err // Return error
 	}
 
-	defer conn.Close() // Close connection
-
 	switch string(data)[0:9] { // Handle signatures
 	case "{" + `"` + "address": // Check coordinationNode
 		common.Logf("== NETWORK == received peer coordination node info %s\n", string(data)) // Log node
 
-		return types.HandleReceivedCoordinationNode(data) // Handle received data
+		err = types.HandleReceivedCoordinationNode(data) // Handle received data
+
+		if err != nil { // Check for errors
+			return err // Return found error
+		}
+
+		return conn.Close() // Close connection
 	case "chainRequ":
 		common.Logf("== NETWORK == received chain request from peer %s\n", conn.RemoteAddr().String()) // Log request
 
@@ -70,10 +74,18 @@ func handleConnection(conn net.Conn) error {
 		if err != nil { // Check for errors
 			return err // Return found error
 		}
+
+		return conn.Close() // Close connection
 	case "{" + `"` + "nonce" + `"` + ":": // Check transaction
 		common.Logf("== NETWORK == received transaction from peer %s\n", conn.RemoteAddr().String()) // Log tx
 
-		return types.HandleReceivedTransaction(data) // Handle received data
+		err = types.HandleReceivedTransaction(data) // Handle received data
+
+		if err != nil { // Check for errors
+			return err // Return found error
+		}
+
+		return conn.Close() // Close connection
 	case "cChainReq": // Check coordinationChain request
 		common.Logf("== NETWORK == received coordination chain request from peer %s\n", conn.RemoteAddr().String()) // Log request
 
@@ -92,6 +104,8 @@ func handleConnection(conn net.Conn) error {
 		if err != nil { // Check for errors
 			return err // Return found error
 		}
+
+		return conn.Close() // Close connection
 	case "configReq":
 		common.Logf("== NETWORK == received chain config request from peer %s\n", conn.RemoteAddr().String()) // Log request
 
@@ -110,13 +124,21 @@ func handleConnection(conn net.Conn) error {
 		if err != nil { // Check for errors
 			return err // Return found error
 		}
+
+		return conn.Close() // Close connection
 	case "{" + `"` + "account":
 		common.Logf("== NETWORK == received account chain from peer %s\n", conn.RemoteAddr().String()) // Log post
 
-		return types.HandleReceivedChain(data) // Handle received data
+		err = types.HandleReceivedChain(data) // Handle received data
+
+		if err != nil { // Check for errors
+			return err // Return found error
+		}
+
+		return conn.Close() // Close connection
 	}
 
-	return nil // No error occurred, return nil
+	return conn.Close() // No error occurred, return closeConn()
 }
 
 /* END INTERNAL METHODS */
