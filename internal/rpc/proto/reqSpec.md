@@ -3,6 +3,7 @@
 Note: all requests should be formatted in the following format: 
 
 ## Common
+URL: ```localhost:<port>/twirp/common.Common/```
 
 Each common GeneralRequest takes an optional amount of parameters (each RPC method uses the same request)
 
@@ -14,6 +15,7 @@ Each common GeneralRequest takes an optional amount of parameters (each RPC meth
 ```
 
 ## Chain
+URL: ```localhost:<port>/twirp/chain.Chain/```
 
 ```JSON
 {
@@ -22,6 +24,7 @@ Each common GeneralRequest takes an optional amount of parameters (each RPC meth
 ```
 
 ## Accounts
+URL: ```localhost:<port>/twirp/accounts.Accounts/```
 
 ```JSON
 {
@@ -31,6 +34,7 @@ Each common GeneralRequest takes an optional amount of parameters (each RPC meth
 ```
 
 ## Config
+URL: ```localhost:<port>/twirp/config.Config/```
 
 ```JSON
 {
@@ -39,6 +43,7 @@ Each common GeneralRequest takes an optional amount of parameters (each RPC meth
 ```
 
 ## Coordination Chain
+URL: ```localhost:<port>/twirp/coordinationChain.CoordinationChain/```
 
 Note: the coordination chain package does not have any requests that require inputs
 
@@ -48,6 +53,7 @@ Note: the coordination chain package does not have any requests that require inp
 ```
 
 ## Crypto
+URL: ```localhost:<port>/twirp/crypto.Crypto/```
 
 ```JSON
 {
@@ -57,6 +63,7 @@ Note: the coordination chain package does not have any requests that require inp
 ```
 
 ## Transaction
+URL: ```localhost:<port>/twirp/transaction.Transaction/```
 
 ```JSON
 {
@@ -69,6 +76,7 @@ Note: the coordination chain package does not have any requests that require inp
 ```
 
 ## UPnP
+URL: ```localhost:<port>/twirp/upnp.UPnP/```
 
 ```JSON
 {
