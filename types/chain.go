@@ -20,6 +20,8 @@ type Chain struct {
 
 	Genesis common.Hash `json:"genesis"` // Genesis block hash
 
+	ContractSource []byte `json:"contract"` // Contract
+
 	NetworkID uint        `json:"network"` // Network ID (mainnet: 0, testnet: 1, etc...)
 	ID        common.Hash `json:"ID"`      // Chain ID
 }
@@ -48,6 +50,137 @@ var (
 
 // NewChain - initialize new chain
 func NewChain(account common.Address) (*Chain, error) {
+	coordinationChain, err := ReadCoordinationChainFromMemory() // Read coordination chain from memory
+
+	if err != nil { // Check for errors
+		return &Chain{}, err // Return error
+	}
+
+	config, err := config.ReadChainConfigFromMemory() // Read config from memory
+
+	if err != nil { // Check for errors
+		return &Chain{}, err // Return error
+	}
+
+	_, err = coordinationChain.QueryAddress(account) // Query address
+
+	if err != nil && err != ErrNilNode { // Check chain with address does not exist
+		return &Chain{}, err // Return error
+	} else if err == nil { // Check exists
+		return &Chain{}, ErrAlreadySigned // Return error
+	}
+
+	chain := &Chain{ // Init chain
+		Account:      account,
+		Transactions: []*Transaction{},
+		NetworkID:    config.NetworkID,
+	}
+
+	(*chain).ID = common.NewHash(crypto.Sha3(chain.Bytes())) // Set ID
+
+	common.Logf("== ACCOUNT == initialized account chain with account address %s\n", chain.Account.String()) // Log init
+
+	localIP, err := common.GetExtIPAddrWithoutUPnP() // Get IP addr
+
+	if err != nil { // Check for errors
+		return &Chain{}, err // Return found error
+	}
+
+	if coordinationChain.Nodes == nil || len(coordinationChain.Nodes) == 0 { // Check genesis
+		common.Log("== NETWORK == making genesis block") // Log genesis block
+
+		_, err := chain.makeGenesis(config) // Make genesis
+
+		if err != nil { // Check for errors
+			return &Chain{}, err // Return found error
+		}
+	}
+
+	common.Log("== CHAIN == initializing account chain coordination node") // Log coordination node init
+
+	if strings.Contains(localIP, ":") { // Check is IPv6
+		localIP = "[" + localIP + "]" + ":" + strconv.Itoa(common.NodePort) // Add port
+	} else {
+		localIP = localIP + ":" + strconv.Itoa(common.NodePort) // Add port
+	}
+
+	node, err := NewCoordinationNode(account, []string{localIP}) // Initialize node
+
+	if err != nil { // Check for errors
+		return &Chain{}, err // Return found error
+	}
+
+	common.Logf("== SUCCESS == initialized account chain coordination node %s\n", node.ID.String()) // Log coordination node init
+
+	foundNode, err := coordinationChain.QueryAddress(node.Address) // Check node already exists
+
+	if err == nil { // Check already exists
+		(*foundNode).Addresses = append((*foundNode).Addresses, node.Addresses[len(node.Addresses)-1]) // Append node
+	} else {
+		if coordinationChain.Nodes == nil || len(coordinationChain.Nodes) == 0 { // Check is genesis
+			common.Log("== CHAIN == appending genesis coordination node to local chain\n") // Log coordination node init
+
+			err = coordinationChain.AddNode(node, false) // Add node
+
+			if err != nil { // Check for errors
+				return &Chain{}, err // Return found error
+			}
+
+			common.Logf("== SUCCESS == appended node %s to local chain\n", node.ID.String()) // Log coordination node init
+		} else {
+			common.Log("== CHAIN == appending new coordination node to remote chains") // Log coordination node append
+
+			err = coordinationChain.AddNode(node, true) // Add node
+
+			if err != nil { // Check for errors
+				return &Chain{}, err // Return found error
+			}
+
+			common.Logf("== SUCCESS == appended node %s to remote chain\n", node.ID.String()) // Log coordination node append
+		}
+	}
+
+	if coordinationChain.Nodes != nil || len(coordinationChain.Nodes) > 0 { // Check not genesis
+		common.Logf("== CHAIN == pushing chain %s to network\n", chain.ID.String()) // Log push
+
+		nodes, err := coordinationChain.QueryAllArchivalNodes() // Query all archival nodes
+
+		if err != nil { // Check for errors
+			common.Logf("== ERROR == error pushing chain to network %s\n", err.Error()) // Log error
+
+			return nil, err // Return found error
+		}
+
+		common.Logf("== NETWORK == found %d peers to push chain to\n", len(nodes)) // Log push
+
+		if len(nodes) > 0 {
+			if nodes[0] != localIP { // Check not current node
+				common.Logf("== NETWORK == pushing chain %s to peer %s\n", chain.ID.String(), nodes[0]) // Log push
+
+				common.SendBytes(chain.Bytes(), nodes[0]) // Send chain
+			}
+
+			for x, address := range nodes { // Iterate through addresses
+				if x != 0 && address != localIP { // Check not first index and not current node
+					common.Logf("== NETWORK == pushing chain %s to peer %s\n", chain.ID.String(), address) // Log push
+
+					go common.SendBytes(chain.Bytes(), address) // Send chain
+				}
+			}
+		}
+	}
+
+	err = chain.WriteToMemory() // Write to memory
+
+	if err != nil { // Check for errors
+		return &Chain{}, err // Return found error
+	}
+
+	return chain, nil // Return initialized chain
+}
+
+// NewContractChain - initialize new contract chain
+func NewContractChain(account common.Address, contractSource []byte) (*Chain, error) {
 	coordinationChain, err := ReadCoordinationChainFromMemory() // Read coordination chain from memory
 
 	if err != nil { // Check for errors
