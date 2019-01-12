@@ -59,7 +59,7 @@ func SendBytesResult(b []byte, address string) ([]byte, error) {
 		address = "[" + address[:strings.LastIndex(address, ":")] + "]" + address[strings.LastIndex(address, ":"):] // Set address
 	}
 
-	d := net.Dialer{Timeout: 10 * time.Second} // Init dialer with timeout
+	d := net.Dialer{Timeout: 5 * time.Second} // Init dialer with timeout
 
 	connection, err := tls.DialWithDialer(&d, "tcp", address, GeneralTLSConfig) // Connect to given address
 
