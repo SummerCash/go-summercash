@@ -44,7 +44,8 @@ type Transaction struct {
 
 	Timestamp time.Time `json:"time"` // Transaction timestamp
 
-	Genesis bool `json:"genesis"` // Genesis
+	ContractCreation bool `json:"is-init-contract"` // Should init contract
+	Genesis          bool `json:"genesis"`          // Genesis
 
 	Hash *common.Hash `json:"hash"` // Transaction hash
 }
@@ -54,13 +55,34 @@ type Transaction struct {
 // NewTransaction - attempt to initialize transaction primitive
 func NewTransaction(nonce uint64, parentTx *Transaction, sender *common.Address, destination *common.Address, amount float64, payload []byte) (*Transaction, error) {
 	transaction := Transaction{ // Init tx
-		AccountNonce: nonce,            // Set nonce
-		Sender:       sender,           // Set sender
-		Recipient:    destination,      // Set recipient
-		Amount:       amount,           // Set amount
-		Payload:      payload,          // Set tx payload
-		ParentTx:     parentTx,         // Set parent
-		Timestamp:    time.Now().UTC(), // Set timestamp
+		AccountNonce:     nonce,            // Set nonce
+		Sender:           sender,           // Set sender
+		Recipient:        destination,      // Set recipient
+		Amount:           amount,           // Set amount
+		Payload:          payload,          // Set tx payload
+		ParentTx:         parentTx,         // Set parent
+		Timestamp:        time.Now().UTC(), // Set timestamp
+		ContractCreation: false,            // Set should init contract
+	}
+
+	hash := common.NewHash(crypto.Sha3(transaction.Bytes())) // Hash transaction
+
+	transaction.Hash = &hash // Set hash
+
+	return &transaction, nil // Return initialized transaction
+}
+
+// NewContractCreation - initialize contract designated to an initialized contract
+func NewContractCreation(nonce uint64, parentTx *Transaction, sender *common.Address, destination *common.Address, amount float64, payload []byte) (*Transaction, error) {
+	transaction := Transaction{ // Init tx
+		AccountNonce:     nonce,            // Set nonce
+		Sender:           sender,           // Set sender
+		Recipient:        destination,      // Set recipient
+		Amount:           amount,           // Set amount
+		Payload:          payload,          // Set tx payload
+		ParentTx:         parentTx,         // Set parent
+		Timestamp:        time.Now().UTC(), // Set timestamp
+		ContractCreation: true,             // Set should init contract
 	}
 
 	hash := common.NewHash(crypto.Sha3(transaction.Bytes())) // Hash transaction
