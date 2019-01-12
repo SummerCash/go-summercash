@@ -1,7 +1,9 @@
 package common
 
 import (
+	"bytes"
 	"crypto/tls"
+	"io"
 	"io/ioutil"
 	"net"
 	"net/http"
@@ -90,18 +92,18 @@ func SendBytesResult(b []byte, address string) ([]byte, error) {
 func ReadConnectionWaitAsyncNoTLS(conn net.Conn) ([]byte, error) {
 	requestStartTime := time.Now() // Get start time
 
-	var response []byte // Init buffer
-	var err error       // Init error buffer
+	var response bytes.Buffer // Init buffer
+	var err error             // Init error buffer
 
-	for response == nil || len(response) == 0 { // Keep reading until buffer isn't nil
-		response, err = ioutil.ReadAll(conn) // Read connection
+	for response.Bytes() == nil || len(response.Bytes()) == 0 { // Keep reading until buffer isn't nil
+		_, err = io.Copy(&response, conn) // Read connection
 
 		if err != nil && time.Now().Sub(requestStartTime) > 10*time.Second { // Check for errors after timeout
 			return nil, err // Return found error
 		}
 	}
 
-	return response, nil // Return response
+	return response.Bytes(), nil // Return response
 }
 
 /*
