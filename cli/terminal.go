@@ -228,7 +228,7 @@ func handleAccounts(accountsClient *accountsProto.Accounts, methodname string, p
 
 		reflectParams = append(reflectParams, reflect.ValueOf(&accountsProto.GeneralRequest{PrivateKey: params[0]})) // Append params
 	default:
-		return errors.New("illegal method: " + methodname + ", available methods: NewAccount(), GetAllAccounts(), MakeEncodingSafe(), RecoverSafeEncoding(), String(), Bytes(), ReadAccountFromMemory()") // Return error
+		return errors.New("illegal method: " + methodname + ", available methods: NewAccount(), NewContractAccount(), GetAllAccounts(), MakeEncodingSafe(), RecoverSafeEncoding(), String(), Bytes(), ReadAccountFromMemory()") // Return error
 	}
 
 	result := reflect.ValueOf(*accountsClient).MethodByName(methodname).Call(reflectParams) // Call method
