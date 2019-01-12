@@ -155,6 +155,8 @@ func (coordinationChain *CoordinationChain) ClearCache() error {
 		return err // Return found error
 	}
 
+	common.Logf("== SUCCESS == intermittent db cache cleared successfully\n") // Log intermittent clear success
+
 	return nil // No error occurred, return nil
 }
 
