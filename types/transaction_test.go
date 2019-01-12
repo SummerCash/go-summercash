@@ -45,6 +45,32 @@ func TestNewTransaction(t *testing.T) {
 	t.Log(string(marshaledVal)) // Log success
 }
 
+// TestNewContractCreation - test functionality of contract initializer
+func TestNewContractCreation(t *testing.T) {
+	privateKey, err := ecdsa.GenerateKey(elliptic.P521(), rand.Reader) // Generate private key
+
+	if err != nil { // Check for errors
+		t.Error(err) // Log found error
+		t.FailNow()  // Panic
+	}
+
+	sender, err := common.NewAddress(privateKey) // Initialize address from private key
+
+	if err != nil { // Check for errors
+		t.Error(err) // Log found error
+		t.FailNow()  // Panic
+	}
+
+	transaction, err := NewContractCreation(0, nil, &sender, &sender, 0, []byte("test")) // Initialize transaction
+
+	if err != nil { // Check for errors
+		t.Error(err) // Log found error
+		t.FailNow()  // Panic
+	}
+
+	t.Log(string(transaction.Bytes())) // Log success
+}
+
 // TestPublishTransaction - test functionality of transaction.Publish() method
 func TestPublishTransaction(t *testing.T) {
 	privateKey, err := ecdsa.GenerateKey(elliptic.P521(), rand.Reader) // Generate private key

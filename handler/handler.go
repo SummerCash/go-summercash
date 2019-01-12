@@ -3,6 +3,7 @@ package handler
 import (
 	"errors"
 	"net"
+	"strings"
 
 	"github.com/SummerCash/go-summercash/common"
 	"github.com/SummerCash/go-summercash/config"
@@ -77,6 +78,18 @@ func handleConnection(conn net.Conn) error {
 
 		return conn.Close() // Close connection
 	case "{" + `"` + "nonce" + `"` + ":": // Check transaction
+		if strings.Contains(string(data), `"`+"is-init-contract"+`"`+":true") { // Check is contract creation
+			common.Logf("== NETWORK == received contract creation from peer %s\n", conn.RemoteAddr().String()) // Log tx
+
+			err = types.HandleReceivedContractCreation(data) // Handle received data
+
+			if err != nil { // Check for errors
+				return err // Return found error
+			}
+
+			return conn.Close() // Close connection
+		}
+
 		common.Logf("== NETWORK == received transaction from peer %s\n", conn.RemoteAddr().String()) // Log tx
 
 		err = types.HandleReceivedTransaction(data) // Handle received data
