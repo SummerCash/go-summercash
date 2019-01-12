@@ -4,6 +4,7 @@ package accounts;
 
 service Accounts {
     rpc NewAccount(GeneralRequest) returns (GeneralResponse) {} // Create new account
+    rpc NewContractAccount(GeneralRequest) returns (GeneralResponse) {} // Deploy new contract instance
     rpc AccountFromKey(GeneralRequest) returns (GeneralResponse) {} // Generate account from given private key
     rpc GetAllAccounts(GeneralRequest) returns (GeneralResponse) {} // Walk keystore directory
     rpc MakeEncodingSafe(GeneralRequest) returns (GeneralResponse) {} // Hash specified byte array n times
