@@ -6,6 +6,8 @@ import (
 	"encoding/json"
 	"encoding/pem"
 	"fmt"
+	"io/ioutil"
+	"path/filepath"
 	"strings"
 
 	"github.com/SummerCash/go-summercash/accounts"
@@ -45,6 +47,29 @@ func (server *Server) NewAccount(ctx context.Context, req *accountsProto.General
 	}
 
 	return &accountsProto.GeneralResponse{Message: fmt.Sprintf("\nAddress: %s, PrivateKey: %s", account.Address.String(), stringEncoded)}, nil // No error occurred, return response
+}
+
+// NewContractAccount - accounts.NewContractAccount RPC handler
+func (server *Server) NewContractAccount(ctx context.Context, req *accountsProto.GeneralRequest) (*accountsProto.GeneralResponse, error) {
+	filepath, err := filepath.Abs(filepath.FromSlash(req.Address)) // Get filepath
+
+	if err != nil { // Check for errors
+		return &accountsProto.GeneralResponse{}, err // Return found error
+	}
+
+	contractSource, err := ioutil.ReadFile(filepath) // Read contract source
+
+	if err != nil { // Check for errors
+		return &accountsProto.GeneralResponse{}, err // Return found error
+	}
+
+	contractInstance, err := accounts.NewContractAccount(contractSource) // Deploy from contract source
+
+	if err != nil { // Check for errors
+		return &accountsProto.GeneralResponse{}, err // Return found error
+	}
+
+	return &accountsProto.GeneralResponse{Message: fmt.Sprintf("\n%s", contractInstance.String())}, nil // Return response
 }
 
 // AccountFromKey - accounts.AccountFromKey RPC handler
