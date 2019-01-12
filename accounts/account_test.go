@@ -6,6 +6,7 @@ import (
 	"crypto/rand"
 	"encoding/json"
 	"io/ioutil"
+	"path/filepath"
 	"testing"
 
 	"github.com/SummerCash/go-summercash/common"
@@ -37,6 +38,27 @@ func TestNewAccount(t *testing.T) {
 	}
 
 	t.Log(account.String()) // Log success
+}
+
+// TestNewContractAccount - test contract deploy
+func TestNewContractAccount(t *testing.T) {
+	path, _ := filepath.Abs(filepath.FromSlash("../types/main.wasm")) // Get path
+
+	contractSource, err := ioutil.ReadFile(path) // Read contract source
+
+	if err != nil { // Check for errors
+		t.Error(err) // Log found error
+		t.FailNow()  // Panic
+	}
+
+	contractInstance, err := NewContractAccount(contractSource) // Deploy contract
+
+	if err != nil { // Check for errors
+		t.Error(err) // Log found error
+		t.FailNow()  // Panic
+	}
+
+	t.Log(contractInstance.String())
 }
 
 // TestAccountFromKey - test functionality of account generation given a privateKey x
