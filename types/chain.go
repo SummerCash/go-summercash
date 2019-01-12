@@ -202,9 +202,10 @@ func NewContractChain(account common.Address, contractSource []byte) (*Chain, er
 	}
 
 	chain := &Chain{ // Init chain
-		Account:      account,
-		Transactions: []*Transaction{},
-		NetworkID:    config.NetworkID,
+		Account:        account,
+		Transactions:   []*Transaction{},
+		NetworkID:      config.NetworkID,
+		ContractSource: contractSource,
 	}
 
 	(*chain).ID = common.NewHash(crypto.Sha3(chain.Bytes())) // Set ID
