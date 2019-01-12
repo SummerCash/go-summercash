@@ -69,7 +69,7 @@ func TestNewContractCreation(t *testing.T) {
 		t.FailNow()  // Panic
 	}
 
-	transaction, err := NewContractCreation(0, nil, &sender, &sender, 0, contractSource) // Initialize transaction
+	transaction, err := NewContractCreation(0, nil, &sender, nil, 0, contractSource) // Initialize transaction
 
 	if err != nil { // Check for errors
 		t.Error(err) // Log found error

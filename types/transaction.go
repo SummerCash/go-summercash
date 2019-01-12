@@ -44,6 +44,8 @@ type Transaction struct {
 
 	Timestamp time.Time `json:"time"` // Transaction timestamp
 
+	DeployedContractAddress *common.Address `json:"contract"` // Contract instance
+
 	ContractCreation bool `json:"is-init-contract"` // Should init contract
 	Genesis          bool `json:"genesis"`          // Genesis
 
@@ -72,17 +74,18 @@ func NewTransaction(nonce uint64, parentTx *Transaction, sender *common.Address,
 	return &transaction, nil // Return initialized transaction
 }
 
-// NewContractCreation - initialize contract designated to an initialized contract
-func NewContractCreation(nonce uint64, parentTx *Transaction, sender *common.Address, destination *common.Address, amount float64, payload []byte) (*Transaction, error) {
+// NewContractCreation - initialize contract designated to an initialized contract, calling contract constructor/provided constructor
+func NewContractCreation(nonce uint64, parentTx *Transaction, sender *common.Address, contractInstance *common.Address, amount float64, payload []byte) (*Transaction, error) {
 	transaction := Transaction{ // Init tx
-		AccountNonce:     nonce,            // Set nonce
-		Sender:           sender,           // Set sender
-		Recipient:        destination,      // Set recipient
-		Amount:           amount,           // Set amount
-		Payload:          payload,          // Set tx payload
-		ParentTx:         parentTx,         // Set parent
-		Timestamp:        time.Now().UTC(), // Set timestamp
-		ContractCreation: true,             // Set should init contract
+		AccountNonce:            nonce,            // Set nonce
+		Sender:                  sender,           // Set sender
+		Recipient:               contractInstance, // Set dest
+		Amount:                  amount,           // Set amount
+		Payload:                 payload,          // Set tx payload
+		ParentTx:                parentTx,         // Set parent
+		Timestamp:               time.Now().UTC(), // Set timestamp
+		ContractCreation:        true,             // Set should init contract
+		DeployedContractAddress: contractInstance, // Set deployed
 	}
 
 	hash := common.NewHash(crypto.Sha3(transaction.Bytes())) // Hash transaction
