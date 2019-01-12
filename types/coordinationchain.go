@@ -132,9 +132,9 @@ func (coordinationChain *CoordinationChain) ClearCache() error {
 
 		for _, address := range node.Addresses { // Iterate through providing addresses
 			if !gop2pCommon.StringInSlice(verifiedNodes, address) { // Check must be tested
-				coordinationChainBytes, err := common.SendBytesResult([]byte("cChainRequest"), address) // Get coordination chain
+				configBytes, err := common.SendBytesResult([]byte("configReq"), address) // Get chain config
 
-				if err == nil && coordinationChainBytes != nil { // Check no errors
+				if err == nil && configBytes != nil { // Check no errors
 					verifiedNodes = append(verifiedNodes, address) // Append verified node address
 				}
 			}
@@ -388,23 +388,27 @@ func SyncNetwork(archival bool, updateRemote bool) error {
 		}
 	}
 
-	err = coordinationChain.ClearCache() // Clear coordination chain cache
-
-	if err != nil { // Check for errors
-		return err // Return found error
-	}
-
 	common.Log("== NODE == finished syncing") // Log success
 
 	return nil // No error occurred, return nil
 }
 
 // StartManagedSync - start repeated intermittent sync
-func StartManagedSync(archival bool, duration time.Duration) {
-	for range time.Tick(duration) { // Sync every duration seconds
-		common.Logf("== NODE == starting intermittent managed sync\n") // Log intermittent sync
+func StartManagedSync(cacheClearOnly bool, archival bool, duration time.Duration) {
+	coordinationChain, err := ReadCoordinationChainFromMemory() // Read coordination chain from persistent memory
 
-		go SyncNetwork(archival, true) // Sync network
+	for range time.Tick(duration) { // Sync every duration seconds
+		common.Logf("== NODE == starting intermittent db cache clear\n") // Log intermittent clear
+
+		if err == nil { // Check no errors
+			go coordinationChain.ClearCache() // Clear cache
+		}
+
+		if !cacheClearOnly { // Check can full sync
+			common.Logf("== NODE == starting intermittent managed sync\n") // Log intermittent sync
+
+			go SyncNetwork(archival, true) // Sync network
+		}
 	}
 }
 
