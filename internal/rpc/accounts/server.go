@@ -69,7 +69,21 @@ func (server *Server) NewContractAccount(ctx context.Context, req *accountsProto
 		return &accountsProto.GeneralResponse{}, err // Return found error
 	}
 
-	return &accountsProto.GeneralResponse{Message: fmt.Sprintf("\n%s", contractInstance.String())}, nil // Return response
+	marshaledPrivateKey, err := x509.MarshalECPrivateKey(contractInstance.PrivateKey) // Marshal private key
+
+	if err != nil { // Check for errors
+		return &accountsProto.GeneralResponse{}, err // Return found error
+	}
+
+	pemEncoded := pem.EncodeToMemory(&pem.Block{Type: "PRIVATE KEY", Bytes: marshaledPrivateKey}) // Encode to memory
+
+	stringEncoded, err := common.EncodeString(pemEncoded) // Encode to string
+
+	if err != nil { // Check for errors
+		return &accountsProto.GeneralResponse{}, err // Return found error
+	}
+
+	return &accountsProto.GeneralResponse{Message: fmt.Sprintf("\nAddress: %s, PrivateKey: %s", contractInstance.Address.String(), stringEncoded)}, nil // Return response
 }
 
 // AccountFromKey - accounts.AccountFromKey RPC handler
