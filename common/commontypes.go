@@ -48,6 +48,8 @@ func NewAddress(privateKey *ecdsa.PrivateKey) (Address, error) {
 
 	marshaledPublicKey := elliptic.Marshal(privateKey.PublicKey, privateKey.PublicKey.X, privateKey.PublicKey.Y) // Marshal public key
 
+	marshaledPublicKey = append([]byte("0x"), marshaledPublicKey...) // Prepend prefix
+
 	copy(address[:], marshaledPublicKey) // Copy marshaled
 
 	return address, nil // Return public key
@@ -58,6 +60,8 @@ func PublicKeyToAddress(publicKey *ecdsa.PublicKey) Address {
 	var address Address // Init buffer
 
 	marshaledPublicKey := elliptic.Marshal(publicKey, publicKey.X, publicKey.Y) // Marshal public key
+
+	marshaledPublicKey = append([]byte("0x"), marshaledPublicKey...) // Prepend prefix
 
 	copy(address[:], marshaledPublicKey) // Copy marshaled
 
@@ -74,7 +78,7 @@ func StringToAddress(s string) (Address, error) {
 		return Address{}, err // Return found error
 	}
 
-	copy(address[:], decoded) // Copy decoded
+	copy(address[:], append([]byte("0x"), decoded...)) // Copy decoded
 
 	return address, nil // Return address
 }
@@ -86,11 +90,13 @@ func (address Address) Bytes() []byte {
 
 // String - convert given address to string
 func (address Address) String() string {
-	enc := make([]byte, len(address)*2+2) // Init encoder buffer
+	noPrefix := address[2:] // Remove duplicate 0x prefix
+
+	enc := make([]byte, len(noPrefix)*2+2) // Init encoder buffer
 
 	copy(enc, "0x") // Copy prefix
 
-	hex.Encode(enc[2:], address[:]) // Encode given byte array
+	hex.Encode(enc[2:], noPrefix[:]) // Encode given byte array
 
 	return string(enc) // Return string val
 }
@@ -106,6 +112,10 @@ func (address Address) String() string {
 // NewHash - initialize hash from byte array
 func NewHash(b []byte) Hash {
 	var hash Hash // Init buffer
+
+	if string(crypto.Sha3(b[0:2])) != string(crypto.Sha3(MemPrefix)) { // Check no mem prefix
+		b = append([]byte("0x"), b...) // Prepend 0x
+	}
 
 	copy(hash[:], b[:HashLength]) // Copy byte val, trim to max hash length
 
