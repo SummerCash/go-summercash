@@ -2,6 +2,7 @@ package types
 
 import (
 	"bytes"
+	"encoding/hex"
 	"encoding/json"
 	"errors"
 	"strconv"
@@ -502,11 +503,15 @@ func (chain *Chain) handleContractCall(transaction *Transaction) error {
 		return err // Return found error
 	}
 
-	state, err = vm.LoadStateDB(vm.StateDB.ID) // Load state db
+	err = vm.LoadStateDB(hex.EncodeToString(vm.StateDB.ID)) // Load state db
 
 	if err != nil { // Check for errors
 		return err // Return found error
 	}
+
+	parsedCall := common.ParseStringMethodCallNoReceiver(transaction.Payload) // Parse payload
+
+	vm.Run()
 
 	return nil // No error occurred, return nil
 }
