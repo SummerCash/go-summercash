@@ -14,6 +14,7 @@ import (
 	"github.com/SummerCash/go-summercash/common"
 	"github.com/SummerCash/go-summercash/config"
 	"github.com/SummerCash/go-summercash/crypto"
+	"github.com/SummerCash/ursa/vm"
 	gop2pCommon "github.com/dowlandaiello/GoP2P/common"
 )
 
@@ -345,6 +346,12 @@ func SyncNetwork(archival bool, updateRemote bool) error {
 			if err != nil { // Check for errors
 				return err // Return found error
 			}
+		}
+
+		err = syncAllStates() // Sync all states
+
+		if err != nil { // Check for errors
+			return err // Return found error
 		}
 
 		if updateRemote { // Check needs to re-register archival node
@@ -755,6 +762,76 @@ func syncChainConfig() error {
 
 	if softForkRemote-softForkLocal > 4 && hardForkRemote == hardForkLocal || hardForkRemote > hardForkLocal { // Check too out-of-date
 		return ErrClientOutOfDate // Return out-of-date error
+	}
+
+	return nil // No error occurred, return nil
+}
+
+// syncAllStates - sync all contract states
+func syncAllStates() error {
+	coordinationChain, err := ReadCoordinationChainFromMemory() // Read coordination chain from persistent memory
+
+	if err != nil { // Check for errors
+		return err // Return found error
+	}
+
+	for _, node := range coordinationChain.Nodes { // Iterate through nodes
+		chain, err := ReadChainFromMemory(node.Address) // Read chain
+
+		if err != nil { // Check for errors
+			continue // Continue
+		}
+
+		if chain.ContractSource != nil { // Check is contract
+			err = syncState(node.Address) // Sync contract state
+
+			if err != nil { // Check for errors
+				continue // Continue
+			}
+		}
+	}
+
+	return nil // No error occurred, return nil
+}
+
+func syncState(contract common.Address) error {
+	var stateBytes []byte // Init config buffer
+	var err error         // Init error buffer
+
+	ip, err := common.GetExtIPAddrWithoutUPnP() // Get self IP
+
+	if err != nil { // Check for errors
+		return err // Return found error
+	}
+
+	if strings.Contains(ip, ":") { // Check is IPv6
+		ip = "[" + ip + "]" + ":" + strconv.Itoa(common.NodePort) // Add port
+	} else {
+		ip = ip + ":" + strconv.Itoa(common.NodePort) // Add port
+	}
+
+	for _, bootstrapNode := range common.BootstrapNodes { // Iterate through bootstrap nodes
+		common.Logf("== NETWORK == requesting contract state from node %s\n", bootstrapNode) // Log request config
+
+		stateBytes, err = common.SendBytesResult(append([]byte("stateReq"), contract[:]...), bootstrapNode) // Get contract state
+
+		if err != nil { // Check for errors
+			continue // Continue
+		} else {
+			break // Break
+		}
+	}
+
+	state, err := vm.StateDatabaseFromBytes(stateBytes) // Decode state bytes
+
+	if err != nil { // Check for errors
+		return err // Return found error
+	}
+
+	err = state.WriteToMemory() // Write state DB to persisten memory
+
+	if err != nil { // Check for errors
+		return err // Return found error
 	}
 
 	return nil // No error occurred, return nil
