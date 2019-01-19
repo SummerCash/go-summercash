@@ -17,6 +17,8 @@ import (
 	"path/filepath"
 	"strings"
 	"time"
+
+	"github.com/SummerCash/ursa/vm"
 )
 
 var (
@@ -52,6 +54,13 @@ var (
 
 	// NodePort - global port definition
 	NodePort = 3000
+
+	// VMConfig - global virtual machine config
+	VMConfig = vm.Environment{
+		EnableJIT:          false, // Disable JIT
+		DefaultMemoryPages: 128,   // Set default mem pages
+		DefaultTableSize:   65536, // Set default table size
+	}
 )
 
 /* BEGIN EXPORTED METHODS */
