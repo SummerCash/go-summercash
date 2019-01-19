@@ -10,6 +10,7 @@ import (
 	"github.com/SummerCash/go-summercash/common"
 	"github.com/SummerCash/go-summercash/config"
 	"github.com/SummerCash/go-summercash/crypto"
+	"github.com/SummerCash/ursa/vm"
 )
 
 // Chain - account transactions chain
@@ -313,6 +314,10 @@ func NewContractChain(account common.Address, contractSource []byte) (*Chain, er
 
 // AddTransaction - append given transaction to chain
 func (chain *Chain) AddTransaction(transaction *Transaction) error {
+	if chain.ContractSource != nil && transaction.Payload != nil { // Check is contract call
+		chain.handleContractCall(transaction) // Handle contract call
+	}
+
 	coordinationChain, err := ReadCoordinationChainFromMemory() // Read coordination chain from memory
 
 	if err != nil { // Check for errors
@@ -476,6 +481,35 @@ func (chain *Chain) String() string {
 /* END EXPORTED METHODS */
 
 /* BEGIN INTERNAL METHODS */
+
+// handleContractCall - handle given contract call
+func (chain *Chain) handleContractCall(transaction *Transaction) error {
+	env, err := vm.ReadEnvironmentFromMemory() // Read environment from memory
+
+	if err != nil { // Check for errors
+		env = &common.VMConfig // Get VM config
+
+		err = env.WriteToMemory() // Write to persistent memory
+
+		if err != nil { // Check for errors
+			return err // Return found error
+		}
+	}
+
+	vm, err := vm.NewVirtualMachine(chain.ContractSource, *env, new(vm.Resolver), nil) // Init vm
+
+	if err != nil { // Check for errors
+		return err // Return found error
+	}
+
+	state, err = vm.LoadStateDB(vm.StateDB.ID) // Load state db
+
+	if err != nil { // Check for errors
+		return err // Return found error
+	}
+
+	return nil // No error occurred, return nil
+}
 
 // makeGenesis - generate genesis blocks from genesis file
 func (chain *Chain) makeGenesis(genesis *config.ChainConfig) (common.Hash, error) {
