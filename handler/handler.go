@@ -139,6 +139,26 @@ func handleConnection(conn net.Conn) error {
 		}
 
 		return conn.Close() // Close connection
+	case "stateRequ":
+		common.Logf("== NETWORK == received state request from peer %s\n", conn.RemoteAddr().String()) // Log request
+
+		state, err := types.HandleReceivedStateRequest(data) // Handle received state request
+
+		if err != nil { // Check for errors
+			common.Logf("== ERROR == error handling state request from peer %s %s\n", conn.RemoteAddr().String(), err.Error()) // Log request
+
+			return err // Return found error
+		}
+
+		common.Logf("== NETWORK == responding to state request from peer %s\n", conn.RemoteAddr().String()) // Log request
+
+		_, err = conn.Write(state.Bytes()) // Write chain
+
+		if err != nil { // Check for errors
+			return err // Return found error
+		}
+
+		return conn.Close() // Close connection
 	case "{" + `"` + "account":
 		common.Logf("== NETWORK == received account chain from peer %s\n", conn.RemoteAddr().String()) // Log post
 
