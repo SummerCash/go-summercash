@@ -93,7 +93,7 @@ func Logf(format string, a ...interface{}) (int, error) {
 	return 0, ErrVerboseNotAllowed // Return error
 }
 
-// ParseStringMethodCall - attempt to parse string as method call, returning receiver, method name, and params
+// ParseStringMethodCall - attempt to parse string as method call, returning receiver, method name and params
 func ParseStringMethodCall(input string) (string, string, []string, error) {
 	if input == "" { // Check for errors
 		return "", "", []string{}, ErrNilInput // Return found error
@@ -116,6 +116,25 @@ func ParseStringMethodCall(input string) (string, string, []string, error) {
 	}
 
 	return receiver, method, params, nil // No error occurred, return parsed method+params
+}
+
+// ParseStringMethodCallNoReceiver - attempt to parse string as method call, returning method name and params
+func ParseStringMethodCallNoReceiver(input string) (string, []string, error) {
+	if input == "" { // Check for errors
+		return "", []string{}, ErrNilInput // Return found error
+	} else if !strings.Contains(input, "(") || !strings.Contains(input, ")") {
+		input = input + "()" // Fetch receiver methods
+	}
+
+	method := strings.Split(input, "(")[0] // Fetch method
+
+	params := []string{} // Init buffer
+
+	if !strings.Contains(input, "()") { // Check for nil params
+		params, _ = ParseStringParams(input) // Fetch params
+	}
+
+	return method, params, nil // No error occurred, return parsed method+params
 }
 
 // ParseStringParams - attempt to fetch string parameters from (..., ..., ...) style call
