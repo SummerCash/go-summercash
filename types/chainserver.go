@@ -1,9 +1,11 @@
 package types
 
 import (
+	"encoding/hex"
 	"errors"
 
 	"github.com/SummerCash/go-summercash/common"
+	"github.com/SummerCash/ursa/vm"
 )
 
 var (
@@ -140,6 +142,45 @@ func HandleReceivedContractCreation(b []byte) error {
 	}
 
 	return nil // No error occurred, return nil
+}
+
+// HandleReceivedStateRequest - handle received contract state request
+func HandleReceivedStateRequest(b []byte) ([]byte, error) {
+	var address common.Address // Init buffer
+
+	copy(address[:], b[9:][:]) // Copy read address
+
+	chain, err := ReadChainFromMemory(address) // Read chain
+
+	if err != nil { // Check for errors
+		return nil, err // Return found error
+	}
+
+	env, err := vm.ReadEnvironmentFromMemory() // Read environment from memory
+
+	if err != nil { // Check for errors
+		env = &common.VMConfig // Get VM config
+
+		err = env.WriteToMemory() // Write to persistent memory
+
+		if err != nil { // Check for errors
+			return nil, err // Return found error
+		}
+	}
+
+	virtualMachine, err := vm.NewVirtualMachine(chain.ContractSource, *env, new(vm.Resolver), nil) // Init vm
+
+	if err != nil { // Check for errors
+		return nil, err // Return found error
+	}
+
+	state, err := vm.ReadStateDBFromMemory(hex.EncodeToString(virtualMachine.StateDB.ID)) // Read state DB
+
+	if err != nil { // Check for errors
+		return nil, err // Return found error
+	}
+
+	return state.Bytes(), nil // Return read state
 }
 
 // HandleReceivedChain - handle received chain
