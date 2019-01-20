@@ -18,6 +18,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/SummerCash/ursa/compiler"
 	"github.com/SummerCash/ursa/vm"
 )
 
@@ -60,6 +61,11 @@ var (
 		EnableJIT:          false, // Disable JIT
 		DefaultMemoryPages: 128,   // Set default mem pages
 		DefaultTableSize:   65536, // Set default table size
+	}
+
+	// GasPolicy - global gas policy
+	GasPolicy = compiler.SimpleGasPolicy{ //TODO: better gas policy
+		GasPerInstruction: 1,
 	}
 )
 
