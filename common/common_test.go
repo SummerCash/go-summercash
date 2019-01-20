@@ -30,7 +30,7 @@ func TestLogf(t *testing.T) {
 
 // TestParseStringMethodCall - test functionality of ParseStringMethodCall() method
 func TestParseStringMethodCall(t *testing.T) {
-	input := "crypto.Sha3(test)" // Init input
+	input := "transaction.NewTransaction(0x04016c01b07433ad0da6153c2ab1bdd67d8e, 0x0400a98cf9f337d5c82cb5e58fd0aad95bad, 0, main(test))" // Init input
 
 	receiver, methodName, params, err := ParseStringMethodCall(input) // Parse string method call
 
@@ -39,7 +39,7 @@ func TestParseStringMethodCall(t *testing.T) {
 		t.FailNow()           // Panic
 	}
 
-	t.Logf("found parsed method call %s, %s, %s", receiver, methodName, params[0]) // Log success
+	t.Logf("found parsed method call %s, %s, %s, %s, %s, %s", receiver, methodName, params[0], params[1], params[2], params[3]) // Log success
 }
 
 // TestParseStringMethodCallNoReceiver - test functionality of ParseStringMethodCallNoReceiver() method

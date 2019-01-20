@@ -111,7 +111,7 @@ func ParseStringMethodCall(input string) (string, string, []string, error) {
 
 	params := []string{} // Init buffer
 
-	if !strings.Contains(input, "()") { // Check for nil params
+	if strings.Contains(input, ",") { // Check for nil params
 		params, _ = ParseStringParams(input) // Fetch params
 	}
 
@@ -143,7 +143,7 @@ func ParseStringParams(input string) ([]string, error) {
 		return []string{}, ErrNilInput // Return found error
 	}
 
-	parenthesesStripped := StringStripParentheses(StringStripReceiverCall(input)) // Strip parentheses
+	parenthesesStripped := StringStripReceiverCall(input) // Strip parentheses
 
 	params := strings.Split(parenthesesStripped, ", ") // Split by ', '
 
@@ -152,7 +152,10 @@ func ParseStringParams(input string) ([]string, error) {
 
 // StringStripReceiverCall - strip receiver from string method call
 func StringStripReceiverCall(input string) string {
-	return "(" + strings.Split(input, "(")[1] // Split
+	openParenthIndex := strings.Index(input, "(")      // Get open parent index
+	closeParenthIndex := strings.LastIndex(input, ")") // Get close parent index
+
+	return input[openParenthIndex+1 : closeParenthIndex] // Strip receiver
 }
 
 // StringStripParentheses - strip parantheses from string
@@ -162,7 +165,7 @@ func StringStripParentheses(input string) string {
 	return strings.Replace(leftStripped, ")", "", -1) // Return right stripped
 }
 
-// StringFetchCallReceiver - attempt to fetch receiver from string, as if it were a x.y(..., ..., ...) style method call
+// StringFetchCallReceiver - attempt to fetch receiver from string, as if it were an x.y(..., ..., ...) style method call
 func StringFetchCallReceiver(input string) string {
 	return strings.Split(strings.Split(input, "(")[0], ".")[0] // Return split string
 }
