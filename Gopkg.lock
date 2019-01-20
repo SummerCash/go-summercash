@@ -10,6 +10,34 @@
   revision = "b32978b8ccbffe222d6f37a980e795074ac2ba74"
 
 [[projects]]
+  branch = "master"
+  digest = "1:2d43e5092b40b40abf5f580b7e1bb00ecc31ca1cce28af9623c2d674710d918d"
+  name = "github.com/SummerCash/ursa"
+  packages = [
+    "common",
+    "compiler",
+    "compiler/opcodes",
+    "crypto",
+    "vm",
+  ]
+  pruneopts = "UT"
+  revision = "50e2ce22cf5327b9b2f96c6a5982fe85dbb749e6"
+
+[[projects]]
+  digest = "1:9fb95875445ca5a30a4a47a8298a8697a036b9978aa55a317277b491c8530905"
+  name = "github.com/SummerCash/wagon"
+  packages = [
+    "disasm",
+    "validate",
+    "wasm",
+    "wasm/leb128",
+    "wasm/operators",
+  ]
+  pruneopts = "UT"
+  revision = "0077fe2c1bbd991b8da10d878985e78ca6ac25e9"
+  version = "v0.3.0"
+
+[[projects]]
   digest = "1:2fd83c8c2b1ff53fd7c4376a63c3a2f31e002e9296df9d7f150b07da524de88d"
   name = "github.com/briandowns/spinner"
   packages = ["."]
@@ -48,6 +76,20 @@
   pruneopts = "UT"
   revision = "4966fc68f5b7593aafa6cbbba2d65ec6e1416047"
   version = "v1.1.0"
+
+[[projects]]
+  digest = "1:8f6fe77e9b6988b78cb649dcaeee5e7229f6c7649af9c4fb03f4c18f692632e8"
+  name = "github.com/go-interpreter/wagon"
+  packages = [
+    "internal/stack",
+    "wasm",
+    "wasm/internal/readpos",
+    "wasm/leb128",
+    "wasm/operators",
+  ]
+  pruneopts = "UT"
+  revision = "0077fe2c1bbd991b8da10d878985e78ca6ac25e9"
+  version = "v0.3.0"
 
 [[projects]]
   digest = "1:69148993c8baff35dbb0b5ec92eccb6b75b2b7255a4ad1257be38f51fff8f267"
@@ -199,6 +241,7 @@
   analyzer-version = 1
   input-imports = [
     "github.com/NebulousLabs/go-upnp",
+    "github.com/SummerCash/ursa/vm",
     "github.com/briandowns/spinner",
     "github.com/common-nighthawk/go-figure",
     "github.com/dowlandaiello/GoP2P/common",

@@ -46,6 +46,9 @@ var (
 
 	// ErrDuplicateTransaction - error definition describing a transaction that already exists in a given chain
 	ErrDuplicateTransaction = errors.New("duplicate transaction")
+
+	// ErrInvalidPayload - error definition describing an invalid transaction payload
+	ErrInvalidPayload = errors.New("invalid payload")
 )
 
 /* BEGIN EXPORTED METHODS */
@@ -509,9 +512,37 @@ func (chain *Chain) handleContractCall(transaction *Transaction) error {
 		return err // Return found error
 	}
 
-	parsedCall := common.ParseStringMethodCallNoReceiver(transaction.Payload) // Parse payload
+	callMethod, callParams, err := common.ParseStringMethodCallNoReceiver(string(transaction.Payload)) // Parse payload method call
 
-	vm.Run()
+	if err != nil { // Check for errors
+		return err // Return found error
+	}
+
+	entryID, valid := vm.GetFunctionExport(callMethod) // Get function ID from payload
+
+	if !valid { // Check for errors
+		return ErrInvalidPayload // Return error
+	}
+
+	var parsedCallParams []int64 // Init params buffer
+
+	for _, param := range callParams { // Iterate through params
+		intVal, err := strconv.ParseInt(param, 10, 64) // Parse int
+
+		if err != nil { // Check for errors
+			return err // Return found error
+		}
+
+		parsedCallParams = append(parsedCallParams, intVal) // Append parse param
+	}
+
+	result, err := vm.Run(entryID, parsedCallParams...) // Run
+
+	if err != nil { // Check for errors
+		return err // Return found error
+	}
+
+	panic(result) // Panic result [NOT FOR PROD]
 
 	return nil // No error occurred, return nil
 }
