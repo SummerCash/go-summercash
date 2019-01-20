@@ -111,7 +111,7 @@ func ParseStringMethodCall(input string) (string, string, []string, error) {
 
 	params := []string{} // Init buffer
 
-	if strings.Contains(input, ",") { // Check for nil params
+	if strings.Contains(input, ",") || !strings.Contains(input, "()") { // Check for nil params
 		params, _ = ParseStringParams(input) // Fetch params
 	}
 
