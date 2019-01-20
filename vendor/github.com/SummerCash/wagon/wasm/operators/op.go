@@ -9,7 +9,7 @@ package operators
 import (
 	"fmt"
 
-	"github.com/go-interpreter/wagon/wasm"
+	"github.com/SummerCash/wagon/wasm"
 )
 
 var (
