@@ -635,6 +635,33 @@ func (coordinationChain *CoordinationChain) GetBalance(address common.Address) (
 	return chain.CalculateBalance(), nil // No error occurred, return balance
 }
 
+// GetChain - attempt to fetch remote account/contract chain
+func (coordinationChain *CoordinationChain) GetChain(address common.Address) (*Chain, error) {
+	node, err := coordinationChain.QueryAddress(address) // Get node
+
+	if err != nil { // Check for errors
+		return &Chain{}, err // Return found error
+	}
+
+	var result []byte // Init buffer
+
+	for _, nodeAddress := range node.Addresses { // Iterate through node addresses
+		result, err = common.SendBytesResult(append([]byte("chainRequest")[:], node.Address[:]...), nodeAddress) // Get chain
+
+		if err == nil { // Check no errors
+			break // Break
+		}
+	}
+
+	chain, err := FromBytes(result) // Get chain from bytes
+
+	if err != nil { // Check for errors
+		return &Chain{}, err // Return found error
+	}
+
+	return chain, nil // No error occurred, return found chain
+}
+
 // CoordinationChainFromBytes - decode coordination chain from given byte array
 func CoordinationChainFromBytes(b []byte) (*CoordinationChain, error) {
 	coordinationChain := CoordinationChain{} // Init buffer
