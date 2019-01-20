@@ -152,7 +152,7 @@ func handleConnection(conn net.Conn) error {
 
 		common.Logf("== NETWORK == responding to state request from peer %s\n", conn.RemoteAddr().String()) // Log request
 
-		_, err = conn.Write(state.Bytes()) // Write chain
+		_, err = conn.Write(state) // Write chain
 
 		if err != nil { // Check for errors
 			return err // Return found error
