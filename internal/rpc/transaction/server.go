@@ -3,6 +3,7 @@ package transaction
 import (
 	"context"
 	"fmt"
+	"strings"
 
 	"github.com/SummerCash/go-summercash/accounts"
 	"github.com/SummerCash/go-summercash/common"
@@ -98,6 +99,10 @@ func (server *Server) Publish(ctx context.Context, req *transactionProto.General
 		return &transactionProto.GeneralResponse{}, err // Return found error
 	}
 
+	if transaction.Payload != nil && strings.Contains(string(transaction.Payload), "(") { // Check is contract call
+		return handleContractCall(transaction) // Handle contract call
+	}
+
 	err = transaction.Publish() // Publish transaction
 
 	if err != nil { // Check for errors
@@ -105,6 +110,44 @@ func (server *Server) Publish(ctx context.Context, req *transactionProto.General
 	}
 
 	return &transactionProto.GeneralResponse{Message: fmt.Sprintf("\npublished transaction %s", transaction.Hash)}, nil // Return response
+}
+
+func handleContractCall(transaction *types.Transaction) (*transactionProto.GeneralResponse, error) {
+	err := transaction.Publish() // Publish transaction
+
+	if err != nil { // Check for errors
+		return &transactionProto.GeneralResponse{}, err // Return found error
+	}
+
+	chain, err := types.ReadChainFromMemory(*transaction.Recipient) // Read recipient chain
+
+	if err != nil { // Check for errors
+		coordinationChain, err := types.ReadCoordinationChainFromMemory() // Read coordination chain
+
+		if err != nil { // Check for errors
+			return &transactionProto.GeneralResponse{}, err // Return found error
+		}
+
+		chain, err = coordinationChain.GetChain(*transaction.Recipient) // Get contract chain
+
+		if err != nil { // Check for errors
+			return &transactionProto.GeneralResponse{}, err // Return found error
+		}
+
+		err = chain.WriteToMemory() // Write chain to persistent memory
+
+		if err != nil { // Check for errors
+			return &transactionProto.GeneralResponse{}, err // Return found error
+		}
+	}
+
+	transaction, err = chain.QueryTransaction(*transaction.Hash) // Query TX
+
+	if err != nil { // Check for errors
+		return &transactionProto.GeneralResponse{}, err // Return found error
+	}
+
+	return &transactionProto.GeneralResponse{Message: fmt.Sprintf("\ncontract call response: %s", transaction.Logs.String())}, nil // Return response
 }
 
 // Bytes - transaction.Bytes RPC handler
