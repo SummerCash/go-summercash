@@ -542,7 +542,7 @@ func (chain *Chain) handleContractCall(transaction *Transaction) error {
 		return err // Return found error
 	}
 
-	panic(result) // Panic result [NOT FOR PROD]
+	common.Logf("== CONTRACT == call executed successfully: %d", result) // Log result
 
 	return nil // No error occurred, return nil
 }
