@@ -233,7 +233,7 @@ func NewContractChain(account common.Address, contractSource []byte) (*Chain, er
 		}
 	}
 
-	common.Log("== CHAIN == initializing account chain coordination node") // Log coordination node init
+	common.Log("== CHAIN == initializing contract chain coordination node") // Log coordination node init
 
 	if strings.Contains(localIP, ":") { // Check is IPv6
 		localIP = "[" + localIP + "]" + ":" + strconv.Itoa(common.NodePort) // Add port
@@ -247,7 +247,7 @@ func NewContractChain(account common.Address, contractSource []byte) (*Chain, er
 		return &Chain{}, err // Return found error
 	}
 
-	common.Logf("== SUCCESS == initialized account chain coordination node %s\n", node.ID.String()) // Log coordination node init
+	common.Logf("== SUCCESS == initialized contract chain coordination node %s\n", node.ID.String()) // Log coordination node init
 
 	foundNode, err := coordinationChain.QueryAddress(node.Address) // Check node already exists
 
