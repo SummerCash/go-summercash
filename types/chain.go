@@ -542,7 +542,15 @@ func (chain *Chain) handleContractCall(transaction *Transaction) error {
 		return err // Return found error
 	}
 
-	common.Logf("== CONTRACT == call executed successfully: %d", result) // Log result
+	common.Logf("== CONTRACT == call executed successfully: %d, using %d gas", result, vm.Gas) // Log result
+
+	common.Logf("== STATE == attempting to save state for contract: %s", chain.Account.String()) // Log save state
+
+	err = vm.SaveState() // Save state
+
+	if err != nil { // Check for errors
+		return err // Return found error
+	}
 
 	return nil // No error occurred, return nil
 }
