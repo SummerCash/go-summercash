@@ -811,14 +811,16 @@ func syncState(contract common.Address) error {
 	}
 
 	for _, bootstrapNode := range common.BootstrapNodes { // Iterate through bootstrap nodes
-		common.Logf("== NETWORK == requesting contract state from node %s\n", bootstrapNode) // Log request config
+		if bootstrapNode != ip { // Check is not self
+			common.Logf("== NETWORK == requesting contract state from node %s\n", bootstrapNode) // Log request config
 
-		stateBytes, err = common.SendBytesResult(append([]byte("stateReq"), contract[:]...), bootstrapNode) // Get contract state
+			stateBytes, err = common.SendBytesResult(append([]byte("stateReq"), contract[:]...), bootstrapNode) // Get contract state
 
-		if err != nil { // Check for errors
-			continue // Continue
-		} else {
-			break // Break
+			if err != nil { // Check for errors
+				continue // Continue
+			} else {
+				break // Break
+			}
 		}
 	}
 
