@@ -147,7 +147,11 @@ func handleContractCall(transaction *types.Transaction) (*transactionProto.Gener
 		return &transactionProto.GeneralResponse{}, err // Return found error
 	}
 
-	return &transactionProto.GeneralResponse{Message: fmt.Sprintf("\ncontract call response: %s", transaction.Logs.String())}, nil // Return response
+	if transaction.Logs == nil || len(transaction.Logs) == 0 { // Check no logs
+		return &transactionProto.GeneralResponse{Message: fmt.Sprintf("\npublished transaction %s", transaction.Hash)}, nil // Return response
+	}
+
+	return &transactionProto.GeneralResponse{Message: fmt.Sprintf("\ncontract call response: %s", types.StringLogs(transaction.Logs))}, nil // Return response
 }
 
 // Bytes - transaction.Bytes RPC handler
