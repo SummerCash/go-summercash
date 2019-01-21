@@ -1,6 +1,9 @@
 package types
 
-import "encoding/json"
+import (
+	"encoding/json"
+	"strings"
+)
 
 const (
 	// Return - return log key type
@@ -18,17 +21,19 @@ type LogKeyType int
 
 // Log - log meta container
 type Log struct {
-	Key   string `json:"key"`   // Log key
-	Value []byte `json:"value"` // Log val
+	Type  LogKeyType `json:"type"`  // Log type
+	Key   string     `json:"key"`   // Log key
+	Value []byte     `json:"value"` // Log val
 }
 
 /* BEGIN EXPORTED METHODS */
 
 // NewLog - init log with given key value pair
-func NewLog(key string, value []byte) *Log {
+func NewLog(key string, value []byte, logType LogKeyType) *Log {
 	return &Log{ // Return log
-		Key:   key,   // Set key
-		Value: value, // Set val
+		Type:  logType, // Set type
+		Key:   key,     // Set key
+		Value: value,   // Set val
 	}
 }
 
@@ -45,6 +50,17 @@ func (log *Log) String() string {
 	marshaledVal, _ = json.MarshalIndent(marshaledString, "", "  ") // Marshal
 
 	return string(marshaledVal) // Return success
+}
+
+// StringLogs - get string representation of log slice
+func StringLogs(logs []*Log) string {
+	logStrings := []string{} // init log buffer
+
+	for _, log := range logs { // Iterate through logs
+		logStrings = append(logStrings, log.String()) // Append string val
+	}
+
+	return strings.Join(logStrings, ", ") // Return success
 }
 
 // String - get string representation of key type
