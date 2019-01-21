@@ -81,7 +81,7 @@ func (c *SSAFunctionCompiler) PopStack(n int) []TyValueID {
 		panic("stack underflow") // Panic
 	}
 
-	ret := make([]TyValueID, n) // INit buffer
+	ret := make([]TyValueID, n) // Init buffer
 	pos := len(c.Stack) - n     // Set position
 	copy(ret, c.Stack[pos:])    // Copy into position
 	c.Stack = c.Stack[:pos]     // Set stack to popped

@@ -10,7 +10,6 @@ import (
 	"github.com/SummerCash/ursa/compiler/opcodes"
 	"github.com/SummerCash/ursa/crypto"
 	"github.com/SummerCash/wagon/disasm"
-	"github.com/SummerCash/wagon/validate"
 	"github.com/SummerCash/wagon/wasm"
 	"github.com/SummerCash/wagon/wasm/leb128"
 )
@@ -45,11 +44,13 @@ func LoadModule(moduleBytes []byte) (*Module, error) {
 		return &Module{}, err // Return error
 	}
 
-	err = validate.VerifyModule(module) // Verify module
+	/*
+		err = validate.VerifyModule(module) // Verify module
 
-	if err != nil { // Check for errors
-		return &Module{}, err // Return error
-	}
+		if err != nil { // Check for errors
+			return &Module{}, err // Return error
+		}
+	*/
 
 	if err != nil { // Check for errors
 		return &Module{}, err // Return error

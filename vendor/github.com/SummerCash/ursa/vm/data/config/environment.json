@@ -1,0 +1,12 @@
+{
+  "JIT": false,
+  "maxMemPages": 10,
+  "maxTableSize": 10,
+  "maxValueSlots": 10,
+  "maxCallStackDepth": 10,
+  "defaultMemPages": 10,
+  "defaultTableSize": 10,
+  "gasLimit": 10,
+  "disableFloat": false,
+  "returnOnGasExceed": true
+}

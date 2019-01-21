@@ -4,12 +4,11 @@ package compiler
 func (c *SSAFunctionCompiler) InsertGasCounters(gp GasPolicy) {
 	cfg := c.NewCFGraph() // Init cf graph
 
-	for _, block := range cfg.Blocks { // Iterate through blocks
-		blk := &block // Get current block pointer
+	for x, block := range cfg.Blocks { // Iterate through blocks
 
 		totalCost := int64(0) // Init gas buffer
 
-		for _, ins := range blk.Code { // Iterate through instructions
+		for _, ins := range block.Code { // Iterate through instructions
 			totalCost += gp.GetCost(ins.Op) // Get cost of instruction
 
 			if totalCost < 0 { // Check cost will cause overflow
@@ -18,9 +17,11 @@ func (c *SSAFunctionCompiler) InsertGasCounters(gp GasPolicy) {
 		}
 
 		if totalCost != 0 { // Check total cost is not nil
-			blk.Code = append([]Instr{ // Append add_gas instruction
+			block.Code = append([]Instr{ // Append add_gas instruction
 				buildInstr(0, "add_gas", []int64{totalCost}, []TyValueID{}),
-			}, blk.Code...)
+			}, block.Code...)
+
+			cfg.Blocks[x] = block // Set block
 		}
 	}
 

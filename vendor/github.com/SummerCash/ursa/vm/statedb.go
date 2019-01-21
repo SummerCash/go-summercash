@@ -1,6 +1,8 @@
 package vm
 
 import (
+	"bytes"
+	"encoding/gob"
 	"encoding/json"
 	"errors"
 
@@ -126,9 +128,17 @@ func (stateDB *StateDatabase) FindMax() (*StateEntry, error) {
 
 // Bytes - get byte representation of db
 func (stateDB *StateDatabase) Bytes() []byte {
-	marshaledVal, _ := json.MarshalIndent(*stateDB, "", "  ") // Marshal JSON
+	var stateBuffer bytes.Buffer // Init encoding buffer
 
-	return marshaledVal // Return success
+	encoder := gob.NewEncoder(&stateBuffer) // Write to state buffer
+
+	err := encoder.Encode(*stateDB) // Encode virtual machine state
+
+	if err != nil { // Check for errors
+		return nil // Return nil
+	}
+
+	return stateBuffer.Bytes() // Return success
 }
 
 // String - get string representation of db
