@@ -148,6 +148,10 @@ func handleContractCall(transaction *types.Transaction) (*transactionProto.Gener
 	recipient := *transaction.Recipient // Get recipient
 	transaction = nil                   // Init tx buffer
 
+	if chain.ContractSource == nil { // Check not contract
+		return &transactionProto.GeneralResponse{Message: fmt.Sprintf("\npublished transaction %s", transaction.Hash)}, nil // Return response
+	}
+
 	for time.Now().Sub(startTime) < 5*time.Second { // Async read tx
 		chain, err = types.ReadChainFromMemory(recipient) // Read recipient chain
 
@@ -157,7 +161,7 @@ func handleContractCall(transaction *types.Transaction) (*transactionProto.Gener
 
 		transaction, _ = chain.QueryTransaction(txHash) // Query TX
 
-		if transaction != nil { // Check not nil
+		if transaction != nil && transaction.Logs != nil && len(transaction.Logs) != 0 { // Check not nil
 			break // Break
 		}
 	}
