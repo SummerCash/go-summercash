@@ -2,6 +2,7 @@ package types
 
 import (
 	"bytes"
+	"encoding/binary"
 	"encoding/hex"
 	"encoding/json"
 	"errors"
@@ -539,12 +540,26 @@ func (chain *Chain) handleContractCall(transaction *Transaction) error {
 	result, err := vm.Run(entryID, parsedCallParams...) // Run
 
 	if err != nil { // Check for errors
-		return err // Return found error
+		errLog := NewLog("error", []byte(err.Error()), Error) // Init log
+
+		transaction.Logs = append(transaction.Logs, errLog) // Append error log
+
+		common.Logf("== ERROR == call stopped with error: %d\n", err.Error()) // Log result
+
+		return nil // Break
 	}
 
-	common.Logf("\n== CONTRACT == call executed successfully: %d, using %d gas", result, vm.Gas) // Log result
+	resultBuffer := make([]byte, 8) // Init result buffer
 
-	common.Logf("\n== STATE == attempting to save state for contract: %s", chain.Account.String()) // Log save state
+	binary.LittleEndian.PutUint64(resultBuffer, uint64(result)) // Encode to []byte
+
+	returnLog := NewLog("return", resultBuffer, Return) // Init log
+
+	transaction.Logs = append(transaction.Logs, returnLog) // Append return log TODO: custom logs, gas
+
+	common.Logf("== CONTRACT == call executed successfully: %d, using %d gas\n", result, vm.Gas) // Log result
+
+	common.Logf("== STATE == attempting to save state for contract: %s\n", chain.Account.String()) // Log save state
 
 	err = vm.SaveState() // Save state
 
