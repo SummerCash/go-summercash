@@ -542,7 +542,13 @@ func (chain *Chain) handleContractCall(transaction *Transaction) error {
 	if err != nil { // Check for errors
 		errLog := NewLog("error", []byte(err.Error()), Error) // Init log
 
-		transaction.Logs = append(transaction.Logs, errLog) // Append error log
+		(*transaction).Logs = append((*transaction).Logs, errLog) // Append error log
+
+		err = chain.WriteToMemory() // Write chain to persistent memory
+
+		if err != nil { // Check for errors
+			return err // Return found error
+		}
 
 		common.Logf("== ERROR == call stopped with error: %d\n", err.Error()) // Log result
 
@@ -555,7 +561,13 @@ func (chain *Chain) handleContractCall(transaction *Transaction) error {
 
 	returnLog := NewLog("return", resultBuffer, Return) // Init log
 
-	transaction.Logs = append(transaction.Logs, returnLog) // Append return log TODO: custom logs, gas
+	(*transaction).Logs = append((*transaction).Logs, returnLog) // Append return log TODO: custom logs, gas
+
+	err = chain.WriteToMemory() // Write chain to persistent memory
+
+	if err != nil { // Check for errors
+		return err // Return found error
+	}
 
 	common.Logf("== CONTRACT == call executed successfully: %d, using %d gas\n", result, vm.Gas) // Log result
 
