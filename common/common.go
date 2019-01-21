@@ -64,7 +64,7 @@ var (
 	}
 
 	// GasPolicy - global gas policy
-	GasPolicy = compiler.SimpleGasPolicy{ //TODO: better gas policy
+	GasPolicy = &compiler.SimpleGasPolicy{ //TODO: better gas policy
 		GasPerInstruction: 1,
 	}
 )

@@ -49,6 +49,8 @@ type Transaction struct {
 	ContractCreation bool `json:"is-init-contract"` // Should init contract
 	Genesis          bool `json:"genesis"`          // Genesis
 
+	Logs []*Log `json:"logs"` // Logs
+
 	Hash *common.Hash `json:"hash"` // Transaction hash
 }
 
