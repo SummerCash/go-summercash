@@ -168,7 +168,7 @@ func startNode(archivalNode bool) {
 			x := 0 // Init iterator
 
 			for {
-				if x == len(common.BootstrapNodes) { // Check is out of bounds
+				if x >= len(common.BootstrapNodes) { // Check is out of bounds
 					if coordinationChain == nil { // Check nodes available
 						panic("== WARNING == no available bootstrap nodes") // Panic
 					}
@@ -180,6 +180,10 @@ func startNode(archivalNode bool) {
 					}
 
 					common.BootstrapNodes = append(common.BootstrapNodes, archivalNodes...) // Append archival nodes
+
+					if x >= len(common.BootstrapNodes) { // Check is out of bounds
+						break // Break
+					}
 				}
 
 				common.Logf("== NETWORK == joining with bootstrap node %s\n", common.BootstrapNodes[x]) // Log join
