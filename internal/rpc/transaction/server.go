@@ -148,6 +148,12 @@ func handleContractCall(transaction *types.Transaction) (*transactionProto.Gener
 	transaction = nil           // Init tx buffer
 
 	for time.Now().Sub(startTime) < 5*time.Second { // Async read tx
+		chain, err = types.ReadChainFromMemory(*transaction.Recipient) // Read recipient chain
+
+		if err != nil { // Check for errors
+			return &transactionProto.GeneralResponse{}, err // Return found error
+		}
+
 		transaction, _ = chain.QueryTransaction(txHash) // Query TX
 
 		if transaction != nil { // Check not nil
