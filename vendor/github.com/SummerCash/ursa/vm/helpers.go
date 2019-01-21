@@ -80,7 +80,7 @@ func (vm *VirtualMachine) Run(entryID int, params ...int64) (int64, error) {
 
 // ResolveFunc - define a set of import functions that may be called within a WebAssembly module
 func (r *Resolver) ResolveFunc(module, field string) FunctionImport {
-	fmt.Printf("Resolve func: %s %s\n", module, field) // Log resolve
+	//fmt.Printf("Resolve func: %s %s\n", module, field) // Log resolve
 
 	switch module { // Handle module types
 	case "env": // Env module
