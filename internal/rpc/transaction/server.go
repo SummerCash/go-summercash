@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"strings"
+	"time"
 
 	"github.com/SummerCash/go-summercash/accounts"
 	"github.com/SummerCash/go-summercash/common"
@@ -141,10 +142,17 @@ func handleContractCall(transaction *types.Transaction) (*transactionProto.Gener
 		}
 	}
 
-	transaction, err = chain.QueryTransaction(*transaction.Hash) // Query TX
+	startTime := time.Now() // Get start time
 
-	if err != nil { // Check for errors
-		return &transactionProto.GeneralResponse{}, err // Return found error
+	txHash := *transaction.Hash // Get hash
+	transaction = nil           // Init tx buffer
+
+	for time.Now().Sub(startTime) < 5*time.Second && transaction != nil { // Async read tx
+		transaction, _ = chain.QueryTransaction(txHash) // Query TX
+	}
+
+	if transaction == nil { // Check tx nil
+		return &transactionProto.GeneralResponse{}, types.ErrNilTransaction // Return error
 	}
 
 	if transaction.Logs == nil || len(transaction.Logs) == 0 { // Check no logs
