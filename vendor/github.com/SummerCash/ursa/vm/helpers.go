@@ -85,11 +85,11 @@ func (r *Resolver) ResolveFunc(module, field string) FunctionImport {
 	switch module { // Handle module types
 	case "env": // Env module
 		switch field { // Handle fields
-		case "__life_ping":
+		case "__ursa_ping":
 			return func(vm *VirtualMachine) int64 {
 				return vm.GetCurrentFrame().Locals[0] + 1
 			}
-		case "__life_log":
+		case "__ursa_log":
 			return func(vm *VirtualMachine) int64 {
 				ptr := int(uint32(vm.GetCurrentFrame().Locals[0]))
 				msgLen := int(uint32(vm.GetCurrentFrame().Locals[1]))
