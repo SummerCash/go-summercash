@@ -133,10 +133,16 @@ func (coordinationChain *CoordinationChain) ClearCache() error {
 
 		for _, address := range node.Addresses { // Iterate through providing addresses
 			if !gop2pCommon.StringInSlice(verifiedNodes, address) { // Check must be tested
+				common.Logf("== CACHE CLEAR JOB == attempting to check responsiveness of node %s", address) // Log check
+
 				configBytes, err := common.SendBytesResult([]byte("configReq"), address) // Get chain config
 
 				if err == nil && configBytes != nil { // Check no errors
+					common.Logf("== CACHE CLEAR JOB == node %s was responsive, adding to verified nodes", address) // Log successful check
+
 					verifiedNodes = append(verifiedNodes, address) // Append verified node address
+				} else { // Otherwise
+					common.Logf("== CACHE CLEAR JOB == node %s was not responsive", address) // Log check
 				}
 			}
 		}
