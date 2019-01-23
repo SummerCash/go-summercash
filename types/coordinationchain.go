@@ -142,7 +142,8 @@ func (coordinationChain *CoordinationChain) ClearCache() error {
 				if err == nil && configBytes != nil { // Check no errors
 					common.Logf("== CACHE CLEAR JOB == node %s was responsive, adding to verified nodes\n", address) // Log successful check
 
-					verifiedNodes = append(verifiedNodes, address) // Append verified node address
+					verifiedNodes = append(verifiedNodes, address)       // Append verified node address
+					allVerifiedNodes = append(allVerifiedNodes, address) // Append verified node address
 				} else { // Otherwise
 					common.Logf("== CACHE CLEAR JOB == node %s was not responsive\n", address) // Log check
 				}
