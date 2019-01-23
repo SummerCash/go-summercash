@@ -146,6 +146,10 @@ func (coordinationChain *CoordinationChain) ClearCache() error {
 				} else { // Otherwise
 					common.Logf("== CACHE CLEAR JOB == node %s was not responsive\n", address) // Log check
 				}
+			} else if gop2pCommon.StringInSlice(allVerifiedNodes, address) && !gop2pCommon.StringInSlice(verifiedNodes, address) { // Check in all verified nodes but not in scope verified nodes
+				common.Logf("== CACHE CLEAR JOB == node %s was responsive, adding to verified nodes\n", address) // Log successful check
+
+				verifiedNodes = append(verifiedNodes, address) // Append verified node address
 			}
 		}
 
