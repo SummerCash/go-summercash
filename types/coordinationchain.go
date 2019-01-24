@@ -128,6 +128,14 @@ func (coordinationChain *CoordinationChain) ClearCache() error {
 		return ErrNilCoordinationChain // Return error
 	}
 
+	var err error // Init error buffer
+
+	coordinationChain, err = ReadCoordinationChainFromMemory() // Read coordination chain from persistent memory
+
+	if err != nil { // Check for errors
+		return err // Return found error
+	}
+
 	allVerifiedNodes := []string{} // Init buffer
 
 	for _, node := range coordinationChain.Nodes { // Iterate through nodes
@@ -159,7 +167,7 @@ func (coordinationChain *CoordinationChain) ClearCache() error {
 		(*node).Addresses = verifiedNodes // Set to cleared
 	}
 
-	err := coordinationChain.WriteToMemory() // Write to memory
+	err = coordinationChain.WriteToMemory() // Write to memory
 
 	if err != nil { // Check for errors
 		return err // Return found error
