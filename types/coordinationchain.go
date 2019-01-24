@@ -151,6 +151,8 @@ func (coordinationChain *CoordinationChain) ClearCache() error {
 				common.Logf("== CACHE CLEAR JOB == node %s already determined, adding to verified nodes\n", address) // Log successful check
 
 				verifiedNodes = append(verifiedNodes, address) // Append verified node address
+			} else {
+				common.Logf("== CACHE CLEAR JOB == node %s not applicable for db, removing\n", address) // Log successful check
 			}
 		}
 
