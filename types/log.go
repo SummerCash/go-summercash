@@ -46,6 +46,7 @@ func (log *Log) String() string {
 	json.Unmarshal(marshaledVal, &marshaledString) // Unmarshal JSON
 
 	marshaledString["value"] = string(log.Value) // Get string representation
+	marshaledString["type"] = log.Type.String()  // Get type string representation
 
 	marshaledVal, _ = json.MarshalIndent(marshaledString, "", "  ") // Marshal
 
