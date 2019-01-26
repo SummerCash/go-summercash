@@ -59,6 +59,8 @@ func (stateDB *StateDatabase) WriteToMemory() error {
 		return err // Return found error
 	}
 
+	fmt.Println("== test == writing state db to memory at path: " + filepath.FromSlash(fmt.Sprintf("%s/%s.db", abs, hex.EncodeToString(stateDB.ID))))
+
 	err = ioutil.WriteFile(filepath.FromSlash(fmt.Sprintf("%s/%s.db", abs, hex.EncodeToString(stateDB.ID))), stateBuffer.Bytes(), 0644) // Write state buffer to persistent memory
 
 	if err != nil { // Check for errors
