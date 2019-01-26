@@ -317,6 +317,8 @@ func (vm *VirtualMachine) LoadStateDB(id string) error {
 		return err // Return found error
 	}
 
+	fmt.Println("successfully read stateDB: " + stateDB.String()) // Log successful read
+
 	(*vm).StateDB = stateDB // Set state db
 
 	return nil // No error occurred, return nil
