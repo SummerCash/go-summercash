@@ -513,6 +513,12 @@ func (chain *Chain) handleContractCall(transaction *Transaction) error {
 		return err // Return found error
 	}
 
+	err = vm.LoadWorkingRoot() // Load last valid working root
+
+	if err != nil { // Check for errors
+		return err // Return found error
+	}
+
 	callMethod, callParams, err := common.ParseStringMethodCallNoReceiver(string(transaction.Payload)) // Parse payload method call
 
 	if err != nil { // Check for errors
