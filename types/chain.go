@@ -6,6 +6,7 @@ import (
 	"encoding/hex"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"strconv"
 	"strings"
 
@@ -506,6 +507,8 @@ func (chain *Chain) handleContractCall(transaction *Transaction) error {
 	if err != nil { // Check for errors
 		return err // Return found error
 	}
+
+	fmt.Println("== test == " + hex.EncodeToString(vm.StateDB.ID))
 
 	err = vm.LoadStateDB(hex.EncodeToString(vm.StateDB.ID)) // Load state db
 
