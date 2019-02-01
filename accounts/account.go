@@ -121,6 +121,27 @@ func GetAllAccounts() ([]string, error) {
 	return buffer, nil // No error occurred, return success
 }
 
+// GetAllContracts - get list of all deployed contracts from account
+func GetAllContracts(deployingAccount common.Address) ([]string, error) {
+	buffer := []string{} // Init buffer
+
+	files, err := ioutil.ReadDir(filepath.FromSlash(fmt.Sprintf("%s/keystore", common.DataDir))) // Walk keystore dir
+
+	if err != nil { // Check for errors
+		return []string{}, err // Return found error
+	}
+
+	for x, file := range files { // Iterate through files
+		if x == 0 { // Check is first index
+			buffer = []string{strings.Split(strings.Split(file.Name(), "account_")[1], ".json")[0]} // Init buffer
+		} else {
+			buffer = append(buffer, strings.Split(strings.Split(file.Name(), "account_")[1], ".json")[0]) // Append to buffer
+		}
+	}
+
+	return buffer, nil // No error occurred, return success
+}
+
 // MakeEncodingSafe - make account safe for encoding
 func (account *Account) MakeEncodingSafe() error {
 	if account.PrivateKey != nil { // Check has private key
