@@ -132,6 +132,7 @@ func (server *Server) GetAllAccounts(ctx context.Context, req *accountsProto.Gen
 
 // GetAllContracts - accounts.GetAllContracts RPC handler
 func (server *Server) GetAllContracts(ctx context.Context, req *accountsProto.GeneralRequest) (*accountsProto.GeneralResponse, error) {
+	panic("test")
 	address, err := common.StringToAddress(req.Address) // Get address
 
 	if err != nil { // Check for errors

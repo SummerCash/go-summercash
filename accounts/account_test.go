@@ -106,6 +106,62 @@ func TestGetAllAccounts(t *testing.T) {
 	t.Log(addresses) // Log success
 }
 
+// TestGetAllContracts - test functionality of contrac walk method
+func TestGetAllContracts(t *testing.T) {
+	coordinationChain, err := types.NewCoordinationChain() // Init coordination chain
+
+	if err != nil { // Check for errors
+		t.Error(err) // Log found error
+		t.FailNow()  // Panic
+	}
+
+	err = coordinationChain.WriteToMemory() // Write coordination chain to memory
+
+	if err != nil { // Check for errors
+		t.Error(err) // Log found error
+		t.FailNow()  // Panic
+	}
+
+	account, err := NewAccount() // Generate account
+
+	if err != nil { // Check for errors
+		t.Error(err) // Log found error
+		t.FailNow()  // Panic
+	}
+
+	err = account.WriteToMemory() // Make sure we have at least one account to walk
+
+	if err != nil { // Check for errors
+		t.Error(err) // Log found error
+		t.FailNow()  // Panic
+	}
+
+	path, _ := filepath.Abs(filepath.FromSlash("../types/main.wasm")) // Get path
+
+	contractSource, err := ioutil.ReadFile(path) // Read contract source
+
+	if err != nil { // Check for errors
+		t.Error(err) // Log found error
+		t.FailNow()  // Panic
+	}
+
+	_, err = NewContractAccount(contractSource) // Deploy contract
+
+	if err != nil { // Check for errors
+		t.Error(err) // Log found error
+		t.FailNow()  // Panic
+	}
+
+	contractAddresses, err := GetAllContracts(account.Address) // Get all contracts
+
+	if err != nil { // Check for errors
+		t.Error(err) // Log found error
+		t.FailNow()  // Panic
+	}
+
+	t.Log(contractAddresses) // Log success
+}
+
 // TestMakeEncodingSafe - test functionality of safe account encoding
 func TestMakeEncodingSafe(t *testing.T) {
 	privateKey, err := ecdsa.GenerateKey(elliptic.P521(), rand.Reader) // Generate private key
