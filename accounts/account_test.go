@@ -42,6 +42,27 @@ func TestNewAccount(t *testing.T) {
 
 // TestNewContractAccount - test contract deploy
 func TestNewContractAccount(t *testing.T) {
+	address, err := common.StringToAddress("0x040028d536d5351e83fbbec320c194629ace") // Get addr value
+
+	if err != nil { // Check for errors
+		t.Error(err) // Log found error
+		t.FailNow()  // Panic
+	}
+
+	err = makeChainConfig(address) // Make config
+
+	if err != nil { // Check for errors
+		t.Error(err) // Log found error
+		t.FailNow()  // Panic
+	}
+
+	account, err := NewAccount() // Generate account
+
+	if err != nil { // Check for errors
+		t.Error(err) // Log found error
+		t.FailNow()  // Panic
+	}
+
 	path, _ := filepath.Abs(filepath.FromSlash("../types/main.wasm")) // Get path
 
 	contractSource, err := ioutil.ReadFile(path) // Read contract source
@@ -51,7 +72,7 @@ func TestNewContractAccount(t *testing.T) {
 		t.FailNow()  // Panic
 	}
 
-	contractInstance, err := NewContractAccount(contractSource) // Deploy contract
+	contractInstance, err := NewContractAccount(contractSource, &account.Address) // Deploy contract
 
 	if err != nil { // Check for errors
 		t.Error(err) // Log found error
@@ -145,7 +166,7 @@ func TestGetAllContracts(t *testing.T) {
 		t.FailNow()  // Panic
 	}
 
-	_, err = NewContractAccount(contractSource) // Deploy contract
+	_, err = NewContractAccount(contractSource, &account.Address) // Deploy contract
 
 	if err != nil { // Check for errors
 		t.Error(err) // Log found error

@@ -186,7 +186,7 @@ func NewChain(account common.Address) (*Chain, error) {
 }
 
 // NewContractChain - initialize new contract chain
-func NewContractChain(account common.Address, contractSource []byte) (*Chain, error) {
+func NewContractChain(account common.Address, contractSource []byte, deploymentTransaction *Transaction) (*Chain, error) {
 	coordinationChain, err := ReadCoordinationChainFromMemory() // Read coordination chain from memory
 
 	if err != nil { // Check for errors
@@ -209,7 +209,7 @@ func NewContractChain(account common.Address, contractSource []byte) (*Chain, er
 
 	chain := &Chain{ // Init chain
 		Account:        account,
-		Transactions:   []*Transaction{},
+		Transactions:   []*Transaction{deploymentTransaction},
 		NetworkID:      config.NetworkID,
 		ContractSource: contractSource,
 	}

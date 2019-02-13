@@ -56,7 +56,13 @@ func NewAccount() (*Account, error) {
 }
 
 // NewContractAccount - create new account for contract
-func NewContractAccount(contractSource []byte) (*Account, error) {
+func NewContractAccount(contractSource []byte, deployingAccountAddress *common.Address) (*Account, error) {
+	deployingAccount, err := ReadAccountFromMemory(*deployingAccountAddress) // Read account private key
+
+	if err != nil { // Check for errors
+		return &Account{}, err // Return error
+	}
+
 	privateKey, err := ecdsa.GenerateKey(elliptic.P521(), rand.Reader) // Generate private key
 
 	if err != nil { // Check for errors
@@ -69,7 +75,19 @@ func NewContractAccount(contractSource []byte) (*Account, error) {
 		return &Account{}, err // Return error
 	}
 
-	chain, err := types.NewContractChain(account.Address, contractSource) // Init contract chain
+	deploymentTransaction, err := types.NewTransaction(0, nil, &deployingAccount.Address, &account.Address, 0, nil) // Initialize transaction
+
+	if err != nil { // Check for errors
+		return &Account{}, err // Return error
+	}
+
+	err = types.SignTransaction(deploymentTransaction, deployingAccount.PrivateKey) // Sign tx
+
+	if err != nil { // Check for errors
+		return &Account{}, err // Return error
+	}
+
+	chain, err := types.NewContractChain(account.Address, contractSource, deploymentTransaction) // Init contract chain
 
 	if err != nil { // Check for errors
 		return &Account{}, err // Return error
