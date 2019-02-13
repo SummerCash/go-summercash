@@ -132,7 +132,7 @@ func GetAllContracts(deployingAccount common.Address) ([]string, error) {
 	}
 
 	for _, file := range files { // Iterate through files
-		chainBytes, err := ioutil.ReadFile(file.Name()) // Read file
+		chainBytes, err := ioutil.ReadFile(filepath.FromSlash(fmt.Sprintf("%s/db/chain/%s", common.DataDir, file.Name()))) // Read file
 
 		if err != nil { // Check for errors
 			return []string{}, err // Return found error
