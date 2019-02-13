@@ -130,6 +130,23 @@ func (server *Server) GetAllAccounts(ctx context.Context, req *accountsProto.Gen
 	return &accountsProto.GeneralResponse{Message: fmt.Sprintf("\n%s", strings.Join(addresses, ", "))}, nil // No error occurred, return response
 }
 
+// GetAllContracts - accounts.GetAllContracts RPC handler
+func (server *Server) GetAllContracts(ctx context.Context, req *accountsProto.GeneralRequest) (*accountsProto.GeneralResponse, error) {
+	address, err := common.StringToAddress(req.Address) // Get address
+
+	if err != nil { // Check for errors
+		return &accountsProto.GeneralResponse{}, err // Return found error
+	}
+
+	addresses, err := accounts.GetAllContracts(address) // Walk with deploying address
+
+	if err != nil { // Check for errors
+		return &accountsProto.GeneralResponse{}, err // Return found error
+	}
+
+	return &accountsProto.GeneralResponse{Message: fmt.Sprintf("\n%s", strings.Join(addresses, ", "))}, nil // No error occurred, return response
+}
+
 // MakeEncodingSafe - accounts.MakeEncodingSafe RPC handler
 func (server *Server) MakeEncodingSafe(ctx context.Context, req *accountsProto.GeneralRequest) (*accountsProto.GeneralResponse, error) {
 	address, err := common.StringToAddress(req.Address) // Get address
