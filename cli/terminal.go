@@ -215,13 +215,13 @@ func handleAccounts(accountsClient *accountsProto.Accounts, methodname string, p
 	switch methodname {
 	case "NewAccount", "GetAllAccounts":
 		reflectParams = append(reflectParams, reflect.ValueOf(&accountsProto.GeneralRequest{})) // Append params
-	case "MakeEncodingSafe", "RecoverSafeEncoding", "String", "Bytes", "ReadAccountFromMemory", "NewContractAccount", "GetAllContracts":
+	case "MakeEncodingSafe", "RecoverSafeEncoding", "String", "Bytes", "ReadAccountFromMemory":
 		if len(params) != 1 { // Check for invalid parameters
 			return errors.New("invalid parameters (requires string)") // Return error
 		}
 
 		reflectParams = append(reflectParams, reflect.ValueOf(&accountsProto.GeneralRequest{Address: params[0]})) // Append params
-	case "AccountFromKey":
+	case "AccountFromKey", "NewContractAccount", "GetAllContracts":
 		if len(params) != 1 { // Check for invalid parameters
 			return errors.New("invalid parameters (requires string)") // Return error
 		}

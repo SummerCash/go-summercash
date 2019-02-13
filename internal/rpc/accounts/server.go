@@ -63,7 +63,13 @@ func (server *Server) NewContractAccount(ctx context.Context, req *accountsProto
 		return &accountsProto.GeneralResponse{}, err // Return found error
 	}
 
-	contractInstance, err := accounts.NewContractAccount(contractSource) // Deploy from contract source
+	address, err := common.StringToAddress(req.Address) // Get address value
+
+	if err != nil { // Check for errors
+		return &accountsProto.GeneralResponse{}, err // Return found error
+	}
+
+	contractInstance, err := accounts.NewContractAccount(contractSource, &address) // Deploy from contract source
 
 	if err != nil { // Check for errors
 		return &accountsProto.GeneralResponse{}, err // Return found error
