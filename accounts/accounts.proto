@@ -7,6 +7,7 @@ service Accounts {
     rpc NewContractAccount(GeneralRequest) returns (GeneralResponse) {} // Deploy new contract instance
     rpc AccountFromKey(GeneralRequest) returns (GeneralResponse) {} // Generate account from given private key
     rpc GetAllAccounts(GeneralRequest) returns (GeneralResponse) {} // Walk keystore directory
+    rpc GetAllContracts(GeneralRequest) returns (GeneralResponse) {} // Walk contracts directory
     rpc MakeEncodingSafe(GeneralRequest) returns (GeneralResponse) {} // Hash specified byte array n times
     rpc RecoverSafeEncoding(GeneralRequest) returns (GeneralResponse) {} // Hash specified byte array n times to string
     rpc String(GeneralRequest) returns (GeneralResponse) {} // Hash specified byte array using sha3d algorithm
