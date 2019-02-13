@@ -138,13 +138,13 @@ func (server *Server) GetAllContracts(ctx context.Context, req *accountsProto.Ge
 		return &accountsProto.GeneralResponse{}, err // Return found error
 	}
 
-	panic("test")
-
 	addresses, err := accounts.GetAllContracts(address) // Walk with deploying address
 
 	if err != nil { // Check for errors
 		return &accountsProto.GeneralResponse{}, err // Return found error
 	}
+
+	panic("test")
 
 	fmt.Println(strings.Join(addresses, ", "))
 
