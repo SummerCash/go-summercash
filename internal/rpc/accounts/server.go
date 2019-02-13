@@ -144,6 +144,8 @@ func (server *Server) GetAllContracts(ctx context.Context, req *accountsProto.Ge
 		return &accountsProto.GeneralResponse{}, err // Return found error
 	}
 
+	fmt.Println(strings.Join(addresses, ", "))
+
 	return &accountsProto.GeneralResponse{Message: fmt.Sprintf("\n%s", strings.Join(addresses, ", "))}, nil // No error occurred, return response
 }
 
