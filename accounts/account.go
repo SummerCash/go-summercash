@@ -125,17 +125,27 @@ func GetAllAccounts() ([]string, error) {
 func GetAllContracts(deployingAccount common.Address) ([]string, error) {
 	buffer := []string{} // Init buffer
 
-	files, err := ioutil.ReadDir(filepath.FromSlash(fmt.Sprintf("%s/keystore", common.DataDir))) // Walk keystore dir
+	files, err := ioutil.ReadDir(filepath.FromSlash(fmt.Sprintf("%s/db/chain", common.DataDir))) // Walk chain dir
 
 	if err != nil { // Check for errors
 		return []string{}, err // Return found error
 	}
 
-	for x, file := range files { // Iterate through files
-		if x == 0 { // Check is first index
-			buffer = []string{strings.Split(strings.Split(file.Name(), "account_")[1], ".json")[0]} // Init buffer
-		} else {
-			buffer = append(buffer, strings.Split(strings.Split(file.Name(), "account_")[1], ".json")[0]) // Append to buffer
+	for _, file := range files { // Iterate through files
+		chainBytes, err := ioutil.ReadFile(file.Name()) // Read file
+
+		if err != nil { // Check for errors
+			return []string{}, err // Return found error
+		}
+
+		chain, err := types.FromBytes(chainBytes) // Get chain
+
+		if err != nil { // Check for errors
+			return []string{}, err // Return found error
+		}
+
+		if chain.ContractSource != nil { // Check is contract
+			buffer = append(buffer, strings.Split(strings.Split(file.Name(), "chain_")[1], ".json")[0]) // Append to buffer
 		}
 	}
 

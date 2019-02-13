@@ -1,6 +1,7 @@
 package types
 
 import (
+	"encoding/binary"
 	"encoding/json"
 	"strings"
 )
@@ -47,6 +48,10 @@ func (log *Log) String() string {
 
 	marshaledString["value"] = string(log.Value) // Get string representation
 	marshaledString["type"] = log.Type.String()  // Get type string representation
+
+	if log.Type == Return { // Check is return
+		marshaledString["value"] = binary.LittleEndian.Uint64(log.Value) // Get integer representation
+	}
 
 	marshaledVal, _ = json.MarshalIndent(marshaledString, "", "  ") // Marshal
 
