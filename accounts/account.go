@@ -162,8 +162,6 @@ func GetAllContracts(deployingAccount common.Address) ([]string, error) {
 			return []string{}, err // Return found error
 		}
 
-		panic(len(chain.Transactions))
-
 		if chain.ContractSource != nil && *chain.Transactions[0].Sender == deployingAccount { // Check is contract from account
 			buffer = append(buffer, strings.Split(strings.Split(file.Name(), "chain_")[1], ".json")[0]) // Append to buffer
 		}
