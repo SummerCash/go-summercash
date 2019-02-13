@@ -204,7 +204,7 @@ func NewContractChain(account common.Address, contractSource []byte) (*Chain, er
 	if err != nil && err != ErrNilNode { // Check chain with address does not exist
 		return &Chain{}, err // Return error
 	} else if err == nil { // Check exists
-		return &Chain{}, ErrAlreadySigned // Return error
+		return &Chain{}, ErrChainAlreadyExists // Return error
 	}
 
 	chain := &Chain{ // Init chain
