@@ -63,7 +63,7 @@ func (server *Server) NewContractAccount(ctx context.Context, req *accountsProto
 		return &accountsProto.GeneralResponse{}, err // Return found error
 	}
 
-	address, err := common.StringToAddress(req.Address) // Get address value
+	address, err := common.StringToAddress(req.PrivateKey) // Get address value
 
 	if err != nil { // Check for errors
 		return &accountsProto.GeneralResponse{}, err // Return found error

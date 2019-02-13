@@ -221,12 +221,18 @@ func handleAccounts(accountsClient *accountsProto.Accounts, methodname string, p
 		}
 
 		reflectParams = append(reflectParams, reflect.ValueOf(&accountsProto.GeneralRequest{Address: params[0]})) // Append params
-	case "AccountFromKey", "NewContractAccount", "GetAllContracts":
+	case "AccountFromKey", "GetAllContracts":
 		if len(params) != 1 { // Check for invalid parameters
 			return errors.New("invalid parameters (requires string)") // Return error
 		}
 
 		reflectParams = append(reflectParams, reflect.ValueOf(&accountsProto.GeneralRequest{PrivateKey: params[0]})) // Append params
+	case "NewContractAccount":
+		if len(params) != 2 { // Check for invalid parameters
+			return errors.New("invalid parameters (requires string, string)") // Return error
+		}
+
+		reflectParams = append(reflectParams, reflect.ValueOf(&accountsProto.GeneralRequest{Address: params[0], PrivateKey: params[1]})) // Append params
 	default:
 		return errors.New("illegal method: " + methodname + ", available methods: NewAccount(), NewContractAccount(), GetAllAccounts(), MakeEncodingSafe(), RecoverSafeEncoding(), String(), Bytes(), ReadAccountFromMemory()") // Return error
 	}
