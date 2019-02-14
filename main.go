@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"crypto/tls"
 	"flag"
 	"fmt"
@@ -32,6 +33,7 @@ import (
 	upnpServer "github.com/SummerCash/go-summercash/internal/rpc/upnp"
 	"github.com/SummerCash/go-summercash/types"
 	"github.com/SummerCash/go-summercash/upnp"
+	libp2p "github.com/libp2p/go-libp2p"
 )
 
 var (
@@ -145,11 +147,21 @@ func startRPCServer() {
 
 // startNode - start necessary services for full node
 func startNode(archivalNode bool) {
+	ctx, cancel := context.WithCancel(context.Background()) // Get node context
+
+	defer cancel() // Cancel
+
+	host, err := libp2p.New(ctx, libp2p.NATPortMap()) // Initialize libp2p host with context and nat manager
+
+	if err != nil { // Check for errors
+		panic(err) // Panic
+	}
+
 	ip, _ := common.GetExtIPAddrWithoutUPnP() // Get IP
 
 	alreadySynced := false // Init bool
 
-	common.Logf("== NODE == starting on port %d with external IP %s\n", *nodePortFlag, ip) // Log init
+	common.Logf("== NODE == starting on port %d with ID %s\n", *nodePortFlag, host.ID()) // Log init
 
 	coordinationChain, err := types.ReadCoordinationChainFromMemory() // Read coordination chain
 
