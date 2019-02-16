@@ -30,8 +30,12 @@
     "disasm",
     "validate",
     "wasm",
+    "intrnl",
     "wasm/leb128",
     "wasm/operators",
+    "wasm/intrnl",
+    "wasm/operators",
+    "wasm/testdata"
   ]
   pruneopts = "UT"
   revision = "0077fe2c1bbd991b8da10d878985e78ca6ac25e9"
@@ -76,20 +80,6 @@
   pruneopts = "UT"
   revision = "4966fc68f5b7593aafa6cbbba2d65ec6e1416047"
   version = "v1.1.0"
-
-[[projects]]
-  digest = "1:8f6fe77e9b6988b78cb649dcaeee5e7229f6c7649af9c4fb03f4c18f692632e8"
-  name = "github.com/go-interpreter/wagon"
-  packages = [
-    "internal/stack",
-    "wasm",
-    "wasm/internal/readpos",
-    "wasm/leb128",
-    "wasm/operators",
-  ]
-  pruneopts = "UT"
-  revision = "0077fe2c1bbd991b8da10d878985e78ca6ac25e9"
-  version = "v0.3.0"
 
 [[projects]]
   digest = "1:69148993c8baff35dbb0b5ec92eccb6b75b2b7255a4ad1257be38f51fff8f267"
