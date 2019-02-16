@@ -144,8 +144,6 @@ func (server *Server) GetAllContracts(ctx context.Context, req *accountsProto.Ge
 		return &accountsProto.GeneralResponse{}, err // Return found error
 	}
 
-	fmt.Println("test")
-
 	addresses, err := accounts.GetAllContracts(address) // Walk with deploying address
 
 	if err != nil { // Check for errors
