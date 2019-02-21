@@ -25,10 +25,6 @@ go get -u github.com/SummerCash/go-summercash && go install github.com/SummerCas
 
 For pre-compiled executable binaries, check the [releases](https://github.com/SummerCash/go-summercash/releases/latest) page.
 
-## Demo
-
-[![asciicast](https://asciinema.org/a/WyyI9GF7ycacyVm6x3G5IBtAk.svg)](https://asciinema.org/a/WyyI9GF7ycacyVm6x3G5IBtAk)
-
 ## Usage
 
 ### Running the Node Daemon From Source
