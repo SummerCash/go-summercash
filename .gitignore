@@ -38,3 +38,6 @@ accounts/genesis.json
 data/db/coordination_chain/chain.json
 .vagrant/
 data/state/
+
+# Vendor
+vendor/
