@@ -143,6 +143,7 @@ func startRPCServer() {
 	mux.Handle(commonProto.CommonPathPrefix, commonHandler)                                  // Start mux common handler
 
 	go http.ListenAndServeTLS(":"+strconv.Itoa(*rpcPortFlag), "termCert.pem", "termKey.pem", mux) // Start server
+	go http.ListenAndServe(":"+strconv.Itoa(*rpcPortFlag+1), mux)                                 // Start server
 }
 
 // startNode - start necessary services for full node
