@@ -72,7 +72,7 @@ func (server *Server) NewTransaction(ctx context.Context, req *transactionProto.
 		return &transactionProto.GeneralResponse{}, err // Return found error
 	}
 
-	return &transactionProto.GeneralResponse{Message: fmt.Sprintf("\n%s\n\nhash: %s", transaction.String(), transaction.Hash.String())}, nil // Return response
+	return &transactionProto.GeneralResponse{Message: fmt.Sprintf("\nhash: %s", transaction.Hash.String())}, nil // Return response
 }
 
 // TransactionFromBytes - transaction.TransactionFromBytes RPC handler
