@@ -13,6 +13,9 @@ import (
 var (
 	// ErrNilListener - error definition describing a nil listener
 	ErrNilListener = errors.New("nil listener")
+
+	// ErrInvalidConnectionHeader - error definition describing a nil connection header
+	ErrInvalidConnectionHeader = errors.New("invalid connection header")
 )
 
 /* BEGIN EXPORTED METHODS */
@@ -44,6 +47,12 @@ func handleConnection(conn net.Conn) error {
 
 	if err != nil { // Check for errors
 		return err // Return error
+	}
+
+	if len(string(data)) < 9 { // Check invalid input
+		common.Logf("== ERROR == connection data %s invalid (does not contain connection header, or is nil)", string(data)) // Log error
+
+		return ErrInvalidConnectionHeader // Return found error
 	}
 
 	switch string(data)[0:9] { // Handle signatures
