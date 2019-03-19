@@ -88,8 +88,10 @@ func HandleReceivedCoordinationNode(b []byte, isArchival bool) error {
 		return err // Return found error
 	}
 
-	for _, address := range coordinationNode.Addresses { // Iterate through serving addresses
-		go common.SendBytes((*coordinationNode).Bytes(), address) // Send updated node info
+	if isArchival { // Check is archival node
+		for _, address := range coordinationNode.Addresses { // Iterate through serving addresses
+			go common.SendBytes((*coordinationNode).Bytes(), address) // Send updated node info
+		}
 	}
 
 	return nil // No error occurred, return nil
