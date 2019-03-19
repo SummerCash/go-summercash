@@ -21,7 +21,7 @@ var (
 /* BEGIN EXPORTED METHODS */
 
 // StartHandler - attempt to accept and forward requests on given listener
-func StartHandler(ln *net.Listener) error {
+func StartHandler(ln *net.Listener, isArchival bool) error {
 	if ln == nil { // Check for nil listener
 		return ErrNilListener // Return error
 	}
@@ -30,7 +30,7 @@ func StartHandler(ln *net.Listener) error {
 		conn, err := (*ln).Accept() // Accept connection
 
 		if err == nil { // Check for errors
-			go handleConnection(conn) // Handle connection
+			go handleConnection(conn, isArchival) // Handle connection
 		}
 	}
 }
@@ -40,7 +40,7 @@ func StartHandler(ln *net.Listener) error {
 /* BEGIN INTERNAL METHODS */
 
 // handleConnection - attempt to handle given connection
-func handleConnection(conn net.Conn) error {
+func handleConnection(conn net.Conn, isArchival bool) error {
 	common.Logf("== CONNECTION == incoming connection from peer %s\n", conn.RemoteAddr().String()) // Log conn
 
 	data, err := common.ReadConnectionWaitAsyncNoTLS(conn) // Read data
@@ -59,7 +59,7 @@ func handleConnection(conn net.Conn) error {
 	case "{" + `"` + "address": // Check coordinationNode
 		common.Logf("== NETWORK == received peer coordination node info %s\n", string(data)) // Log node
 
-		err = types.HandleReceivedCoordinationNode(data) // Handle received data
+		err = types.HandleReceivedCoordinationNode(data, isArchival) // Handle received data
 
 		if err != nil { // Check for errors
 			return err // Return found error

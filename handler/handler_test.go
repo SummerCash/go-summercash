@@ -19,7 +19,7 @@ func TestStartHandler(t *testing.T) {
 	}
 
 	go func(listener *net.Listener) { // Silence timeout
-		err = StartHandler(listener) // Start handler
+		err = StartHandler(listener, false) // Start handler
 
 		if err != nil { // Check for errors
 			t.Error(err) // Log found error

@@ -13,7 +13,7 @@ import (
 )
 
 // HandleReceivedCoordinationNode - handle received node
-func HandleReceivedCoordinationNode(b []byte) error {
+func HandleReceivedCoordinationNode(b []byte, isArchival bool) error {
 	coordinationChain, err := ReadCoordinationChainFromMemory() // Read coordination chain
 
 	if err != nil { // Check for errors
@@ -50,7 +50,7 @@ func HandleReceivedCoordinationNode(b []byte) error {
 		ipPortIncluded = ip + ":" + strconv.Itoa(common.NodePort) // Add port
 	}
 
-	if !commonGoP2P.StringInSlice(coordinationNode.Addresses, ipPortIncluded) { // Check is not in node
+	if !commonGoP2P.StringInSlice(coordinationNode.Addresses, ipPortIncluded) && isArchival { // Check is not in node
 		common.Logf("== NETWORK == adding self %s to coordination node %s\n", ipPortIncluded, coordinationNode.Address.String()) // Log add self
 
 		(*coordinationNode).Addresses = append((*coordinationNode).Addresses, ipPortIncluded) // Append current IP
@@ -86,6 +86,10 @@ func HandleReceivedCoordinationNode(b []byte) error {
 
 	if err != nil { // Check for errors
 		return err // Return found error
+	}
+
+	for _, address := range coordinationNode.Addresses { // Iterate through serving addresses
+		go common.SendBytes((*coordinationNode).Bytes(), address) // Send updated node info
 	}
 
 	return nil // No error occurred, return nil

@@ -49,7 +49,7 @@ func TestHandleReceivedCoordinationNode(t *testing.T) {
 
 	byteVal := coordinationNode.Bytes() // Get byte val
 
-	err = HandleReceivedCoordinationNode(byteVal) // Handle node
+	err = HandleReceivedCoordinationNode(byteVal, false) // Handle node
 
 	if err != nil { // Check for errors
 		t.Error(err) // Log found error
