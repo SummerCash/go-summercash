@@ -616,9 +616,19 @@ func (coordinationChain *CoordinationChain) PushNode(coordinationNode *Coordinat
 					common.Logf("== NETWORK == pushing coordination chain node %s to peer %s\n", coordinationNode.Address.String(), address) // Log push
 
 					go common.SendBytes(coordinationNode.Bytes(), address) // Send new node
+
+					if !gop2pCommon.StringInSlice(coordinationNode.Addresses, address) { // Check address not in node
+						(*coordinationNode).Addresses = append((*coordinationNode).Addresses, address) // Append address
+					}
 				}
 			}
 		}
+	}
+
+	err = coordinationChain.WriteToMemory() // Write coordination chain to memory
+
+	if err != nil { // Check for errors
+		return err // Return found error
 	}
 
 	return nil // No error occurred, return nil
