@@ -2,6 +2,7 @@ package common
 
 import (
 	"crypto/tls"
+	"errors"
 	"io/ioutil"
 	"net"
 	"net/http"
@@ -158,17 +159,21 @@ func GetExtIPAddrWithoutUPnP() (string, error) {
 		return "localhost", nil // Return localhost
 	}
 
+	startTime := time.Now() // Get start time
+
 	addresses := []string{} // Init address buffer
 
-	finished := make(chan bool) // Init finished
+	finished := false // Init finished
 
 	for _, provider := range ExtIPProviders { // Iterate through providers
-		go getIPFromProviderAsync(provider, &addresses, finished) // Fetch IP
+		go getIPFromProviderAsync(provider, &addresses, &finished) // Fetch IP
 	}
 
-	<-finished // Wait until finished
-
-	close(finished) // Close channel
+	for finished != true { // Wait until finished
+		if time.Now().Sub(startTime) > 10*time.Second { // Check timeout
+			return "localhost", errors.New("timed out") // Return timed out error
+		}
+	}
 
 	return getNonNilInStringSlice(addresses) // Return valid address
 }
@@ -222,7 +227,7 @@ func getIPFromProvider(provider string) (string, error) {
 }
 
 // getIPFromProviderAsync - asynchronously get IP address from given IP provider
-func getIPFromProviderAsync(provider string, buffer *[]string, finished chan bool) {
+func getIPFromProviderAsync(provider string, buffer *[]string, finished *bool) {
 	if Connected() { // Check connected to internet
 		if len(*buffer) == 0 { // Check IP not already determined
 			resp, err := http.Get(provider) // Attempt to check IP via provider
@@ -230,7 +235,7 @@ func getIPFromProviderAsync(provider string, buffer *[]string, finished chan boo
 			if err != nil { // Check for errors
 				if len(*buffer) == 0 { // Double check IP not already determined
 					*buffer = append(*buffer, "") // Set IP
-					finished <- true              // Set finished
+					*finished = true              // Set finished
 				}
 			} else {
 				defer resp.Body.Close() // Close connection
@@ -242,7 +247,7 @@ func getIPFromProviderAsync(provider string, buffer *[]string, finished chan boo
 				if len(*buffer) == 0 { // Double check IP not already determined
 					*buffer = append(*buffer, strings.TrimSpace(stringVal)) // Set ip
 
-					finished <- true // Set finished
+					*finished = true // Set finished
 				}
 			}
 		}
@@ -250,7 +255,7 @@ func getIPFromProviderAsync(provider string, buffer *[]string, finished chan boo
 		if len(*buffer) == 0 {
 			*buffer = append(*buffer, "localhost") // Set localhost
 
-			finished <- true // Set finished
+			*finished = true // Set finished
 		}
 	}
 }
