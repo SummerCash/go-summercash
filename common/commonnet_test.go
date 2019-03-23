@@ -4,6 +4,7 @@ import (
 	"crypto/tls"
 	"strings"
 	"testing"
+	"time"
 )
 
 /* BEGIN EXTERNAL METHODS */
@@ -114,12 +115,18 @@ func TestGetIPFromProvider(t *testing.T) {
 
 // TestGetIPFromProviderAsync - test functionality of getIPFromProviderAsync() method
 func TestGetIPFromProviderAsync(t *testing.T) {
-	buffer := &[]string{}       // Init buffer
-	finished := make(chan bool) // Init finished
+	buffer := &[]string{} // Init buffer
+	finished := false     // Init finished
 
-	go getIPFromProviderAsync("http://checkip.amazonaws.com/", buffer, finished) // Asynchronously get IP from provider
+	startTime := time.Now() // Get start time
 
-	<-finished // Wait for finished
+	go getIPFromProviderAsync("http://checkip.amazonaws.com/", buffer, &finished) // Asynchronously get IP from provider
+
+	for finished != true { // Wait until finished
+		if time.Now().Sub(startTime) > 10*time.Second { // Check timeout
+			t.Fatal("timed out...") // Panic
+		}
+	}
 
 	t.Log((*buffer)[0]) // Log success
 }
