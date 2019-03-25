@@ -104,6 +104,38 @@ func (server *Server) Publish(ctx context.Context, req *transactionProto.General
 		return handleContractCall(transaction) // Handle contract call
 	}
 
+	if valid, _ := types.VerifyTransactionSignature(transaction); !valid { // Check invalid signature
+		return &transactionProto.GeneralResponse{}, types.ErrInvalidSignature // Return found error
+	}
+
+	coordinationChain, err := types.ReadCoordinationChainFromMemory() // Read coordination chain
+
+	if err != nil { // Check for errors
+		return &transactionProto.GeneralResponse{}, err // Return found error
+	}
+
+	genesis, err := coordinationChain.GetGenesis() // Get genesis block
+
+	if err != nil && err != types.ErrNilNode { // Check for errors
+		return &transactionProto.GeneralResponse{}, err // Return error
+	}
+
+	nilCoordinationNode := types.CoordinationNode{} // Init nil buffer
+
+	if transaction.Sender != nil { // Check not nil sender
+		balance, err := coordinationChain.GetBalance(*transaction.Sender) // Get sender balance
+
+		if err != nil { // Check for errors
+			common.Logf("== ERROR == error fetching balance for address %s %s\n", transaction.Sender.String(), err.Error()) // Log error
+
+			return &transactionProto.GeneralResponse{}, err // Return found error
+		}
+
+		if balance < transaction.Amount && genesis.String() != nilCoordinationNode.String() { // Check balance insufficient
+			return &transactionProto.GeneralResponse{}, types.ErrInsufficientBalance // Return error
+		}
+	}
+
 	err = transaction.Publish() // Publish transaction
 
 	if err != nil { // Check for errors
