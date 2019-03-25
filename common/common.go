@@ -35,6 +35,9 @@ var (
 	// ConfigDir - global config directory definition
 	ConfigDir = filepath.FromSlash(fmt.Sprintf("%s/config", DataDir))
 
+	// PeerToPeerDir - global p2p directory definition.
+	PeerToPeerDir = filepath.FromSlash(fmt.Sprintf("%s/p2p", DataDir))
+
 	// DisableTimestamps - global declaration for timestamp format config
 	DisableTimestamps = false
 
