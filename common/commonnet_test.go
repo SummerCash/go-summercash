@@ -56,7 +56,7 @@ func TestReadConnectionWaitAsyncNoTLS(t *testing.T) {
 
 	data, err := ReadConnectionWaitAsyncNoTLS(connection) // Read connection
 
-	if err != nil { // Check for errors
+	if err != nil && !strings.Contains(err.Error(), "EOF") { // Check for errors
 		t.Error(err) // Log found error
 		t.FailNow()  // Panic
 	}
