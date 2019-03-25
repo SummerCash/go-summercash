@@ -1,6 +1,7 @@
 package common
 
 import (
+	"bufio"
 	"crypto/tls"
 	"errors"
 	"io/ioutil"
@@ -39,11 +40,15 @@ func SendBytes(b []byte, address string) error {
 		return err // Return found error
 	}
 
-	_, err = connection.Write(b) // Write data to connection
+	writer := bufio.NewWriter(connection) // Initialize writer
+
+	_, err = writer.Write(append(b, byte('\f'))) // Write data
 
 	if err != nil { // Check for errors
 		return err // Return found errors
 	}
+
+	writer.Flush() // Flush writer
 
 	err = connection.Close() // Close connection
 
@@ -68,22 +73,20 @@ func SendBytesResult(b []byte, address string) ([]byte, error) {
 		return nil, err // Return found error
 	}
 
-	_, err = connection.Write(b) // Write data to connection
+	readWriter := bufio.NewReadWriter(bufio.NewReader(connection), bufio.NewWriter(connection)) // Initialize read writer
+
+	_, err = readWriter.Write(append(b, byte('\f'))) // Write data to connection
 
 	if err != nil { // Check for errors
 		return nil, err // Return found error
 	}
 
-	requestStartTime := time.Now() // Get start time
+	readWriter.Flush() // Flush
 
-	var response []byte // Init buffer
+	response, err := readWriter.ReadBytes('\f') // Read up to delimiter
 
-	for response == nil || len(response) == 0 { // Keep reading until buffer isn't nil
-		response, err = ioutil.ReadAll(connection) // Read connection
-
-		if err != nil && time.Now().Sub(requestStartTime) > 10*time.Second { // Check for errors after timeout
-			return nil, err // Return found error
-		}
+	if err != nil { // Check for errors
+		return nil, err // Return found error
 	}
 
 	return response, nil // Return response
@@ -91,26 +94,9 @@ func SendBytesResult(b []byte, address string) ([]byte, error) {
 
 // ReadConnectionWaitAsyncNoTLS - attempt to read from connection in an asynchronous fashion, after waiting for peer to write
 func ReadConnectionWaitAsyncNoTLS(conn net.Conn) ([]byte, error) {
-	requestStartTime := time.Now() // Get start time
+	reader := bufio.NewReader(conn) // Initialize reader
 
-	var response []byte // Init buffer
-	var err error       // Init error buffer
-
-	err = conn.SetReadDeadline(time.Now().Add(2 * time.Second)) // Set read deadline
-
-	if err != nil { // Check for errors
-		return nil, err // Return found error
-	}
-
-	for response == nil || len(response) == 0 { // Keep reading until buffer isn't nil
-		response, err = ioutil.ReadAll(conn) // Read connection
-
-		if err != nil && time.Now().Sub(requestStartTime) > 10*time.Second { // Check for errors after timeout
-			return nil, err // Return found error
-		}
-	}
-
-	return response, nil // Return response
+	return reader.ReadBytes('\f') // Read up to delimiter
 }
 
 /*
