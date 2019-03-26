@@ -2,6 +2,7 @@ package common
 
 import (
 	"bufio"
+	"bytes"
 	"crypto/tls"
 	"errors"
 	"io/ioutil"
@@ -89,14 +90,20 @@ func SendBytesResult(b []byte, address string) ([]byte, error) {
 		return nil, err // Return found error
 	}
 
-	return response, nil // Return response
+	return bytes.Trim(response, "\f"), nil // Return response
 }
 
 // ReadConnectionWaitAsyncNoTLS - attempt to read from connection in an asynchronous fashion, after waiting for peer to write
 func ReadConnectionWaitAsyncNoTLS(conn net.Conn) ([]byte, error) {
 	reader := bufio.NewReader(conn) // Initialize reader
 
-	return reader.ReadBytes('\f') // Read up to delimiter
+	readBytes, err := reader.ReadBytes('\f') // Read up to delimiter
+
+	if err != nil { // Check for errors
+		return nil, err // Return found error
+	}
+
+	return bytes.Trim(readBytes, "\f"), nil // Return read bytes w/trimmed delimiter
 }
 
 /*
