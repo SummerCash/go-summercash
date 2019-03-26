@@ -153,7 +153,7 @@ func startNode(archivalNode bool) {
 
 	defer cancel() // Cancel
 
-	host, err := p2p.NewHost(ctx, *nodePortFlag) // Initialize libp2p host with context and nat manager
+	_, err := p2p.NewHost(ctx, *nodePortFlag) // Initialize libp2p host with context and nat manager
 
 	if err != nil { // Check for errors
 		panic(err) // Panic
@@ -162,8 +162,6 @@ func startNode(archivalNode bool) {
 	ip, _ := common.GetExtIPAddrWithoutUPnP() // Get IP
 
 	alreadySynced := false // Init bool
-
-	common.Logf("== NODE == starting on port %d with ID %s\n", *nodePortFlag, host.ID()) // Log init
 
 	coordinationChain, err := types.ReadCoordinationChainFromMemory() // Read coordination chain
 
