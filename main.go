@@ -11,6 +11,8 @@ import (
 	"strings"
 	"time"
 
+	"github.com/SummerCash/go-summercash/p2p"
+
 	"github.com/SummerCash/go-summercash/cli"
 	"github.com/SummerCash/go-summercash/common"
 	"github.com/SummerCash/go-summercash/config"
@@ -33,7 +35,6 @@ import (
 	upnpServer "github.com/SummerCash/go-summercash/internal/rpc/upnp"
 	"github.com/SummerCash/go-summercash/types"
 	"github.com/SummerCash/go-summercash/upnp"
-	libp2p "github.com/libp2p/go-libp2p"
 )
 
 var (
@@ -152,7 +153,7 @@ func startNode(archivalNode bool) {
 
 	defer cancel() // Cancel
 
-	host, err := libp2p.New(ctx, libp2p.NATPortMap()) // Initialize libp2p host with context and nat manager
+	host, err := p2p.NewHost(ctx, *nodePortFlag) // Initialize libp2p host with context and nat manager
 
 	if err != nil { // Check for errors
 		panic(err) // Panic
