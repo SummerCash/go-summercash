@@ -13,7 +13,12 @@ require (
 	github.com/fatih/structs v1.1.0 // indirect
 	github.com/golang/protobuf v1.3.0
 	github.com/libp2p/go-libp2p v0.0.2
+	github.com/libp2p/go-libp2p-crypto v0.0.1
+	github.com/libp2p/go-libp2p-host v0.0.1
+	github.com/libp2p/go-libp2p-kad-dht v0.0.3
+	github.com/libp2p/go-libp2p-quic-transport v0.0.1
 	github.com/mitchellh/mapstructure v1.1.2 // indirect
+	github.com/polaris-project/go-polaris v0.1.0
 	github.com/tatsushid/go-fastping v0.0.0-20160109021039-d7bb493dee3e // indirect
 	github.com/twitchtv/twirp v5.5.2+incompatible
 	gitlab.com/NebulousLabs/fastrand v0.0.0-20181126182046-603482d69e40 // indirect
