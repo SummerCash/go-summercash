@@ -16,8 +16,10 @@ require (
 	github.com/libp2p/go-libp2p-crypto v0.0.1
 	github.com/libp2p/go-libp2p-host v0.0.1
 	github.com/libp2p/go-libp2p-kad-dht v0.0.3
+	github.com/libp2p/go-libp2p-peerstore v0.0.1
 	github.com/libp2p/go-libp2p-quic-transport v0.0.1
 	github.com/mitchellh/mapstructure v1.1.2 // indirect
+	github.com/multiformats/go-multiaddr v0.0.1
 	github.com/polaris-project/go-polaris v0.1.0
 	github.com/tatsushid/go-fastping v0.0.0-20160109021039-d7bb493dee3e // indirect
 	github.com/twitchtv/twirp v5.5.2+incompatible
