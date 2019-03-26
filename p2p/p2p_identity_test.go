@@ -52,4 +52,25 @@ func TestWritePeerIdentity(t *testing.T) {
 	}
 }
 
+// TestGetExistingPeerIdentity tests the functionality of the GetExistingPeerIdentity helper method.
+func TestGetExistingPeerIdentity(t *testing.T) {
+	privateKey, err := ecdsa.GenerateKey(elliptic.P521(), rand.Reader) // Generate private key
+
+	if err != nil { // Check for errors
+		t.Fatal(err) // Panic
+	}
+
+	err = WritePeerIdentity(privateKey) // Write identity
+
+	if err != nil && err != ErrIdentityAlreadyExists { // Check for errors
+		t.Fatal(err) // Panic
+	}
+
+	_, err = GetExistingPeerIdentity() // Get peer identity
+
+	if err != nil { // Check for errors
+		t.Fatal(err) // Panic
+	}
+}
+
 /* END EXPORTED METHODS TESTS */
