@@ -3,7 +3,6 @@ package p2p
 
 import (
 	"crypto/rand"
-	"encoding/pem"
 	"errors"
 	"fmt"
 	"io/ioutil"
@@ -63,13 +62,11 @@ func WritePeerIdentity(identity *crypto.PrivKey) error {
 		return ErrIdentityAlreadyExists // Return error
 	}
 
-	x509Encoded, err := crypto.MarshalPrivateKey(*identity) // Marshal identity
+	encoded, err := crypto.MarshalPrivateKey(*identity) // Marshal identity
 
 	if err != nil { // Check for errors
 		return err // Return found error
 	}
-
-	pemEncoded := pem.EncodeToMemory(&pem.Block{Type: "PRIVATE KEY", Bytes: x509Encoded}) // Encode to pem
 
 	err = common.CreateDirIfDoesNotExit(common.PeerIdentityDir) // Create identity dir if it doesn't already exist
 
@@ -77,7 +74,7 @@ func WritePeerIdentity(identity *crypto.PrivKey) error {
 		return err // Return found error
 	}
 
-	err = ioutil.WriteFile(filepath.FromSlash(fmt.Sprintf("%s/identity.pem", common.PeerIdentityDir)), pemEncoded, 0644) // Write identity
+	err = ioutil.WriteFile(filepath.FromSlash(fmt.Sprintf("%s/identity.pem", common.PeerIdentityDir)), encoded, 0644) // Write identity
 
 	if err != nil { // Check for errors
 		return err // Return found error
@@ -98,9 +95,7 @@ func GetExistingPeerIdentity() (*crypto.PrivKey, error) {
 		return nil, err // Return found error
 	}
 
-	block, _ := pem.Decode(data) // Decode pem
-
-	peerIdentity, err := crypto.UnmarshalPrivateKey(block.Bytes) // Unmarshal data
+	peerIdentity, err := crypto.UnmarshalPrivateKey(data) // Unmarshal data
 
 	if err != nil { // Check for errors
 		return nil, err // Return found error
