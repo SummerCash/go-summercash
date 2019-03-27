@@ -25,7 +25,7 @@ var (
 
 // NewHost initializes a new routed libp2p host with a given context.
 func NewHost(ctx context.Context, port int) (*routed.RoutedHost, error) {
-	identity, err := GetLibp2pPeerIdentity() // Get peer identity
+	identity, err := GetPeerIdentity() // Get peer identity
 
 	if err != nil { // Check for errors
 		return &routed.RoutedHost{}, err // Return found error
