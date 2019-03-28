@@ -4,6 +4,9 @@ package p2p
 import (
 	"context"
 	"testing"
+
+	"github.com/SummerCash/go-summercash/config"
+	"github.com/SummerCash/go-summercash/validator"
 )
 
 /* BEGIN EXPORTED METHODS TESTS */
@@ -20,7 +23,13 @@ func TestNewClient(t *testing.T) {
 		t.Fatal(err) // Panic
 	}
 
-	client := NewClient(host) // Initialize client
+	config := &config.ChainConfig{} // Init empty config
+
+	standardValidator := validator.NewStandardValidator(config) // Initialize validator
+
+	validator := validator.Validator(standardValidator) // Get interface value
+
+	client := NewClient(host, &validator) // Initialize client with validator
 
 	if client == nil { // Check for nil client
 		t.Fatal("nil client") // Panic
