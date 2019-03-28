@@ -153,13 +153,11 @@ func startNode(archivalNode bool) {
 
 	defer cancel() // Cancel
 
-	_, err := p2p.NewHost(ctx, *nodePortFlag) // Initialize libp2p host with context and nat manager
+	host, err := p2p.NewHost(ctx, *nodePortFlag) // Initialize libp2p host with context and nat manager
 
 	if err != nil { // Check for errors
 		panic(err) // Panic
 	}
-
-	ip, _ := common.GetExtIPAddrWithoutUPnP() // Get IP
 
 	alreadySynced := false // Init bool
 

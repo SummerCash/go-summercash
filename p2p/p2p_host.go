@@ -3,6 +3,7 @@ package p2p
 
 import (
 	"context"
+	"errors"
 	"strconv"
 
 	"github.com/SummerCash/go-summercash/common"
@@ -19,6 +20,9 @@ import (
 var (
 	// WorkingHost represents the global routed host.
 	WorkingHost *routed.RoutedHost
+
+	// ErrNoWorkingHost represents an error describing a WorkingHost value of nil.
+	ErrNoWorkingHost = errors.New("no working host")
 )
 
 /* BEGIN EXPORTED METHODS */
