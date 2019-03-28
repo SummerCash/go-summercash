@@ -7,10 +7,16 @@ package validator
 import (
 	"bytes"
 	"errors"
+	"math/big"
 
 	"github.com/SummerCash/go-summercash/config"
 	"github.com/SummerCash/go-summercash/crypto"
 	"github.com/SummerCash/go-summercash/types"
+)
+
+const (
+	// StandardValidatorValidationProtocol represents the validation protocol of the standard validator.
+	StandardValidatorValidationProtocol = "standard_sig_ver"
 )
 
 var (
@@ -36,17 +42,14 @@ var (
 // StandardValidator represents a standard validator implementing the validator interface.
 type StandardValidator struct {
 	Config *config.ChainConfig `json:"config"` // Chain configuration reference
-
-	WorkingChain *types.Chain `json:"work_chain"` // Working chain reference
 }
 
 /* BEGIN EXPORTED METHODS */
 
 // NewStandardValidator initializes a new beacon dag with a given config and working chain.
-func NewStandardValidator(config *config.ChainConfig, workingChain *types.Chain) *StandardValidator {
+func NewStandardValidator(config *config.ChainConfig) *StandardValidator {
 	return &StandardValidator{
-		Config:       config,       // Set config
-		WorkingChain: workingChain, // Set working chain
+		Config: config, // Set config
 	}
 }
 
@@ -80,6 +83,12 @@ func (validator *StandardValidator) ValidateTransaction(transaction *types.Trans
 	return nil // Transaction is valid
 }
 
+// PerformChainSafetyChecks loads a given transaction's sender chain, requests it if it doesn't exist,
+// and makes one if it cannot request it from its peers.
+func (validator *StandardValidator) PerformChainSafetyChecks(transaction *types.Transaction) error {
+	return nil // TODO: Implement
+}
+
 // ValidateTransactionHash checks that a given transaction's hash is equivalent to the calculated hash of that given transaction.
 func (validator *StandardValidator) ValidateTransactionHash(transaction *types.Transaction) bool {
 	unsignedTx := transaction // Init unsigned buffer
@@ -93,16 +102,14 @@ func (validator *StandardValidator) ValidateTransactionHash(transaction *types.T
 // If the timestamp of any one of the given transaction's parents is after the given transaction's timestamp, false is returned.
 // If any one of the transaction's parent transactions cannot be found in the working dag, false is returned.
 func (validator *StandardValidator) ValidateTransactionTimestamp(transaction *types.Transaction) bool {
-	for _, parentHash := range transaction.ParentTransactions { // Iterate through parent hashes
-		parentTransaction, err := validator.WorkingDag.GetTransactionByHash(parentHash) // Get parent transaction pointer
+	senderChain, err := types.ReadChainFromMemory(*transaction.Sender) // Read sender chain
 
-		if err != nil { // Check for errors
-			return false // Invalid parent
-		}
+	if err != nil { // Check for errors
+		return false // Invalid
+	}
 
-		if parentTransaction.Timestamp.After(transaction.Timestamp) {
-			return false // Invalid timestamp
-		}
+	if senderChain.Transactions[len(senderChain.Transactions)-1].Timestamp.After(transaction.Timestamp) { // Check invalid timestamp
+		return false // Invalid timestamp
 	}
 
 	return true // Valid timestamp
@@ -115,69 +122,54 @@ func (validator *StandardValidator) ValidateTransactionSignature(transaction *ty
 		return false // Nil signature
 	}
 
-	return transaction.Signature.Verify(transaction.Sender) // Return signature validity
-}
-
-// ValidateTransactionSenderBalance checks that a given transaction's sender has a balance greater than or equal to the transaction's total value (including gas costs).
-func (validator *StandardValidator) ValidateTransactionSenderBalance(transaction *types.Transaction) bool {
-	balance, err := validator.WorkingDag.CalculateAddressBalance(transaction.Sender) // Calculate balance
+	valid, err := types.VerifyTransactionSignature(transaction) // Check valid
 
 	if err != nil { // Check for errors
 		return false // Invalid
 	}
 
-	return balance.Cmp(transaction.CalculateTotalValue()) == 0 || balance.Cmp(transaction.CalculateTotalValue()) == 1 // Return sender balance adequate
+	return valid // Return signature validity
+}
+
+// ValidateTransactionSenderBalance checks that a given transaction's sender has a balance greater than or equal to the transaction's total value (including gas costs).
+func (validator *StandardValidator) ValidateTransactionSenderBalance(transaction *types.Transaction) bool {
+	chain, err := types.ReadChainFromMemory(*transaction.Sender) // Read sender chain
+
+	if err != nil {
+		return false // Invalid
+	}
+
+	balance := big.NewFloat(chain.CalculateBalance()) // Calculate balance
+
+	return balance.Cmp(big.NewFloat(transaction.Amount)) == 0 || balance.Cmp(big.NewFloat(transaction.Amount)) == 1 // Return sender balance adequate
 }
 
 // ValidateTransactionIsNotDuplicate checks that a given transaction does not already exist in the working dag.
 func (validator *StandardValidator) ValidateTransactionIsNotDuplicate(transaction *types.Transaction) bool {
-	transaction, err := validator.WorkingDag.GetTransactionByHash(transaction.Hash) // Attempt to get tx by hash
+	chain, err := types.ReadChainFromMemory(*transaction.Sender) // Read sender chain
 
-	if err == nil && !transaction.Hash.IsNil() { // Check transaction exists
+	if err != nil {
+		return false // Invalid
+	}
+
+	_, err = chain.QueryTransaction(*transaction.Hash) // Attempt to get tx by hash
+
+	if err == nil { // Check transaction exists
 		return false // Transaction is duplicate
 	}
 
 	return true // Transaction is unique
 }
 
-// ValidateTransactionDepth checks that a given transaction's parent hash is a member of the last edge.
-func (validator *StandardValidator) ValidateTransactionDepth(transaction *types.Transaction) bool {
-	for _, parentHash := range transaction.ParentTransactions { // Iterate through parent hashes
-		if bytes.Equal(parentHash.Bytes(), transaction.Hash.Bytes()) { // Check self in parent hashes
-			return false // Invalid
-		}
-
-		children, err := validator.WorkingDag.GetTransactionChildren(parentHash) // Get children of transaction
-
-		if err != nil { // Check for errors
-			return false // Invalid
-		}
-
-		for _, child := range children { // Iterate through children
-			currentChildren, err := validator.WorkingDag.GetTransactionChildren(child.Hash) // Get children of current child
-
-			if err != nil { // Check for errors
-				return false // Invalid
-			}
-
-			if len(currentChildren) != 0 { // Check child has children
-				return false // Invalid depth
-			}
-		}
-	}
-
-	return true // Valid
-}
-
 // ValidateTransactionNonce checks that a given transaction's nonce is equivalent to the sending account's last nonce + 1.
 func (validator *StandardValidator) ValidateTransactionNonce(transaction *types.Transaction) bool {
-	senderTransactions, err := validator.WorkingDag.GetTransactionsBySender(transaction.Sender) // Get sender txs
+	chain, err := types.ReadChainFromMemory(*transaction.Sender) // Read sender chain
 
-	if err != nil { // Check for errors
+	if err != nil {
 		return false // Invalid
 	}
 
-	if len(senderTransactions) == 0 { // Check is genesis
+	if len(chain.Transactions) == 0 { // Check is genesis
 		if transaction.AccountNonce != 0 { // Check nonce is not 0
 			return false // Invalid nonce
 		}
@@ -187,7 +179,7 @@ func (validator *StandardValidator) ValidateTransactionNonce(transaction *types.
 
 	lastNonce := uint64(0) // Init nonce buffer
 
-	for _, currentTransaction := range senderTransactions { // Iterate through sender txs
+	for _, currentTransaction := range chain.Transactions { // Iterate through sender txs
 		if currentTransaction.AccountNonce > lastNonce { // Check greater than last nonce
 			lastNonce = currentTransaction.AccountNonce // Set last nonce
 		}
@@ -205,13 +197,8 @@ func (validator *StandardValidator) ValidationProtocol() string {
 	return StandardValidatorValidationProtocol // Return validation protocol
 }
 
-// GetWorkingDag attempts to fetch the working dag instance.
-func (validator *StandardValidator) GetWorkingDag() *types.Dag {
-	return validator.WorkingDag // Return working dag
-}
-
 // GetWorkingConfig attempts to fetch the working config instance.
-func (validator *StandardValidator) GetWorkingConfig() *config.DagConfig {
+func (validator *StandardValidator) GetWorkingConfig() *config.ChainConfig {
 	return validator.Config // Return working config
 }
 

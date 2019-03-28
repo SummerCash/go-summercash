@@ -27,7 +27,5 @@ type Validator interface {
 
 	ValidationProtocol() string // Get the current validator's validation protocol
 
-	GetWorkingChain() *types.Chain // Get current validator's working chain
-
 	GetWorkingConfig() *config.ChainConfig // Get current validator's working config
 }
