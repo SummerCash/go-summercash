@@ -1,4 +1,4 @@
-// Package validator represents a helper methods useful for validators in the SummerCash network.
+// Package validator represents a collection of helper methods useful for validators in the SummerCash network.
 // Methods in the validator package are specified in terms of a validator interface, that of which is
 // also implemented in the validator package.
 // NOTE: Ripped from another one of my projects; https://github.com/polaris-project/go-polaris/tree/master/validator
