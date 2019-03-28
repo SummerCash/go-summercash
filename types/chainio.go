@@ -7,6 +7,7 @@ import (
 	"path/filepath"
 
 	"github.com/SummerCash/go-summercash/common"
+	"github.com/SummerCash/go-summercash/config"
 )
 
 /* BEGIN EXPORTED METHODS */
@@ -44,6 +45,19 @@ func (chain *Chain) WriteToMemory() error {
 	}
 
 	return nil // No error occurred, return nil
+}
+
+// ReadGenesisChainFromMemory reads a genesis chain based on a given chain config.
+func ReadGenesisChainFromMemory(config *config.ChainConfig) (*Chain, error) {
+	genesis := config.AllocAddresses[0] // Get genesis
+
+	genesisChain, err := ReadChainFromMemory(genesis) // Read genesis
+
+	if err != nil { // Check for errors
+		return &Chain{}, err // Return found error
+	}
+
+	return genesisChain, nil // Return read chain
 }
 
 // ReadChainFromMemory - read chain from memory
