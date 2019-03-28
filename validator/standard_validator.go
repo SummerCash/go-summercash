@@ -86,7 +86,17 @@ func (validator *StandardValidator) ValidateTransaction(transaction *types.Trans
 // PerformChainSafetyChecks loads a given transaction's sender chain, requests it if it doesn't exist,
 // and makes one if it cannot request it from its peers.
 func (validator *StandardValidator) PerformChainSafetyChecks(transaction *types.Transaction) error {
-	return nil // TODO: Implement
+	_, err := types.ReadChainFromMemory(*transaction.Sender) // Read sender chain
+
+	if err != nil { // Check for errors
+		_, err := types.NewChain(*transaction.Sender) // Initialize chain
+
+		if err != nil { // Check for errors
+			return err // Return found error
+		}
+	}
+
+	return nil // No error occurred, return nil
 }
 
 // ValidateTransactionHash checks that a given transaction's hash is equivalent to the calculated hash of that given transaction.
