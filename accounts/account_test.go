@@ -127,7 +127,7 @@ func TestGetAllAccounts(t *testing.T) {
 	t.Log(addresses) // Log success
 }
 
-// TestGetAllContracts - test functionality of contrac walk method
+// TestGetAllContracts - test functionality of contract walk method
 func TestGetAllContracts(t *testing.T) {
 	coordinationChain, err := types.NewCoordinationChain() // Init coordination chain
 
