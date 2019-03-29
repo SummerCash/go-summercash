@@ -5,12 +5,30 @@ import (
 	"fmt"
 	"io/ioutil"
 	"path/filepath"
+	"strings"
 
 	"github.com/SummerCash/go-summercash/common"
 	"github.com/SummerCash/go-summercash/config"
 )
 
 /* BEGIN EXPORTED METHODS */
+
+// GetAllLocalizedChains gets a list of the locally-provided chains, and their addresses.
+func GetAllLocalizedChains() ([]string, error) {
+	buffer := []string{} // Init buffer
+
+	files, err := ioutil.ReadDir(filepath.FromSlash(fmt.Sprintf("%s/db/chain", common.DataDir))) // Walk keystore dir
+
+	if err != nil { // Check for errors
+		return []string{}, err // Return found error
+	}
+
+	for _, file := range files { // Iterate through files
+		buffer = append(buffer, strings.Split(strings.Split(file.Name(), "chain_")[1], ".json")[0]) // Append to buffer
+	}
+
+	return buffer, nil // No error occurred, return success
+}
 
 // WriteToMemory - write given chain to memory
 func (chain *Chain) WriteToMemory() error {
