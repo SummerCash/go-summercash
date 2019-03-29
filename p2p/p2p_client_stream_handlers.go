@@ -39,16 +39,28 @@ func (client *Client) HandleReceiveTransaction(stream inet.Stream) {
 		common.Logf("== P2P == error while validating given tx read from pub_tx stream: %s", err.Error()) // Log error
 	}
 
-	chain, err := types.ReadChainFromMemory(*tx.Recipient) // Read chain
+	senderChain, err := types.ReadChainFromMemory(*tx.Sender) // Read chain
 
 	if err != nil { // Check for errors
 		common.Logf("== P2P == error while reading sender chain from pub_tx stream: %s", err.Error()) // Log error
 	}
 
-	err = chain.AddTransaction(tx) // Add transaction
+	err = senderChain.AddTransaction(tx) // Add transaction
 
 	if err != nil { // Check for errors
 		common.Logf("== P2P == error while adding tx from pub_tx stream to sender chain: %s", err.Error()) // Log error
+	}
+
+	chain, err := types.ReadChainFromMemory(*tx.Recipient) // Read chain
+
+	if err != nil { // Check for errors
+		common.Logf("== P2P == error while reading recipient chain from pub_tx stream: %s", err.Error()) // Log error
+	}
+
+	err = chain.AddTransaction(tx) // Add transaction
+
+	if err != nil { // Check for errors
+		common.Logf("== P2P == error while adding tx from pub_tx stream to recipient chain: %s", err.Error()) // Log error
 	}
 }
 
