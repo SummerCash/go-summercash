@@ -33,6 +33,12 @@ func NewClient(host *routed.RoutedHost, validator *validator.Validator, network 
 	} // Return initialized client
 }
 
+// SyncNetwork syncs all available chains and state roots.
+func (client *Client) SyncNetwork() error {
+	// TODO: Implement
+	return nil // No error occurred, return nil
+}
+
 // RequestChain requests a chain from the working network with a given sample size.
 func (client *Client) RequestChain(account common.Address, sampleSize uint) (*types.Chain, error) {
 	ctx, cancel := context.WithCancel(context.Background()) // Get context
