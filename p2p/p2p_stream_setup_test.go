@@ -29,9 +29,9 @@ func TestStartServingStreams(t *testing.T) {
 
 	validator := validator.Validator(standardValidator) // Get interface value
 
-	client := NewClient(host, &validator) // Initialize client
+	client := NewClient(host, &validator, "test_network") // Initialize client
 
-	err = client.StartServingStreams("test_network") // Start serving streams
+	err = client.StartServingStreams() // Start serving streams
 
 	if err != nil { // Check for errors
 		t.Fatal(err) // Panic

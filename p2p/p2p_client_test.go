@@ -29,7 +29,7 @@ func TestNewClient(t *testing.T) {
 
 	validator := validator.Validator(standardValidator) // Get interface value
 
-	client := NewClient(host, &validator) // Initialize client with validator
+	client := NewClient(host, &validator, "test_network") // Initialize client with validator
 
 	if client == nil { // Check for nil client
 		t.Fatal("nil client") // Panic

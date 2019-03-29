@@ -52,4 +52,33 @@ func (client *Client) HandleReceiveTransaction(stream inet.Stream) {
 	}
 }
 
+// HandleReceiveChainRequest handles an incoming req_chain stream.
+func (client *Client) HandleReceiveChainRequest(stream inet.Stream) {
+	readWriter := bufio.NewReadWriter(bufio.NewReader(stream), bufio.NewWriter(stream)) // Initialize reader/writer
+
+	addressBytes, err := readWriter.ReadBytes('\f') // Read up to delimiter
+
+	if err != nil { // Check for errors
+		common.Logf("== P2P == error while reading req_chain stream: %s", err.Error()) // Log error
+	}
+
+	var address common.Address // Init buffer
+
+	copy(address[:], addressBytes) // Write to buffer
+
+	chain, err := types.ReadChainFromMemory(address) // Read chain
+
+	if err != nil { // Check for errors
+		common.Logf("== P2P == error while reading req_chain stream: %s", err.Error()) // Log error
+	}
+
+	_, err = readWriter.Write(append(chain.Bytes(), '\f')) // Write chain bytes
+
+	if err != nil { // Check for errors
+		common.Logf("== P2P == error while writing req_chain stream: %s", err.Error()) // Log error
+	}
+
+	readWriter.Flush() // Flush writer
+}
+
 /* END EXPORTED METHODS */

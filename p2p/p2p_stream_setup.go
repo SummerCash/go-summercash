@@ -23,6 +23,8 @@ const (
 	RequestGenesisHash
 
 	RequestChildHashes
+
+	RequestChain
 )
 
 var (
@@ -34,6 +36,7 @@ var (
 		"req_transaction",
 		"req_genesis_hash",
 		"req_transaction_children_hashes",
+		"req_chain",
 	}
 )
 
@@ -43,10 +46,18 @@ type StreamHeaderProtocol int
 /* BEGIN EXPORTED METHODS */
 
 // StartServingStreams starts serving all necessary strings.
-func (client *Client) StartServingStreams(network string) error {
+func (client *Client) StartServingStreams() error {
 	common.Logf("== P2P == starting node stream handlers") // Log start handlers
 
+	network := client.Network // Get network
+
 	err := client.StartServingStream(GetStreamHeaderProtocolPath(network, PublishTransaction), client.HandleReceiveTransaction) // Start serving pub tx
+
+	if err != nil { // Check for errors
+		return err // Return found error
+	}
+
+	err = client.StartServingStream(GetStreamHeaderProtocolPath(network, RequestChain), client.HandleReceiveChainRequest) // Start serving request chain
 
 	if err != nil { // Check for errors
 		return err // Return found error
