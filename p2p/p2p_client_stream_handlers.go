@@ -79,6 +79,33 @@ func (client *Client) HandleReceiveTransaction(stream inet.Stream) {
 	}
 }
 
+// HandleReceiveBestTransaction handles an incoming req_best_tx stream.
+func (client *Client) HandleReceiveBestTransaction(stream inet.Stream) {
+	readWriter := bufio.NewReadWriter(bufio.NewReader(stream), bufio.NewWriter(stream)) // Initialize reader/writer
+
+	accountString, err := readWriter.ReadBytes('\f') // Read
+
+	if err != nil { // Check for errors
+		common.Logf("== P2P == error while reading req_best_tx stream: %s", err.Error()) // Log error
+	}
+
+	address, err := common.StringToAddress(string(accountString)) // Get address
+
+	if err != nil { // Check for errors
+		common.Logf("== P2P == error while parsing req_best_tx stream: %s", err.Error()) // Log error
+	}
+
+	chain, err := types.ReadChainFromMemory(address) // Read chain
+
+	if err != nil { // Check for errors
+		common.Logf("== P2P == error while reading chain from req_best_tx stream: %s", err.Error()) // Log error
+	}
+
+	readWriter.Write(append(chain.Bytes(), '\f')) // Write chain bytes
+
+	readWriter.Flush() // Flush
+}
+
 // HandleReceiveNextTransactionRequest handles an incoming req_next_tx stream.
 func (client *Client) HandleReceiveNextTransactionRequest(stream inet.Stream) {
 	readWriter := bufio.NewReadWriter(bufio.NewReader(stream), bufio.NewWriter(stream)) // Initialize reader/writer

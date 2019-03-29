@@ -81,6 +81,12 @@ func (client *Client) StartServingStreams() error {
 		return err // Return found error
 	}
 
+	err = client.StartServingStream(GetStreamHeaderProtocolPath(network, RequestBestTransaction), client.HandleReceiveBestTransaction) // Start serving request best tx
+
+	if err != nil { // Check for errors
+		return err // Return found error
+	}
+
 	return nil // No error occurred, return nil
 }
 
