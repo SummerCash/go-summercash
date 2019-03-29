@@ -190,7 +190,7 @@ func (validator *StandardValidator) ValidateTransactionNonce(transaction *types.
 	lastNonce := uint64(0) // Init nonce buffer
 
 	for _, currentTransaction := range chain.Transactions { // Iterate through sender txs
-		if currentTransaction.AccountNonce > lastNonce { // Check greater than last nonce
+		if currentTransaction.AccountNonce > lastNonce && bytes.Equal(currentTransaction.Sender.Bytes(), transaction.Sender.Bytes()) { // Check greater than last nonce
 			lastNonce = currentTransaction.AccountNonce // Set last nonce
 		}
 	}
