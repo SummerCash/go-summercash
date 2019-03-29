@@ -79,6 +79,45 @@ func (client *Client) HandleReceiveTransaction(stream inet.Stream) {
 	}
 }
 
+// HandleReceiveNextTransactionRequest handles an incoming req_next_tx stream.
+func (client *Client) HandleReceiveNextTransactionRequest(stream inet.Stream) {
+	readWriter := bufio.NewReadWriter(bufio.NewReader(stream), bufio.NewWriter(stream)) // Initialize reader/writer
+
+	lastTxAccount, err := readWriter.ReadBytes('\f') // Read
+
+	if err != nil { // Check for errors
+		common.Logf("== P2P == error while reading req_next_tx stream: %s", err.Error()) // Log error
+	}
+
+	address, err := common.StringToAddress(strings.Split(string(lastTxAccount), "_")[0]) // Get address
+
+	if err != nil { // Check for errors
+		common.Logf("== P2P == error while parsing req_next_tx stream: %s", err.Error()) // Log error
+	}
+
+	hash, err := common.StringToHash(strings.Split(string(lastTxAccount), "_")[1]) // Get hash
+
+	if err != nil { // Check for errors
+		common.Logf("== P2P == error while parsing req_next_tx stream: %s", err.Error()) // Log error
+	}
+
+	accountChain, err := types.ReadChainFromMemory(address) // Read account chain
+
+	if err != nil { // Check for errors
+		common.Logf("== P2P == error reading req_next_tx stream: %s", err.Error()) // Log error
+	}
+
+	for x, transaction := range accountChain.Transactions { // Iterate through transactions
+		if bytes.Equal(transaction.Hash.Bytes(), hash.Bytes()) { // Check hashes equal
+			readWriter.Write(append(accountChain.Transactions[x+1].Bytes(), '\f')) // Write next transaction
+
+			readWriter.Flush() // Flush
+
+			break // Break
+		}
+	}
+}
+
 // HandleReceiveAllChainsRequest handles an incoming req_all_chains stream.
 func (client *Client) HandleReceiveAllChainsRequest(stream inet.Stream) {
 	writer := bufio.NewWriter(stream) // Initialize writer
@@ -87,11 +126,15 @@ func (client *Client) HandleReceiveAllChainsRequest(stream inet.Stream) {
 
 	if err != nil { // Check for errors
 		common.Logf("== P2P == error while fetching local chains tx from pub_tx stream to recipient chain: %s", err.Error()) // Log error
-
-		return // Return
 	}
 
-	writer.Write([]byte(strings.Join(allLocalChains, "_"))) // Write all local chains
+	_, err = writer.Write(append([]byte(strings.Join(allLocalChains, "_")), '\f')) // Write all local chains
+
+	if err != nil { // Check for errors
+		common.Logf("== P2P == error while writing req_chain stream: %s", err.Error()) // Log error
+	}
+
+	writer.Flush() // Flush
 }
 
 // HandleReceiveChainRequest handles an incoming req_chain stream.

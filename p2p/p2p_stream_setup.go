@@ -27,6 +27,8 @@ const (
 	RequestChain
 
 	RequestAllChains
+
+	RequestNextTransaction
 )
 
 var (
@@ -40,6 +42,7 @@ var (
 		"req_transaction_children_hashes",
 		"req_chain",
 		"req_all_chains",
+		"req_next_transaction",
 	}
 )
 
@@ -67,6 +70,12 @@ func (client *Client) StartServingStreams() error {
 	}
 
 	err = client.StartServingStream(GetStreamHeaderProtocolPath(network, RequestAllChains), client.HandleReceiveAllChainsRequest) // Start serving request all chains
+
+	if err != nil { // Check for errors
+		return err // Return found error
+	}
+
+	err = client.StartServingStream(GetStreamHeaderProtocolPath(network, RequestNextTransaction), client.HandleReceiveNextTransactionRequest) // Start serving request next tx
 
 	if err != nil { // Check for errors
 		return err // Return found error
