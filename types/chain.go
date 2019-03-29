@@ -202,7 +202,18 @@ func (chain *Chain) AddTransaction(transaction *Transaction) error {
 // QueryTransaction - attempt to fetch transaction metadata in chain by hash
 func (chain *Chain) QueryTransaction(hash common.Hash) (*Transaction, error) {
 	for _, transaction := range chain.Transactions { // Iterate through transactions
-		if *transaction.Hash == hash { // Check for match
+		if bytes.Equal(transaction.Hash.Bytes(), hash.Bytes()) { // Check for match
+			return transaction, nil // Return found transaction
+		}
+	}
+
+	return &Transaction{}, ErrNilTransaction
+}
+
+// QueryTransactionByParent - attempt to fetch transaction with given parent
+func (chain *Chain) QueryTransactionByParent(parentHash common.Hash) (*Transaction, error) {
+	for _, transaction := range chain.Transactions { // Iterate through transactions
+		if bytes.Equal(transaction.ParentTx.Hash.Bytes(), parentHash.Bytes()) { // Check for match
 			return transaction, nil // Return found transaction
 		}
 	}
