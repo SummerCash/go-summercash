@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	"crypto/tls"
 	"flag"
 	"fmt"
 	"net/http"
@@ -11,12 +10,13 @@ import (
 	"strings"
 	"time"
 
+	"github.com/SummerCash/go-summercash/validator"
+
 	"github.com/SummerCash/go-summercash/p2p"
 
 	"github.com/SummerCash/go-summercash/cli"
 	"github.com/SummerCash/go-summercash/common"
 	"github.com/SummerCash/go-summercash/config"
-	"github.com/SummerCash/go-summercash/handler"
 	accountsServer "github.com/SummerCash/go-summercash/internal/rpc/accounts"
 	chainServer "github.com/SummerCash/go-summercash/internal/rpc/chain"
 	commonServer "github.com/SummerCash/go-summercash/internal/rpc/common"
@@ -33,7 +33,6 @@ import (
 	upnpProto "github.com/SummerCash/go-summercash/internal/rpc/proto/upnp"
 	transactionServer "github.com/SummerCash/go-summercash/internal/rpc/transaction"
 	upnpServer "github.com/SummerCash/go-summercash/internal/rpc/upnp"
-	"github.com/SummerCash/go-summercash/types"
 	"github.com/SummerCash/go-summercash/upnp"
 )
 
@@ -53,6 +52,7 @@ var (
 	bootstrapNode       = flag.String("bootstrap-node", "", "launch node with provided bootstrap node")                                                                    // Init bootstrap node flag
 	bootstrapHost       = flag.Bool("bootstrap", false, "launch node as a genesis boostrap node")                                                                          // Init bootstrap host flag
 	disableLogTimeStamp = flag.Bool("silence-timestamps", false, "launch node without terminal timestamp output")                                                          // Init disable log timestamp flag
+	networkFlag         = flag.String("network", "main_net", "launch with a given network")                                                                                // Init network flag
 )
 
 func main() {
@@ -159,86 +159,36 @@ func startNode(archivalNode bool) {
 		panic(err) // Panic
 	}
 
-	alreadySynced := false // Init bool
-
-	coordinationChain, err := types.ReadCoordinationChainFromMemory() // Read coordination chain
-
-	if err == nil { // Check no error
-		_, err = coordinationChain.QueryArchivalNode(ip) // Set error
-	}
-
-	if strings.Contains(ip, ":") { // Check is IPv6
-		ip = "[" + ip + "]" + ":" + strconv.Itoa(common.NodePort) // Add port
-	} else {
-		ip = ip + ":" + strconv.Itoa(common.NodePort) // Add port
-	}
+	config, err := config.ReadChainConfigFromMemory() // Read chain config
 
 	if err != nil { // Check for errors
-		if archivalNode && ip != common.BootstrapNodes[0] && !*privateNetworkFlag { // Check is not bootstrap node
-			x := 0 // Init iterator
+		config, err = p2p.BootstrapConfig(ctx, host, common.BootstrapNodes[0], *networkFlag) // Bootstrap config
 
-			for {
-				if x >= len(common.BootstrapNodes) { // Check is out of bounds
-					if coordinationChain == nil { // Check nodes available
-						panic("== WARNING == no available bootstrap nodes") // Panic
-					}
-
-					archivalNodes, err := coordinationChain.QueryAllArchivalNodes() // Query all archival nodes
-
-					if err != nil { // Check for errors
-						panic(err) // Panic
-					}
-
-					common.BootstrapNodes = append(common.BootstrapNodes, archivalNodes...) // Append archival nodes
-
-					if x >= len(common.BootstrapNodes) { // Check is out of bounds
-						break // Break
-					}
-				}
-
-				common.Logf("== NETWORK == joining with bootstrap node %s\n", common.BootstrapNodes[x]) // Log join
-
-				err := types.JoinNetwork(common.BootstrapNodes[x], true) // Register node
-
-				if err == nil { // Check for errors
-					alreadySynced = true // Set already synced
-
-					break // Break for loop
-				}
-
-				x++ // Increment
-			}
-		} else if ip == common.BootstrapNodes[0] && err != nil { // Check is genesis bootstrap node
-			alreadySynced = true // Set already synced
+		if err != nil { // Check for errors
+			panic(err) // panic
 		}
 	}
 
-	if !alreadySynced { // Plz, no recursion TODO: fix ipv6
-		err := types.SyncNetwork(*archivalNodeFlag, true) // Sync network
+	validator := validator.Validator(validator.NewStandardValidator(config)) // Initialize validator
 
-		if err != nil { // Check for errors
-			panic(err) // Panic
-		}
+	client := p2p.NewClient(host, &validator, *networkFlag) // Initialize client
+
+	err = client.StartServingStreams() // Start serving
+
+	if err != nil { // Check for errors
+		panic(err) // Panic
 	}
 
-	if !*exitOnJoin { // Check should not exit on join
-		ln, err := tls.Listen("tcp", ":"+strconv.Itoa(*nodePortFlag), common.GeneralTLSConfig) // Listen on port
+	err = client.SyncNetwork() // Sync network
 
-		if err != nil { // Check for errors
-			panic(err) // Panic
-		}
+	if err != nil { // Check for errors
+		panic(err) // Panic
+	}
 
-		if !*bootstrapHost && ip != common.BootstrapNodes[0] { // Check is not genesis bootstrap node
-			go types.StartManagedSync(false, *archivalNodeFlag, 120*time.Second) // Start managed sync
-		} else {
-			go types.StartManagedSync(true, *archivalNodeFlag, 120*time.Second) // Start managed sync
-		}
-
-		err = handler.StartHandler(&ln, *archivalNodeFlag) // Start handler
-
-		if err != nil { // Check for errors
-			panic(err) // Panic
-		}
+	if !*terminalFlag { // Check is not locally running terminal
+		client.StartIntermittentSync(120 * time.Second) // Start intermittent sync
+	} else { // Check local term
+		go client.StartIntermittentSync(120 * time.Second) // Start intermittent sync
 	}
 }
 
