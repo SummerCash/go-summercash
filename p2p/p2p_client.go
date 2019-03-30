@@ -6,6 +6,7 @@ import (
 	"context"
 	"fmt"
 	"strings"
+	"time"
 
 	"github.com/SummerCash/go-summercash/crypto"
 
@@ -35,6 +36,17 @@ func NewClient(host *routed.RoutedHost, validator *validator.Validator, network 
 		Validator: validator, // Set validator
 		Network:   network,   // Set network
 	} // Return initialized client
+}
+
+// StartIntermittentSync syncs the dag with a given context and duration.
+func (client *Client) StartIntermittentSync(duration time.Duration) {
+	for range time.Tick(duration) { // Sync every duration seconds
+		err := client.SyncNetwork() // Sync network
+
+		if err != nil { // Check for errors
+			common.Logf("== P2P == intermittent sync errored (if private net, this is expected): %s", err.Error()) // Log error
+		}
+	}
 }
 
 // SyncNetwork syncs all available chains and state roots.
