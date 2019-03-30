@@ -87,8 +87,6 @@ func (client *Client) StartServingStreams() error {
 		return err // Return found error
 	}
 
-	panic(GetStreamHeaderProtocolPath(network, RequestConfig))
-
 	err = client.StartServingStream(GetStreamHeaderProtocolPath(network, RequestConfig), client.HandleReceiveConfigRequest) // Start serving request config
 
 	if err != nil { // Check for errors
