@@ -76,6 +76,8 @@ func NewHost(ctx context.Context, port int) (*routed.RoutedHost, error) {
 
 // BootstrapConfig bootstraps the network's working config with a given host.
 func BootstrapConfig(ctx context.Context, host *routed.RoutedHost, bootstrapAddress string, network string) (*config.ChainConfig, error) {
+	common.Logf("== P2P == bootstrapping config with bootstrap node address %s", bootstrapAddress) // Log bootstrap config
+
 	peerID, err := peer.IDB58Decode(strings.Split(bootstrapAddress, "ipfs/")[1]) // Get peer ID
 
 	if err != nil { // Check for errors
@@ -113,6 +115,8 @@ func BootstrapConfig(ctx context.Context, host *routed.RoutedHost, bootstrapAddr
 	}
 
 	cancel() // Cancel
+
+	common.Logf("== P2P == finished bootstrapping config") // Log finish bootstrap config
 
 	return deserializedConfig, nil // Return deserialized dag config
 }

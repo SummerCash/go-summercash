@@ -167,6 +167,12 @@ func startNode(archivalNode bool) {
 		if err != nil { // Check for errors
 			panic(err) // panic
 		}
+
+		err = config.WriteToMemory() // Write config to memory
+
+		if err != nil { // Check for errors
+			panic(err) // Panic
+		}
 	}
 
 	validator := validator.Validator(validator.NewStandardValidator(config)) // Initialize validator
