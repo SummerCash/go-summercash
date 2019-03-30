@@ -179,10 +179,12 @@ func startNode(archivalNode bool) {
 		panic(err) // Panic
 	}
 
-	err = client.SyncNetwork() // Sync network
+	if p2p.GetBestBootstrapAddress(ctx, host) != "localhost" { // Check can sync
+		err = client.SyncNetwork() // Sync network
 
-	if err != nil { // Check for errors
-		panic(err) // Panic
+		if err != nil { // Check for errors
+			panic(err) // Panic
+		}
 	}
 
 	if !*terminalFlag { // Check is not locally running terminal
