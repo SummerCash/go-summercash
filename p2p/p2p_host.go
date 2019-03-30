@@ -2,16 +2,22 @@
 package p2p
 
 import (
+	"bufio"
 	"context"
 	"errors"
 	"strconv"
+	"strings"
+
+	"github.com/SummerCash/go-summercash/config"
 
 	"github.com/SummerCash/go-summercash/common"
 
 	"github.com/libp2p/go-libp2p"
 	host "github.com/libp2p/go-libp2p-host"
 	dht "github.com/libp2p/go-libp2p-kad-dht"
+	peer "github.com/libp2p/go-libp2p-peer"
 	peerstore "github.com/libp2p/go-libp2p-peerstore"
+	protocol "github.com/libp2p/go-libp2p-protocol"
 	quic "github.com/libp2p/go-libp2p-quic-transport"
 	routed "github.com/libp2p/go-libp2p/p2p/host/routed"
 	multiaddr "github.com/multiformats/go-multiaddr"
@@ -65,6 +71,47 @@ func NewHost(ctx context.Context, port int) (*routed.RoutedHost, error) {
 	common.Logf("== P2P == initialized host with ID: %s on listening port: %d with multiaddr: %s", host.ID().Pretty(), port, host.Addrs()[0].String()) // Log host
 
 	return WorkingHost, nil // Return working routed host
+}
+
+// BootstrapConfig bootstraps the network's working config with a given host.
+func BootstrapConfig(ctx context.Context, host *routed.RoutedHost, bootstrapAddress string, network string) (*config.ChainConfig, error) {
+	peerID, err := peer.IDB58Decode(strings.Split(bootstrapAddress, "ipfs/")[1]) // Get peer ID
+
+	if err != nil { // Check for errors
+		return &config.ChainConfig{}, err // Return found error
+	}
+
+	readCtx, cancel := context.WithCancel(ctx) // Get context
+
+	stream, err := (*host).NewStream(readCtx, peerID, protocol.ID(GetStreamHeaderProtocolPath(network, RequestConfig))) // Initialize new stream
+
+	if err != nil { // Check for errors
+		cancel() // Cancel
+
+		return &config.ChainConfig{}, err // Return found error
+	}
+
+	reader := bufio.NewReader(stream) // Initialize reader from stream
+
+	dagConfigBytes, err := reader.ReadBytes('\f') // Read
+
+	if err != nil { // Check for errors
+		cancel() // Cancel
+
+		return &config.ChainConfig{}, err // Return found error
+	}
+
+	deserializedConfig, err := config.FromBytes(dagConfigBytes) // Deserialize
+
+	if err != nil { // Check for errors
+		cancel() // Cancel
+
+		return &config.ChainConfig{}, err // Return found error
+	}
+
+	cancel() // Cancel
+
+	return deserializedConfig, nil // Return deserialized dag config
 }
 
 // BootstrapDht bootstraps a KadDht to the list of bootstrap nodes.
