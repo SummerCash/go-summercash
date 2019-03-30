@@ -128,7 +128,7 @@ func (client *Client) RequestBestTransaction(account common.Address, sampleSize 
 
 	defer cancel() // Cancel
 
-	responses, err := BroadcastDhtResult(ctx, client.Host, append([]byte(account.String()), '\f'), GetStreamHeaderProtocolPath(client.Network, RequestNextTransaction), client.Network, int(sampleSize)) // Broadcast, get result
+	responses, err := BroadcastDhtResult(ctx, client.Host, append([]byte(account.String()), '\f'), GetStreamHeaderProtocolPath(client.Network, RequestBestTransaction), client.Network, int(sampleSize)) // Broadcast, get result
 
 	if err != nil { // Check for errors
 		return common.Hash{}, err // Return found error

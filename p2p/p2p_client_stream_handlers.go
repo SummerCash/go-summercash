@@ -137,8 +137,6 @@ func (client *Client) HandleReceiveNextTransactionRequest(stream inet.Stream) {
 		common.Logf("== P2P == error while parsing req_next_tx stream: %s\n", err.Error()) // Log error
 	}
 
-	panic(string(lastTxAccount))
-
 	hash, err := common.StringToHash(strings.Split(string(lastTxAccount), "_")[1]) // Get hash
 
 	if err != nil { // Check for errors
