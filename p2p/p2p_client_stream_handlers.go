@@ -19,6 +19,8 @@ import (
 
 // HandleReceiveConfigRequest handles an incoming req_config stream.
 func (client *Client) HandleReceiveConfigRequest(stream inet.Stream) {
+	common.Logf("== P2P == handling req_config stream\n") // Log handle stream
+
 	writer := bufio.NewWriter(stream) // Initialize writer
 
 	config, _ := config.ReadChainConfigFromMemory() // Read config from memory
