@@ -51,6 +51,8 @@ func (client *Client) StartIntermittentSync(duration time.Duration) {
 
 // SyncNetwork syncs all available chains and state roots.
 func (client *Client) SyncNetwork() error {
+	common.Logf("== P2P == starting sync...\n") // Log sync chain
+
 	localChains, err := types.GetAllLocalizedChains() // Get all local chains
 
 	if err != nil { // Check for errors
@@ -62,6 +64,8 @@ func (client *Client) SyncNetwork() error {
 	if err != nil { // Check for errors
 		return err // Return found error
 	}
+
+	common.Logf("== P2P == found remote chains: %s\n", strings.Join(remoteChains, ", ")) // Log sync chain
 
 	for _, remoteChain := range remoteChains { // Iterate through remote chains
 		common.Logf("== P2P == syncing chain %s\n", remoteChain) // Log sync chain
