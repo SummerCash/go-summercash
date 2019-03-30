@@ -96,7 +96,9 @@ func (client *Client) SyncNetwork() error {
 			return err // Return found error
 		}
 
-		localBestTransaction := &types.Transaction{} // init local best tx buffer
+		hash := common.NewHash(crypto.Sha3(nil)) // Get nil hash
+
+		localBestTransaction := &types.Transaction{Hash: &hash} // init local best tx buffer
 
 		if len(chain.Transactions) != 0 {
 			localBestTransaction = chain.Transactions[len(chain.Transactions)-1] // Get best tx
