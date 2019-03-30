@@ -3,6 +3,7 @@ package p2p
 
 import (
 	"bufio"
+	"bytes"
 	"context"
 
 	protocol "github.com/libp2p/go-libp2p-protocol"
@@ -76,6 +77,8 @@ func BroadcastDhtResult(ctx context.Context, host *routed.RoutedHost, message []
 		if err != nil { // Check for errors
 			continue // Continue
 		}
+
+		responseBytes = bytes.Trim(responseBytes, "\f") // Trim delmiter
 
 		results = append(results, responseBytes) // Append response
 

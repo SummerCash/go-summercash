@@ -3,6 +3,7 @@ package p2p
 
 import (
 	"bufio"
+	"bytes"
 	"context"
 	"errors"
 	"strconv"
@@ -100,6 +101,8 @@ func BootstrapConfig(ctx context.Context, host *routed.RoutedHost, bootstrapAddr
 
 		return &config.ChainConfig{}, err // Return found error
 	}
+
+	dagConfigBytes = bytes.Trim(dagConfigBytes, "\f") // Trim delimiter
 
 	deserializedConfig, err := config.FromBytes(dagConfigBytes) // Deserialize
 

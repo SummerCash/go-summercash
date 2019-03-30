@@ -100,6 +100,8 @@ func (client *Client) HandleReceiveBestTransaction(stream inet.Stream) {
 		common.Logf("== P2P == error while reading req_best_tx stream: %s\n", err.Error()) // Log error
 	}
 
+	accountString = bytes.Trim(accountString, "\f") // Trim delimiter
+
 	address, err := common.StringToAddress(string(accountString)) // Get address
 
 	if err != nil { // Check for errors
@@ -126,6 +128,8 @@ func (client *Client) HandleReceiveNextTransactionRequest(stream inet.Stream) {
 	if err != nil { // Check for errors
 		common.Logf("== P2P == error while reading req_next_tx stream: %s\n", err.Error()) // Log error
 	}
+
+	lastTxAccount = bytes.Trim(lastTxAccount, "\f") // Trim delimiter
 
 	address, err := common.StringToAddress(strings.Split(string(lastTxAccount), "_")[0]) // Get address
 
@@ -184,6 +188,8 @@ func (client *Client) HandleReceiveChainRequest(stream inet.Stream) {
 	if err != nil { // Check for errors
 		common.Logf("== P2P == error while reading req_chain stream: %s\n", err.Error()) // Log error
 	}
+
+	addressBytes = bytes.Trim(addressBytes, "\f") // Trim delimiter
 
 	var address common.Address // Init buffer
 
