@@ -64,6 +64,10 @@ func (client *Client) SyncNetwork() error {
 	}
 
 	for _, remoteChain := range remoteChains { // Iterate through remote chains
+		if remoteChain == "" { // Check nil chain
+			continue // Continue
+		}
+
 		address, err := common.StringToAddress(remoteChain) // Get address value
 
 		if err != nil { // Check for errors
