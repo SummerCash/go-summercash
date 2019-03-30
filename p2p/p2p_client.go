@@ -44,7 +44,7 @@ func (client *Client) StartIntermittentSync(duration time.Duration) {
 		err := client.SyncNetwork() // Sync network
 
 		if err != nil { // Check for errors
-			common.Logf("== P2P == intermittent sync errored (if private net, this is expected): %s", err.Error()) // Log error
+			common.Logf("== P2P == intermittent sync errored (if private net, this is expected): %s\n", err.Error()) // Log error
 		}
 	}
 }

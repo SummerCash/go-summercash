@@ -68,7 +68,7 @@ func NewHost(ctx context.Context, port int) (*routed.RoutedHost, error) {
 
 	WorkingHost = routedHost // Set working host
 
-	common.Logf("== P2P == initialized host with ID: %s on listening port: %d with multiaddr: %s", host.ID().Pretty(), port, host.Addrs()[0].String()) // Log host
+	common.Logf("== P2P == initialized host with ID: %s on listening port: %d with multiaddr: %s\n", host.ID().Pretty(), port, host.Addrs()[0].String()) // Log host
 
 	return WorkingHost, nil // Return working routed host
 }

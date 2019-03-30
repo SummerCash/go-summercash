@@ -53,7 +53,7 @@ type StreamHeaderProtocol int
 
 // StartServingStreams starts serving all necessary strings.
 func (client *Client) StartServingStreams() error {
-	common.Logf("== P2P == starting node stream handlers") // Log start handlers
+	common.Logf("== P2P == starting node stream handlers\n") // Log start handlers
 
 	network := client.Network // Get network
 

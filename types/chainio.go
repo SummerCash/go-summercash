@@ -18,7 +18,7 @@ func GetAllLocalizedChains() ([]string, error) {
 	err := common.CreateDirIfDoesNotExit(filepath.FromSlash(fmt.Sprintf("%s/db/chain", common.DataDir))) // Make chain dir
 
 	if err != nil { // Check for errors
-		return []string{}, err // Return found erro
+		return []string{}, err // Return found error
 	}
 
 	buffer := []string{} // Init buffer
