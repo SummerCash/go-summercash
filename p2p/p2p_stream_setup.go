@@ -57,8 +57,6 @@ func (client *Client) StartServingStreams() error {
 
 	network := client.Network // Get network
 
-	panic(network)
-
 	err := client.StartServingStream(GetStreamHeaderProtocolPath(network, PublishTransaction), client.HandleReceiveTransaction) // Start serving pub tx
 
 	if err != nil { // Check for errors
@@ -88,6 +86,8 @@ func (client *Client) StartServingStreams() error {
 	if err != nil { // Check for errors
 		return err // Return found error
 	}
+
+	panic(GetStreamHeaderProtocolPath(network, RequestConfig))
 
 	err = client.StartServingStream(GetStreamHeaderProtocolPath(network, RequestConfig), client.HandleReceiveConfigRequest) // Start serving request config
 
