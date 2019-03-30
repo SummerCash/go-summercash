@@ -112,8 +112,10 @@ func (client *Client) SyncNetwork() error {
 
 		localBestTransaction := &types.Transaction{Hash: &hash} // init local best tx buffer
 
-		if len(chain.Transactions) != 0 {
+		if len(chain.Transactions) != 0 { // Check chain has txs
 			localBestTransaction = chain.Transactions[len(chain.Transactions)-1] // Get best tx
+
+			common.Logf("== P2P == starting tx sync with local best tx %s\n", localBestTransaction.Hash.String()) // Log sync up to
 		}
 
 		for !bytes.Equal(localBestTransaction.Hash.Bytes(), remoteBestTransaction.Bytes()) { // Do until synced up to remote best tx
