@@ -96,7 +96,11 @@ func (client *Client) SyncNetwork() error {
 			return err // Return found error
 		}
 
-		localBestTransaction := chain.Transactions[len(chain.Transactions)-1] // Get best tx
+		localBestTransaction := &types.Transaction{} // init local best tx buffer
+
+		if len(chain.Transactions) != 0 {
+			localBestTransaction = chain.Transactions[len(chain.Transactions)-1] // Get best tx
+		}
 
 		for !bytes.Equal(localBestTransaction.Hash.Bytes(), remoteBestTransaction.Bytes()) { // Do until synced up to remote best tx
 			localBestTransaction, err = client.RequestNextTransaction(*localBestTransaction.Hash, address, 16) //  Request next tx
