@@ -130,7 +130,15 @@ func (client *Client) SyncNetwork() error {
 			if err != nil { // Check for errors
 				return err // Return
 			}
+
+			err = chain.WriteToMemory() // Write to memory
+
+			if err != nil { // Check for errors
+				return err // Return found error
+			}
 		}
+
+		common.Logf("== P2P == finished syncing chain %s\n", remoteChain) // Log sync up to
 	}
 
 	return nil // No error occurred, return nil
