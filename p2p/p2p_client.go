@@ -83,7 +83,23 @@ func (client *Client) SyncNetwork() error {
 		localBestTransaction := chain.Transactions[len(chain.Transactions)-1] // Get best tx
 
 		for !bytes.Equal(localBestTransaction.Hash.Bytes(), remoteBestTransaction.Bytes()) { // Do until synced up to remote best tx
+			localBestTransaction, err = client.RequestNextTransaction(*localBestTransaction.Hash, address, 16) //  Request next tx
 
+			if err != nil { // Check for errors
+				return err // Return found error
+			}
+
+			err = (*client.Validator).ValidateTransaction(localBestTransaction) // Validate tx
+
+			if err != nil { // Check for errors
+				return err // Return
+			}
+
+			err = chain.AddTransaction(localBestTransaction) // Add transaction
+
+			if err != nil { // Check for errors
+				return err // Return
+			}
 		}
 	}
 
