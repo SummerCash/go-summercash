@@ -87,6 +87,12 @@ func (client *Client) StartServingStreams() error {
 		return err // Return found error
 	}
 
+	err = client.StartServingStream(GetStreamHeaderProtocolPath(network, RequestConfig), client.HandleReceiveConfigRequest) // Start serving request config
+
+	if err != nil { // Check for errors
+		return err // Return found error
+	}
+
 	return nil // No error occurred, return nil
 }
 
