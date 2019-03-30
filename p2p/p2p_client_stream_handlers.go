@@ -6,6 +6,8 @@ import (
 	"bytes"
 	"strings"
 
+	"github.com/SummerCash/go-summercash/config"
+
 	inet "github.com/libp2p/go-libp2p-net"
 
 	"github.com/SummerCash/go-summercash/common"
@@ -13,6 +15,15 @@ import (
 )
 
 /* BEGIN EXPORTED METHODS */
+
+// HandleReceiveConfigRequest handles an incoming req_config stream.
+func (client *Client) HandleReceiveConfigRequest(stream inet.Stream) {
+	writer := bufio.NewWriter(stream) // Initialize writer
+
+	config, _ := config.ReadChainConfigFromMemory() // Read config from memory
+
+	writer.Write(append(config.Bytes(), '\f')) // Write config bytes
+}
 
 // HandleReceiveTransaction handles an incoming pub_tx stream.
 func (client *Client) HandleReceiveTransaction(stream inet.Stream) {
