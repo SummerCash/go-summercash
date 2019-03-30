@@ -26,6 +26,8 @@ func (client *Client) HandleReceiveConfigRequest(stream inet.Stream) {
 	config, _ := config.ReadChainConfigFromMemory() // Read config from memory
 
 	writer.Write(append(config.Bytes(), '\f')) // Write config bytes
+
+	writer.Flush() // Flush
 }
 
 // HandleReceiveTransaction handles an incoming pub_tx stream.
