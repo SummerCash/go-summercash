@@ -19,7 +19,6 @@ import (
 	peer "github.com/libp2p/go-libp2p-peer"
 	peerstore "github.com/libp2p/go-libp2p-peerstore"
 	protocol "github.com/libp2p/go-libp2p-protocol"
-	quic "github.com/libp2p/go-libp2p-quic-transport"
 	routed "github.com/libp2p/go-libp2p/p2p/host/routed"
 	multiaddr "github.com/multiformats/go-multiaddr"
 )
@@ -45,9 +44,10 @@ func NewHost(ctx context.Context, port int) (*routed.RoutedHost, error) {
 	host, err := libp2p.New(
 		ctx,
 		libp2p.NATPortMap(),
-		libp2p.ListenAddrStrings("/ip4/0.0.0.0/udp/"+strconv.Itoa(port)+"/quic"),
+		libp2p.ListenAddrStrings("/ip4/0.0.0.0/udp/"+strconv.Itoa(port),
+			"/ip6/::1/udp/"+strconv.Itoa(port)),
 		libp2p.Identity(*identity),
-		libp2p.Transport(quic.NewTransport),
+		// libp2p.Transport(quic.NewTransport),
 	) // Initialize host
 
 	if err != nil { // Check for errors
