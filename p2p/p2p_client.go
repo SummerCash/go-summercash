@@ -196,7 +196,7 @@ func (client *Client) RequestAllChains(sampleSize uint) ([]string, error) {
 
 	defer cancel() // Cancel
 
-	responses, err := BroadcastDhtResult(ctx, client.Host, append([]byte("req_all_chains"), '\f'), GetStreamHeaderProtocolPath(client.Network, RequestChain), client.Network, int(sampleSize)) // Broadcast, get result
+	responses, err := BroadcastDhtResult(ctx, client.Host, append([]byte("req_all_chains"), '\f'), GetStreamHeaderProtocolPath(client.Network, RequestAllChains), client.Network, int(sampleSize)) // Broadcast, get result
 
 	if err != nil { // Check for errors
 		return []string{}, err // Return found error
