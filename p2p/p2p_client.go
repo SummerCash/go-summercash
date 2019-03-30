@@ -143,9 +143,9 @@ func (client *Client) RequestBestTransaction(account common.Address, sampleSize 
 			continue // Continue
 		}
 
-		occurrences[common.NewHash(response)]++ // Increment occurrences
+		occurrences[common.NewHash(crypto.Sha3(response))]++ // Increment occurrences
 
-		if occurrences[common.NewHash(response)] > occurrences[common.NewHash(bestResponse)] { // Check is better response
+		if occurrences[common.NewHash(crypto.Sha3(response))] > occurrences[common.NewHash(crypto.Sha3(bestResponse))] { // Check is better response
 			bestResponse = response // Set best response
 		}
 	}
