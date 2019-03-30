@@ -45,7 +45,8 @@ func NewHost(ctx context.Context, port int) (*routed.RoutedHost, error) {
 	host, err := libp2p.New(
 		ctx,
 		libp2p.NATPortMap(),
-		libp2p.ListenAddrStrings("/ip4/0.0.0.0/udp/"+strconv.Itoa(port)+"/quic"),
+		libp2p.ListenAddrStrings("/ip4/0.0.0.0/udp/"+strconv.Itoa(port)+"/quic",
+			"/ip6/::1/udp/"+strconv.Itoa(port)+"/quic"),
 		libp2p.Identity(*identity),
 		libp2p.Transport(quic.NewTransport),
 	) // Initialize host
