@@ -16,7 +16,7 @@ import (
 var (
 	// BootstrapNodes represents all default bootstrap nodes on the given network.
 	BootstrapNodes = []string{
-		"/ip4/108.41.124.60/udp/3000/quic/ipfs/QmeUXECRX2awd3WeJ7xVvaYJ8u1UGKDoiPSS4XTcTBZ5YF",
+		"/ip4/108.41.124.60/udp/3000/quic/ipfs/QmWqSzFwTv87eNYkay4eRPnPnq1GhCBCpc5uR4ruygM1Z4",
 	}
 )
 
