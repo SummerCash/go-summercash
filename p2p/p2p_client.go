@@ -59,6 +59,8 @@ func (client *Client) SyncNetwork() error {
 		return err // Return found error
 	}
 
+	common.Logf("== P2P == requesting peers for chains to sync\n") // Log sync chain
+
 	remoteChains, err := client.RequestAllChains(16) // Request remote chains
 
 	if err != nil { // Check for errors
