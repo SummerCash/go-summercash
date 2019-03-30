@@ -64,6 +64,8 @@ func (client *Client) SyncNetwork() error {
 	}
 
 	for _, remoteChain := range remoteChains { // Iterate through remote chains
+		common.Logf("== P2P == syncing chain %s\n", remoteChain) // Log sync chain
+
 		if remoteChain == "" { // Check nil chain
 			continue // Continue
 		}
@@ -77,6 +79,8 @@ func (client *Client) SyncNetwork() error {
 		chain, err := types.ReadChainFromMemory(address) // Read chain
 
 		if !commonGoP2P.StringInSlice(localChains, remoteChain) || err != nil { // Check remote chain does not exist locally
+			common.Logf("== P2P == chain %s does not exist locally, downloading...\n", remoteChain) // Log download chain
+
 			chain, err := client.RequestChain(address, 8) // Request chain
 
 			if err != nil { // Check for errors
@@ -88,6 +92,8 @@ func (client *Client) SyncNetwork() error {
 			if err != nil { // Check for errors
 				return err // Return found error
 			}
+
+			common.Logf("== P2P == finished downloading chain %s\n", remoteChain) // Log finish download chain
 		}
 
 		remoteBestTransaction, err := client.RequestBestTransaction(address, 16) // Request best tx
@@ -95,6 +101,8 @@ func (client *Client) SyncNetwork() error {
 		if err != nil { // Check for errors
 			return err // Return found error
 		}
+
+		common.Logf("== P2P == determined must sync up to tx with hash %s\n", remoteBestTransaction.String()) // Log sync up to
 
 		hash := common.NewHash(crypto.Sha3(nil)) // Get nil hash
 

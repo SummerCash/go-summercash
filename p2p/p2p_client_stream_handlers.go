@@ -7,6 +7,7 @@ import (
 	"strings"
 
 	"github.com/SummerCash/go-summercash/config"
+	"github.com/SummerCash/go-summercash/crypto"
 
 	inet "github.com/libp2p/go-libp2p-net"
 
@@ -114,7 +115,11 @@ func (client *Client) HandleReceiveBestTransaction(stream inet.Stream) {
 		common.Logf("== P2P == error while reading chain from req_best_tx stream: %s\n", err.Error()) // Log error
 	}
 
-	readWriter.Write(append(chain.Bytes(), '\f')) // Write chain bytes
+	if len(chain.Transactions) > 0 { // Check has txs
+		readWriter.Write(append(chain.Transactions[len(chain.Transactions)-1].Hash.Bytes(), '\f')) // Write tx hash
+	} else { // No txs
+		readWriter.Write(append(common.NewHash(crypto.Sha3(nil)).Bytes(), '\f')) // Write nil hash
+	}
 
 	readWriter.Flush() // Flush
 }
