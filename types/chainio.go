@@ -15,6 +15,12 @@ import (
 
 // GetAllLocalizedChains gets a list of the locally-provided chains, and their addresses.
 func GetAllLocalizedChains() ([]string, error) {
+	err := common.CreateDirIfDoesNotExit(filepath.FromSlash(fmt.Sprintf("%s/db/chain", common.DataDir))) // Make chain dir
+
+	if err != nil { // Check for errors
+		return []string{}, err // Return found erro
+	}
+
 	buffer := []string{} // Init buffer
 
 	files, err := ioutil.ReadDir(filepath.FromSlash(fmt.Sprintf("%s/db/chain", common.DataDir))) // Walk keystore dir
