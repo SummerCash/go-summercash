@@ -28,6 +28,8 @@ func (client *Client) HandleReceiveConfigRequest(stream inet.Stream) {
 
 // HandleReceiveTransaction handles an incoming pub_tx stream.
 func (client *Client) HandleReceiveTransaction(stream inet.Stream) {
+	common.Logf("== P2P == handling pub_tx stream\n") // Log handle stream
+
 	reader := bufio.NewReader(stream) // Initialize reader
 
 	b, err := reader.ReadBytes('\f') // Read up to delimiter
@@ -93,6 +95,8 @@ func (client *Client) HandleReceiveTransaction(stream inet.Stream) {
 
 // HandleReceiveBestTransaction handles an incoming req_best_tx stream.
 func (client *Client) HandleReceiveBestTransaction(stream inet.Stream) {
+	common.Logf("== P2P == handling req_best_tx stream\n") // Log handle stream
+
 	readWriter := bufio.NewReadWriter(bufio.NewReader(stream), bufio.NewWriter(stream)) // Initialize reader/writer
 
 	accountString, err := readWriter.ReadBytes('\f') // Read
@@ -126,6 +130,8 @@ func (client *Client) HandleReceiveBestTransaction(stream inet.Stream) {
 
 // HandleReceiveNextTransactionRequest handles an incoming req_next_tx stream.
 func (client *Client) HandleReceiveNextTransactionRequest(stream inet.Stream) {
+	common.Logf("== P2P == handling req_next_tx stream\n") // Log handle stream
+
 	readWriter := bufio.NewReadWriter(bufio.NewReader(stream), bufio.NewWriter(stream)) // Initialize reader/writer
 
 	lastTxAccount, err := readWriter.ReadBytes('\f') // Read
@@ -167,6 +173,8 @@ func (client *Client) HandleReceiveNextTransactionRequest(stream inet.Stream) {
 
 // HandleReceiveAllChainsRequest handles an incoming req_all_chains stream.
 func (client *Client) HandleReceiveAllChainsRequest(stream inet.Stream) {
+	common.Logf("== P2P == handling req_all_chains stream\n") // Log handle stream
+
 	writer := bufio.NewWriter(stream) // Initialize writer
 
 	allLocalChains, err := types.GetAllLocalizedChains() // Get all localized chains
@@ -186,6 +194,8 @@ func (client *Client) HandleReceiveAllChainsRequest(stream inet.Stream) {
 
 // HandleReceiveChainRequest handles an incoming req_chain stream.
 func (client *Client) HandleReceiveChainRequest(stream inet.Stream) {
+	common.Logf("== P2P == handling req_chain stream\n") // Log handle stream
+
 	readWriter := bufio.NewReadWriter(bufio.NewReader(stream), bufio.NewWriter(stream)) // Initialize reader/writer
 
 	addressBytes, err := readWriter.ReadBytes('\f') // Read up to delimiter
