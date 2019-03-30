@@ -57,6 +57,8 @@ func (client *Client) StartServingStreams() error {
 
 	network := client.Network // Get network
 
+	panic(network)
+
 	err := client.StartServingStream(GetStreamHeaderProtocolPath(network, PublishTransaction), client.HandleReceiveTransaction) // Start serving pub tx
 
 	if err != nil { // Check for errors
