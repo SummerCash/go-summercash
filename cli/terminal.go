@@ -28,10 +28,15 @@ import (
 var (
 	// ErrInvalidParams - error definition describing invalid input parameters
 	ErrInvalidParams = errors.New("invalid parameters")
+
+	// workingNetwork is the working network.
+	workingNetwork = "main_net"
 )
 
 // NewTerminal - attempts to start handler for term commands
-func NewTerminal(rpcPort uint, rpcAddress string) {
+func NewTerminal(rpcPort uint, rpcAddress string, network string) {
+	workingNetwork = network // Set network
+
 	reader := bufio.NewScanner(os.Stdin) // Init reader
 
 	transport := &http.Transport{ // Init transport
@@ -307,12 +312,18 @@ func handleTransaction(transactionClient *transactionProto.Transaction, methodna
 		}
 
 		reflectParams = append(reflectParams, reflect.ValueOf(&transactionProto.GeneralRequest{Payload: []byte(params[0])})) // Append params
-	case "Publish", "Bytes", "String", "SignTransaction", "VerifyTransactionSignature":
+	case "Bytes", "String", "SignTransaction", "VerifyTransactionSignature":
 		if len(params) != 1 {
 			return errors.New("invalid parameters (requires string)") // Return error
 		}
 
 		reflectParams = append(reflectParams, reflect.ValueOf(&transactionProto.GeneralRequest{Address: params[0]})) // Append params
+	case "Publish":
+		if len(params) != 1 {
+			return errors.New("invalid parameters (requires string)") // Return error
+		}
+
+		reflectParams = append(reflectParams, reflect.ValueOf(&transactionProto.GeneralRequest{Address: params[0], Address2: workingNetwork})) // Append params
 	default:
 		return errors.New("illegal method: " + methodname + ", available methods: NewTransaction(), TransactionFromBytes(), Publish(), Bytes(), String(), SignTransaction(), VerifyTransactionSignature()") // Return error
 	}
