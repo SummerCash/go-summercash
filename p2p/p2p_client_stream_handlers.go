@@ -229,4 +229,17 @@ func (client *Client) HandleReceiveChainRequest(stream inet.Stream) {
 	readWriter.Flush() // Flush writer
 }
 
+// HandleReceiveAliveRequest handles an incoming req_not_dead_lol stream.
+func (client *Client) HandleReceiveAliveRequest(stream inet.Stream) {
+	common.Logf("== P2P == handling req_not_dead_lol stream\n") // Log handle stream
+
+	writer := bufio.NewWriter(stream) // Init writer
+
+	_, err := writer.Write(append([]byte("despacito"), '\f')) // Write alive
+
+	if err != nil { // Check for errors
+		common.Logf("== P2P == error while writing req_not_dead_lol stream: %s\n", err.Error()) // Log error
+	}
+}
+
 /* END EXPORTED METHODS */

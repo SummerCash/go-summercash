@@ -29,6 +29,8 @@ const (
 	RequestAllChains
 
 	RequestNextTransaction
+
+	RequestAlive
 )
 
 var (
@@ -43,6 +45,7 @@ var (
 		"req_chain",
 		"req_all_chains",
 		"req_next_transaction",
+		"req_not_dead_lol",
 	}
 )
 
@@ -88,6 +91,12 @@ func (client *Client) StartServingStreams() error {
 	}
 
 	err = client.StartServingStream(GetStreamHeaderProtocolPath(network, RequestConfig), client.HandleReceiveConfigRequest) // Start serving request config
+
+	if err != nil { // Check for errors
+		return err // Return found error
+	}
+
+	err = client.StartServingStream(GetStreamHeaderProtocolPath(network, RequestAlive), client.HandleReceiveAliveRequest) // Start serving request alive
 
 	if err != nil { // Check for errors
 		return err // Return found error
