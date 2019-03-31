@@ -9,6 +9,8 @@ import (
 	"errors"
 	"math/big"
 
+	"github.com/SummerCash/go-summercash/common"
+
 	"github.com/SummerCash/go-summercash/config"
 	"github.com/SummerCash/go-summercash/crypto"
 	"github.com/SummerCash/go-summercash/types"
@@ -105,7 +107,7 @@ func (validator *StandardValidator) ValidateTransactionHash(transaction *types.T
 
 	(*unsignedTx).Signature = nil // Set signature to nil
 
-	return bytes.Equal(transaction.Hash.Bytes(), crypto.Sha3(unsignedTx.Bytes())) // Return hashes equivalent
+	return bytes.Equal(transaction.Hash.Bytes(), common.NewHash(crypto.Sha3(unsignedTx.Bytes())).Bytes()) // Return hashes equivalent
 }
 
 // ValidateTransactionTimestamp validates the given transaction's timestamp against that of its parents.
