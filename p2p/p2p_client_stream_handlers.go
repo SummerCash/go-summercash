@@ -4,8 +4,6 @@ package p2p
 import (
 	"bufio"
 	"bytes"
-	"encoding/hex"
-	"fmt"
 	"strings"
 
 	"github.com/SummerCash/go-summercash/config"
@@ -126,12 +124,8 @@ func (client *Client) HandleReceiveBestTransaction(stream inet.Stream) {
 	}
 
 	if len(chain.Transactions) > 0 { // Check has txs
-		fmt.Println(hex.EncodeToString(chain.Transactions[len(chain.Transactions)-1].Hash.Bytes()))
-		fmt.Println(bytes.Contains(chain.Transactions[len(chain.Transactions)-1].Hash.Bytes(), []byte{'\f'}))
 		readWriter.Write(append(chain.Transactions[len(chain.Transactions)-1].Hash.Bytes(), '\f')) // Write tx hash
 	} else { // No txs
-		fmt.Println(hex.EncodeToString(common.NewHash(crypto.Sha3(nil)).Bytes()))
-		fmt.Println(bytes.Contains(common.NewHash(crypto.Sha3(nil)).Bytes(), []byte{'\f'}))
 		readWriter.Write(append(common.NewHash(crypto.Sha3(nil)).Bytes(), '\f')) // Write nil hash
 	}
 
