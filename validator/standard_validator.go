@@ -106,6 +106,7 @@ func (validator *StandardValidator) ValidateTransactionHash(transaction *types.T
 	unsignedTx := transaction // Init unsigned buffer
 
 	(*unsignedTx).Signature = nil // Set signature to nil
+	(*unsignedTx).Hash = nil      // Set hash to nil
 
 	return bytes.Equal(transaction.Hash.Bytes(), common.NewHash(crypto.Sha3(unsignedTx.Bytes())).Bytes()) // Return hashes equivalent
 }
