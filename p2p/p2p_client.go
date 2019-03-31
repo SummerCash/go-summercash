@@ -127,10 +127,10 @@ func (client *Client) SyncNetwork() error {
 
 			localBestRemoteTxInstance, err := chain.QueryTransaction(remoteBestTransaction) // Query remote on local chain
 
-			if err == nil && localBestRemoteTxInstance != nil { // Check has instance
-				common.Logf("== P2P == detected possible rebroadcast for tx with hash %s\n", localBestTransaction.Hash.String()) // Log sync up to
+			if err == nil || bytes.Equal(remoteBestTransaction.Bytes(), common.NewHash(crypto.Sha3(nil)).Bytes()) { // Check has instance
+				common.Logf("== P2P == detected possible necessary rebroadcast for tx with hash %s\n", localBestTransaction.Hash.String()) // Log sync up to
 
-				if localBestRemoteTxInstance.Timestamp.Before(localBestTransaction.Timestamp) { // Check needs re-broadcast
+				if localBestRemoteTxInstance.Timestamp.Before(localBestTransaction.Timestamp) || bytes.Equal(remoteBestTransaction.Bytes(), common.NewHash(crypto.Sha3(nil)).Bytes()) { // Check needs re-broadcast
 					common.Logf("== P2P == rebroadcasting tx with hash %s\n", localBestTransaction.Hash.String()) // Log sync up to
 
 					rebroadcastCtx, cancel := context.WithCancel(context.Background()) // Get context
@@ -144,6 +144,12 @@ func (client *Client) SyncNetwork() error {
 					}
 
 					cancel() // Cancel
+
+					remoteBestTransaction, err = client.RequestBestTransaction(address, 16) // Request best tx
+
+					if err != nil { // Check for errors
+						return err // Return found error
+					}
 				}
 			}
 		}
