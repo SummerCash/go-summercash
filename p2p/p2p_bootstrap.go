@@ -90,11 +90,13 @@ func GetBestBootstrapAddress(ctx context.Context, host *routed.RoutedHost, netwo
 			return bootstrapAddress // Done!
 		case <-errChan:
 			cancel() // Cancel
+
+			continue // Continue
 		case <-timer.C:
 			cancel() // Cancel
-		}
 
-		cancel() // Cancel
+			continue // Continue
+		}
 	}
 
 	return "localhost" // Return localhost
