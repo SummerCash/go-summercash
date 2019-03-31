@@ -92,6 +92,12 @@ func (server *Server) TransactionFromBytes(ctx context.Context, req *transaction
 
 // Publish - transaction.Publish RPC handler
 func (server *Server) Publish(ctx context.Context, req *transactionProto.GeneralRequest) (*transactionProto.GeneralResponse, error) {
+	network := req.Address2 // Get network
+
+	if network == "" { // Check network not set
+		network = "main_net" // Assume main net
+	}
+
 	hash, err := common.StringToHash(req.Address) // String to hash
 
 	if err != nil { // Check for errors
@@ -142,7 +148,7 @@ func (server *Server) Publish(ctx context.Context, req *transactionProto.General
 
 	err = chain.AddTransaction(transaction) // Add transaction to recipient chain
 
-	client := p2p.NewClient(p2p.WorkingHost, &validator, req.Address2) // Initialize p2p client
+	client := p2p.NewClient(p2p.WorkingHost, &validator, network) // Initialize p2p client
 
 	publishCtx, cancel := context.WithCancel(ctx) // Get context
 
