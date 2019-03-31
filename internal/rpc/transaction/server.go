@@ -1,6 +1,7 @@
 package transaction
 
 import (
+	"bytes"
 	"context"
 	"fmt"
 	"strings"
@@ -49,19 +50,13 @@ func (server *Server) NewTransaction(ctx context.Context, req *transactionProto.
 		nonce := uint64(0)                      // Init nonce
 		lastTransaction := &types.Transaction{} // Init buffer
 
-		if len(accountChain.Transactions) > 0 { // Check is not 0 index
-			for _, transaction := range accountChain.Transactions { // Iterate through transactions
-				if *transaction.Recipient == sender || *transaction.Sender == sender { // Check match
-					if transaction.AccountNonce == uint64(len(accountChain.Transactions)) { // Check is last transaction
-						lastTransaction = transaction // Set last transaction
-					}
-
-					nonce++ // Increment
-				}
+		for _, transaction := range accountChain.Transactions { // Iterate through transactions
+			if bytes.Equal(transaction.Sender.Bytes(), sender.Bytes()) { // Check match
+				nonce++ // Increment nonce
 			}
 		}
 
-		newTransaction, err := types.NewTransaction(nonce, lastTransaction, &sender, &recipient, req.Amount, req.Payload) // Init transaction
+		newTransaction, err := types.NewTransaction(nonce+1, lastTransaction, &sender, &recipient, req.Amount, req.Payload) // Init transaction
 
 		if err != nil { // Check for errors
 			return &transactionProto.GeneralResponse{}, err // Return found error
