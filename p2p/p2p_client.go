@@ -149,7 +149,7 @@ func (client *Client) SyncNetwork() error {
 		common.Logf("== P2P == finished syncing chain %s\n", remoteChain) // Log sync up to
 	}
 
-	common.Logf("== P2P == 👏  finished sync successfully!\n") // Log sync chain
+	common.Logf("== P2P == 👏 sync finished successfully!\n") // Log sync chain
 
 	return nil // No error occurred, return nil
 }
