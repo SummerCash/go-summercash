@@ -199,8 +199,3 @@ func startNode(archivalNode bool) {
 		go client.StartIntermittentSync(120 * time.Second) // Start intermittent sync
 	}
 }
-
-/*
-	TODO:
-	- fix tx publish method
-*/

@@ -6,6 +6,10 @@ import (
 	"strings"
 	"time"
 
+	"github.com/SummerCash/go-summercash/config"
+	"github.com/SummerCash/go-summercash/p2p"
+	"github.com/SummerCash/go-summercash/validator"
+
 	"github.com/SummerCash/go-summercash/accounts"
 	"github.com/SummerCash/go-summercash/common"
 	transactionProto "github.com/SummerCash/go-summercash/internal/rpc/proto/transaction"
@@ -104,39 +108,47 @@ func (server *Server) Publish(ctx context.Context, req *transactionProto.General
 		return handleContractCall(transaction) // Handle contract call
 	}
 
-	if valid, _ := types.VerifyTransactionSignature(transaction); !valid { // Check invalid signature
-		return &transactionProto.GeneralResponse{}, types.ErrInvalidSignature // Return found error
-	}
-
-	coordinationChain, err := types.ReadCoordinationChainFromMemory() // Read coordination chain
+	config, err := config.ReadChainConfigFromMemory() // Read config from memory
 
 	if err != nil { // Check for errors
 		return &transactionProto.GeneralResponse{}, err // Return found error
 	}
 
-	genesis, err := coordinationChain.GetGenesis() // Get genesis block
+	validator := validator.Validator(validator.NewStandardValidator(config)) // Initialize validator
 
-	if err != nil && err != types.ErrNilNode { // Check for errors
-		return &transactionProto.GeneralResponse{}, err // Return error
+	err = validator.ValidateTransaction(transaction) // Validate transaction
+
+	if err != nil { // Check for errors
+		return &transactionProto.GeneralResponse{}, err // Return found error
 	}
 
-	nilCoordinationNode := types.CoordinationNode{} // Init nil buffer
+	chain, err := types.ReadChainFromMemory(*transaction.Sender) // Read sender chain
 
-	if transaction.Sender != nil { // Check not nil sender
-		balance, err := coordinationChain.GetBalance(*transaction.Sender) // Get sender balance
-
-		if err != nil { // Check for errors
-			common.Logf("== ERROR == error fetching balance for address %s %s\n", transaction.Sender.String(), err.Error()) // Log error
-
-			return &transactionProto.GeneralResponse{}, err // Return found error
-		}
-
-		if balance < transaction.Amount && genesis.String() != nilCoordinationNode.String() { // Check balance insufficient
-			return &transactionProto.GeneralResponse{}, types.ErrInsufficientBalance // Return error
-		}
+	if err != nil { // Check for errors
+		return &transactionProto.GeneralResponse{}, err // Return found error
 	}
 
-	err = transaction.Publish() // Publish transaction
+	err = chain.AddTransaction(transaction) // Add transaction to sender chain
+
+	if err != nil { // Check for errors
+		return &transactionProto.GeneralResponse{}, err // Return found error
+	}
+
+	chain, err = types.ReadChainFromMemory(*transaction.Recipient) // Read recipient chain
+
+	if err != nil { // Check for errors
+		return &transactionProto.GeneralResponse{}, err // Return found error
+	}
+
+	err = chain.AddTransaction(transaction) // Add transaction to recipient chain
+
+	client := p2p.NewClient(p2p.WorkingHost, &validator, req.Address2) // Initialize p2p client
+
+	publishCtx, cancel := context.WithCancel(ctx) // Get context
+
+	defer cancel() // Cancel
+
+	err = client.PublishTransaction(publishCtx, transaction) // Publish transaction
 
 	if err != nil { // Check for errors
 		return &transactionProto.GeneralResponse{}, err // Return found error
