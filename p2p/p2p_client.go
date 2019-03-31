@@ -87,7 +87,7 @@ func (client *Client) SyncNetwork() error {
 		if !commonGoP2P.StringInSlice(localChains, remoteChain) || err != nil { // Check remote chain does not exist locally
 			common.Logf("== P2P == chain %s does not exist locally, downloading...\n", remoteChain) // Log download chain
 
-			chain, err := client.RequestChain(address, 8) // Request chain
+			chain, err = client.RequestChain(address, 8) // Request chain
 
 			if err != nil { // Check for errors
 				return err // Return found error
