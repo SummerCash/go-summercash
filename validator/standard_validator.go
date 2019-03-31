@@ -58,6 +58,12 @@ func NewStandardValidator(config *config.ChainConfig) *StandardValidator {
 // ValidateTransaction validates the given transaction via the standard validator.
 // Each validation issue is returned as an error.
 func (validator *StandardValidator) ValidateTransaction(transaction *types.Transaction) error {
+	err := validator.PerformChainSafetyChecks(transaction) // Perform safety checks
+
+	if err != nil { // Check for errors
+		return err // Return found error
+	}
+
 	if !validator.ValidateTransactionHash(transaction) { // Check invalid hash
 		return ErrInvalidTransactionHash // Invalid hash
 	}
