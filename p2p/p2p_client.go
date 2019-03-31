@@ -4,6 +4,7 @@ package p2p
 import (
 	"bytes"
 	"context"
+	"errors"
 	"fmt"
 	"strings"
 	"time"
@@ -185,6 +186,10 @@ func (client *Client) RequestBestTransaction(account common.Address, sampleSize 
 		if occurrences[common.NewHash(crypto.Sha3(response))] > occurrences[common.NewHash(crypto.Sha3(bestResponse))] { // Check is better response
 			bestResponse = response // Set best response
 		}
+	}
+
+	if len(bestResponse) == 0 || bestResponse == nil { // Check no best response
+		return common.Hash{}, errors.New("nil response") // Return error
 	}
 
 	return common.NewHash(bestResponse), nil // Return hash value
