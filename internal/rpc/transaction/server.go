@@ -51,7 +51,7 @@ func (server *Server) NewTransaction(ctx context.Context, req *transactionProto.
 		lastTransaction := &types.Transaction{} // Init buffer
 
 		for _, transaction := range accountChain.Transactions { // Iterate through transactions
-			if bytes.Equal(transaction.Sender.Bytes(), sender.Bytes()) { // Check match
+			if bytes.Equal(transaction.Sender.Bytes(), sender.Bytes()) && transaction.AccountNonce > nonce { // Check match
 				nonce++ // Increment nonce
 			}
 		}
