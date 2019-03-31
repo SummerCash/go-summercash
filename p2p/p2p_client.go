@@ -166,7 +166,7 @@ func (client *Client) RequestBestTransaction(account common.Address, sampleSize 
 
 	defer cancel() // Cancel
 
-	responses, err := BroadcastDhtResult(ctx, client.Host, append([]byte(account.String()), '\a'), GetStreamHeaderProtocolPath(client.Network, RequestBestTransaction), client.Network, int(sampleSize)) // Broadcast, get result
+	responses, err := BroadcastDhtResult(ctx, client.Host, append([]byte(account.String()), '\r'), GetStreamHeaderProtocolPath(client.Network, RequestBestTransaction), client.Network, int(sampleSize)) // Broadcast, get result
 
 	if err != nil { // Check for errors
 		return common.Hash{}, err // Return found error
@@ -201,7 +201,7 @@ func (client *Client) RequestNextTransaction(lastTransactionHash common.Hash, ac
 
 	defer cancel() // Cancel
 
-	responses, err := BroadcastDhtResult(ctx, client.Host, append([]byte(fmt.Sprintf("%s_%s", account.String(), lastTransactionHash.String())), '\a'), GetStreamHeaderProtocolPath(client.Network, RequestNextTransaction), client.Network, int(sampleSize)) // Broadcast, get result
+	responses, err := BroadcastDhtResult(ctx, client.Host, append([]byte(fmt.Sprintf("%s_%s", account.String(), lastTransactionHash.String())), '\r'), GetStreamHeaderProtocolPath(client.Network, RequestNextTransaction), client.Network, int(sampleSize)) // Broadcast, get result
 
 	if err != nil { // Check for errors
 		return &types.Transaction{}, err // Return found error
@@ -238,7 +238,7 @@ func (client *Client) RequestAllChains(sampleSize uint) ([]string, error) {
 
 	defer cancel() // Cancel
 
-	responses, err := BroadcastDhtResult(ctx, client.Host, append([]byte("req_all_chains"), '\a'), GetStreamHeaderProtocolPath(client.Network, RequestAllChains), client.Network, int(sampleSize)) // Broadcast, get result
+	responses, err := BroadcastDhtResult(ctx, client.Host, append([]byte("req_all_chains"), '\r'), GetStreamHeaderProtocolPath(client.Network, RequestAllChains), client.Network, int(sampleSize)) // Broadcast, get result
 
 	if err != nil { // Check for errors
 		return []string{}, err // Return found error
