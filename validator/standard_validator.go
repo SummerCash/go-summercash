@@ -98,6 +98,16 @@ func (validator *StandardValidator) PerformChainSafetyChecks(transaction *types.
 		}
 	}
 
+	_, err = types.ReadChainFromMemory(*transaction.Recipient) // Read sender chain
+
+	if err != nil { // Check for errors
+		_, err := types.NewChain(*transaction.Recipient) // Initialize chain
+
+		if err != nil { // Check for errors
+			return err // Return found error
+		}
+	}
+
 	return nil // No error occurred, return nil
 }
 
