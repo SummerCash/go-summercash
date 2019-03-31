@@ -128,7 +128,11 @@ func (client *Client) SyncNetwork() error {
 			localBestRemoteTxInstance, err := chain.QueryTransaction(remoteBestTransaction) // Query remote on local chain
 
 			if err == nil && localBestRemoteTxInstance != nil { // Check has instance
+				common.Logf("== P2P == detected possible rebroadcast for tx with hash %s\n", localBestTransaction.Hash.String()) // Log sync up to
+
 				if localBestRemoteTxInstance.Timestamp.Before(localBestTransaction.Timestamp) { // Check needs re-broadcast
+					common.Logf("== P2P == rebroadcasting tx with hash %s\n", localBestTransaction.Hash.String()) // Log sync up to
+
 					rebroadcastCtx, cancel := context.WithCancel(context.Background()) // Get context
 
 					err = client.PublishTransaction(rebroadcastCtx, localBestTransaction) // Re-broadcast
