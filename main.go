@@ -162,7 +162,7 @@ func startNode(archivalNode bool) {
 	config, err := config.ReadChainConfigFromMemory() // Read chain config
 
 	if err != nil { // Check for errors
-		config, err = p2p.BootstrapConfig(ctx, host, p2p.GetBestBootstrapAddress(ctx, host), *networkFlag) // Bootstrap config
+		config, err = p2p.BootstrapConfig(ctx, host, p2p.GetBestBootstrapAddress(ctx, host, *networkFlag), *networkFlag) // Bootstrap config
 
 		if err != nil { // Check for errors
 			panic(err) // panic
@@ -185,7 +185,7 @@ func startNode(archivalNode bool) {
 		panic(err) // Panic
 	}
 
-	if p2p.GetBestBootstrapAddress(ctx, host) != "localhost" { // Check can sync
+	if p2p.GetBestBootstrapAddress(ctx, host, *networkFlag) != "localhost" { // Check can sync
 		err = client.SyncNetwork() // Sync network
 
 		if err != nil { // Check for errors
