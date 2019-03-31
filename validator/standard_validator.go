@@ -121,6 +121,10 @@ func (validator *StandardValidator) ValidateTransactionTimestamp(transaction *ty
 		return false // Invalid
 	}
 
+	if len(senderChain.Transactions) == 0 { // Check cannot compare timestamps
+		return true // Valid timestamp
+	}
+
 	if senderChain.Transactions[len(senderChain.Transactions)-1].Timestamp.After(transaction.Timestamp) { // Check invalid timestamp
 		return false // Invalid timestamp
 	}
