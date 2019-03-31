@@ -2,6 +2,7 @@
 package p2p
 
 import (
+	"bufio"
 	"bytes"
 	"context"
 	"errors"
@@ -14,6 +15,7 @@ import (
 	"github.com/SummerCash/go-summercash/common"
 	"github.com/SummerCash/go-summercash/types"
 	"github.com/SummerCash/go-summercash/validator"
+	protocol "github.com/libp2p/go-libp2p-protocol"
 	routed "github.com/libp2p/go-libp2p/p2p/host/routed"
 
 	commonGoP2P "github.com/dowlandaiello/GoP2P/common"
@@ -52,7 +54,33 @@ func (client *Client) StartIntermittentSync(duration time.Duration) {
 
 // PublishTransaction publishes a given transaction.
 func (client *Client) PublishTransaction(ctx context.Context, transaction *types.Transaction) error {
-	return BroadcastDht(ctx, client.Host, transaction.Bytes(), GetStreamHeaderProtocolPath(client.Network, PublishTransaction), client.Network) // Publish transaction
+	peers := client.Host.Peerstore().Peers() // Get peers
+
+	for _, peer := range peers { // Iterate through peers
+		if peer == (*client.Host).ID() { // Check not same node
+			continue // Continue
+		}
+
+		common.Logf("== P2P == sending tx to peer with ID %s", (*client.Host).ID().Pretty()) // Log send
+
+		stream, err := (*client.Host).NewStream(ctx, peer, protocol.ID(GetStreamHeaderProtocolPath(client.Network, PublishTransaction))) // Connect
+
+		if err != nil { // Check for errors
+			continue // Continue
+		}
+
+		writer := bufio.NewWriter(stream) // Initialize writer
+
+		_, err = writer.Write(append(transaction.Bytes(), '\r')) // Write message
+
+		if err != nil { // Check for errors
+			continue // Continue
+		}
+
+		writer.Flush() // Flush
+	}
+
+	return nil // No error occurred, return nil
 }
 
 // SyncNetwork syncs all available chains and state roots.
