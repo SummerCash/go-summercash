@@ -124,6 +124,24 @@ func (client *Client) SyncNetwork() error {
 			localBestTransaction = chain.Transactions[len(chain.Transactions)-1] // Get best tx
 
 			common.Logf("== P2P == starting tx sync with local best tx %s\n", localBestTransaction.Hash.String()) // Log sync up to
+
+			localBestRemoteTxInstance, err := chain.QueryTransaction(remoteBestTransaction) // Query remote on local chain
+
+			if err == nil && localBestRemoteTxInstance != nil { // Check has instance
+				if localBestRemoteTxInstance.Timestamp.Before(localBestTransaction.Timestamp) { // Check needs re-broadcast
+					rebroadcastCtx, cancel := context.WithCancel(context.Background()) // Get context
+
+					err = client.PublishTransaction(rebroadcastCtx, localBestTransaction) // Re-broadcast
+
+					if err != nil { // Check for errors
+						cancel() // Cancel
+
+						return err // Return found error
+					}
+
+					cancel() // Cancel
+				}
+			}
 		}
 
 		for !bytes.Equal(localBestTransaction.Hash.Bytes(), remoteBestTransaction.Bytes()) { // Do until synced up to remote best tx
