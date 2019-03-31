@@ -166,6 +166,14 @@ func (client *Client) HandleReceiveNextTransactionRequest(stream inet.Stream) {
 
 	for x, transaction := range accountChain.Transactions { // Iterate through transactions
 		if bytes.Equal(transaction.Hash.Bytes(), hash.Bytes()) { // Check hashes equal
+			if len(accountChain.Transactions) == x+1 { // Check no next
+				readWriter.Write(append(accountChain.Transactions[x].Bytes(), '\r')) // Write current transaction
+
+				readWriter.Flush() // Flush
+
+				break // Break
+			}
+
 			readWriter.Write(append(accountChain.Transactions[x+1].Bytes(), '\r')) // Write next transaction
 
 			readWriter.Flush() // Flush

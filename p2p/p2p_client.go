@@ -133,6 +133,10 @@ func (client *Client) SyncNetwork() error {
 				return err // Return found error
 			}
 
+			if bytes.Equal(localBestTransaction.Hash.Bytes(), remoteBestTransaction.Bytes()) { // Check synced
+				break // Break
+			}
+
 			err = (*client.Validator).ValidateTransaction(localBestTransaction) // Validate tx
 
 			if err != nil { // Check for errors
