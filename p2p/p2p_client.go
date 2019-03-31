@@ -49,6 +49,11 @@ func (client *Client) StartIntermittentSync(duration time.Duration) {
 	}
 }
 
+// PublishTransaction publishes a given transaction.
+func (client *Client) PublishTransaction(ctx context.Context, transaction *types.Transaction) error {
+	return BroadcastDht(ctx, client.Host, transaction.Bytes(), GetStreamHeaderProtocolPath(client.Network, PublishTransaction), client.Network) // Publish transaction
+}
+
 // SyncNetwork syncs all available chains and state roots.
 func (client *Client) SyncNetwork() error {
 	common.Logf("== P2P == starting sync...\n") // Log sync chain
