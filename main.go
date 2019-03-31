@@ -202,5 +202,5 @@ func startNode(archivalNode bool) {
 
 /*
 	TODO:
-	- readme
+	- fix tx publish method
 */
