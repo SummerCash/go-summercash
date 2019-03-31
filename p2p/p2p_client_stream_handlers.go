@@ -240,6 +240,8 @@ func (client *Client) HandleReceiveAliveRequest(stream inet.Stream) {
 	if err != nil { // Check for errors
 		common.Logf("== P2P == error while writing req_not_dead_lol stream: %s\n", err.Error()) // Log error
 	}
+
+	writer.Flush() // Flush writer
 }
 
 /* END EXPORTED METHODS */

@@ -2,14 +2,15 @@
 package p2p
 
 import (
+	"bufio"
 	"context"
 	"strings"
 	"time"
 
 	peer "github.com/libp2p/go-libp2p-peer"
 	peerstore "github.com/libp2p/go-libp2p-peerstore"
+	protocol "github.com/libp2p/go-libp2p-protocol"
 	routed "github.com/libp2p/go-libp2p/p2p/host/routed"
-	"github.com/libp2p/go-libp2p/p2p/protocol/ping"
 	multiaddr "github.com/multiformats/go-multiaddr"
 )
 
@@ -23,7 +24,7 @@ var (
 /* BEGIN EXPORTED METHODS */
 
 // GetBestBootstrapAddress attempts to fetch the best bootstrap node.
-func GetBestBootstrapAddress(ctx context.Context, host *routed.RoutedHost) string {
+func GetBestBootstrapAddress(ctx context.Context, host *routed.RoutedHost, network string) string {
 	for _, bootstrapAddress := range BootstrapNodes { // Iterate through bootstrap nodes
 		multiaddr, err := multiaddr.NewMultiaddr(bootstrapAddress) // Parse address
 
@@ -51,14 +52,46 @@ func GetBestBootstrapAddress(ctx context.Context, host *routed.RoutedHost) strin
 
 		if err != nil { // Check for errors
 			cancel() // Cancel
+
 			continue // Continue
 		}
 
-		_, err = ping.Ping(bootstrapCheckCtx, host, peerID) // Attempt to ping
+		stream, err := (*host).NewStream(ctx, peerInfo.ID, protocol.ID(GetStreamHeaderProtocolPath(network, RequestAlive))) // Get stream
 
-		if err == nil { // Check no errors
-			cancel()                // Cancel
-			return bootstrapAddress // Return bootstrap address
+		if err != nil { // Check for errors
+			cancel() // Cancel
+
+			continue // Continue
+		}
+
+		reader := bufio.NewReader(stream) // Get reader
+
+		errChan := make(chan error) // Init error buffer
+		doneChan := make(chan bool) // Init done buffer
+
+		timer := time.NewTimer(time.Second * time.Duration(15)) // Init timer
+
+		go func() {
+			_, err = reader.ReadBytes('\f') // Read
+
+			if err != nil { // Check for errors
+				errChan <- err // Write err
+
+				return // Return
+			}
+
+			doneChan <- true // Done
+		}()
+
+		select {
+		case <-doneChan:
+			cancel() // Cancel
+
+			return bootstrapAddress // Done!
+		case <-errChan:
+			cancel() // Cancel
+		case <-timer.C:
+			cancel() // Cancel
 		}
 
 		cancel() // Cancel
