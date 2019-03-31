@@ -59,7 +59,7 @@ func (client *Client) SyncNetwork() error {
 		return err // Return found error
 	}
 
-	common.Logf("== P2P == requesting peers for chains to sync\n") // Log sync chain
+	common.Logf("== P2P == 🧐 requesting peers for chains to sync\n") // Log sync chain
 
 	remoteChains, err := client.RequestAllChains(16) // Request remote chains
 
@@ -67,10 +67,10 @@ func (client *Client) SyncNetwork() error {
 		return err // Return found error
 	}
 
-	common.Logf("== P2P == found remote chains: %s\n", strings.Join(remoteChains, ", ")) // Log sync chain
+	common.Logf("== P2P == 📦⛓ found remote chains: %s\n", strings.Join(remoteChains, ", ")) // Log sync chain
 
 	for _, remoteChain := range remoteChains { // Iterate through remote chains
-		common.Logf("== P2P == syncing chain %s\n", remoteChain) // Log sync chain
+		common.Logf("== P2P == ♻️⛓ syncing chain %s\n", remoteChain) // Log sync chain
 
 		if remoteChain == "" { // Check nil chain
 			continue // Continue
@@ -85,7 +85,7 @@ func (client *Client) SyncNetwork() error {
 		chain, err := types.ReadChainFromMemory(address) // Read chain
 
 		if !commonGoP2P.StringInSlice(localChains, remoteChain) || err != nil { // Check remote chain does not exist locally
-			common.Logf("== P2P == chain %s does not exist locally, downloading...\n", remoteChain) // Log download chain
+			common.Logf("== P2P == 🤔 chain %s does not exist locally, downloading...\n", remoteChain) // Log download chain
 
 			chain, err = client.RequestChain(address, 8) // Request chain
 
@@ -99,7 +99,7 @@ func (client *Client) SyncNetwork() error {
 				return err // Return found error
 			}
 
-			common.Logf("== P2P == finished downloading chain %s\n", remoteChain) // Log finish download chain
+			common.Logf("== P2P == 📥 finished downloading chain %s\n", remoteChain) // Log finish download chain
 		}
 
 		remoteBestTransaction, err := client.RequestBestTransaction(address, 16) // Request best tx
@@ -108,7 +108,7 @@ func (client *Client) SyncNetwork() error {
 			return err // Return found error
 		}
 
-		common.Logf("== P2P == determined must sync up to tx with hash %s\n", remoteBestTransaction.String()) // Log sync up to
+		common.Logf("== P2P == 🕵️‍ determined must sync up to tx with hash %s\n", remoteBestTransaction.String()) // Log sync up to
 
 		hash := common.NewHash(crypto.Sha3(nil)) // Get nil hash
 
@@ -117,7 +117,7 @@ func (client *Client) SyncNetwork() error {
 		if len(chain.Transactions) != 0 { // Check chain has txs
 			localBestTransaction = chain.Transactions[len(chain.Transactions)-1] // Get best tx
 
-			common.Logf("== P2P == starting tx sync with local best tx %s\n", localBestTransaction.Hash.String()) // Log sync up to
+			common.Logf("== P2P == 🤪 starting tx sync with local best tx %s\n", localBestTransaction.Hash.String()) // Log sync up to
 		}
 
 		for !bytes.Equal(localBestTransaction.Hash.Bytes(), remoteBestTransaction.Bytes()) { // Do until synced up to remote best tx
@@ -146,8 +146,10 @@ func (client *Client) SyncNetwork() error {
 			}
 		}
 
-		common.Logf("== P2P == finished syncing chain %s\n", remoteChain) // Log sync up to
+		common.Logf("== P2P == 👉⛓ finished syncing chain %s\n", remoteChain) // Log sync up to
 	}
+
+	common.Logf("== P2P == 👏 finished sync successfully!\n") // Log sync chain
 
 	return nil // No error occurred, return nil
 }
