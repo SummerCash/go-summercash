@@ -103,10 +103,10 @@ func (validator *StandardValidator) PerformChainSafetyChecks(transaction *types.
 
 // ValidateTransactionHash checks that a given transaction's hash is equivalent to the calculated hash of that given transaction.
 func (validator *StandardValidator) ValidateTransactionHash(transaction *types.Transaction) bool {
-	unsignedTx := transaction // Init unsigned buffer
+	unsignedTx := *transaction // Init unsigned buffer
 
-	(*unsignedTx).Signature = nil // Set signature to nil
-	(*unsignedTx).Hash = nil      // Set hash to nil
+	unsignedTx.Signature = nil // Set signature to nil
+	unsignedTx.Hash = nil      // Set hash to nil
 
 	return bytes.Equal(transaction.Hash.Bytes(), common.NewHash(crypto.Sha3(unsignedTx.Bytes())).Bytes()) // Return hashes equivalent
 }
