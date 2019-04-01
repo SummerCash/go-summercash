@@ -164,6 +164,14 @@ func (client *Client) HandleReceiveNextTransactionRequest(stream inet.Stream) {
 		common.Logf("== P2P == error reading req_next_tx stream: %s\n", err.Error()) // Log error
 	}
 
+	if bytes.Equal(hash.Bytes(), common.NewHash(crypto.Sha3(nil)).Bytes()) { // Check is nil request
+		readWriter.Write(append(accountChain.Transactions[0].Bytes(), '\r')) // Write genesis bytes
+
+		readWriter.Flush() // Flush
+
+		return // Return
+	}
+
 	for x, transaction := range accountChain.Transactions { // Iterate through transactions
 		if bytes.Equal(transaction.Hash.Bytes(), hash.Bytes()) { // Check hashes equal
 			if len(accountChain.Transactions) == x+1 { // Check no next
