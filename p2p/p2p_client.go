@@ -69,6 +69,8 @@ func (client *Client) PublishTransaction(ctx context.Context, transaction *types
 			continue // Continue
 		}
 
+		common.Logf("== P2P == stream to peer %s initialized\n", peer.Pretty()) // Log stream init
+
 		writer := bufio.NewWriter(stream) // Initialize writer
 
 		_, err = writer.Write(append(transaction.Bytes(), '\r')) // Write message
@@ -76,6 +78,8 @@ func (client *Client) PublishTransaction(ctx context.Context, transaction *types
 		if err != nil { // Check for errors
 			continue // Continue
 		}
+
+		common.Logf("== P2P == wrote tx to peer %s\n", peer.Pretty()) // Log stream init
 
 		writer.Flush() // Flush
 	}
