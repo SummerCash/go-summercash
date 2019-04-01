@@ -27,11 +27,11 @@ import (
 /* BEGIN EXPORTED METHODS */
 
 // StartRPCServer - start RPC server
-func StartRPCServer(port int) {
+func StartRPCServer(port int) error {
 	err := common.GenerateTLSCertificates("term") // Generate certs
 
 	if err != nil { // Check for errors
-		panic(err) // Panic
+		return err // Return found error
 	}
 
 	cryptoHandler := cryptoProto.NewCryptoServer(&cryptoServer.Server{}, nil)                                             // Init handler
@@ -56,6 +56,8 @@ func StartRPCServer(port int) {
 
 	go http.ListenAndServeTLS(":"+strconv.Itoa(port), "termCert.pem", "termKey.pem", mux) // Start server
 	go http.ListenAndServe(":"+strconv.Itoa(port+1), mux)                                 // Start server
+
+	return nil // No error occurred, return nil
 }
 
 /* END EXPORTED METHODS */
