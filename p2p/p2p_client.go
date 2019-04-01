@@ -61,7 +61,7 @@ func (client *Client) PublishTransaction(ctx context.Context, transaction *types
 			continue // Continue
 		}
 
-		common.Logf("== P2P == sending tx to peer with ID %s", (*client.Host).ID().Pretty()) // Log send
+		common.Logf("== P2P == sending tx to peer with ID %s\n", peer.Pretty()) // Log send
 
 		stream, err := (*client.Host).NewStream(ctx, peer, protocol.ID(GetStreamHeaderProtocolPath(client.Network, PublishTransaction))) // Connect
 
