@@ -231,7 +231,7 @@ func (chain *Chain) CalculateTargetNonce() uint64 {
 		}
 	}
 
-	return lastNonce // Return nonce
+	return lastNonce + 1 // Return nonce
 }
 
 // CalculateBalance - iterate through tx set, return balance
