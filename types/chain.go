@@ -221,6 +221,19 @@ func (chain *Chain) QueryTransactionByParent(parentHash common.Hash) (*Transacti
 	return &Transaction{}, ErrNilTransaction
 }
 
+// CalculateTargetNonce - calculate the next target nonce for the given chain.
+func (chain *Chain) CalculateTargetNonce() uint64 {
+	lastNonce := uint64(0) // Init nonce buffer
+
+	for _, currentTransaction := range chain.Transactions { // Iterate through sender txs
+		if currentTransaction.AccountNonce > lastNonce && bytes.Equal(currentTransaction.Sender.Bytes(), chain.Account.Bytes()) { // Check greater than last nonce
+			lastNonce = currentTransaction.AccountNonce // Set last nonce
+		}
+	}
+
+	return lastNonce // Return nonce
+}
+
 // CalculateBalance - iterate through tx set, return balance
 func (chain *Chain) CalculateBalance() float64 {
 	balance := float64(0) // Init buffer
