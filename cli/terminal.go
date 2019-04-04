@@ -14,14 +14,14 @@ import (
 
 	"github.com/SummerCash/go-summercash/common"
 	"github.com/SummerCash/go-summercash/config"
-	accountsProto "github.com/SummerCash/go-summercash/internal/rpc/proto/accounts"
-	chainProto "github.com/SummerCash/go-summercash/internal/rpc/proto/chain"
-	commonProto "github.com/SummerCash/go-summercash/internal/rpc/proto/common"
-	configProto "github.com/SummerCash/go-summercash/internal/rpc/proto/config"
-	coordinationChainProto "github.com/SummerCash/go-summercash/internal/rpc/proto/coordinationchain"
-	cryptoProto "github.com/SummerCash/go-summercash/internal/rpc/proto/crypto"
-	transactionProto "github.com/SummerCash/go-summercash/internal/rpc/proto/transaction"
-	upnpProto "github.com/SummerCash/go-summercash/internal/rpc/proto/upnp"
+	accountsProto "github.com/SummerCash/go-summercash/intrnl/rpc/proto/accounts"
+	chainProto "github.com/SummerCash/go-summercash/intrnl/rpc/proto/chain"
+	commonProto "github.com/SummerCash/go-summercash/intrnl/rpc/proto/common"
+	configProto "github.com/SummerCash/go-summercash/intrnl/rpc/proto/config"
+	coordinationChainProto "github.com/SummerCash/go-summercash/intrnl/rpc/proto/coordinationchain"
+	cryptoProto "github.com/SummerCash/go-summercash/intrnl/rpc/proto/crypto"
+	transactionProto "github.com/SummerCash/go-summercash/intrnl/rpc/proto/transaction"
+	upnpProto "github.com/SummerCash/go-summercash/intrnl/rpc/proto/upnp"
 	figure "github.com/common-nighthawk/go-figure"
 )
 

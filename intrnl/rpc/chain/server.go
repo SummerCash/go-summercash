@@ -8,7 +8,7 @@ import (
 	"strings"
 
 	"github.com/SummerCash/go-summercash/common"
-	chainProto "github.com/SummerCash/go-summercash/internal/rpc/proto/chain"
+	chainProto "github.com/SummerCash/go-summercash/intrnl/rpc/proto/chain"
 	"github.com/SummerCash/go-summercash/types"
 )
 

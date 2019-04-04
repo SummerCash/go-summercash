@@ -6,7 +6,7 @@ import (
 	"fmt"
 
 	"github.com/SummerCash/go-summercash/crypto"
-	cryptoProto "github.com/SummerCash/go-summercash/internal/rpc/proto/crypto"
+	cryptoProto "github.com/SummerCash/go-summercash/intrnl/rpc/proto/crypto"
 )
 
 // Server - RPC server

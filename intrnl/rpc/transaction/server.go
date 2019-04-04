@@ -13,7 +13,7 @@ import (
 
 	"github.com/SummerCash/go-summercash/accounts"
 	"github.com/SummerCash/go-summercash/common"
-	transactionProto "github.com/SummerCash/go-summercash/internal/rpc/proto/transaction"
+	transactionProto "github.com/SummerCash/go-summercash/intrnl/rpc/proto/transaction"
 	"github.com/SummerCash/go-summercash/types"
 )
 

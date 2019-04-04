@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"strconv"
 
-	upnpProto "github.com/SummerCash/go-summercash/internal/rpc/proto/upnp"
+	upnpProto "github.com/SummerCash/go-summercash/intrnl/rpc/proto/upnp"
 	"github.com/SummerCash/go-summercash/upnp"
 )
 
