@@ -54,6 +54,33 @@ type Transaction struct {
 	Hash *common.Hash `json:"hash"` // Transaction hash
 }
 
+// stringTransaction represents a human-readable transaction.
+type stringTransaction struct {
+	AccountNonce uint64 `json:"nonce"` // Nonce in set of account transactions
+
+	SenderHex    string `json:"sender"`    // Transaction sender
+	RecipientHex string `json:"recipient"` // Transaction recipient
+
+	Amount float64 `json:"amount"` // Amount of coins sent in transaction
+
+	Payload []byte `json:"payload"` // Misc. data transported with transaction
+
+	Signature *Signature `json:"signature"` // Transaction signature meta
+
+	ParentTx *Transaction `json:"-"` // Parent transaction
+
+	Timestamp time.Time `json:"time"` // Transaction timestamp
+
+	DeployedContractAddress *common.Address `json:"contract"` // Contract instance
+
+	ContractCreation bool `json:"is-init-contract"` // Should init contract
+	Genesis          bool `json:"genesis"`          // Genesis
+
+	Logs []*Log `json:"logs"` // Logs
+
+	HashHex string `json:"hash"` // Transaction hash
+}
+
 /* BEGIN EXPORTED METHODS */
 
 // NewTransaction - attempt to initialize transaction primitive
@@ -228,7 +255,23 @@ func (transaction *Transaction) Bytes() []byte {
 
 // String - convert given transaction to string
 func (transaction *Transaction) String() string {
-	marshaled, _ := json.MarshalIndent(*transaction, "", "  ") // Marshal tx
+	stringTransaction := &stringTransaction{
+		AccountNonce:            transaction.AccountNonce,            // Set account nonce
+		SenderHex:               transaction.Sender.String(),         // Set sender hex
+		RecipientHex:            transaction.Recipient.String(),      // Set recipient hex
+		Amount:                  transaction.Amount,                  // Set amount
+		Payload:                 transaction.Payload,                 // Set payload
+		Signature:               transaction.Signature,               // Set signature
+		ParentTx:                transaction.ParentTx,                // Set parent
+		Timestamp:               transaction.Timestamp,               // Set timestamp
+		DeployedContractAddress: transaction.DeployedContractAddress, // Set deployed contract address
+		ContractCreation:        transaction.ContractCreation,        // Set is contract creation
+		Genesis:                 transaction.Genesis,                 // Set is genesis
+		Logs:                    transaction.Logs,                    // Set logs
+		HashHex:                 transaction.Hash.String(),           // Set hash hex
+	}
+
+	marshaled, _ := json.MarshalIndent(*stringTransaction, "", "  ") // Marshal tx
 
 	return string(marshaled) // Return marshaled
 }
