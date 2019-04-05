@@ -6,7 +6,7 @@ import (
 
 	"github.com/SummerCash/go-summercash/common"
 	"github.com/SummerCash/go-summercash/config"
-	configProto "github.com/SummerCash/go-summercash/internal/rpc/proto/config"
+	configProto "github.com/SummerCash/go-summercash/intrnl/rpc/proto/config"
 )
 
 // Server - RPC server

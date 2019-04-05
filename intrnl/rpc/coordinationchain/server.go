@@ -6,7 +6,7 @@ import (
 	"fmt"
 
 	"github.com/SummerCash/go-summercash/common"
-	coordinationChainProto "github.com/SummerCash/go-summercash/internal/rpc/proto/coordinationchain"
+	coordinationChainProto "github.com/SummerCash/go-summercash/intrnl/rpc/proto/coordinationchain"
 	"github.com/SummerCash/go-summercash/types"
 	commonGoP2P "github.com/dowlandaiello/GoP2P/common"
 )

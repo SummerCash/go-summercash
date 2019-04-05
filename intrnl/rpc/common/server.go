@@ -5,7 +5,7 @@ import (
 	"fmt"
 
 	"github.com/SummerCash/go-summercash/common"
-	commonProto "github.com/SummerCash/go-summercash/internal/rpc/proto/common"
+	commonProto "github.com/SummerCash/go-summercash/intrnl/rpc/proto/common"
 )
 
 // Server - RPC server
