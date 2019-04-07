@@ -78,7 +78,7 @@ func BroadcastDhtResult(ctx context.Context, host *routed.RoutedHost, message []
 			continue // Continue
 		}
 
-		responseBytes = bytes.Trim(responseBytes, "\'") // Trim delmiter
+		responseBytes = bytes.Trim(responseBytes, string('\'')) // Trim delmiter
 
 		results = append(results, responseBytes) // Append response
 

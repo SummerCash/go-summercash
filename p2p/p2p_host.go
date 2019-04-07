@@ -104,7 +104,7 @@ func BootstrapConfig(ctx context.Context, host *routed.RoutedHost, bootstrapAddr
 		return &config.ChainConfig{}, err // Return found error
 	}
 
-	dagConfigBytes = bytes.Trim(dagConfigBytes, "\'") // Trim delimiter
+	dagConfigBytes = bytes.Trim(dagConfigBytes, string('\'')) // Trim delimiter
 
 	deserializedConfig, err := config.FromBytes(dagConfigBytes) // Deserialize
 
