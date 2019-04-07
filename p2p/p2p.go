@@ -3,7 +3,6 @@ package p2p
 
 import (
 	"bufio"
-	"bytes"
 	"context"
 
 	protocol "github.com/libp2p/go-libp2p-protocol"
@@ -29,7 +28,7 @@ func BroadcastDht(ctx context.Context, host *routed.RoutedHost, message []byte, 
 
 		writer := bufio.NewWriter(stream) // Initialize writer
 
-		_, err = writer.Write(append(message, '\a')) // Write message
+		_, err = writer.Write(message) // Write message
 
 		if err != nil { // Check for errors
 			continue // Continue
@@ -64,7 +63,9 @@ func BroadcastDhtResult(ctx context.Context, host *routed.RoutedHost, message []
 
 		readWriter := bufio.NewReadWriter(bufio.NewReader(stream), bufio.NewWriter(stream)) // Initialize reader/writer
 
-		_, err = readWriter.Write(append(message, byte('\a'))) // Write message
+		scanner := bufio.NewScanner(stream) // Initialize scanner
+
+		_, err = readWriter.Write(message) // Write message
 
 		if err != nil { // Check for errors
 			continue // Continue
@@ -72,13 +73,15 @@ func BroadcastDhtResult(ctx context.Context, host *routed.RoutedHost, message []
 
 		readWriter.Flush() // Flush
 
-		responseBytes, err := readWriter.ReadBytes('\a') // Read up to delimiter
+		var responseBytes []byte // Init response buffer
 
-		if err != nil { // Check for errors
-			continue // Continue
+		for scanner.Scan() { // Scan
+			responseBytes = append(responseBytes, scanner.Bytes()...) // Append scanned
 		}
 
-		responseBytes = bytes.Trim(responseBytes, "\a") // Trim delmiter
+		if err = scanner.Err(); err != nil { // Check for errors
+			continue // Continue
+		}
 
 		results = append(results, responseBytes) // Append response
 

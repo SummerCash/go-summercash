@@ -25,7 +25,7 @@ func (client *Client) HandleReceiveConfigRequest(stream inet.Stream) {
 
 	config, _ := config.ReadChainConfigFromMemory() // Read config from memory
 
-	writer.Write(append(config.Bytes(), '\a')) // Write config bytes
+	writer.Write(config.Bytes()) // Write config bytes
 
 	writer.Flush() // Flush
 }
@@ -34,17 +34,21 @@ func (client *Client) HandleReceiveConfigRequest(stream inet.Stream) {
 func (client *Client) HandleReceiveTransaction(stream inet.Stream) {
 	common.Logf("== P2P == handling pub_tx stream\n") // Log handle stream
 
-	reader := bufio.NewReader(stream) // Initialize reader
+	scanner := bufio.NewScanner(stream) // Initialize scanner
 
-	b, err := reader.ReadBytes('\a') // Read up to delimiter
+	var b []byte // Init response buffer
+
+	for scanner.Scan() { // Scan
+		b = append(b, scanner.Bytes()...) // Append scanned
+	}
+
+	err := scanner.Err() // Get error
 
 	if err != nil { // Check for errors
 		common.Logf("== P2P == error while reading pub_tx stream: %s\n", err.Error()) // Log error
 
 		return // Return
 	}
-
-	b = bytes.Trim(b, "\a") // Trim delimiter
 
 	tx, err := types.TransactionFromBytes(b) // Marshal bytes to transaction
 
@@ -103,13 +107,21 @@ func (client *Client) HandleReceiveBestTransaction(stream inet.Stream) {
 
 	readWriter := bufio.NewReadWriter(bufio.NewReader(stream), bufio.NewWriter(stream)) // Initialize reader/writer
 
-	accountString, err := readWriter.ReadBytes('\a') // Read
+	scanner := bufio.NewScanner(stream) // Init scanner
+
+	var accountString []byte // Init response buffer
+
+	for scanner.Scan() { // Scan
+		accountString = append(accountString, scanner.Bytes()...) // Append scanned
+	}
+
+	err := scanner.Err() // Get error
 
 	if err != nil { // Check for errors
 		common.Logf("== P2P == error while reading req_best_tx stream: %s\n", err.Error()) // Log error
-	}
 
-	accountString = bytes.Trim(accountString, "\a") // Trim delimiter
+		return // Return
+	}
 
 	address, err := common.StringToAddress(string(accountString)) // Get address
 
@@ -124,9 +136,9 @@ func (client *Client) HandleReceiveBestTransaction(stream inet.Stream) {
 	}
 
 	if len(chain.Transactions) > 0 { // Check has txs
-		readWriter.Write(append(chain.Transactions[len(chain.Transactions)-1].Hash.Bytes(), '\a')) // Write tx hash
+		readWriter.Write(chain.Transactions[len(chain.Transactions)-1].Hash.Bytes()) // Write tx hash
 	} else { // No txs
-		readWriter.Write(append(common.NewHash(crypto.Sha3(nil)).Bytes(), '\a')) // Write nil hash
+		readWriter.Write(common.NewHash(crypto.Sha3(nil)).Bytes()) // Write nil hash
 	}
 
 	readWriter.Flush() // Flush
@@ -138,13 +150,21 @@ func (client *Client) HandleReceiveNextTransactionRequest(stream inet.Stream) {
 
 	readWriter := bufio.NewReadWriter(bufio.NewReader(stream), bufio.NewWriter(stream)) // Initialize reader/writer
 
-	lastTxAccount, err := readWriter.ReadBytes('\a') // Read
+	scanner := bufio.NewScanner(stream) // Init scanner
+
+	var lastTxAccount []byte // Init response buffer
+
+	for scanner.Scan() { // Scan
+		lastTxAccount = append(lastTxAccount, scanner.Bytes()...) // Append scanned
+	}
+
+	err := scanner.Err() // Get error
 
 	if err != nil { // Check for errors
 		common.Logf("== P2P == error while reading req_next_tx stream: %s\n", err.Error()) // Log error
-	}
 
-	lastTxAccount = bytes.Trim(lastTxAccount, "\a") // Trim delimiter
+		return // Return
+	}
 
 	address, err := common.StringToAddress(strings.Split(string(lastTxAccount), "_")[0]) // Get address
 
@@ -165,7 +185,7 @@ func (client *Client) HandleReceiveNextTransactionRequest(stream inet.Stream) {
 	}
 
 	if bytes.Equal(hash.Bytes(), common.NewHash(crypto.Sha3(nil)).Bytes()) { // Check is nil request
-		readWriter.Write(append(accountChain.Transactions[0].Bytes(), '\a')) // Write genesis bytes
+		readWriter.Write(accountChain.Transactions[0].Bytes()) // Write genesis bytes
 
 		readWriter.Flush() // Flush
 
@@ -175,14 +195,14 @@ func (client *Client) HandleReceiveNextTransactionRequest(stream inet.Stream) {
 	for x, transaction := range accountChain.Transactions { // Iterate through transactions
 		if bytes.Equal(transaction.Hash.Bytes(), hash.Bytes()) { // Check hashes equal
 			if len(accountChain.Transactions) == x+1 { // Check no next
-				readWriter.Write(append(accountChain.Transactions[x].Bytes(), '\a')) // Write current transaction
+				readWriter.Write(accountChain.Transactions[x].Bytes()) // Write current transaction
 
 				readWriter.Flush() // Flush
 
 				break // Break
 			}
 
-			readWriter.Write(append(accountChain.Transactions[x+1].Bytes(), '\a')) // Write next transaction
+			readWriter.Write(accountChain.Transactions[x+1].Bytes()) // Write next transaction
 
 			readWriter.Flush() // Flush
 
@@ -203,7 +223,7 @@ func (client *Client) HandleReceiveAllChainsRequest(stream inet.Stream) {
 		common.Logf("== P2P == error while fetching local chains tx from pub_tx stream to recipient chain: %s\n", err.Error()) // Log error
 	}
 
-	_, err = writer.Write(append([]byte(strings.Join(allLocalChains, "_")), '\a')) // Write all local chains
+	_, err = writer.Write([]byte(strings.Join(allLocalChains, "_"))) // Write all local chains
 
 	if err != nil { // Check for errors
 		common.Logf("== P2P == error while writing req_chain stream: %s\n", err.Error()) // Log error
@@ -218,13 +238,21 @@ func (client *Client) HandleReceiveChainRequest(stream inet.Stream) {
 
 	readWriter := bufio.NewReadWriter(bufio.NewReader(stream), bufio.NewWriter(stream)) // Initialize reader/writer
 
-	addressBytes, err := readWriter.ReadBytes('\a') // Read up to delimiter
+	scanner := bufio.NewScanner(stream) // Init scanner
+
+	var addressBytes []byte // Init response buffer
+
+	for scanner.Scan() { // Scan
+		addressBytes = append(addressBytes, scanner.Bytes()...) // Append scanned
+	}
+
+	err := scanner.Err() // Get error
 
 	if err != nil { // Check for errors
 		common.Logf("== P2P == error while reading req_chain stream: %s\n", err.Error()) // Log error
-	}
 
-	addressBytes = bytes.Trim(addressBytes, "\a") // Trim delimiter
+		return // Return
+	}
 
 	var address common.Address // Init buffer
 
@@ -236,7 +264,7 @@ func (client *Client) HandleReceiveChainRequest(stream inet.Stream) {
 		common.Logf("== P2P == error while reading req_chain stream: %s\n", err.Error()) // Log error
 	}
 
-	_, err = readWriter.Write(append(chain.Bytes(), '\a')) // Write chain bytes
+	_, err = readWriter.Write(chain.Bytes()) // Write chain bytes
 
 	if err != nil { // Check for errors
 		common.Logf("== P2P == error while writing req_chain stream: %s\n", err.Error()) // Log error
@@ -251,7 +279,7 @@ func (client *Client) HandleReceiveAliveRequest(stream inet.Stream) {
 
 	writer := bufio.NewWriter(stream) // Init writer
 
-	_, err := writer.Write(append([]byte("despacito"), '\a')) // Write alive
+	_, err := writer.Write([]byte("despacito")) // Write alive
 
 	if err != nil { // Check for errors
 		common.Logf("== P2P == error while writing req_not_dead_lol stream: %s\n", err.Error()) // Log error
