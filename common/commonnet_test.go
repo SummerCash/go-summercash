@@ -47,7 +47,7 @@ func TestReadConnectionWaitAsyncNoTLS(t *testing.T) {
 		t.FailNow()  // Panic
 	}
 
-	_, err = connection.Write(append([]byte("test"), byte('\''))) // Write test data to connection
+	_, err = connection.Write(append([]byte("test"), byte('\r'))) // Write test data to connection
 
 	if err != nil { // Check for errors
 		t.Error(err) // Log found error
