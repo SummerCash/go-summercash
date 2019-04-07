@@ -125,7 +125,7 @@ func (client *Client) HandleReceiveBestTransaction(stream inet.Stream) {
 
 	if len(chain.Transactions) > 0 { // Check has txs
 		if strings.Contains(chain.Account.String(), "0x04002738d9617fea89096458873e3d9c1733") {
-			panic(bytes.Contains(chain.Transactions[len(chain.Transactions)-1].Hash.Bytes(), []byte{'\v'}))
+			panic(bytes.Contains(chain.Transactions[len(chain.Transactions)-1].Hash.Bytes(), []byte{'\f'}))
 		}
 		readWriter.Write(append(chain.Transactions[len(chain.Transactions)-1].Hash.Bytes(), '\v')) // Write tx hash
 	} else { // No txs
