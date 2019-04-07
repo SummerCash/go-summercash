@@ -126,7 +126,8 @@ func (client *Client) HandleReceiveBestTransaction(stream inet.Stream) {
 
 	if len(chain.Transactions) > 0 { // Check has txs
 		fmt.Println(bytes.Index(chain.Transactions[len(chain.Transactions)-1].Hash.Bytes(), []byte{'\r'})) // Log index
-		readWriter.Write(append(chain.Transactions[len(chain.Transactions)-1].Hash.Bytes(), '\r'))         // Write tx hash
+		fmt.Println(string(chain.Transactions[len(chain.Transactions)-1].Hash.Bytes()))
+		readWriter.Write(append(chain.Transactions[len(chain.Transactions)-1].Hash.Bytes(), '\r')) // Write tx hash
 	} else { // No txs
 		readWriter.Write(append(common.NewHash(crypto.Sha3(nil)).Bytes(), '\r')) // Write nil hash
 	}
