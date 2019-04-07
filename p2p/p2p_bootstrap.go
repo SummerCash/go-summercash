@@ -72,7 +72,7 @@ func GetBestBootstrapAddress(ctx context.Context, host *routed.RoutedHost, netwo
 		timer := time.NewTimer(time.Second * time.Duration(15)) // Init timer
 
 		go func() {
-			_, err = reader.ReadBytes('\f') // Read
+			_, err = reader.ReadBytes('\x99') // Read
 
 			if err != nil { // Check for errors
 				errChan <- err // Write err
