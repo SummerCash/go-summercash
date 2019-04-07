@@ -28,16 +28,20 @@ type Account struct {
 
 // NewAccount - create new account
 func NewAccount() (*Account, error) {
-	privateKey, err := ecdsa.GenerateKey(elliptic.P521(), rand.Reader) // Generate private key
+	var account *Account // Init account buffer
 
-	if err != nil { // Check for errors
-		return &Account{}, err // Return error
-	}
+	for bytes.Contains(account.Address.Bytes(), []byte{'\r'}) { // Generate accounts until valid
+		privateKey, err := ecdsa.GenerateKey(elliptic.P521(), rand.Reader) // Generate private key
 
-	account, err := AccountFromKey(privateKey) // Generate account from key
+		if err != nil { // Check for errors
+			return &Account{}, err // Return error
+		}
 
-	if err != nil { // Check for errors
-		return &Account{}, err // Return error
+		account, err = AccountFromKey(privateKey) // Generate account from key
+
+		if err != nil { // Check for errors
+			return &Account{}, err // Return error
+		}
 	}
 
 	chain, err := types.NewChain(account.Address) // Init account chain
