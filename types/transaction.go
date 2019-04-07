@@ -54,8 +54,8 @@ type Transaction struct {
 	Hash *common.Hash `json:"hash"` // Transaction hash
 }
 
-// stringTransaction represents a human-readable transaction.
-type stringTransaction struct {
+// StringTransaction represents a human-readable transaction.
+type StringTransaction struct {
 	AccountNonce uint64 `json:"nonce"` // Nonce in set of account transactions
 
 	SenderHex    string `json:"sender"`    // Transaction sender
@@ -255,7 +255,7 @@ func (transaction *Transaction) Bytes() []byte {
 
 // String - convert given transaction to string
 func (transaction *Transaction) String() string {
-	stringTransaction := &stringTransaction{
+	stringTransaction := &StringTransaction{
 		AccountNonce:            transaction.AccountNonce,            // Set account nonce
 		SenderHex:               transaction.Sender.String(),         // Set sender hex
 		RecipientHex:            transaction.Recipient.String(),      // Set recipient hex
