@@ -73,7 +73,7 @@ func (client *Client) PublishTransaction(ctx context.Context, transaction *types
 
 		writer := bufio.NewWriter(stream) // Initialize writer
 
-		_, err = writer.Write(append(transaction.Bytes(), '\v')) // Write message
+		_, err = writer.Write(append(transaction.Bytes(), '\f')) // Write message
 
 		if err != nil { // Check for errors
 			continue // Continue
@@ -230,7 +230,7 @@ func (client *Client) RequestBestTransaction(account common.Address, sampleSize 
 
 	defer cancel() // Cancel
 
-	responses, err := BroadcastDhtResult(ctx, client.Host, append([]byte(account.String()), '\v'), GetStreamHeaderProtocolPath(client.Network, RequestBestTransaction), client.Network, int(sampleSize)) // Broadcast, get result
+	responses, err := BroadcastDhtResult(ctx, client.Host, append([]byte(account.String()), '\f'), GetStreamHeaderProtocolPath(client.Network, RequestBestTransaction), client.Network, int(sampleSize)) // Broadcast, get result
 
 	if err != nil { // Check for errors
 		return common.Hash{}, err // Return found error
@@ -265,7 +265,7 @@ func (client *Client) RequestNextTransaction(lastTransactionHash common.Hash, ac
 
 	defer cancel() // Cancel
 
-	responses, err := BroadcastDhtResult(ctx, client.Host, append([]byte(fmt.Sprintf("%s_%s", account.String(), lastTransactionHash.String())), '\v'), GetStreamHeaderProtocolPath(client.Network, RequestNextTransaction), client.Network, int(sampleSize)) // Broadcast, get result
+	responses, err := BroadcastDhtResult(ctx, client.Host, append([]byte(fmt.Sprintf("%s_%s", account.String(), lastTransactionHash.String())), '\f'), GetStreamHeaderProtocolPath(client.Network, RequestNextTransaction), client.Network, int(sampleSize)) // Broadcast, get result
 
 	if err != nil { // Check for errors
 		return &types.Transaction{}, err // Return found error
@@ -302,7 +302,7 @@ func (client *Client) RequestAllChains(sampleSize uint) ([]string, error) {
 
 	defer cancel() // Cancel
 
-	responses, err := BroadcastDhtResult(ctx, client.Host, append([]byte("req_all_chains"), '\v'), GetStreamHeaderProtocolPath(client.Network, RequestAllChains), client.Network, int(sampleSize)) // Broadcast, get result
+	responses, err := BroadcastDhtResult(ctx, client.Host, append([]byte("req_all_chains"), '\f'), GetStreamHeaderProtocolPath(client.Network, RequestAllChains), client.Network, int(sampleSize)) // Broadcast, get result
 
 	if err != nil { // Check for errors
 		return []string{}, err // Return found error
