@@ -96,7 +96,7 @@ func BootstrapConfig(ctx context.Context, host *routed.RoutedHost, bootstrapAddr
 
 	reader := bufio.NewReader(stream) // Initialize reader from stream
 
-	dagConfigBytes, err := reader.ReadBytes('\r') // Read
+	dagConfigBytes, err := reader.ReadBytes('\v') // Read
 
 	if err != nil { // Check for errors
 		cancel() // Cancel

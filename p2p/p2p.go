@@ -29,7 +29,7 @@ func BroadcastDht(ctx context.Context, host *routed.RoutedHost, message []byte, 
 
 		writer := bufio.NewWriter(stream) // Initialize writer
 
-		_, err = writer.Write(append(message, '\r')) // Write message
+		_, err = writer.Write(append(message, '\v')) // Write message
 
 		if err != nil { // Check for errors
 			continue // Continue
@@ -64,7 +64,7 @@ func BroadcastDhtResult(ctx context.Context, host *routed.RoutedHost, message []
 
 		readWriter := bufio.NewReadWriter(bufio.NewReader(stream), bufio.NewWriter(stream)) // Initialize reader/writer
 
-		_, err = readWriter.Write(append(message, byte('\r'))) // Write message
+		_, err = readWriter.Write(append(message, byte('\v'))) // Write message
 
 		if err != nil { // Check for errors
 			continue // Continue
@@ -72,7 +72,7 @@ func BroadcastDhtResult(ctx context.Context, host *routed.RoutedHost, message []
 
 		readWriter.Flush() // Flush
 
-		responseBytes, err := readWriter.ReadBytes('\r') // Read up to delimiter
+		responseBytes, err := readWriter.ReadBytes('\v') // Read up to delimiter
 
 		if err != nil { // Check for errors
 			continue // Continue
