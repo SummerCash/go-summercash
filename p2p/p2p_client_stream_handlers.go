@@ -124,9 +124,14 @@ func (client *Client) HandleReceiveBestTransaction(stream inet.Stream) {
 	}
 
 	if len(chain.Transactions) > 0 { // Check has txs
-		panic("test")
+		if strings.Contains(chain.Account.String(), "0x04002738d9617fea89096458873e3d9c1733") {
+			panic("test")
+		}
 		readWriter.Write(append(chain.Transactions[len(chain.Transactions)-1].Hash.Bytes(), '\v')) // Write tx hash
 	} else { // No txs
+		if strings.Contains(chain.Account.String(), "0x04002738d9617fea89096458873e3d9c1733") {
+			panic("test2")
+		}
 		readWriter.Write(append(common.NewHash(crypto.Sha3(nil)).Bytes(), '\v')) // Write nil hash
 	}
 
