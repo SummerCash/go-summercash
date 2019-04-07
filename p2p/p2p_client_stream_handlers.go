@@ -44,7 +44,7 @@ func (client *Client) HandleReceiveTransaction(stream inet.Stream) {
 		return // Return
 	}
 
-	b = bytes.Trim(b, "\*") // Trim delimiter
+	b = bytes.Trim(b, "\v") // Trim delimiter
 
 	tx, err := types.TransactionFromBytes(b) // Marshal bytes to transaction
 
@@ -109,7 +109,7 @@ func (client *Client) HandleReceiveBestTransaction(stream inet.Stream) {
 		common.Logf("== P2P == error while reading req_best_tx stream: %s\n", err.Error()) // Log error
 	}
 
-	accountString = bytes.Trim(accountString, "\*") // Trim delimiter
+	accountString = bytes.Trim(accountString, "\v") // Trim delimiter
 
 	address, err := common.StringToAddress(string(accountString)) // Get address
 
@@ -144,7 +144,7 @@ func (client *Client) HandleReceiveNextTransactionRequest(stream inet.Stream) {
 		common.Logf("== P2P == error while reading req_next_tx stream: %s\n", err.Error()) // Log error
 	}
 
-	lastTxAccount = bytes.Trim(lastTxAccount, "\*") // Trim delimiter
+	lastTxAccount = bytes.Trim(lastTxAccount, "\v") // Trim delimiter
 
 	address, err := common.StringToAddress(strings.Split(string(lastTxAccount), "_")[0]) // Get address
 
@@ -224,7 +224,7 @@ func (client *Client) HandleReceiveChainRequest(stream inet.Stream) {
 		common.Logf("== P2P == error while reading req_chain stream: %s\n", err.Error()) // Log error
 	}
 
-	addressBytes = bytes.Trim(addressBytes, "\*") // Trim delimiter
+	addressBytes = bytes.Trim(addressBytes, "\v") // Trim delimiter
 
 	var address common.Address // Init buffer
 

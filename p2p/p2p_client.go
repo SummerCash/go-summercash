@@ -256,6 +256,8 @@ func (client *Client) RequestBestTransaction(account common.Address, sampleSize 
 		return common.Hash{}, errors.New("nil response") // Return error
 	}
 
+	panic(bestResponse)
+
 	return common.NewHash(bestResponse), nil // Return hash value
 }
 
