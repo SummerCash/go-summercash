@@ -2,6 +2,7 @@ package common
 
 import (
 	"bufio"
+	"bytes"
 	"crypto/tls"
 	"errors"
 	"io/ioutil"
@@ -42,7 +43,7 @@ func SendBytes(b []byte, address string) error {
 
 	writer := bufio.NewWriter(connection) // Initialize writer
 
-	_, err = writer.Write(b) // Write data
+	_, err = writer.Write(append(b, byte('\a'))) // Write data
 
 	if err != nil { // Check for errors
 		return err // Return found errors
@@ -75,9 +76,7 @@ func SendBytesResult(b []byte, address string) ([]byte, error) {
 
 	readWriter := bufio.NewReadWriter(bufio.NewReader(connection), bufio.NewWriter(connection)) // Initialize read writer
 
-	scanner := bufio.NewScanner(connection) // Init scanner
-
-	_, err = readWriter.Write(b) // Write data to connection
+	_, err = readWriter.Write(append(b, byte('\a'))) // Write data to connection
 
 	if err != nil { // Check for errors
 		return nil, err // Return found error
@@ -85,34 +84,26 @@ func SendBytesResult(b []byte, address string) ([]byte, error) {
 
 	readWriter.Flush() // Flush
 
-	var response []byte // Init response buffer
+	response, err := readWriter.ReadBytes('\a') // Read up to delimiter
 
-	for scanner.Scan() { // Scan
-		response = append(response, scanner.Bytes()...) // Append scanned
-	}
-
-	if err = scanner.Err(); err != nil { // Check for errors
+	if err != nil { // Check for errors
 		return nil, err // Return found error
 	}
 
-	return response, nil // Return response
+	return bytes.Trim(response, "\a"), nil // Return response
 }
 
 // ReadConnectionWaitAsyncNoTLS - attempt to read from connection in an asynchronous fashion, after waiting for peer to write
 func ReadConnectionWaitAsyncNoTLS(conn net.Conn) ([]byte, error) {
-	scanner := bufio.NewScanner(conn) // Initialize scanner
+	reader := bufio.NewReader(conn) // Initialize reader
 
-	var response []byte // Init response buffer
+	readBytes, err := reader.ReadBytes('\a') // Read up to delimiter
 
-	for scanner.Scan() { // Scan
-		response = append(response, scanner.Bytes()...) // Append scanned
-	}
-
-	if err := scanner.Err(); err != nil { // Check for errors
+	if err != nil { // Check for errors
 		return nil, err // Return found error
 	}
 
-	return response, nil // Return read bytes w
+	return bytes.Trim(readBytes, "\a"), nil // Return read bytes w/trimmed delimiter
 }
 
 /*

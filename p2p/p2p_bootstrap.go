@@ -64,7 +64,7 @@ func GetBestBootstrapAddress(ctx context.Context, host *routed.RoutedHost, netwo
 			continue // Continue
 		}
 
-		scanner := bufio.NewScanner(stream) // Get scanner
+		reader := bufio.NewReader(stream) // Get reader
 
 		errChan := make(chan error) // Init error buffer
 		doneChan := make(chan bool) // Init done buffer
@@ -72,12 +72,12 @@ func GetBestBootstrapAddress(ctx context.Context, host *routed.RoutedHost, netwo
 		timer := time.NewTimer(time.Second * time.Duration(15)) // Init timer
 
 		go func() {
-			for scanner.Scan() { // Scan
-				if err = scanner.Err(); err != nil { // Check for errors
-					errChan <- err // Write err
+			_, err = reader.ReadBytes('\a') // Read
 
-					return // Return
-				}
+			if err != nil { // Check for errors
+				errChan <- err // Write err
+
+				return // Return
 			}
 
 			doneChan <- true // Done
