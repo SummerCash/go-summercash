@@ -2,10 +2,9 @@
 package p2p
 
 import (
-	"bufio"
-	"bytes"
 	"context"
 	"errors"
+	"io/ioutil"
 	"strconv"
 	"strings"
 
@@ -94,17 +93,13 @@ func BootstrapConfig(ctx context.Context, host *routed.RoutedHost, bootstrapAddr
 		return &config.ChainConfig{}, err // Return found error
 	}
 
-	reader := bufio.NewReader(stream) // Initialize reader from stream
-
-	dagConfigBytes, err := reader.ReadBytes('\a') // Read
+	dagConfigBytes, err := ioutil.ReadAll(stream) // Read
 
 	if err != nil { // Check for errors
 		cancel() // Cancel
 
 		return &config.ChainConfig{}, err // Return found error
 	}
-
-	dagConfigBytes = bytes.Trim(dagConfigBytes, "\a") // Trim delimiter
 
 	deserializedConfig, err := config.FromBytes(dagConfigBytes) // Deserialize
 

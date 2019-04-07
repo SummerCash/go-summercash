@@ -2,7 +2,6 @@ package common
 
 import (
 	"bufio"
-	"bytes"
 	"crypto/tls"
 	"errors"
 	"io/ioutil"
@@ -43,7 +42,7 @@ func SendBytes(b []byte, address string) error {
 
 	writer := bufio.NewWriter(connection) // Initialize writer
 
-	_, err = writer.Write(append(b, byte('\a'))) // Write data
+	_, err = writer.Write(b) // Write data
 
 	if err != nil { // Check for errors
 		return err // Return found errors
@@ -76,7 +75,7 @@ func SendBytesResult(b []byte, address string) ([]byte, error) {
 
 	readWriter := bufio.NewReadWriter(bufio.NewReader(connection), bufio.NewWriter(connection)) // Initialize read writer
 
-	_, err = readWriter.Write(append(b, byte('\a'))) // Write data to connection
+	_, err = readWriter.Write(b) // Write data to connection
 
 	if err != nil { // Check for errors
 		return nil, err // Return found error
@@ -84,26 +83,24 @@ func SendBytesResult(b []byte, address string) ([]byte, error) {
 
 	readWriter.Flush() // Flush
 
-	response, err := readWriter.ReadBytes('\a') // Read up to delimiter
+	response, err := ioutil.ReadAll(connection) // Read up to delimiter
 
 	if err != nil { // Check for errors
 		return nil, err // Return found error
 	}
 
-	return bytes.Trim(response, "\a"), nil // Return response
+	return response, nil // Return response
 }
 
 // ReadConnectionWaitAsyncNoTLS - attempt to read from connection in an asynchronous fashion, after waiting for peer to write
 func ReadConnectionWaitAsyncNoTLS(conn net.Conn) ([]byte, error) {
-	reader := bufio.NewReader(conn) // Initialize reader
-
-	readBytes, err := reader.ReadBytes('\a') // Read up to delimiter
+	readBytes, err := ioutil.ReadAll(conn) // Read up to delimiter
 
 	if err != nil { // Check for errors
 		return nil, err // Return found error
 	}
 
-	return bytes.Trim(readBytes, "\a"), nil // Return read bytes w/trimmed delimiter
+	return readBytes, nil // Return read bytes w/trimmed delimiter
 }
 
 /*
