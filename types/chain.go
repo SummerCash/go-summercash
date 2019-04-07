@@ -227,11 +227,11 @@ func (chain *Chain) CalculateTargetNonce() uint64 {
 
 	for _, currentTransaction := range chain.Transactions { // Iterate through sender txs
 		if currentTransaction.AccountNonce > lastNonce && bytes.Equal(currentTransaction.Sender.Bytes(), chain.Account.Bytes()) { // Check greater than last nonce
-			lastNonce = currentTransaction.AccountNonce // Set last nonce
+			lastNonce = currentTransaction.AccountNonce + 1 // Set last nonce
 		}
 	}
 
-	return lastNonce + 1 // Return nonce
+	return lastNonce // Return nonce
 }
 
 // CalculateBalance - iterate through tx set, return balance

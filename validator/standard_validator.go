@@ -202,27 +202,7 @@ func (validator *StandardValidator) ValidateTransactionNonce(transaction *types.
 		return false // Invalid
 	}
 
-	if len(chain.Transactions) == 0 { // Check is genesis
-		if transaction.AccountNonce != 0 { // Check nonce is not 0
-			return false // Invalid nonce
-		}
-
-		return true // Valid nonce
-	}
-
-	lastNonce := uint64(0) // Init nonce buffer
-
-	for _, currentTransaction := range chain.Transactions { // Iterate through sender txs
-		if currentTransaction.AccountNonce > lastNonce && bytes.Equal(currentTransaction.Sender.Bytes(), transaction.Sender.Bytes()) { // Check greater than last nonce
-			lastNonce = currentTransaction.AccountNonce // Set last nonce
-		}
-	}
-
-	if transaction.AccountNonce != lastNonce+1 { // Check invalid nonce
-		return false // Invalid nonce
-	}
-
-	return true // Valid nonce
+	return chain.CalculateTargetNonce() == transaction.AccountNonce // Return nonce valid
 }
 
 // ValidationProtocol fetches the current validator's validation protocol.

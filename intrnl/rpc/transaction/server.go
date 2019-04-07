@@ -50,13 +50,13 @@ func (server *Server) NewTransaction(ctx context.Context, req *transactionProto.
 		nonce := uint64(0)                      // Init nonce
 		lastTransaction := &types.Transaction{} // Init buffer
 
-		for _, transaction := range accountChain.Transactions { // Iterate through transactions
-			if bytes.Equal(transaction.Sender.Bytes(), sender.Bytes()) && transaction.AccountNonce > nonce { // Check match
-				nonce++ // Increment nonce
+		for _, currentTransaction := range accountChain.Transactions { // Iterate through sender txs
+			if currentTransaction.AccountNonce > nonce && bytes.Equal(currentTransaction.Sender.Bytes(), accountChain.Account.Bytes()) { // Check greater than last nonce
+				nonce = currentTransaction.AccountNonce + 1 // Set last nonce
 			}
 		}
 
-		newTransaction, err := types.NewTransaction(nonce+1, lastTransaction, &sender, &recipient, req.Amount, req.Payload) // Init transaction
+		newTransaction, err := types.NewTransaction(nonce, lastTransaction, &sender, &recipient, req.Amount, req.Payload) // Init transaction
 
 		if err != nil { // Check for errors
 			return &transactionProto.GeneralResponse{}, err // Return found error
