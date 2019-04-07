@@ -263,7 +263,7 @@ func (transaction *Transaction) String() string {
 		Payload:                 transaction.Payload,                                // Set payload
 		Signature:               transaction.Signature,                              // Set signature
 		ParentTx:                transaction.ParentTx,                               // Set parent
-		Timestamp:               transaction.Timestamp.Format("01/02/2006 7:00 AM"), // Set timestamp
+		Timestamp:               transaction.Timestamp.Format("01/02/2006 3:04 PM"), // Set timestamp
 		DeployedContractAddress: transaction.DeployedContractAddress,                // Set deployed contract address
 		ContractCreation:        transaction.ContractCreation,                       // Set is contract creation
 		Genesis:                 transaction.Genesis,                                // Set is genesis
