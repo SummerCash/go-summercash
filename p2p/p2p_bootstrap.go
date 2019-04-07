@@ -2,8 +2,8 @@
 package p2p
 
 import (
+	"bufio"
 	"context"
-	"io/ioutil"
 	"strings"
 	"time"
 
@@ -64,13 +64,15 @@ func GetBestBootstrapAddress(ctx context.Context, host *routed.RoutedHost, netwo
 			continue // Continue
 		}
 
+		reader := bufio.NewReader(stream) // Get reader
+
 		errChan := make(chan error) // Init error buffer
 		doneChan := make(chan bool) // Init done buffer
 
 		timer := time.NewTimer(time.Second * time.Duration(15)) // Init timer
 
 		go func() {
-			_, err = ioutil.ReadAll(stream) // Read
+			_, err = reader.ReadBytes('\a') // Read
 
 			if err != nil { // Check for errors
 				errChan <- err // Write err
