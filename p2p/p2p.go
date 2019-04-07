@@ -5,6 +5,7 @@ import (
 	"bufio"
 	"bytes"
 	"context"
+	"errors"
 
 	protocol "github.com/libp2p/go-libp2p-protocol"
 	routed "github.com/libp2p/go-libp2p/p2p/host/routed"
@@ -14,6 +15,10 @@ import (
 
 // BroadcastDht attempts to send a given message to all nodes in a dht at a given endpoint.
 func BroadcastDht(ctx context.Context, host *routed.RoutedHost, message []byte, streamProtocol string, dagIdentifier string) error {
+	if bytes.Contains(message, []byte{'\r'}) { // Check control char
+		return errors.New("message contains a restricted control character") // Return error
+	}
+
 	peers := host.Peerstore().Peers() // Get peers
 
 	for _, peer := range peers { // Iterate through peers
@@ -43,6 +48,10 @@ func BroadcastDht(ctx context.Context, host *routed.RoutedHost, message []byte, 
 
 // BroadcastDhtResult send a given message to all nodes in a dht, and returns the result from each node.
 func BroadcastDhtResult(ctx context.Context, host *routed.RoutedHost, message []byte, streamProtocol string, dagIdentifier string, nPeers int) ([][]byte, error) {
+	if bytes.Contains(message, []byte{'\r'}) { // Check control char
+		return nil, errors.New("message contains a restricted control character") // Return error
+	}
+
 	peers := host.Peerstore().Peers() // Get peers
 
 	results := [][]byte{} // Init results buffer
