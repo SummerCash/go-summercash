@@ -90,7 +90,7 @@ func SendBytesResult(b []byte, address string) ([]byte, error) {
 		return nil, err // Return found error
 	}
 
-	return bytes.Trim(response, "\r"), nil // Return response
+	return bytes.Trim(response, "\*"), nil // Return response
 }
 
 // ReadConnectionWaitAsyncNoTLS - attempt to read from connection in an asynchronous fashion, after waiting for peer to write
@@ -103,7 +103,7 @@ func ReadConnectionWaitAsyncNoTLS(conn net.Conn) ([]byte, error) {
 		return nil, err // Return found error
 	}
 
-	return bytes.Trim(readBytes, "\r"), nil // Return read bytes w/trimmed delimiter
+	return bytes.Trim(readBytes, "\*"), nil // Return read bytes w/trimmed delimiter
 }
 
 /*
