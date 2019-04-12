@@ -7,7 +7,6 @@ package validator
 import (
 	"bytes"
 	"errors"
-	"math/big"
 
 	"github.com/SummerCash/go-summercash/common"
 
@@ -172,9 +171,9 @@ func (validator *StandardValidator) ValidateTransactionSenderBalance(transaction
 		return false // Invalid
 	}
 
-	balance := big.NewFloat(chain.CalculateBalance()) // Calculate balance
+	balance := chain.CalculateBalance() // Calculate balance
 
-	return balance.Cmp(big.NewFloat(transaction.Amount)) == 0 || balance.Cmp(big.NewFloat(transaction.Amount)) == 1 // Return sender balance adequate
+	return balance.Cmp(transaction.Amount) == 0 || balance.Cmp(transaction.Amount) == 1 // Return sender balance adequate
 }
 
 // ValidateTransactionIsNotDuplicate checks that a given transaction does not already exist in the working dag.

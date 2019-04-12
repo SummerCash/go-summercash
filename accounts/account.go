@@ -10,6 +10,7 @@ import (
 	"encoding/pem"
 	"fmt"
 	"io/ioutil"
+	"math/big"
 	"path/filepath"
 	"strings"
 
@@ -81,7 +82,7 @@ func NewContractAccount(contractSource []byte, deployingAccountAddress *common.A
 		return &Account{}, err // Return error
 	}
 
-	deploymentTransaction, err := types.NewTransaction(0, nil, &deployingAccount.Address, &account.Address, 0, nil) // Initialize transaction
+	deploymentTransaction, err := types.NewTransaction(0, nil, &deployingAccount.Address, &account.Address, big.NewFloat(0), nil) // Initialize transaction
 
 	if err != nil { // Check for errors
 		return &Account{}, err // Return error

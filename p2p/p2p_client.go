@@ -10,6 +10,8 @@ import (
 	"strings"
 	"time"
 
+	"github.com/SummerCash/go-summercash/accounts"
+
 	"github.com/SummerCash/go-summercash/crypto"
 
 	"github.com/SummerCash/go-summercash/common"
@@ -106,6 +108,36 @@ func (client *Client) SyncNetwork() error {
 	}
 
 	common.Logf("== P2P == found remote chains: %s\n", strings.Join(remoteChains, ", ")) // Log sync chain
+
+	if len(remoteChains) == 0 && (*client.Validator).GetWorkingConfig() != nil { // Check no remote chains
+		localAccounts, err := accounts.GetAllAccounts() // Get all accounts
+
+		if err != nil { // Check for errors
+			return err // Return found error
+		}
+
+		genesisAddress, err := common.StringToAddress(localAccounts[0]) // Get account addr
+
+		if err != nil { // Check for errors
+			return err // Return found error
+		}
+
+		chain, err := types.ReadChainFromMemory(genesisAddress) // Read genesis chain
+
+		if err != nil { // Check for errors
+			chain, err = types.NewChain(genesisAddress) // Initialize chain
+
+			if err != nil { // Check for errors
+				return err // Return found error
+			}
+		}
+
+		_, err = chain.MakeGenesis((*client.Validator).GetWorkingConfig()) // Make genesis
+
+		if err != nil { // Check for errors
+			return err // Return found error
+		}
+	}
 
 	for _, remoteChain := range remoteChains { // Iterate through remote chains
 		common.Logf("== P2P == syncing chain %s\n", remoteChain) // Log sync chain
