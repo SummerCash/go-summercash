@@ -427,6 +427,7 @@ func (chain *Chain) MakeGenesis(genesis *config.ChainConfig) (common.Hash, error
 	}
 
 	(*chain).Transactions = append(chain.Transactions, genesisTx) // Append genesis tx
+	(*chain).Genesis = *genesisTx.Hash                            // Set genesis
 
 	err = chain.WriteToMemory() // Write chain to memory
 
