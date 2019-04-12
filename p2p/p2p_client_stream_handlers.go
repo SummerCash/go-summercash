@@ -109,6 +109,8 @@ func (client *Client) HandleReceiveBestTransaction(stream inet.Stream) {
 		common.Logf("== P2P == error while reading req_best_tx stream: %s\n", err.Error()) // Log error
 	}
 
+	common.Logf("== P2P == parsed req_best_tx account: %s\n", accountString) // Log handle stream
+
 	accountString = bytes.Trim(accountString, "\r") // Trim delimiter
 
 	address, err := common.StringToAddress(string(accountString)) // Get address
