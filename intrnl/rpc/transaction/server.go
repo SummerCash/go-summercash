@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"context"
 	"fmt"
+	"math/big"
 	"strings"
 	"time"
 
@@ -39,7 +40,7 @@ func (server *Server) NewTransaction(ctx context.Context, req *transactionProto.
 	accountChain, err := types.ReadChainFromMemory(sender) // Read account chain from persistent memory
 
 	if err != nil { // Check for errors
-		newTransaction, err := types.NewTransaction(0, nil, &sender, &recipient, req.Amount, req.Payload) // Init transaction
+		newTransaction, err := types.NewTransaction(0, nil, &sender, &recipient, big.NewFloat(req.Amount), req.Payload) // Init transaction
 
 		if err != nil { // Check for errors
 			return &transactionProto.GeneralResponse{}, err // Return found error
@@ -56,7 +57,7 @@ func (server *Server) NewTransaction(ctx context.Context, req *transactionProto.
 			}
 		}
 
-		newTransaction, err := types.NewTransaction(nonce, lastTransaction, &sender, &recipient, req.Amount, req.Payload) // Init transaction
+		newTransaction, err := types.NewTransaction(nonce, lastTransaction, &sender, &recipient, big.NewFloat(req.Amount), req.Payload) // Init transaction
 
 		if err != nil { // Check for errors
 			return &transactionProto.GeneralResponse{}, err // Return found error
