@@ -107,7 +107,7 @@ func (client *Client) SyncNetwork() error {
 		return err // Return found error
 	}
 
-	common.Logf("== P2P == found remote chains: %s\n", strings.Join(remoteChains, ", ")) // Log sync chain
+	common.Logf("== P2P == found remote chains: %s (%d)\n", strings.Join(remoteChains, ", "), len(remoteChains)) // Log sync chain
 
 	if len(remoteChains) == 0 && (*client.Validator).GetWorkingConfig() != nil { // Check no remote chains
 		localAccounts, err := accounts.GetAllAccounts() // Get all accounts
