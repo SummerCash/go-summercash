@@ -3,6 +3,7 @@ package config
 import (
 	"context"
 	"fmt"
+	"math/big"
 
 	"github.com/SummerCash/go-summercash/common"
 	"github.com/SummerCash/go-summercash/config"
@@ -93,10 +94,10 @@ func (server *Server) GetTotalSupply(ctx context.Context, req *configProto.Gener
 		return &configProto.GeneralResponse{}, err // Return found error
 	}
 
-	supply := float64(0) // Init supply
+	supply := big.NewFloat(0) // Init supply
 
 	for _, address := range chainConfig.AllocAddresses { // Iterate through alloc
-		supply += chainConfig.Alloc[address.String()] // Add alloc value
+		supply.Add(supply, chainConfig.Alloc[address.String()]) // Add alloc value
 	}
 
 	return &configProto.GeneralResponse{Message: fmt.Sprintf("\n%f", supply)}, nil // Return response
