@@ -416,7 +416,19 @@ func (chain *Chain) handleContractCall(transaction *Transaction) error {
 
 // MakeGenesis - generate genesis blocks from genesis file
 func (chain *Chain) MakeGenesis(genesis *config.ChainConfig) (common.Hash, error) {
+	if !bytes.Equal(chain.Genesis.Bytes(), new(common.Hash).Bytes()) || len(chain.Transactions) > 0 { // Check genesis already exists
+		return common.Hash{}, ErrGenesisAlreadyExists // Return error
+	}
+
 	genesisTx, err := NewTransaction(0, nil, nil, &genesis.AllocAddresses[0], genesis.Alloc[genesis.AllocAddresses[0].String()], []byte("genesis")) // Init transaction
+
+	if err != nil { // Check for errors
+		return common.Hash{}, err // Return error
+	}
+
+	(*chain).Transactions = append(chain.Transactions, genesisTx) // Append genesis tx
+
+	err = chain.WriteToMemory() // Write chain to memory
 
 	if err != nil { // Check for errors
 		return common.Hash{}, err // Return error
@@ -424,14 +436,6 @@ func (chain *Chain) MakeGenesis(genesis *config.ChainConfig) (common.Hash, error
 
 	common.Logf("== NETWORK == initialized genesis transaction %s\n", genesisTx.Hash.String())     // Log genesis TX
 	common.Logf("== NETWORK == adding genesis transaction %s to chain\n", genesisTx.Hash.String()) // Log add
-
-	err = chain.AddTransaction(genesisTx) // Add genesis tx
-
-	if err != nil { // Check for errors
-		common.Logf("== ERROR == error making genesis block: %s\n", err.Error()) // Log error
-
-		return common.Hash{}, err // Return found error
-	}
 
 	common.Logf("== SUCCESS == added genesis tx %s to chain %s\n", genesisTx.Hash.String(), chain.ID.String()) // Log success
 
