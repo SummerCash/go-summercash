@@ -205,6 +205,8 @@ func (client *Client) HandleReceiveAllChainsRequest(stream inet.Stream) {
 		common.Logf("== P2P == error while fetching local chains tx from pub_tx stream to recipient chain: %s\n", err.Error()) // Log error
 	}
 
+	common.Logf("== P2P == found local chains: %s\n", strings.Join(allLocalChains, ", ")) // Log error
+
 	_, err = writer.Write(append([]byte(strings.Join(allLocalChains, "_")), '\r')) // Write all local chains
 
 	if err != nil { // Check for errors
