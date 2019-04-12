@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"math/big"
 	"path/filepath"
 	"strconv"
 
@@ -14,7 +15,7 @@ import (
 
 // ChainConfig - chain configuration
 type ChainConfig struct {
-	Alloc map[string]float64 `json:"alloc"` // Account balances at genesis
+	Alloc map[string]*big.Float `json:"alloc"` // Account balances at genesis
 
 	AllocAddresses []common.Address // Account addresses
 
@@ -44,18 +45,16 @@ func NewChainConfig(genesisFilePath string) (*ChainConfig, error) {
 		return &ChainConfig{}, err // Return error
 	}
 
-	alloc := make(map[string]float64) // Init alloc map
+	alloc := make(map[string]*big.Float) // Init alloc map
 
 	allocAddresses := []common.Address{}
 
 	x := 0 // Init iterator
 
 	for key, value := range readJSON["alloc"].(map[string]interface{}) { // Iterate through genesis addresses
-		floatVal, err := strconv.ParseFloat(value.(map[string]interface{})["balance"].(string), 64) // Get float val
+		var floatVal *big.Float // Init float val buffer
 
-		if err != nil { // Check for errors
-			return &ChainConfig{}, err // Return error
-		}
+		floatVal.SetString(value.(map[string]interface{})["balance"].(string)) // Parse
 
 		address, err := common.StringToAddress(key) // Get address value
 
@@ -69,7 +68,7 @@ func NewChainConfig(genesisFilePath string) (*ChainConfig, error) {
 			allocAddresses = append(allocAddresses, address) // Append address
 		}
 
-		alloc[key] = float64(floatVal) // Set int val
+		alloc[key] = floatVal // Set int val
 
 		x++ // Increment iterator
 	}
