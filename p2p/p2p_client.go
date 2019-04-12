@@ -352,6 +352,10 @@ func (client *Client) RequestAllChains(sampleSize uint) ([]string, error) {
 		}
 	}
 
+	if bestResponse == nil { // Check no response
+		return []string{}, nil // No chains
+	}
+
 	remoteChains := strings.Split(string(bestResponse), "_") // Split remote chain addresses
 
 	return remoteChains, nil // Return remote chains
