@@ -5,6 +5,7 @@ import (
 	"crypto/elliptic"
 	"crypto/rand"
 	"encoding/json"
+	"math/big"
 	"testing"
 
 	"github.com/SummerCash/go-summercash/common"
@@ -28,7 +29,7 @@ func TestSignTransaction(t *testing.T) {
 		t.FailNow()  // Panic
 	}
 
-	transaction, err := NewTransaction(0, nil, &sender, &sender, 0, []byte("test")) // Initialize transaction
+	transaction, err := NewTransaction(0, nil, &sender, &sender, big.NewFloat(0), []byte("test")) // Initialize transaction
 
 	if err != nil { // Check for errors
 		t.Error(err) // Log found error
@@ -68,7 +69,7 @@ func TestVerifyTransactionSignature(t *testing.T) {
 		t.FailNow()  // Panic
 	}
 
-	validTransaction, err := NewTransaction(0, nil, &sender, &sender, 0, []byte("test")) // Initialize transaction
+	validTransaction, err := NewTransaction(0, nil, &sender, &sender, big.NewFloat(0), []byte("test")) // Initialize transaction
 
 	if err != nil { // Check for errors
 		t.Error(err) // Log found error
@@ -108,7 +109,7 @@ func TestBytesSignature(t *testing.T) {
 		t.FailNow()  // Panic
 	}
 
-	transaction, err := NewTransaction(0, nil, &sender, &sender, 0, []byte("test")) // Initialize transaction
+	transaction, err := NewTransaction(0, nil, &sender, &sender, big.NewFloat(0), []byte("test")) // Initialize transaction
 
 	if err != nil { // Check for errors
 		t.Error(err) // Log found error
@@ -148,7 +149,7 @@ func TestStringSignature(t *testing.T) {
 		t.FailNow()  // Panic
 	}
 
-	transaction, err := NewTransaction(0, nil, &sender, &sender, 0, []byte("test")) // Initialize transaction
+	transaction, err := NewTransaction(0, nil, &sender, &sender, big.NewFloat(0), []byte("test")) // Initialize transaction
 
 	if err != nil { // Check for errors
 		t.Error(err) // Log found error
@@ -188,7 +189,7 @@ func TestSelfSignTransaction(t *testing.T) {
 		t.FailNow()  // Panic
 	}
 
-	transaction, err := NewTransaction(0, nil, &sender, &sender, 0, []byte("test")) // Initialize transaction
+	transaction, err := NewTransaction(0, nil, &sender, &sender, big.NewFloat(0), []byte("test")) // Initialize transaction
 
 	if err != nil { // Check for errors
 		t.Error(err) // Log found error

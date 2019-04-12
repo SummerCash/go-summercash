@@ -9,6 +9,7 @@ import (
 	"errors"
 	"fmt"
 	"io/ioutil"
+	"math/big"
 	"path/filepath"
 	"time"
 
@@ -31,10 +32,12 @@ var (
 type Transaction struct {
 	AccountNonce uint64 `json:"nonce"` // Nonce in set of account transactions
 
+	HashNonce uint64 `json:"hash_nonce"` // Nonce to calculate valid hash
+
 	Sender    *common.Address `json:"sender"`    // Transaction sender
 	Recipient *common.Address `json:"recipient"` // Transaction recipient
 
-	Amount float64 `json:"amount"` // Amount of coins sent in transaction
+	Amount *big.Float `json:"amount"` // Amount of coins sent in transaction
 
 	Payload []byte `json:"payload"` // Misc. data transported with transaction
 
@@ -58,10 +61,12 @@ type Transaction struct {
 type StringTransaction struct {
 	AccountNonce uint64 `json:"nonce"` // Nonce in set of account transactions
 
+	HashNonce uint64 `json:"hash_nonce"` // Nonce to calculate valid hash
+
 	SenderHex    string `json:"sender"`    // Transaction sender
 	RecipientHex string `json:"recipient"` // Transaction recipient
 
-	Amount float64 `json:"amount"` // Amount of coins sent in transaction
+	Amount string `json:"amount"` // Amount of coins sent in transaction
 
 	Payload []byte `json:"payload"` // Misc. data transported with transaction
 
@@ -84,9 +89,10 @@ type StringTransaction struct {
 /* BEGIN EXPORTED METHODS */
 
 // NewTransaction - attempt to initialize transaction primitive
-func NewTransaction(nonce uint64, parentTx *Transaction, sender *common.Address, destination *common.Address, amount float64, payload []byte) (*Transaction, error) {
+func NewTransaction(nonce uint64, parentTx *Transaction, sender *common.Address, destination *common.Address, amount *big.Float, payload []byte) (*Transaction, error) {
 	transaction := Transaction{ // Init tx
 		AccountNonce:     nonce,            // Set nonce
+		HashNonce:        0,                // Set hash nonce
 		Sender:           sender,           // Set sender
 		Recipient:        destination,      // Set recipient
 		Amount:           amount,           // Set amount
@@ -98,13 +104,19 @@ func NewTransaction(nonce uint64, parentTx *Transaction, sender *common.Address,
 
 	hash := common.NewHash(crypto.Sha3(transaction.Bytes())) // Hash transaction
 
+	for bytes.Contains(hash.Bytes(), []byte{'\r'}) { // Do until does not contain escape character
+		transaction.HashNonce++ // Increment hash nonce
+
+		hash = common.NewHash(crypto.Sha3(transaction.Bytes())) // Set hash
+	}
+
 	transaction.Hash = &hash // Set hash
 
 	return &transaction, nil // Return initialized transaction
 }
 
 // NewContractCreation - initialize contract designated to an initialized contract, calling contract constructor/provided constructor
-func NewContractCreation(nonce uint64, parentTx *Transaction, sender *common.Address, contractInstance *common.Address, amount float64, payload []byte) (*Transaction, error) {
+func NewContractCreation(nonce uint64, parentTx *Transaction, sender *common.Address, contractInstance *common.Address, amount *big.Float, payload []byte) (*Transaction, error) {
 	transaction := Transaction{ // Init tx
 		AccountNonce:            nonce,            // Set nonce
 		Sender:                  sender,           // Set sender
@@ -259,7 +271,7 @@ func (transaction *Transaction) String() string {
 		AccountNonce:            transaction.AccountNonce,                           // Set account nonce
 		SenderHex:               transaction.Sender.String(),                        // Set sender hex
 		RecipientHex:            transaction.Recipient.String(),                     // Set recipient hex
-		Amount:                  transaction.Amount,                                 // Set amount
+		Amount:                  transaction.Amount.String(),                        // Set amount
 		Payload:                 transaction.Payload,                                // Set payload
 		Signature:               transaction.Signature,                              // Set signature
 		ParentTx:                transaction.ParentTx,                               // Set parent

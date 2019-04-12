@@ -4,6 +4,7 @@ import (
 	"crypto/ecdsa"
 	"crypto/elliptic"
 	"crypto/rand"
+	"math/big"
 	"strings"
 	"testing"
 
@@ -77,7 +78,7 @@ func TestHandleReceivedTransaction(t *testing.T) {
 		t.FailNow()  // Panic
 	}
 
-	transaction, err := NewTransaction(0, nil, &sender, &sender, 0, []byte("test")) // Initialize transaction
+	transaction, err := NewTransaction(0, nil, &sender, &sender, big.NewFloat(0), []byte("test")) // Initialize transaction
 
 	if err != nil { // Check for errors
 		t.Error(err) // Log found error

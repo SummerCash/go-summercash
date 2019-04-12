@@ -4,6 +4,7 @@ import (
 	"crypto/ecdsa"
 	"crypto/elliptic"
 	"crypto/rand"
+	"math/big"
 	"testing"
 
 	"github.com/SummerCash/go-summercash/common"
@@ -69,7 +70,7 @@ func TestReadChainFromMemory(t *testing.T) {
 
 	(*chain).ID = common.NewHash(crypto.Sha3(chain.Bytes())) // Set ID
 
-	transaction, err := NewTransaction(0, nil, &address, &address, 0, []byte("test")) // Initialize transaction
+	transaction, err := NewTransaction(0, nil, &address, &address, big.NewFloat(0), []byte("test")) // Initialize transaction
 
 	if err != nil { // Check for errors
 		t.Error(err) // Log found error

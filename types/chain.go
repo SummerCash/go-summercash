@@ -6,6 +6,7 @@ import (
 	"encoding/hex"
 	"encoding/json"
 	"errors"
+	"math/big"
 	"strconv"
 
 	"github.com/SummerCash/go-summercash/common"
@@ -175,7 +176,7 @@ func (chain *Chain) AddTransaction(transaction *Transaction) error {
 			return err // Return found error
 		}
 
-		if balance < transaction.Amount && genesisChain != nil { // Check balance insufficient
+		if balance.Cmp(transaction.Amount) == -1 && genesisChain != nil { // Check balance insufficient
 			return ErrInsufficientBalance // Return error
 		}
 	}
@@ -235,18 +236,18 @@ func (chain *Chain) CalculateTargetNonce() uint64 {
 }
 
 // CalculateBalance - iterate through tx set, return balance
-func (chain *Chain) CalculateBalance() float64 {
-	balance := float64(0) // Init buffer
+func (chain *Chain) CalculateBalance() *big.Float {
+	balance := big.NewFloat(0) // Init buffer
 
 	for _, transaction := range chain.Transactions { // Iterate through transactions
 		if chain.Genesis != *transaction.Hash { // Check is not genesis
 			if *transaction.Sender == chain.Account { // Check is sender
-				balance -= transaction.Amount // Subtract value
+				balance.Sub(balance, transaction.Amount) // Subtract value
 			} else if *transaction.Recipient == chain.Account { // Check is recipient
-				balance += transaction.Amount // Add value
+				balance.Add(balance, transaction.Amount) // Add value
 			}
 		} else if chain.Genesis == *transaction.Hash { // Check is genesis
-			balance += transaction.Amount // Add value
+			balance.Add(balance, transaction.Amount) // Add value
 		}
 	}
 

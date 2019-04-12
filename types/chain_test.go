@@ -7,6 +7,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"math/big"
 	"strings"
 	"testing"
 
@@ -79,7 +80,7 @@ func TestAddTransaction(t *testing.T) {
 		t.FailNow()  // Panic
 	}
 
-	transaction, err := NewTransaction(0, nil, &sender, &sender, 0, []byte("test")) // Initialize transaction
+	transaction, err := NewTransaction(0, nil, &sender, &sender, big.NewFloat(0), []byte("test")) // Initialize transaction
 
 	if err != nil { // Check for errors
 		t.Error(err) // Log found error
@@ -143,7 +144,7 @@ func TestAddTransaction(t *testing.T) {
 		t.FailNow()  // Panic
 	}
 
-	t.Logf("genesis: %d, chain: %s", int(balance), chain.String()) // Log chain state
+	t.Logf("genesis: %s, chain: %s", balance.String(), chain.String()) // Log chain state
 }
 
 // TestQueryTransaction - test tx querying
@@ -169,7 +170,7 @@ func TestQueryTransaction(t *testing.T) {
 		t.FailNow()  // Panic
 	}
 
-	transaction, err := NewTransaction(0, nil, &sender, &sender, 0, []byte("test")) // Initialize transaction
+	transaction, err := NewTransaction(0, nil, &sender, &sender, big.NewFloat(0), []byte("test")) // Initialize transaction
 
 	if err != nil { // Check for errors
 		t.Error(err) // Log found error

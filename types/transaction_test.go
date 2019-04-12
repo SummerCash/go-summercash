@@ -7,6 +7,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"math/big"
 	"strings"
 	"testing"
 
@@ -29,7 +30,7 @@ func TestNewTransaction(t *testing.T) {
 		t.FailNow()  // Panic
 	}
 
-	transaction, err := NewTransaction(0, nil, &sender, &sender, 0, []byte("test")) // Initialize transaction
+	transaction, err := NewTransaction(0, nil, &sender, &sender, big.NewFloat(0), []byte("test")) // Initialize transaction
 
 	if err != nil { // Check for errors
 		t.Error(err) // Log found error
@@ -69,7 +70,7 @@ func TestNewContractCreation(t *testing.T) {
 		t.FailNow()  // Panic
 	}
 
-	transaction, err := NewContractCreation(0, nil, &sender, nil, 0, contractSource) // Initialize transaction
+	transaction, err := NewContractCreation(0, nil, &sender, nil, big.NewFloat(0), contractSource) // Initialize transaction
 
 	if err != nil { // Check for errors
 		t.Error(err) // Log found error
@@ -95,7 +96,7 @@ func TestPublishTransaction(t *testing.T) {
 		t.FailNow()  // Panic
 	}
 
-	transaction, err := NewTransaction(0, nil, &sender, &sender, 0, []byte("test")) // Initialize transaction
+	transaction, err := NewTransaction(0, nil, &sender, &sender, big.NewFloat(0), []byte("test")) // Initialize transaction
 
 	if err != nil { // Check for errors
 		t.Error(err) // Log found error
@@ -162,7 +163,7 @@ func TestMakeEncodingSafe(t *testing.T) {
 		t.FailNow()  // Panic
 	}
 
-	transaction, err := NewTransaction(0, nil, &sender, &sender, 0, []byte("test")) // Initialize transaction
+	transaction, err := NewTransaction(0, nil, &sender, &sender, big.NewFloat(0), []byte("test")) // Initialize transaction
 
 	if err != nil { // Check for errors
 		t.Error(err) // Log found error
@@ -204,7 +205,7 @@ func TestRecoverSafeEncoding(t *testing.T) {
 		t.FailNow()  // Panic
 	}
 
-	transaction, err := NewTransaction(0, nil, &sender, &sender, 0, []byte("test")) // Initialize transaction
+	transaction, err := NewTransaction(0, nil, &sender, &sender, big.NewFloat(0), []byte("test")) // Initialize transaction
 
 	if err != nil { // Check for errors
 		t.Error(err) // Log found error
@@ -253,7 +254,7 @@ func TestTransactionFromBytes(t *testing.T) {
 		t.FailNow()  // Panic
 	}
 
-	transaction, err := NewTransaction(0, nil, &sender, &sender, 0, []byte("test")) // Initialize transaction
+	transaction, err := NewTransaction(0, nil, &sender, &sender, big.NewFloat(0), []byte("test")) // Initialize transaction
 
 	if err != nil { // Check for errors
 		t.Error(err) // Log found error
@@ -293,7 +294,7 @@ func TestBytes(t *testing.T) {
 		t.FailNow()  // Panic
 	}
 
-	transaction, err := NewTransaction(0, nil, &sender, &sender, 0, []byte("test")) // Initialize transaction
+	transaction, err := NewTransaction(0, nil, &sender, &sender, big.NewFloat(0), []byte("test")) // Initialize transaction
 
 	if err != nil { // Check for errors
 		t.Error(err) // Log found error
@@ -326,7 +327,7 @@ func TestString(t *testing.T) {
 		t.FailNow()  // Panic
 	}
 
-	transaction, err := NewTransaction(0, nil, &sender, &sender, 0, []byte("test")) // Initialize transaction
+	transaction, err := NewTransaction(0, nil, &sender, &sender, big.NewFloat(0), []byte("test")) // Initialize transaction
 
 	if err != nil { // Check for errors
 		t.Error(err) // Log found error
@@ -359,7 +360,7 @@ func TestWriteTransactionToMemory(t *testing.T) {
 		t.FailNow()  // Panic
 	}
 
-	transaction, err := NewTransaction(0, nil, &sender, &sender, 0, []byte("test")) // Initialize transaction
+	transaction, err := NewTransaction(0, nil, &sender, &sender, big.NewFloat(0), []byte("test")) // Initialize transaction
 
 	if err != nil { // Check for errors
 		t.Error(err) // Log found error
@@ -392,7 +393,7 @@ func TestReadTransactionFromMemory(t *testing.T) {
 		t.FailNow()  // Panic
 	}
 
-	transaction, err := NewTransaction(0, nil, &sender, &sender, 0, []byte("test")) // Initialize transaction
+	transaction, err := NewTransaction(0, nil, &sender, &sender, big.NewFloat(0), []byte("test")) // Initialize transaction
 
 	if err != nil { // Check for errors
 		t.Error(err) // Log found error

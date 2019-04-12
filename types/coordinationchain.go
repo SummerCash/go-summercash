@@ -6,6 +6,7 @@ import (
 	"errors"
 	"fmt"
 	"io/ioutil"
+	"math/big"
 	"path/filepath"
 	"strconv"
 	"strings"
@@ -646,11 +647,11 @@ func (coordinationChain *CoordinationChain) GetGenesis() (*CoordinationNode, err
 }
 
 // GetBalance - attempt to get balance of account
-func (coordinationChain *CoordinationChain) GetBalance(address common.Address) (float64, error) {
+func (coordinationChain *CoordinationChain) GetBalance(address common.Address) (*big.Float, error) {
 	node, err := coordinationChain.QueryAddress(address) // Get node
 
 	if err != nil { // Check for errors
-		return 0, err // Return found error
+		return big.NewFloat(0), err // Return found error
 	}
 
 	var result []byte // Init buffer
@@ -666,7 +667,7 @@ func (coordinationChain *CoordinationChain) GetBalance(address common.Address) (
 	chain, err := FromBytes(result) // Get chain from bytes
 
 	if err != nil { // Check for errors
-		return 0, err // Return found error
+		return big.NewFloat(0), err // Return found error
 	}
 
 	return chain.CalculateBalance(), nil // No error occurred, return balance
