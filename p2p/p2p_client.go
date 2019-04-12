@@ -132,10 +132,12 @@ func (client *Client) SyncNetwork() error {
 			}
 		}
 
-		_, err = chain.MakeGenesis((*client.Validator).GetWorkingConfig()) // Make genesis
+		if len(chain.Transactions) == 0 { // Check can make genesis
+			_, err = chain.MakeGenesis((*client.Validator).GetWorkingConfig()) // Make genesis
 
-		if err != nil { // Check for errors
-			return err // Return found error
+			if err != nil { // Check for errors
+				return err // Return found error
+			}
 		}
 	}
 
