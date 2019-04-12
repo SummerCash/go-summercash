@@ -416,22 +416,6 @@ func (chain *Chain) handleContractCall(transaction *Transaction) error {
 
 // MakeGenesis - generate genesis blocks from genesis file
 func (chain *Chain) MakeGenesis(genesis *config.ChainConfig) (common.Hash, error) {
-	coordinationChain, err := ReadCoordinationChainFromMemory() // Read coordination chain from memory
-
-	if err != nil { // Check for errors
-		return common.Hash{}, err // Return error
-	}
-
-	genesisNode, _ := coordinationChain.GetGenesis() // Get genesis
-
-	emptyNode := CoordinationNode{} // Init empty buffer
-
-	if genesisNode.String() != emptyNode.String() { // Check genesis already exists
-		common.Log("== ERROR == genesis block already exists") // Log already exists
-
-		return common.Hash{}, ErrGenesisAlreadyExists // Return error
-	}
-
 	genesisTx, err := NewTransaction(0, nil, nil, &genesis.AllocAddresses[0], genesis.Alloc[genesis.AllocAddresses[0].String()], []byte("genesis")) // Init transaction
 
 	if err != nil { // Check for errors
