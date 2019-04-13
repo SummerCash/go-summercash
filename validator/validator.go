@@ -15,6 +15,8 @@ type Validator interface {
 
 	ValidateTransactionHash(transaction *types.Transaction) bool // Validate a given transaction's hash
 
+	ValidateTransactionState(transaction *types.Transaction) bool // Validate a given transaction's state
+
 	ValidateTransactionTimestamp(transaction *types.Transaction) bool // Validate a given transaction's timestamp
 
 	ValidateTransactionSignature(transaction *types.Transaction) bool // Validate a given transaction's signature

@@ -8,6 +8,8 @@ import (
 	"bytes"
 	"errors"
 
+	"github.com/SummerCash/ursa/compiler"
+
 	"github.com/SummerCash/go-summercash/common"
 
 	"github.com/SummerCash/go-summercash/config"
@@ -23,6 +25,9 @@ const (
 var (
 	// ErrInvalidTransactionHash is an error definition representing a transaction hash of invalid value.
 	ErrInvalidTransactionHash = errors.New("transaction hash is invalid")
+
+	// ErrInvalidTransactionState is an error definition representing a transaction state of invalid value.
+	ErrInvalidTransactionState = errors.New("transaction state is invalid")
 
 	//ErrInvalidTransactionTimestamp is an error definition representing a transaction timestamp of invalid value.
 	ErrInvalidTransactionTimestamp = errors.New("invalid transaction timestamp")
@@ -65,6 +70,10 @@ func (validator *StandardValidator) ValidateTransaction(transaction *types.Trans
 
 	if !validator.ValidateTransactionHash(transaction) { // Check invalid hash
 		return ErrInvalidTransactionHash // Invalid hash
+	}
+
+	if !validator.ValidateTransactionState(transaction) { // Check invalid state
+		return ErrInvalidTransactionState // Invalid state
 	}
 
 	if !validator.ValidateTransactionTimestamp(transaction) { // Check invalid timestamp
@@ -124,6 +133,28 @@ func (validator *StandardValidator) ValidateTransactionHash(transaction *types.T
 	unsignedTx.Hash = nil      // Set hash to nil
 
 	return bytes.Equal(transaction.Hash.Bytes(), common.NewHash(crypto.Sha3(unsignedTx.Bytes())).Bytes()) // Return hashes equivalent
+}
+
+// ValidateTransactionState checks that a given transaction's working state is equivalent to that of the parent, with the given
+// transition applied.
+func (validator *StandardValidator) ValidateTransactionState(transaction *types.Transaction) bool {
+	if transaction.State == nil { // Check no state
+		return true // Valid
+	}
+
+	gasPolicy := compiler.GasPolicy(common.GasPolicy) // Get gas policy
+
+	localState, err := transaction.EvaluateNewState(&gasPolicy) // Calculate local state
+
+	if err != nil { // Check for errors
+		return false // Invalid
+	}
+
+	if !bytes.Equal(localState.Bytes(), transaction.State.Bytes()) { // Check invalid state
+		return false // Invalid
+	}
+
+	return true // Valid
 }
 
 // ValidateTransactionTimestamp validates the given transaction's timestamp against that of its parents.
