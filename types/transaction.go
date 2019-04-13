@@ -15,6 +15,7 @@ import (
 
 	"github.com/SummerCash/go-summercash/common"
 	"github.com/SummerCash/go-summercash/crypto"
+	"github.com/SummerCash/ursa/vm"
 )
 
 var (
@@ -52,6 +53,8 @@ type Transaction struct {
 	ContractCreation bool `json:"is-init-contract"` // Should init contract
 	Genesis          bool `json:"genesis"`          // Genesis
 
+	State *vm.State `json:"state"` // State
+
 	Logs []*Log `json:"logs"` // Logs
 
 	Hash *common.Hash `json:"hash"` // Transaction hash
@@ -80,6 +83,8 @@ type StringTransaction struct {
 
 	ContractCreation bool `json:"is-init-contract"` // Should init contract
 	Genesis          bool `json:"genesis"`          // Genesis
+
+	State *vm.State `json:"state"` // State
 
 	Logs []*Log `json:"logs"` // Logs
 
