@@ -11,10 +11,12 @@ import (
 	"io/ioutil"
 	"math/big"
 	"path/filepath"
+	"strconv"
 	"time"
 
 	"github.com/SummerCash/go-summercash/common"
 	"github.com/SummerCash/go-summercash/crypto"
+	"github.com/SummerCash/ursa/compiler"
 	"github.com/SummerCash/ursa/vm"
 )
 
@@ -27,6 +29,9 @@ var (
 
 	// ErrInvalidSignature - error definition describing invalid tx signature (doesn't match public key)
 	ErrInvalidSignature = errors.New("invalid signature")
+
+	// ErrIsNotContractCall - error definition describing tx of non-contract-call type
+	ErrIsNotContractCall = errors.New("transaction is not contract call")
 )
 
 // Transaction - primitive transaction type
@@ -164,6 +169,92 @@ func TransactionFromBytes(b []byte) (*Transaction, error) {
 	}
 
 	return &transaction, nil // No error occurred, return read value
+}
+
+// EvaluateNewState evaluates the new state for a given transaction.
+// Does not set the transactions' state, but does return pointer to new state.
+func (transaction *Transaction) EvaluateNewState(gasPolicy *compiler.GasPolicy) (*vm.State, error) {
+	if transaction.Payload == nil && !bytes.Contains(transaction.Payload, []byte("(")) { // Check is not contract call
+		return &vm.State{}, ErrIsNotContractCall // Return error
+	}
+
+	recipientChain, err := ReadChainFromMemory(*transaction.Recipient) // Read recipient chain
+
+	if err != nil { // Check for errors
+		return &vm.State{}, err // Return found error
+	}
+
+	workingVM, err := vm.NewVirtualMachine(recipientChain.ContractSource, common.VMConfig, new(vm.Resolver), common.GasPolicy) // Init vm
+
+	if err != nil { // Check for errors
+		return nil, err // Return found error
+	}
+
+	if transaction.ParentTx != nil { // Check has parent
+		workingVM.CallStack = transaction.ParentTx.State.CallStack               // Set call stack
+		workingVM.CurrentFrame = transaction.ParentTx.State.CurrentFrame         // Set current frame
+		workingVM.Table = transaction.ParentTx.State.Table                       // Set table
+		workingVM.Globals = transaction.ParentTx.State.Globals                   // Set globals
+		workingVM.Memory = transaction.ParentTx.State.Memory                     // Set memory
+		workingVM.NumValueSlots = transaction.ParentTx.State.NumValueSlots       // Set num value slots
+		workingVM.Yielded = transaction.ParentTx.State.Yielded                   // Set yielded
+		workingVM.InsideExecute = transaction.ParentTx.State.InsideExecute       // Set inside execute
+		workingVM.Exited = transaction.ParentTx.State.Exited                     // Set has exited
+		workingVM.ExitError = transaction.ParentTx.State.ExitError               // Set exit error
+		workingVM.ReturnValue = transaction.ParentTx.State.ReturnValue           // Set return value
+		workingVM.Gas = transaction.ParentTx.State.Gas                           // Set gas
+		workingVM.GasLimitExceeded = transaction.ParentTx.State.GasLimitExceeded // Set gas limit exceeded
+	}
+
+	callMethod, callParams, err := common.ParseStringMethodCallNoReceiver(string(transaction.Payload)) // Parse payload method call
+
+	if err != nil { // Check for errors
+		return &vm.State{}, err // Return found error
+	}
+
+	entryID, valid := workingVM.GetFunctionExport(callMethod) // Get function ID from payload
+
+	if !valid { // Check for errors
+		return &vm.State{}, ErrInvalidPayload // Return found error
+	}
+
+	var parsedCallParams []int64 // Init params buffer
+
+	for _, param := range callParams { // Iterate through params
+		intVal, err := strconv.ParseInt(param, 10, 64) // Parse int
+
+		if err != nil { // Check for errors
+			return nil, err // Return found error
+		}
+
+		parsedCallParams = append(parsedCallParams, intVal) // Append parse param
+	}
+
+	result, err := workingVM.Run(entryID, parsedCallParams...) // Run
+
+	if err != nil { // Check for errors
+		common.Logf("== VM == Contract call exited with code %d and error %s", result, err.Error()) // Log err
+
+		return &vm.State{}, err // Return found error
+	}
+
+	common.Logf("== VM == Contract call exited with code %d", result) // Log finish
+
+	return &vm.State{
+		CallStack:        workingVM.CallStack,        // Set call stack
+		CurrentFrame:     workingVM.CurrentFrame,     // Set current frame
+		Table:            workingVM.Table,            // Set table
+		Globals:          workingVM.Globals,          // Set globals
+		Memory:           workingVM.Memory,           // Set memory
+		NumValueSlots:    workingVM.NumValueSlots,    // Set num value slots
+		Yielded:          workingVM.Yielded,          // Set yielded
+		InsideExecute:    workingVM.InsideExecute,    // Set inside execute
+		Exited:           workingVM.Exited,           // Set has exited
+		ExitError:        workingVM.ExitError,        // Set exit error
+		ReturnValue:      workingVM.ReturnValue,      // Set return value
+		Gas:              workingVM.Gas,              // Set gas
+		GasLimitExceeded: workingVM.GasLimitExceeded, // Set gas limit exceeded
+	}, nil // Return state
 }
 
 // Publish - publish given transaction
