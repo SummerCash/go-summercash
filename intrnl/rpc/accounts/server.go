@@ -130,6 +130,10 @@ func (server *Server) GetAllAccounts(ctx context.Context, req *accountsProto.Gen
 	addresses, err := accounts.GetAllAccounts() // Walk
 
 	if err != nil { // Check for errors
+		if strings.Contains(err.Error(), "no such file or directory") { // Check no local accounts
+			return &accountsProto.GeneralResponse{Message: "\nno local accounts"}, nil // No error occurred, return response
+		}
+
 		return &accountsProto.GeneralResponse{}, err // Return found error
 	}
 
