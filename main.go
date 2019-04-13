@@ -194,8 +194,8 @@ func startNode(archivalNode bool) {
 	}
 
 	if !*terminalFlag { // Check is not locally running terminal
-		client.StartIntermittentSync(120 * time.Second) // Start intermittent sync
+		client.StartIntermittentSync(60 * time.Second) // Start intermittent sync
 	} else { // Check local term
-		go client.StartIntermittentSync(120 * time.Second) // Start intermittent sync
+		go client.StartIntermittentSync(60 * time.Second) // Start intermittent sync
 	}
 }
