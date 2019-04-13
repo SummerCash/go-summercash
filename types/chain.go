@@ -12,6 +12,7 @@ import (
 	"github.com/SummerCash/go-summercash/common"
 	"github.com/SummerCash/go-summercash/config"
 	"github.com/SummerCash/go-summercash/crypto"
+	"github.com/SummerCash/ursa/compiler"
 	"github.com/SummerCash/ursa/vm"
 )
 
@@ -123,8 +124,16 @@ func NewContractChain(account common.Address, contractSource []byte, deploymentT
 
 // AddTransaction - append given transaction to chain
 func (chain *Chain) AddTransaction(transaction *Transaction) error {
+	var err error // Init error buffer
+
 	if chain.ContractSource != nil && transaction.Payload != nil { // Check is contract call
-		chain.handleContractCall(transaction) // Handle contract call
+		gasPolicy := compiler.GasPolicy(common.GasPolicy) // Get gas policy
+
+		(*transaction).State, err = transaction.EvaluateNewState(&gasPolicy) // Evaluate new state
+
+		if err != nil { // Check for errors
+			return err // Return found error
+		}
 	}
 
 	chainConfig, err := config.ReadChainConfigFromMemory() // Read chain config
