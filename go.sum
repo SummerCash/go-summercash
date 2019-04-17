@@ -153,6 +153,8 @@ github.com/libp2p/go-libp2p-crypto v0.0.1 h1:JNQd8CmoGTohO/akqrH16ewsqZpci2CbgYH
 github.com/libp2p/go-libp2p-crypto v0.0.1/go.mod h1:yJkNyDmO341d5wwXxDUGO0LykUVT72ImHNUqh5D/dBE=
 github.com/libp2p/go-libp2p-discovery v0.0.1 h1:VkjCKmJQMwpDUwtA8Qc1z3TQAHJgQ5nGQ6cdN0wQXOw=
 github.com/libp2p/go-libp2p-discovery v0.0.1/go.mod h1:ZkkF9xIFRLA1xCc7bstYFkd80gBGK8Fc1JqGoU2i+zI=
+github.com/libp2p/go-libp2p-discovery v0.0.2 h1:Rf+20nsFcCnHo4Kxvf8ofAft75+fW+cXy9FonNVyU/g=
+github.com/libp2p/go-libp2p-discovery v0.0.2/go.mod h1:ZkkF9xIFRLA1xCc7bstYFkd80gBGK8Fc1JqGoU2i+zI=
 github.com/libp2p/go-libp2p-host v0.0.1 h1:dnqusU+DheGcdxrE718kG4XgHNuL2n9eEv8Rg5zy8hQ=
 github.com/libp2p/go-libp2p-host v0.0.1/go.mod h1:qWd+H1yuU0m5CwzAkvbSjqKairayEHdR5MMl7Cwa7Go=
 github.com/libp2p/go-libp2p-host v0.0.2 h1:UnyDP7gmaUIYG3EUPnGc54K+KLFmI6V0Ozm+BQU9VQ8=
@@ -273,6 +275,8 @@ github.com/multiformats/go-multibase v0.0.1 h1:PN9/v21eLywrFWdFNsFKaU04kLJzuYzmr
 github.com/multiformats/go-multibase v0.0.1/go.mod h1:bja2MqRZ3ggyXtZSEDKpl0uO/gviWFaSteVbWT51qgs=
 github.com/multiformats/go-multihash v0.0.1 h1:HHwN1K12I+XllBCrqKnhX949Orn4oawPkegHMu2vDqQ=
 github.com/multiformats/go-multihash v0.0.1/go.mod h1:w/5tugSrLEbWqlcgJabL3oHFKTwfvkofsjW2Qa1ct4U=
+github.com/multiformats/go-multihash v0.0.2 h1:oSaW9XyYUGT3mj9fY4A9BhUNveEZkbJ2D/003p2mNXo=
+github.com/multiformats/go-multihash v0.0.2/go.mod h1:w/5tugSrLEbWqlcgJabL3oHFKTwfvkofsjW2Qa1ct4U=
 github.com/multiformats/go-multistream v0.0.1 h1:JV4VfSdY9n7ECTtY59/TlSyFCzRILvYx4T4Ws8ZgihU=
 github.com/multiformats/go-multistream v0.0.1/go.mod h1:fJTiDfXJVmItycydCnNx4+wSzZ5NwG2FEVAI30fiovg=
 github.com/onsi/ginkgo v1.6.0/go.mod h1:lLunBs/Ym6LB5Z9jYTR76FiuTmxDTDusOGeTQH+WWjE=
@@ -301,8 +305,8 @@ github.com/syndtr/goleveldb v1.0.0/go.mod h1:ZVVdQEZoIme9iO1Ch2Jdy24qqXrMMOU6lpP
 github.com/tatsushid/go-fastping v0.0.0-20160109021039-d7bb493dee3e h1:nt2877sKfojlHCTOBXbpWjBkuWKritFaGIfgQwbQUls=
 github.com/tatsushid/go-fastping v0.0.0-20160109021039-d7bb493dee3e/go.mod h1:B4+Kq1u5FlULTjFSM707Q6e/cOHFv0z/6QRoxubDIQ8=
 github.com/twitchtv/twirp v5.4.2+incompatible/go.mod h1:RRJoFSAmTEh2weEqWtpPE3vFK5YBhA6bqp2l1kfCC5A=
-github.com/twitchtv/twirp v5.6.0+incompatible h1:sUqlJqdfCAIPDShsmjo3Gixzccs1KWCtFctfpNYcnPE=
-github.com/twitchtv/twirp v5.6.0+incompatible/go.mod h1:RRJoFSAmTEh2weEqWtpPE3vFK5YBhA6bqp2l1kfCC5A=
+github.com/twitchtv/twirp v5.7.0+incompatible h1:9NU0Pv7g90mqNkfUSSi7rP2EsKDtO9GYKzEiOfAplgA=
+github.com/twitchtv/twirp v5.7.0+incompatible/go.mod h1:RRJoFSAmTEh2weEqWtpPE3vFK5YBhA6bqp2l1kfCC5A=
 github.com/whyrusleeping/base32 v0.0.0-20170828182744-c30ac30633cc h1:BCPnHtcboadS0DvysUuJXZ4lWVv5Bh5i7+tbIyi+ck4=
 github.com/whyrusleeping/base32 v0.0.0-20170828182744-c30ac30633cc/go.mod h1:r45hJU7yEoA81k6MWNhpMj/kms0n14dkzkxYHoB96UM=
 github.com/whyrusleeping/go-keyspace v0.0.0-20160322163242-5b898ac5add1 h1:EKhdznlJHPMoKr0XTrX+IlJs1LH3lyx2nfr1dOlZ79k=
@@ -359,8 +363,8 @@ golang.org/x/sys v0.0.0-20190228124157-a34e9553db1e/go.mod h1:STP8DvDyc/dI5b8T5h
 golang.org/x/sys v0.0.0-20190302025703-b6889370fb10 h1:xQJI9OEiErEQ++DoXOHqEpzsGMrAv2Q2jyCpi7DmfpQ=
 golang.org/x/sys v0.0.0-20190302025703-b6889370fb10/go.mod h1:STP8DvDyc/dI5b8T5hshtkjS+E42TnysNCUPdjciGhY=
 golang.org/x/sys v0.0.0-20190403152447-81d4e9dc473e/go.mod h1:h1NjWce9XRLGQEsW7wpKNCjG9DtNlClVuFLEZdDNbEs=
-golang.org/x/sys v0.0.0-20190415145633-3fd5a3612ccd h1:MNN7PRW7zYXd8upVO5qfKeOnQG74ivRNv7sz4k4cQMs=
-golang.org/x/sys v0.0.0-20190415145633-3fd5a3612ccd/go.mod h1:h1NjWce9XRLGQEsW7wpKNCjG9DtNlClVuFLEZdDNbEs=
+golang.org/x/sys v0.0.0-20190416152802-12500544f89f h1:1ZH9RnjNgLzh6YrsRp/c6ddZ8Lq0fq9xztNOoWJ2sz4=
+golang.org/x/sys v0.0.0-20190416152802-12500544f89f/go.mod h1:h1NjWce9XRLGQEsW7wpKNCjG9DtNlClVuFLEZdDNbEs=
 golang.org/x/text v0.3.0 h1:g61tztE5qeGQ89tm6NTjjM9VPIm088od1l6aSorWRWg=
 golang.org/x/text v0.3.0/go.mod h1:NqM8EUOU14njkJ3fqMW+pc6Ldnwhi/IjpwHt7yyuwOQ=
 golang.org/x/text v0.3.1-0.20180807135948-17ff2d5776d2 h1:z99zHgr7hKfrUcX/KsoJk5FJfjTceCKIp96+biqP4To=
