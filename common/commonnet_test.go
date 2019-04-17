@@ -21,23 +21,6 @@ func TestSendBytes(t *testing.T) {
 	t.Logf("wrote to address 1.1.1.1") // Log success
 }
 
-// TestSendBytesResult - test functionality of SendBytesResult() method
-func TestSendBytesResult(t *testing.T) {
-	var chainBytes []byte // Init buffer
-	var err error         // Init error buffer
-
-	for x := 0; x != 5; x++ { // Read 10 times
-		chainBytes, err = SendBytesResult([]byte("cChainRequest"), BootstrapNodes[0]) // Get coordination chain
-
-		if err != nil { // Check for errors
-			t.Error(err) // Log found error
-			t.FailNow()  // Panic
-		}
-	}
-
-	t.Log(chainBytes) // Log success
-}
-
 // TestReadConnectionWaitAsyncNoTLS - test functionality of ReadConnectionWaitAsyncNoTLS() method
 func TestReadConnectionWaitAsyncNoTLS(t *testing.T) {
 	connection, err := tls.Dial("tcp", "1.1.1.1:443", GeneralTLSConfig) // Connect to given address
