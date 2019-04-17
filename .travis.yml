@@ -9,10 +9,6 @@ env: GO111MODULE=on
 services:
   - docker
 
-install: true
-
-sudo: false
-
 matrix:
   allow_failures:
     - go: master
@@ -21,7 +17,7 @@ matrix:
 notifications:
   email: false
 
-before_install:
+install:
   - go get -u
 
 jobs:
