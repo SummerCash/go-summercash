@@ -43,7 +43,7 @@ jobs:
       name: "push to dockerHub"
       script:
         - chmod +x scripts/push_docker.sh # Make executable
-        - ./scripts/push_docker.sh # Push
+        - ./scripts/push_docker.sh $DOCKER_USERNAME # Push
 
 after_success:
   - bash <(curl -s https://codecov.io/bash)
