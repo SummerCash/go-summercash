@@ -4,7 +4,9 @@ go:
   - 1.12
   - master
 
-env: GO111MODULE=on
+env: 
+  - GO111MODULE=on
+  - DOCKER_USERNAME=summercash
 
 services:
   - docker
