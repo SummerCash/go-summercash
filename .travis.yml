@@ -18,20 +18,20 @@ jobs:
   include:
     - stage: validate
       name: "lint"
-        script:
-          - chmod +x ./scripts/validate_lint.sh # Make validate lint executable
-          - ./scripts/validate_lint.sh # Validate lint
+      script:
+        - chmod +x ./scripts/validate_lint.sh # Make validate lint executable
+        - ./scripts/validate_lint.sh # Validate lint
       name: "vet"
-        script:
-          - go vet ./... # Run static analyzer
+      script:
+        - go vet ./... # Run static analyzer
       name: "gofmt"
-        script:
-          - test -z $(gofmt -s -l $GO_FILES) # Check has beem gofmted
+      script:
+        - test -z $(gofmt -s -l $GO_FILES) # Check has beem gofmted
       name: "tidy"
-        script:
-          - git diff --quiet || (echo "\033[0;31mWorking directory not clean!\033[0m" && exit 1) # Check working dir clean
-          - go mod tidy # Tidy
-          - git diff --exit-code || (git checkout . && exit 1) # Exit if not tidied
+      script:
+        - git diff --quiet || (echo "\033[0;31mWorking directory not clean!\033[0m" && exit 1) # Check working dir clean
+        - go mod tidy # Tidy
+        - git diff --exit-code || (git checkout . && exit 1) # Exit if not tidied
     - stage: test
       name: "test"
       script:
