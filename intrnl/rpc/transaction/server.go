@@ -144,6 +144,10 @@ func (server *Server) Publish(ctx context.Context, req *transactionProto.General
 
 	err = chain.AddTransaction(transaction) // Add transaction to recipient chain
 
+	if err != nil { // Check for errors
+		return &transactionProto.GeneralResponse{}, err // Return found error
+	}
+
 	client := p2p.NewClient(p2p.WorkingHost, &validator, network) // Initialize p2p client
 
 	publishCtx, cancel := context.WithCancel(ctx) // Get context

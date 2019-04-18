@@ -47,6 +47,10 @@ func GetPeerIdentity() (*crypto.PrivKey, error) {
 func NewPeerIdentity() (*crypto.PrivKey, error) {
 	privateKey, _, err := crypto.GenerateRSAKeyPair(2048, rand.Reader) // Generate RSA key pair
 
+	if err != nil { // Check for errors
+		return nil, err // Return found error
+	}
+
 	err = WritePeerIdentity(&privateKey) // Write identity
 
 	if err != nil { // Check for errors
