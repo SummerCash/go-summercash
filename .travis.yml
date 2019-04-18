@@ -1,18 +1,9 @@
 language: go
 
-go:
-  - 1.12
-  - master
-
 env: GO111MODULE=on DOCKER_USERNAME=summercash
 
 services:
   - docker
-
-matrix:
-  allow_failures:
-    - go: master
-  fast_finish: true
 
 notifications:
   email: false
