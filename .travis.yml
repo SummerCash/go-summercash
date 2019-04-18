@@ -16,27 +16,28 @@ install: true
 
 jobs:
   include:
-    - name: lint
-      script:
-        - chmod +x ./scripts/validate_lint.sh # Make validate lint executable
-        - ./scripts/validate_lint.sh # Validate lint
-    - name: vet
-      script:
-        - go vet ./... # Run static analyzer
-    - name: gofmt
-      script:
-        - test -z $(gofmt -s -l $GO_FILES) # Check has beem gofmted
-    - name: tidy
-      script:
-        - git diff --quiet || (echo "\033[0;31mWorking directory not clean!\033[0m" && exit 1) # Check working dir clean
-        - go mod tidy # Tidy
-        - git diff --exit-code || (git checkout . && exit 1) # Exit if not tidied
+    - stage: validate
+      - name: lint
+        script:
+          - chmod +x ./scripts/validate_lint.sh # Make validate lint executable
+          - ./scripts/validate_lint.sh # Validate lint
+      - name: vet
+        script:
+          - go vet ./... # Run static analyzer
+      - name: gofmt
+        script:
+          - test -z $(gofmt -s -l $GO_FILES) # Check has beem gofmted
+      - name: tidy
+        script:
+          - git diff --quiet || (echo "\033[0;31mWorking directory not clean!\033[0m" && exit 1) # Check working dir clean
+          - go mod tidy # Tidy
+          - git diff --exit-code || (git checkout . && exit 1) # Exit if not tidied
     - stage: test
       name: test
       script:
         - go run main.go & # Start node
         - chmod +x ./test.sh && ./test.sh # Run unit tests
-    - stage: push-docker
+    - stage: deploy
       name: "Push to dockerHub"
       script:
         - chmod +x scripts/push_docker.sh # Make executable
