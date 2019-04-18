@@ -21,10 +21,11 @@ install:
   - export GO111MODULE=on
   - go get -u
 
+install: true
+
 jobs:
   include:
     - name: lint
-      install: true
       script:
         - chmod +x ./scripts/validate_lint.sh # Make validate lint executable
         - ./scripts/validate_lint.sh # Validate lint
