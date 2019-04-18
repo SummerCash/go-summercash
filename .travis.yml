@@ -21,13 +21,13 @@ jobs:
       script:
         - chmod +x ./scripts/validate_lint.sh # Make validate lint executable
         - ./scripts/validate_lint.sh # Validate lint
-      name: "vet"
+    - name: "vet"
       script:
         - go vet ./... # Run static analyzer
-      name: "gofmt"
+    - name: "gofmt"
       script:
         - test -z $(gofmt -s -l $GO_FILES) # Check has beem gofmted
-      name: "tidy"
+    - name: "tidy"
       script:
         - git diff --quiet || (echo "\033[0;31mWorking directory not clean!\033[0m" && exit 1) # Check working dir clean
         - go mod tidy # Tidy
