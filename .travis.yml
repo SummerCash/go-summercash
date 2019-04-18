@@ -38,7 +38,7 @@ jobs:
         - go run main.go & # Start node
         - chmod +x ./test.sh && ./test.sh # Run unit tests
     - stage: deploy
-      name: "Push to dockerHub"
+      name: "push to dockerHub"
       script:
         - chmod +x scripts/push_docker.sh # Make executable
         - ./scripts/push_docker.sh # Push
