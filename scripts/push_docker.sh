@@ -4,7 +4,7 @@
 
 BRANCH=$(git rev-parse --abbrev-ref HEAD) # Get branch
 
-if [ $BRANCH = "master" ]
+if [ $BRANCH = "HEAD" ]
 then
     BRANCH=master # Set branch
 
