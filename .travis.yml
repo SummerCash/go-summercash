@@ -1,6 +1,6 @@
 language: go
 
-env: GO111MODULE=on DOCKER_USERNAME=summercash
+env: GO111MODULE=on DOCKER_USERNAME=summercashbot
 
 services:
   - docker
