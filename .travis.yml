@@ -1,6 +1,6 @@
 language: go
 
-env:
+env: GO111MODULE=on DOCKER_USERNAME=summercashbot
   secure: wTnhlI05azy1hw/ZKsQLuuOGbcnhRzrYQSZ7D+MRnpc0fAo5oVRX6nK1wW2yNp1xRvDiN9bhK6Y0jNSB8KkWonvwNeiCx+O9e1ICr6FPObw5bYTP/rli90d2XFNb62I3wc3IrxAivpyJrerFuWoHhYz3kBRUCiYI8daRd53thyS6HUcoSz6AXJM/7EKHXEU8A4y1F3yZJHzDLq7EtxO6MYc78w+PIt9Jz+5qaYXYtS4FlYMCkSpcP0n7ODfOQqSPRdgkQNnET+1HPUFyKE9aazH53m9AFHxZgJJwmuhvbOw2G73VP73D3+b5AdxacXpH6XAASel0GBaWi+hOczZ22WJP+Jp+ZLIYLP0q/RWsPSlgg+RRqLPz+Z8wOERRx2wAJJBPL7tLP9VQx1X0o9nvWIWZLARV4eT9tOtyVOWTQMdPmfwk75HHhhxrQTSTLYn/4B3bz/Cwk3JnltRbwN87cWoufphYQXhNnzNx7TswSlIcdeGdR1+evphctWght0YjjCto4eZy0wwOLYiyyxQJsSXdX+V5HH17cHi2rIbndJLbFoNYsoSJtLL24VZQ8Ye46Zpky5SAmsGc+sCIPwSxXHD/iLEPyWgtvGsVnBozjpQRstwbOK3QfNvKdfTDbpCG4eKYuIfIi73WQCvdF4hI3LtzPFJBzIIDYNzEkF8xa18=
 
 services:
@@ -9,39 +9,41 @@ services:
 notifications:
   email: false
 
+install:
+  - export GO111MODULE=on
+  - go get -u
+
 install: true
 
 jobs:
   include:
   - stage: validate
-    name: lint
-    script:
-    - chmod +x ./scripts/validate_lint.sh
-    - "./scripts/validate_lint.sh"
-  - name: vet
-    script:
-    - go vet ./...
-  - name: gofmt
-    script:
-    - git diff --quiet || (echo "\033[0;31mWorking directory not clean!\033[0m" &&
-      exit 1)
-    - go fmt ./...
-    - git diff --exit-code || (git checkout . && exit 1)
-  - name: tidy
-    script:
-    - git diff --quiet || (echo "\033[0;31mWorking directory not clean!\033[0m" &&
-      exit 1)
-    - go mod tidy
-    - git diff --exit-code || (git checkout . && exit 1)
-  - stage: test
-    name: test
-    script:
-    - go run main.go &
-    - chmod +x ./test.sh && ./test.sh
-  - stage: deploy
-    name: push to dockerHub
-    script:
-    - chmod +x scripts/push_docker.sh
-    - "./scripts/push_docker.sh $DOCKER_USERNAME $DOCKER_PASSWORD"
+      name: "lint"
+      script:
+        - chmod +x ./scripts/validate_lint.sh # Make validate lint executable
+        - ./scripts/validate_lint.sh # Validate lint
+    - name: "vet"
+      script:
+        - go vet ./... # Run static analyzer
+    - name: "gofmt"
+      script:
+        - git diff --quiet || (echo "\033[0;31mWorking directory not clean!\033[0m" && exit 1) # Check working dir clean
+        - go fmt ./... # Fmt
+        - git diff --exit-code || (git checkout . && exit 1) # Ensure no changes made in working dir
+    - name: "tidy"
+      script:
+        - git diff --quiet || (echo "\033[0;31mWorking directory not clean!\033[0m" && exit 1) # Check working dir clean
+        - go mod tidy # Tidy
+        - git diff --exit-code || (git checkout . && exit 1) # Exit if not tidied
+    - stage: test
+      name: "test"
+      script:
+        - go run main.go & # Start node
+        - chmod +x ./test.sh && ./test.sh # Run unit tests
+    - stage: deploy
+      name: "push to dockerHub"
+      script:
+        - chmod +x scripts/push_docker.sh # Make executable
+        - ./scripts/push_docker.sh $DOCKER_USERNAME $DOCKER_PASSWORD # Push
 after_success:
   - bash <(curl -s https://codecov.io/bash)
