@@ -13,7 +13,6 @@ fi
 
 echo $BRANCH
 echo $DOCKER_USERNAME
-echo $DOCKER_PASSWORD
 
 docker build -t go-summercash:$BRANCH . # Build docker image
 echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin
