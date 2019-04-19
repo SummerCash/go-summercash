@@ -175,6 +175,12 @@ func startNode(archivalNode bool) {
 		}
 	}
 
+	err = config.UpdateChainVersion() // Update chain version
+
+	if err != nil { // Check for errors
+		panic(err) // Panic
+	}
+
 	validator := validator.Validator(validator.NewStandardValidator(config)) // Initialize validator
 
 	client := p2p.NewClient(host, &validator, *networkFlag) // Initialize client

@@ -4,9 +4,11 @@ package p2p
 import (
 	"bufio"
 	"context"
+	"fmt"
 	"strings"
 	"time"
 
+	"github.com/SummerCash/go-summercash/config"
 	peer "github.com/libp2p/go-libp2p-peer"
 	peerstore "github.com/libp2p/go-libp2p-peerstore"
 	protocol "github.com/libp2p/go-libp2p-protocol"
@@ -72,12 +74,24 @@ func GetBestBootstrapAddress(ctx context.Context, host *routed.RoutedHost, netwo
 		timer := time.NewTimer(time.Second * time.Duration(15)) // Init timer
 
 		go func() {
-			_, err = reader.ReadBytes('\r') // Read
+			network, err := reader.ReadBytes('\r') // Read
 
 			if err != nil { // Check for errors
+				err = host.Network().ClosePeer(peerInfo.ID) // Disconnect from peer
+
+				if err != nil { // Check for errors
+					errChan <- err // Write err
+
+					return // Return
+				}
+
 				errChan <- err // Write err
 
 				return // Return
+			}
+
+			if string(network) != fmt.Sprintf("despacito: %s", config.Version) { // Check networks not matching
+				errChan <- fmt.Errorf("network not matching for peer with multi-addr: %s", peerInfo.ID.Pretty()) // Write err
 			}
 
 			doneChan <- true // Done

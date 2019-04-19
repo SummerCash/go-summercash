@@ -4,6 +4,7 @@ package p2p
 import (
 	"bufio"
 	"bytes"
+	"fmt"
 	"strings"
 
 	"github.com/SummerCash/go-summercash/config"
@@ -257,7 +258,9 @@ func (client *Client) HandleReceiveAliveRequest(stream inet.Stream) {
 
 	writer := bufio.NewWriter(stream) // Init writer
 
-	_, err := writer.Write(append([]byte("despacito"), '\r')) // Write alive
+	config, _ := config.ReadChainConfigFromMemory() // Read chain config from persistent memory
+
+	_, err := writer.Write(append([]byte(fmt.Sprintf("despacito: %s", config.ChainVersion)), '\r')) // Write alive
 
 	if err != nil { // Check for errors
 		common.Logf("== P2P == error while writing req_not_dead_lol stream: %s\n", err.Error()) // Log error
