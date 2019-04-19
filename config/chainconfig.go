@@ -84,6 +84,13 @@ func NewChainConfig(genesisFilePath string) (*ChainConfig, error) {
 	return config, nil // Return initialized chainConfig
 }
 
+// UpdateChainVersion updates the version of the given chain config.
+func (chainConfig *ChainConfig) UpdateChainVersion() error {
+	(*chainConfig).ChainVersion = Version // Update version
+
+	return chainConfig.WriteToMemory() // Write chain config to persistent memory
+}
+
 // Bytes - convert given chainConfig to byte array
 func (chainConfig *ChainConfig) Bytes() []byte {
 	buffer := new(bytes.Buffer) // Init buffer
