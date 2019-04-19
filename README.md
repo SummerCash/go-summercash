@@ -9,6 +9,12 @@ Go implementation of the SummerCash protocol.
 
 ## Installation
 
+### Docker
+
+```zsh
+docker run summercash/go-summercash:master
+```
+
 ### Getting the Source
 
 ```BASH
