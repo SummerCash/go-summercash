@@ -7,6 +7,8 @@ BRANCH=$(git rev-parse --abbrev-ref HEAD) # Get branch
 if [ $BRANCH = "master" ]
 then
     BRANCH=master # Set branch
+
+    echo "Overriding docker branch." # Log override
 fi
 
 echo $BRANCH
