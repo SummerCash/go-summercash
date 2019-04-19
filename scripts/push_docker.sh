@@ -4,6 +4,9 @@
 
 BRANCH=$(git rev-parse --abbrev-ref HEAD) # Get branch
 
+echo $BRANCH
+echo $DOCKER_USERNAME
+
 docker build -t go-summercash:$BRANCH . # Build docker image
 echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin
 docker tag go-summercash:$BRANCH summercash/go-summercash:$BRANCH
