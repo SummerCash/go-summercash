@@ -4,6 +4,11 @@
 
 BRANCH=$(git rev-parse --abbrev-ref HEAD) # Get branch
 
+if [ $BRANCH = "master" ]
+then
+    BRANCH=master # Set branch
+fi
+
 echo $BRANCH
 echo $DOCKER_USERNAME
 
