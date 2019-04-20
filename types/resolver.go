@@ -89,6 +89,8 @@ func (r *TransactionMetaResolver) ResolveGlobal(module, field string) int64 {
 			floatVal, _ := workingVMTransaction.Amount.Float64() // Get float val
 
 			return int64(floatVal) // Return amount
+		case "__ursa_transaction_timestamp":
+			return int64(workingVMTransaction.Timestamp.Unix()) // Return timestamp
 		default:
 			panic(fmt.Errorf("unknown field: %s", field)) // Panic
 		}
