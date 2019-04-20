@@ -168,7 +168,7 @@ func HandleReceivedStateRequest(b []byte) ([]byte, error) {
 		}
 	}
 
-	virtualMachine, err := vm.NewVirtualMachine(chain.ContractSource, *env, new(vm.Resolver), nil) // Init vm
+	virtualMachine, err := vm.NewVirtualMachine(chain.ContractSource, *env, new(TransactionMetaResolver), nil) // Init vm
 
 	if err != nil { // Check for errors
 		return nil, err // Return found error

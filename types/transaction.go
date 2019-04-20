@@ -184,11 +184,13 @@ func (transaction *Transaction) EvaluateNewState(gasPolicy *compiler.GasPolicy) 
 		return &vm.State{}, err // Return found error
 	}
 
-	workingVM, err := vm.NewVirtualMachine(recipientChain.ContractSource, common.VMConfig, new(vm.Resolver), common.GasPolicy) // Init vm
+	workingVM, err := vm.NewVirtualMachine(recipientChain.ContractSource, common.VMConfig, new(TransactionMetaResolver), common.GasPolicy) // Init vm
 
 	if err != nil { // Check for errors
 		return nil, err // Return found error
 	}
+
+	workingVMTransaction = transaction // Set working vm tx
 
 	if transaction.ParentTx != nil { // Check has parent
 		workingVM.CallStack = transaction.ParentTx.State.CallStack               // Set call stack

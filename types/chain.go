@@ -336,7 +336,7 @@ func (chain *Chain) handleContractCall(transaction *Transaction) error {
 		}
 	}
 
-	vm, err := vm.NewVirtualMachine(chain.ContractSource, common.VMConfig, new(vm.Resolver), common.GasPolicy) // Init vm
+	vm, err := vm.NewVirtualMachine(chain.ContractSource, common.VMConfig, new(TransactionMetaResolver), common.GasPolicy) // Init vm
 
 	if err != nil { // Check for errors
 		return err // Return found error
