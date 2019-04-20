@@ -54,4 +54,23 @@ func (r *TransactionMetaResolver) ResolveFunc(module, field string) vm.FunctionI
 	}
 }
 
+// ResolveGlobal defines a set of global variables for use within a WebAssembly module.
+func (r *TransactionMetaResolver) ResolveGlobal(module, field string) int64 {
+	switch module { // Handle module types
+	case "env": // Env module
+		switch field { // Handle fields
+		case "__ursa_magic":
+			return 424 // Return magic
+		case "__ursa_nonce":
+			return int64(workingVMTransaction.AccountNonce) // Return nonce
+		case "__ursa_hash_nonce":
+			return int64(workingVMTransaction.HashNonce) // Return nonce
+		default:
+			panic(fmt.Errorf("unknown field: %s", field)) // Panic
+		}
+	default:
+		panic(fmt.Errorf("unknown module: %s", module)) // Panic
+	}
+}
+
 /* END EXPORTED METHODS */
