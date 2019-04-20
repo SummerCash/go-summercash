@@ -81,15 +81,15 @@ func (r *TransactionMetaResolver) ResolveGlobal(module, field string) int64 {
 		switch field { // Handle fields
 		case "__ursa_magic":
 			return 424 // Return magic
-		case "__ursa_transaction_nonce":
+		case "__transaction_nonce":
 			return int64(workingVMTransaction.AccountNonce) // Return nonce
-		case "__ursa_transaction_hash_nonce":
+		case "__transaction_hash_nonce":
 			return int64(workingVMTransaction.HashNonce) // Return nonce
-		case "__ursa_transaction_amount":
+		case "__transaction_amount":
 			floatVal, _ := workingVMTransaction.Amount.Float64() // Get float val
 
 			return int64(floatVal) // Return amount
-		case "__ursa_transaction_timestamp":
+		case "__transaction_timestamp":
 			return int64(workingVMTransaction.Timestamp.Unix()) // Return timestamp
 		default:
 			panic(fmt.Errorf("unknown field: %s", field)) // Panic
