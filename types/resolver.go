@@ -38,6 +38,26 @@ func (r *TransactionMetaResolver) ResolveFunc(module, field string) vm.FunctionI
 
 				return 0
 			}
+		case "__ursa_log_err":
+			return func(vm *vm.VirtualMachine) int64 {
+				ptr := int(uint32(vm.GetCurrentFrame().Locals[0]))
+				msgLen := int(uint32(vm.GetCurrentFrame().Locals[1]))
+				msg := vm.Memory[ptr : ptr+msgLen]
+
+				(*workingVMTransaction).Logs = append((*workingVMTransaction).Logs, NewLog("error", msg, Error)) // Append log
+
+				return 0
+			}
+		case "__ursa_log_return":
+			return func(vm *vm.VirtualMachine) int64 {
+				ptr := int(uint32(vm.GetCurrentFrame().Locals[0]))
+				msgLen := int(uint32(vm.GetCurrentFrame().Locals[1]))
+				msg := vm.Memory[ptr : ptr+msgLen]
+
+				(*workingVMTransaction).Logs = append((*workingVMTransaction).Logs, NewLog("return", msg, Return)) // Append log
+
+				return 0
+			}
 		case "__ursa_nonce":
 			return func(vm *vm.VirtualMachine) int64 {
 				return int64(workingVMTransaction.AccountNonce)
