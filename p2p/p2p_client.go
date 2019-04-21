@@ -116,6 +116,10 @@ func (client *Client) SyncNetwork() error {
 			return err // Return found error
 		}
 
+		if len(localAccounts) == 0 { // Check no local accounts
+			return errors.New("no local source genesis accounts found") // Return error
+		}
+
 		genesisAddress, err := common.StringToAddress(localAccounts[0]) // Get account addr
 
 		if err != nil { // Check for errors

@@ -127,7 +127,7 @@ func AccountFromKey(privateKey *ecdsa.PrivateKey) (*Account, error) {
 
 // GetAllAccounts - get list of local account addresses
 func GetAllAccounts() ([]string, error) {
-	err := common.CreateDirIfDoesNotExist(common.DataDir) // Make data dir
+	err := common.CreateDirIfDoesNotExist(filepath.FromSlash(fmt.Sprintf("%s/keystore", common.DataDir))) // Make data dir
 
 	if err != nil { // Check for errors
 		return []string{}, err // Return found error
