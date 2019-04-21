@@ -3,6 +3,7 @@ package p2p
 
 import (
 	"bufio"
+	"bytes"
 	"context"
 	"fmt"
 	"strings"
@@ -89,6 +90,8 @@ func GetBestBootstrapAddress(ctx context.Context, host *routed.RoutedHost, netwo
 
 				return // Return
 			}
+
+			network = bytes.Replace(network, []byte{'\r'}, []byte{}, 1) // Remove delimiter
 
 			if string(network) != fmt.Sprintf("despacito: %s", config.Version) { // Check networks not matching
 				errChan <- fmt.Errorf("network not matching for peer with multi-addr: %s", peerInfo.ID.Pretty()) // Write err
