@@ -9,7 +9,7 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/polaris-project/go-polaris/common"
+	"github.com/SummerCash/go-summercash/common"
 
 	crypto "github.com/libp2p/go-libp2p-crypto"
 )
@@ -62,7 +62,7 @@ func NewPeerIdentity() (*crypto.PrivKey, error) {
 
 // WritePeerIdentity writes a given p2p identity to persistent memory.
 func WritePeerIdentity(identity *crypto.PrivKey) error {
-	if _, err := os.Stat(filepath.FromSlash(fmt.Sprintf("%s/identity.pem", common.PeerIdentityDir))); err == nil { // Check existing p2p identity
+	if _, err := os.Stat(filepath.FromSlash(fmt.Sprintf("%s/identity.pem", common.PeerToPeerDir))); err == nil { // Check existing p2p identity
 		return ErrIdentityAlreadyExists // Return error
 	}
 
@@ -72,13 +72,13 @@ func WritePeerIdentity(identity *crypto.PrivKey) error {
 		return err // Return found error
 	}
 
-	err = common.CreateDirIfDoesNotExist(common.PeerIdentityDir) // Create identity dir if it doesn't already exist
+	err = common.CreateDirIfDoesNotExist(common.PeerToPeerDir) // Create identity dir if it doesn't already exist
 
 	if err != nil { // Check for errors
 		return err // Return found error
 	}
 
-	err = ioutil.WriteFile(filepath.FromSlash(fmt.Sprintf("%s/identity.pem", common.PeerIdentityDir)), encoded, 0644) // Write identity
+	err = ioutil.WriteFile(filepath.FromSlash(fmt.Sprintf("%s/identity.pem", common.PeerToPeerDir)), encoded, 0644) // Write identity
 
 	if err != nil { // Check for errors
 		return err // Return found error
@@ -89,11 +89,11 @@ func WritePeerIdentity(identity *crypto.PrivKey) error {
 
 // GetExistingPeerIdentity attempts to read an existing p2p identity.
 func GetExistingPeerIdentity() (*crypto.PrivKey, error) {
-	if _, err := os.Stat(filepath.FromSlash(fmt.Sprintf("%s/identity.pem", common.PeerIdentityDir))); err != nil {
+	if _, err := os.Stat(filepath.FromSlash(fmt.Sprintf("%s/identity.pem", common.PeerToPeerDir))); err != nil {
 		return nil, ErrNoExistingIdentity // Return error
 	}
 
-	data, err := ioutil.ReadFile(filepath.FromSlash(fmt.Sprintf("%s/identity.pem", common.PeerIdentityDir))) // Read identity
+	data, err := ioutil.ReadFile(filepath.FromSlash(fmt.Sprintf("%s/identity.pem", common.PeerToPeerDir))) // Read identity
 
 	if err != nil { // Check for errors
 		return nil, err // Return found error
