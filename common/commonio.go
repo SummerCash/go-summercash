@@ -8,8 +8,8 @@ import (
 
 /* BEGIN EXPORTED METHODS */
 
-// CreateDirIfDoesNotExit - create given directory if does not exist
-func CreateDirIfDoesNotExit(dir string) error {
+// CreateDirIfDoesNotExist - create given directory if does not exist
+func CreateDirIfDoesNotExist(dir string) error {
 	dir = filepath.FromSlash(dir) // Just to be safe
 
 	if _, err := os.Stat(dir); os.IsNotExist(err) { // Check dir exists

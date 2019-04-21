@@ -11,7 +11,7 @@ import (
 
 // WriteToMemory - write given coordination chain to memory
 func (coordinationChain *CoordinationChain) WriteToMemory() error {
-	err := common.CreateDirIfDoesNotExit(fmt.Sprintf("%s/db/coordination_chain", common.DataDir)) // Create dir if necessary
+	err := common.CreateDirIfDoesNotExist(fmt.Sprintf("%s/db/coordination_chain", common.DataDir)) // Create dir if necessary
 
 	if err != nil { // Check for errors
 		return err // Return error

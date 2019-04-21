@@ -17,7 +17,7 @@ func (account *Account) WriteToMemory() error {
 		return err // Return error
 	}
 
-	err = common.CreateDirIfDoesNotExit(filepath.FromSlash(fmt.Sprintf("%s/keystore", common.DataDir))) // Create dir if necessary
+	err = common.CreateDirIfDoesNotExist(filepath.FromSlash(fmt.Sprintf("%s/keystore", common.DataDir))) // Create dir if necessary
 
 	if err != nil { // Check for errors
 		return err // Return error

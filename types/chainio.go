@@ -15,7 +15,7 @@ import (
 
 // GetAllLocalizedChains gets a list of the locally-provided chains, and their addresses.
 func GetAllLocalizedChains() ([]string, error) {
-	err := common.CreateDirIfDoesNotExit(filepath.FromSlash(fmt.Sprintf("%s/db/chain", common.DataDir))) // Make chain dir
+	err := common.CreateDirIfDoesNotExist(filepath.FromSlash(fmt.Sprintf("%s/db/chain", common.DataDir))) // Make chain dir
 
 	if err != nil { // Check for errors
 		return []string{}, err // Return found error
@@ -38,7 +38,7 @@ func GetAllLocalizedChains() ([]string, error) {
 
 // WriteToMemory - write given chain to memory
 func (chain *Chain) WriteToMemory() error {
-	err := common.CreateDirIfDoesNotExit(fmt.Sprintf("%s/db/chain", common.DataDir)) // Create dir if necessary
+	err := common.CreateDirIfDoesNotExist(fmt.Sprintf("%s/db/chain", common.DataDir)) // Create dir if necessary
 
 	if err != nil { // Check for errors
 		return err // Return error

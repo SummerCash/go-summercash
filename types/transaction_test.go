@@ -121,7 +121,7 @@ func TestPublishTransaction(t *testing.T) {
 		t.FailNow()  // Panic
 	}
 
-	err = common.CreateDirIfDoesNotExit(fmt.Sprintf("%s/db/chain", common.DataDir)) // Create dir if necessary
+	err = common.CreateDirIfDoesNotExist(fmt.Sprintf("%s/db/chain", common.DataDir)) // Create dir if necessary
 
 	if err != nil { // Check for errors
 		t.Error(err) // Log found error

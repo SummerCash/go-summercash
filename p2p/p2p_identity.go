@@ -72,7 +72,7 @@ func WritePeerIdentity(identity *crypto.PrivKey) error {
 		return err // Return found error
 	}
 
-	err = common.CreateDirIfDoesNotExit(common.PeerIdentityDir) // Create identity dir if it doesn't already exist
+	err = common.CreateDirIfDoesNotExist(common.PeerIdentityDir) // Create identity dir if it doesn't already exist
 
 	if err != nil { // Check for errors
 		return err // Return found error

@@ -388,7 +388,7 @@ func (transaction *Transaction) String() string {
 
 // WriteToMemory - write given transaction to memory
 func (transaction *Transaction) WriteToMemory() error {
-	err := common.CreateDirIfDoesNotExit(fmt.Sprintf("%s/mem/pending_tx", common.DataDir)) // Create dir if necessary
+	err := common.CreateDirIfDoesNotExist(fmt.Sprintf("%s/mem/pending_tx", common.DataDir)) // Create dir if necessary
 
 	if err != nil { // Check for errors
 		return err // Return error
