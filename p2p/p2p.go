@@ -36,6 +36,8 @@ func CheckPeerCompatible(ctx context.Context, host *routed.RoutedHost, peer peer
 		return false // Not compatible
 	}
 
+	networkBytes = bytes.Replace(networkBytes, []byte{'\r'}, []byte{}, 1) // Remove delimiter
+
 	if string(networkBytes) != fmt.Sprintf("despacito: %s", config.Version) { // Check incompatible
 		return false // Not compatible
 	}
