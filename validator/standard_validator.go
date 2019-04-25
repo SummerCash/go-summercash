@@ -7,6 +7,7 @@ package validator
 import (
 	"bytes"
 	"errors"
+	"math/big"
 
 	"github.com/SummerCash/ursa/compiler"
 
@@ -196,6 +197,10 @@ func (validator *StandardValidator) ValidateTransactionSignature(transaction *ty
 
 // ValidateTransactionSenderBalance checks that a given transaction's sender has a balance greater than or equal to the transaction's total value (including gas costs).
 func (validator *StandardValidator) ValidateTransactionSenderBalance(transaction *types.Transaction) bool {
+	if transaction.Amount.Cmp(big.NewFloat(0)) == -1 { // Check is negative number
+		return false // Invalid tx amount
+	}
+
 	chain, err := types.ReadChainFromMemory(*transaction.Sender) // Read sender chain
 
 	if err != nil {
