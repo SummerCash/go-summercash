@@ -52,9 +52,7 @@ func NewChainConfig(genesisFilePath string) (*ChainConfig, error) {
 	x := 0 // Init iterator
 
 	for key, value := range readJSON["alloc"].(map[string]interface{}) { // Iterate through genesis addresses
-		var floatVal = new(big.Float) // Init float val buffer
-
-		floatVal.SetString(value.(map[string]interface{})["balance"].(string)) // Parse
+		floatVal, _, _ := big.ParseFloat(value.(map[string]interface{})["balance"].(string), 10, 350, big.ToNearestEven) // Parse float
 
 		address, err := common.StringToAddress(key) // Get address value
 
