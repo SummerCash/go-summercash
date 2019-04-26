@@ -74,7 +74,7 @@ type StringTransaction struct {
 	SenderHex    string `json:"sender"`    // Transaction sender
 	RecipientHex string `json:"recipient"` // Transaction recipient
 
-	Amount string `json:"amount"` // Amount of coins sent in transaction
+	Amount float64 `json:"amount"` // Amount of coins sent in transaction
 
 	Payload []byte `json:"payload"` // Misc. data transported with transaction
 
@@ -365,11 +365,13 @@ func (transaction *Transaction) Bytes() []byte {
 
 // String - convert given transaction to string
 func (transaction *Transaction) String() string {
+	floatVal, _ := transaction.Amount.Float64() // Get float value
+
 	stringTransaction := &StringTransaction{
 		AccountNonce:            transaction.AccountNonce,                           // Set account nonce
 		SenderHex:               transaction.Sender.String(),                        // Set sender hex
 		RecipientHex:            transaction.Recipient.String(),                     // Set recipient hex
-		Amount:                  transaction.Amount.String(),                        // Set amount
+		Amount:                  floatVal,                                           // Set amount
 		Payload:                 transaction.Payload,                                // Set payload
 		Signature:               transaction.Signature,                              // Set signature
 		ParentTx:                transaction.ParentTx,                               // Set parent
