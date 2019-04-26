@@ -25,6 +25,8 @@ type Validator interface {
 
 	ValidateTransactionIsNotDuplicate(transaction *types.Transaction) bool // Validate that a given transaction does not already exist in the working chain
 
+	ValidateTransactionReward(transaction *types.Transaction) bool // Validate a given transaction reward
+
 	ValidateTransactionNonce(transaction *types.Transaction) bool // Validate that a given transaction's nonce is equivalent to the current account index + 1
 
 	ValidationProtocol() string // Get the current validator's validation protocol
