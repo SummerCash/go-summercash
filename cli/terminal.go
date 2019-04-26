@@ -268,7 +268,7 @@ func handleConfig(configClient *configProto.Config, methodname string, params []
 		}
 
 		reflectParams = append(reflectParams, reflect.ValueOf(&configProto.GeneralRequest{GenesisPath: params[0]})) // Append params
-	case "Bytes", "String", "WriteToMemory", "ReadChainConfigFromMemory", "GetTotalSupply":
+	case "Bytes", "String", "WriteToMemory", "ReadChainConfigFromMemory", "GetTotalSupply", "GetInflationRate":
 		if len(params) != 0 { // Check for invalid parameters
 			return errors.New("invalid parameters (accepts 0 params)") // Return error
 		}
