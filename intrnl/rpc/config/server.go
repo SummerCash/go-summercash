@@ -86,6 +86,17 @@ func (server *Server) ReadChainConfigFromMemory(ctx context.Context, req *config
 	return &configProto.GeneralResponse{Message: fmt.Sprintf("\n%s", chainConfig.String())}, nil // Return response
 }
 
+// GetInflationRate - config.GetInflationRate RPC handler
+func (server *Server) GetInflationRate(ctx context.Context, req *configProto.GeneralRequest) (*configProto.GeneralResponse, error) {
+	chainConfig, err := config.ReadChainConfigFromMemory() // Read chain config from memory
+
+	if err != nil { // Check for errors
+		return &configProto.GeneralResponse{}, err // Return found error
+	}
+
+	return &configProto.GeneralResponse{Message: fmt.Sprintf("\n%f", chainConfig.InflationRate)}, nil // Return response
+}
+
 // GetTotalSupply - config.GetTotalSupply RPC handler
 func (server *Server) GetTotalSupply(ctx context.Context, req *configProto.GeneralRequest) (*configProto.GeneralResponse, error) {
 	chainConfig, err := config.ReadChainConfigFromMemory() // Read chain config from memory
