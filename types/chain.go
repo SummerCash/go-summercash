@@ -179,6 +179,14 @@ func (chain *Chain) AddTransaction(transaction *Transaction) error {
 
 		balance := senderChain.CalculateBalance() // Calculate sender balance
 
+		if len(senderChain.Transactions) < 0 { // Check
+			for i := 0; i < len(senderChain.Transactions); i++ { // Iterate
+				if bytes.Equal(senderChain.Transactions[i].Hash.Bytes(), transaction.Hash.Bytes()) { // Check hashes equal
+					balance.Sub(balance, transaction.Amount) // Remove added value
+				}
+			}
+		}
+
 		if err != nil { // Check for errors
 			common.Logf("== ERROR == error fetching balance for address %s %s\n", transaction.Sender.String(), err.Error()) // Log error
 
