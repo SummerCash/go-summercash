@@ -179,7 +179,7 @@ func (chain *Chain) AddTransaction(transaction *Transaction) error {
 
 		balance := senderChain.CalculateBalance() // Calculate sender balance
 
-		if len(senderChain.Transactions) < 0 { // Check
+		if len(senderChain.Transactions) > 0 { // Check
 			for i := 0; i < len(senderChain.Transactions); i++ { // Iterate
 				if bytes.Equal(senderChain.Transactions[i].Hash.Bytes(), transaction.Hash.Bytes()) { // Check hashes equal
 					balance.Sub(balance, transaction.Amount) // Remove added value
