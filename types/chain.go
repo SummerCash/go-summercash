@@ -170,34 +170,6 @@ func (chain *Chain) AddTransaction(transaction *Transaction) error {
 		return ErrGenesisAlreadyExists // Return error
 	}
 
-	if transaction.Sender != nil { // Check not nil sender
-		senderChain, err := ReadChainFromMemory(*transaction.Sender) // Read sender chain
-
-		if err != nil { // Check for errors
-			return err // Return found error
-		}
-
-		balance := senderChain.CalculateBalance() // Calculate sender balance
-
-		if len(senderChain.Transactions) > 0 { // Check
-			for i := 0; i < len(senderChain.Transactions); i++ { // Iterate
-				if bytes.Equal(senderChain.Transactions[i].Hash.Bytes(), transaction.Hash.Bytes()) { // Check hashes equal
-					balance.Sub(balance, transaction.Amount) // Remove added value
-				}
-			}
-		}
-
-		if err != nil { // Check for errors
-			common.Logf("== ERROR == error fetching balance for address %s %s\n", transaction.Sender.String(), err.Error()) // Log error
-
-			return err // Return found error
-		}
-
-		if balance.Cmp(transaction.Amount) == -1 && genesisChain != nil { // Check balance insufficient
-			return ErrInsufficientBalance // Return error
-		}
-	}
-
 	for _, currentTransaction := range chain.Transactions { // Check for duplicate transaction
 		if currentTransaction.Hash == transaction.Hash { // Check for matching hash
 			return ErrDuplicateTransaction // Return error
