@@ -367,10 +367,20 @@ func (transaction *Transaction) Bytes() []byte {
 func (transaction *Transaction) String() string {
 	floatVal, _ := transaction.Amount.Float64() // Get float value
 
+	var senderHex, recipientHex string // Init hex buffer
+
+	if transaction.Sender != nil { // Check has sender
+		senderHex = transaction.Sender.String() // Set string
+	}
+
+	if transaction.Recipient != nil { // Check has recipient
+		recipientHex = transaction.Recipient.String() // Set string
+	}
+
 	stringTransaction := &StringTransaction{
 		AccountNonce:            transaction.AccountNonce,                           // Set account nonce
-		SenderHex:               transaction.Sender.String(),                        // Set sender hex
-		RecipientHex:            transaction.Recipient.String(),                     // Set recipient hex
+		SenderHex:               senderHex,                                          // Set sender hex
+		RecipientHex:            recipientHex,                                       // Set recipient hex
 		Amount:                  floatVal,                                           // Set amount
 		Payload:                 transaction.Payload,                                // Set payload
 		Signature:               transaction.Signature,                              // Set signature
