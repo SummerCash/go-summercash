@@ -136,8 +136,14 @@ func (client *Client) SyncNetwork() error {
 			}
 		}
 
+		genesisAccount, err := accounts.ReadAccountFromMemory(genesisAddress) // Read genesis account
+
+		if err != nil { // Check for errors
+			return err // Return found error
+		}
+
 		if len(chain.Transactions) == 0 { // Check can make genesis
-			_, err = chain.MakeGenesis((*client.Validator).GetWorkingConfig()) // Make genesis
+			_, err = chain.MakeGenesis((*client.Validator).GetWorkingConfig(), genesisAccount.PrivateKey) // Make genesis
 
 			if err != nil { // Check for errors
 				return err // Return found error

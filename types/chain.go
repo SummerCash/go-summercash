@@ -1,6 +1,7 @@
 package types
 
 import (
+	"crypto/ecdsa"
 	"bytes"
 	"encoding/binary"
 	"encoding/hex"
@@ -404,7 +405,7 @@ func (chain *Chain) handleContractCall(transaction *Transaction) error {
 }
 
 // MakeGenesis - generate genesis blocks from genesis file
-func (chain *Chain) MakeGenesis(genesis *config.ChainConfig) (common.Hash, error) {
+func (chain *Chain) MakeGenesis(genesis *config.ChainConfig, genesisPrivateKey *ecdsa.PrivateKey) (common.Hash, error) {
 	if !bytes.Equal(chain.Genesis.Bytes(), new(common.Hash).Bytes()) || len(chain.Transactions) > 0 { // Check genesis already exists
 		return common.Hash{}, ErrGenesisAlreadyExists // Return error
 	}
@@ -435,7 +436,13 @@ func (chain *Chain) MakeGenesis(genesis *config.ChainConfig) (common.Hash, error
 		common.Log("== CHAIN == initializing gensis children") // Log genesis children
 
 		for x := 1; x != len(genesis.AllocAddresses); x++ { // Iterate through allocations
-			lastTx, err = NewTransaction(uint64(x+1), lastTx, nil, &genesis.AllocAddresses[x], genesis.Alloc[genesis.AllocAddresses[x].String()], []byte("genesisChild")) // Init transaction
+			lastTx, err = NewTransaction(uint64(x), lastTx, &genesis.AllocAddresses[0], &genesis.AllocAddresses[x], genesis.Alloc[genesis.AllocAddresses[x].String()], []byte("genesisChild")) // Init transaction
+
+			if err != nil { // Check for errors
+				return common.Hash{}, err // Return error
+			}
+
+			err = SignTransaction(lastTx, genesisPrivateKey) // Sign transaction
 
 			if err != nil { // Check for errors
 				return common.Hash{}, err // Return error
@@ -444,6 +451,18 @@ func (chain *Chain) MakeGenesis(genesis *config.ChainConfig) (common.Hash, error
 			common.Logf("== CHAIN == initialized genesis child transaction %s for alloc address %s\n", lastTx.Hash.String(), genesis.AllocAddresses[x]) // Log init
 
 			err = chain.AddTransaction(lastTx) // Add tx
+
+			if err != nil { // Check for errors
+				return common.Hash{}, err // Return error
+			}
+
+			recipientChain, err := ReadChainFromMemory(genesis.AllocAddresses[x]) // Read recipient chain
+
+			if err != nil { // Check for errors
+				return common.Hash{}, err // Return error
+			}
+
+			err = recipientChain.AddTransaction(lastTx) // Add tx
 
 			if err != nil { // Check for errors
 				return common.Hash{}, err // Return error
