@@ -461,7 +461,17 @@ func (chain *Chain) MakeGenesis(genesis *config.ChainConfig, genesisPrivateKey *
 			recipientChain, err := ReadChainFromMemory(genesis.AllocAddresses[x]) // Read recipient chain
 
 			if err != nil { // Check for errors
-				return common.Hash{}, err // Return error
+				recipientChain, err = NewChain(genesis.AllocAddresses[x]) // Init recipient chain
+
+				if err != nil { // Check for errors
+					return common.Hash{}, err // Return error
+				}
+
+				err = recipientChain.WriteToMemory() // Write to persistent memory
+
+				if err != nil { // Check for errors
+					return common.Hash{}, err // Return error
+				}
 			}
 
 			err = recipientChain.AddTransaction(lastTx) // Add tx
