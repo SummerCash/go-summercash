@@ -1,8 +1,8 @@
 package types
 
 import (
-	"crypto/ecdsa"
 	"bytes"
+	"crypto/ecdsa"
 	"encoding/binary"
 	"encoding/hex"
 	"encoding/json"
@@ -450,7 +450,7 @@ func (chain *Chain) MakeGenesis(genesis *config.ChainConfig, genesisPrivateKey *
 
 			common.Logf("== CHAIN == initialized genesis child transaction %s for alloc address %s\n", lastTx.Hash.String(), genesis.AllocAddresses[x]) // Log init
 
-			err = chain.AddTransaction(lastTx) // Add tx
+			err = chain.AddTransaction(lastTx) // Add tx TODO: Fix ghost signature
 
 			if err != nil { // Check for errors
 				return common.Hash{}, err // Return error
