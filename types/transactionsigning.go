@@ -95,11 +95,13 @@ func (witness *Witness) String() string {
 
 // selfSignTransaction - handle signing of transaction by sender
 func selfSignTransaction(transaction *Transaction, privateKey *ecdsa.PrivateKey) error {
+	pkCopy := *privateKey // Get copy
+
 	if transaction.Signature != nil { // Check not already signed
 		return ErrAlreadySigned // Return already signed error
 	}
 
-	r, s, err := ecdsa.Sign(rand.Reader, privateKey, crypto.Sha3(transaction.Bytes())) // Sign tx
+	r, s, err := ecdsa.Sign(rand.Reader, &pkCopy, crypto.Sha3(transaction.Bytes())) // Sign tx
 
 	if err != nil { // Check for errors
 		return err // Return found error
