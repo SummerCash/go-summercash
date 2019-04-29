@@ -442,7 +442,9 @@ func (chain *Chain) MakeGenesis(genesis *config.ChainConfig, genesisPrivateKey *
 				return common.Hash{}, err // Return error
 			}
 
-			err = SignTransaction(lastTx, genesisPrivateKey) // Sign transaction
+			pkCopy := *genesisPrivateKey // Copy pk value
+
+			err = SignTransaction(lastTx, &pkCopy) // Sign transaction
 
 			if err != nil { // Check for errors
 				return common.Hash{}, err // Return error
@@ -450,7 +452,7 @@ func (chain *Chain) MakeGenesis(genesis *config.ChainConfig, genesisPrivateKey *
 
 			common.Logf("== CHAIN == initialized genesis child transaction %s for alloc address %s\n", lastTx.Hash.String(), genesis.AllocAddresses[x]) // Log init
 
-			err = chain.AddTransaction(lastTx) // Add tx TODO: Fix ghost signature
+			err = chain.AddTransaction(lastTx) // Add tx
 
 			if err != nil { // Check for errors
 				return common.Hash{}, err // Return error
