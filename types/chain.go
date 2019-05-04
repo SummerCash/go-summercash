@@ -1,8 +1,8 @@
 package types
 
 import (
-	"crypto/ecdsa"
 	"bytes"
+	"crypto/ecdsa"
 	"encoding/binary"
 	"encoding/hex"
 	"encoding/json"
@@ -442,7 +442,9 @@ func (chain *Chain) MakeGenesis(genesis *config.ChainConfig, genesisPrivateKey *
 				return common.Hash{}, err // Return error
 			}
 
-			err = SignTransaction(lastTx, genesisPrivateKey) // Sign transaction
+			pkCopy := *genesisPrivateKey // Copy pk value
+
+			err = SignTransaction(lastTx, &pkCopy) // Sign transaction
 
 			if err != nil { // Check for errors
 				return common.Hash{}, err // Return error
@@ -459,7 +461,17 @@ func (chain *Chain) MakeGenesis(genesis *config.ChainConfig, genesisPrivateKey *
 			recipientChain, err := ReadChainFromMemory(genesis.AllocAddresses[x]) // Read recipient chain
 
 			if err != nil { // Check for errors
-				return common.Hash{}, err // Return error
+				recipientChain, err = NewChain(genesis.AllocAddresses[x]) // Init recipient chain
+
+				if err != nil { // Check for errors
+					return common.Hash{}, err // Return error
+				}
+
+				err = recipientChain.WriteToMemory() // Write to persistent memory
+
+				if err != nil { // Check for errors
+					return common.Hash{}, err // Return error
+				}
 			}
 
 			err = recipientChain.AddTransaction(lastTx) // Add tx

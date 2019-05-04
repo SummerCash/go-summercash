@@ -9,18 +9,19 @@ import (
 	"strings"
 	"time"
 
-	"github.com/SummerCash/go-summercash/config"
 	peer "github.com/libp2p/go-libp2p-peer"
 	peerstore "github.com/libp2p/go-libp2p-peerstore"
 	protocol "github.com/libp2p/go-libp2p-protocol"
 	routed "github.com/libp2p/go-libp2p/p2p/host/routed"
 	multiaddr "github.com/multiformats/go-multiaddr"
+
+	"github.com/SummerCash/go-summercash/config"
 )
 
 var (
 	// BootstrapNodes represents all default bootstrap nodes on the given network.
 	BootstrapNodes = []string{
-		"/ip4/108.41.124.60/tcp/3000/ipfs/QmWqSzFwTv87eNYkay4eRPnPnq1GhCBCpc5uR4ruygM1Z4",
+		"/ip4/108.41.124.60/tcp/3000/ipfs/Qmd9u7weuyGz7Ld3SdjrDuwtPKpTZ4AhJX7VookPkr7Gbw",
 	}
 )
 
