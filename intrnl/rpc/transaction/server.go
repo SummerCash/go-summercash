@@ -148,9 +148,19 @@ func (server *Server) Publish(ctx context.Context, req *transactionProto.General
 		return &transactionProto.GeneralResponse{}, err // Return found error
 	}
 
-	client := p2p.NewClient(p2p.WorkingHost, &validator, network) // Initialize p2p client
-
 	publishCtx, cancel := context.WithCancel(ctx) // Get context
+
+	if p2p.WorkingHost == nil { // Check no working host
+		p2p.WorkingHost, err = p2p.NewHost(ctx, 2056) // Set host
+
+		if err != nil { // Check for errors
+			cancel() // Cancel
+
+			return &transactionProto.GeneralResponse{}, err // Return found error
+		}
+	}
+
+	client := p2p.NewClient(p2p.WorkingHost, &validator, network) // Initialize p2p client
 
 	defer cancel() // Cancel
 
