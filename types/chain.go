@@ -90,21 +90,21 @@ func NewChain(account common.Address) (*Chain, error) {
 }
 
 // NewContractChain - initialize new contract chain
-func NewContractChain(account common.Address, contractSource []byte, deploymentTransaction *Transaction) (*Chain, error) {
+func NewContractChain(controlingAccount common.Address, contractSource []byte, deploymentTransaction *Transaction) (*Chain, error) {
 	config, err := config.ReadChainConfigFromMemory() // Read config from memory
 
 	if err != nil { // Check for errors
 		return &Chain{}, err // Return error
 	}
 
-	_, err = ReadChainFromMemory(account) // Read chain
+	valid, err := VerifyTransactionSignature(deploymentTransaction) // Check deploying transaction is signed correctly
 
-	if err != nil { // Check for errors
+	if err != nil || !valid { // Check for errors
 		return &Chain{}, err // Return found error
 	}
 
 	chain := &Chain{ // Init chain
-		Account:        account,
+		Account:        controlingAccount,
 		Transactions:   []*Transaction{deploymentTransaction},
 		NetworkID:      config.NetworkID,
 		ContractSource: contractSource,
@@ -112,7 +112,7 @@ func NewContractChain(account common.Address, contractSource []byte, deploymentT
 
 	(*chain).ID = common.NewHash(crypto.Sha3(chain.Bytes())) // Set ID
 
-	common.Logf("== ACCOUNT == initialized account chain with account address %s\n", chain.Account.String()) // Log init
+	common.Logf("== ACCOUNT == initialized contract chain with address %s\n", chain.Account.String()) // Log init
 
 	err = chain.WriteToMemory() // Write to memory
 
