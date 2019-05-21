@@ -8,14 +8,13 @@ import (
 	"strings"
 	"time"
 
-	"github.com/SummerCash/go-summercash/config"
-	"github.com/SummerCash/go-summercash/p2p"
-	"github.com/SummerCash/go-summercash/validator"
-
 	"github.com/SummerCash/go-summercash/accounts"
 	"github.com/SummerCash/go-summercash/common"
+	"github.com/SummerCash/go-summercash/config"
 	transactionProto "github.com/SummerCash/go-summercash/intrnl/rpc/proto/transaction"
+	"github.com/SummerCash/go-summercash/p2p"
 	"github.com/SummerCash/go-summercash/types"
+	"github.com/SummerCash/go-summercash/validator"
 )
 
 // Server - RPC server
