@@ -143,7 +143,7 @@ func (chain *Chain) AddTransaction(transaction *Transaction) error {
 		return err // Return found error
 	}
 
-	genesisChain, err := ReadGenesisChainFromMemory(chainConfig) // Read genesis with config TODO: Fix breaking func
+	genesisChain, err := ReadGenesisChainFromMemory(chainConfig) // Read genesis with config
 
 	if err != nil { // Check for errors
 		return err // Return found error
