@@ -19,7 +19,15 @@ func (server *Server) ConnectedPeers(ctx context.Context, req *p2pProto.GeneralR
 		return &p2pProto.GeneralResponse{}, p2pPkg.ErrNoWorkingHost // Return error
 	}
 
-	return &p2pProto.GeneralResponse{Message: fmt.Sprintf("\n%d", len(p2pPkg.WorkingHost.Peerstore().Peers()))}, nil // Return num of peers
+	numPeers := 0 // Initialize peer num
+
+	for _, peer := range p2pPkg.WorkingHost.Peerstore().Peers() { // Iterate through peers
+		if peer != p2pPkg.WorkingHost.ID() { // Check is foreign peer
+			numPeers++ // Increment number of peers
+		}
+	}
+
+	return &p2pProto.GeneralResponse{Message: fmt.Sprintf("\n%d", numPeers)}, nil // Return num of peers
 }
 
 // SyncNetwork - p2p.SyncNetwork RPC handler
