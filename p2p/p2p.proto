@@ -1,0 +1,23 @@
+syntax = "proto3"; // Specify compiler version
+
+package p2p;
+
+service P2P {
+    rpc ConnectedPeers(GeneralRequest) returns (GeneralResponse) {} // Get the number of connected peers.
+    rpc SyncNetwork(GeneralRequest) returns (GeneralResponse) {} // Manually sync the working network.
+}
+
+/* BEGIN REQUESTS */
+
+message GeneralRequest {
+}
+
+/* END REQUESTS */
+
+/* BEGIN RESPONSES */
+
+message GeneralResponse {
+    string message = 1; // Response
+}
+
+/* END RESPONSES */
