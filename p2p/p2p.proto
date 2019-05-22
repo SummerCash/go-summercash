@@ -10,6 +10,7 @@ service P2P {
 /* BEGIN REQUESTS */
 
 message GeneralRequest {
+    string network = 1; // Network
 }
 
 /* END REQUESTS */
