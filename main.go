@@ -11,9 +11,7 @@ import (
 	"time"
 
 	"github.com/SummerCash/go-summercash/validator"
-
 	"github.com/SummerCash/go-summercash/p2p"
-
 	"github.com/SummerCash/go-summercash/cli"
 	"github.com/SummerCash/go-summercash/common"
 	"github.com/SummerCash/go-summercash/config"
@@ -23,12 +21,14 @@ import (
 	configServer "github.com/SummerCash/go-summercash/intrnl/rpc/config"
 	coordinationChainServer "github.com/SummerCash/go-summercash/intrnl/rpc/coordinationchain"
 	cryptoServer "github.com/SummerCash/go-summercash/intrnl/rpc/crypto"
+	p2pServer "github.com/SummerCash/go-summercash/intrnl/rpc/p2p"
 	accountsProto "github.com/SummerCash/go-summercash/intrnl/rpc/proto/accounts"
 	chainProto "github.com/SummerCash/go-summercash/intrnl/rpc/proto/chain"
 	commonProto "github.com/SummerCash/go-summercash/intrnl/rpc/proto/common"
 	configProto "github.com/SummerCash/go-summercash/intrnl/rpc/proto/config"
 	coordinationChainProto "github.com/SummerCash/go-summercash/intrnl/rpc/proto/coordinationchain"
 	cryptoProto "github.com/SummerCash/go-summercash/intrnl/rpc/proto/crypto"
+	p2pProto "github.com/SummerCash/go-summercash/intrnl/rpc/proto/p2p"
 	transactionProto "github.com/SummerCash/go-summercash/intrnl/rpc/proto/transaction"
 	upnpProto "github.com/SummerCash/go-summercash/intrnl/rpc/proto/upnp"
 	transactionServer "github.com/SummerCash/go-summercash/intrnl/rpc/transaction"
@@ -131,6 +131,7 @@ func startRPCServer() {
 	chainHandler := chainProto.NewChainServer(&chainServer.Server{}, nil)                                                 // Init handler
 	coordinationChainHandler := coordinationChainProto.NewCoordinationChainServer(&coordinationChainServer.Server{}, nil) // Init handler
 	commonHandler := commonProto.NewCommonServer(&commonServer.Server{}, nil)                                             // Init handler
+	p2pHandler := p2pProto.NewP2PServer(&p2pServer.Server{}, nil)                                                         // Init handler
 
 	mux := http.NewServeMux() // Init mux
 
@@ -142,6 +143,7 @@ func startRPCServer() {
 	mux.Handle(chainProto.ChainPathPrefix, chainHandler)                                     // Start mux chain handler
 	mux.Handle(coordinationChainProto.CoordinationChainPathPrefix, coordinationChainHandler) // Start mux coordinationChain handler
 	mux.Handle(commonProto.CommonPathPrefix, commonHandler)                                  // Start mux common handler
+	mux.Handle(p2pProto.P2PPathPrefix, p2pHandler)                                           // Start mux p2p handler
 
 	go http.ListenAndServeTLS(":"+strconv.Itoa(*rpcPortFlag), "termCert.pem", "termKey.pem", mux) // Start server
 	go http.ListenAndServe(":"+strconv.Itoa(*rpcPortFlag+1), mux)                                 // Start server
