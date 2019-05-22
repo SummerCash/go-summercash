@@ -39,6 +39,7 @@ data/db/coordination_chain/chain.json
 .vagrant/
 data/state/
 data/
+examples/config/
 
 # Vendor
 vendor/
