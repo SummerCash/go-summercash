@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"math/big"
+	"path/filepath"
 
 	"github.com/SummerCash/go-summercash/common"
 	"github.com/SummerCash/go-summercash/config"
@@ -21,11 +22,19 @@ func (server *Server) NewChainConfig(ctx context.Context, req *configProto.Gener
 		return &configProto.GeneralResponse{}, err // Return found error
 	}
 
+	oldDataDir := common.DataDir // Set old data dir
+
+	if req.GenesisPath == "examples/genesis.json" { // Check is example
+		common.DataDir, _ = filepath.Abs("./examples") // Temp data
+	}
+
 	err = chainConfig.WriteToMemory() // Write to persistent memory
 
 	if err != nil { // Check for errors
 		return &configProto.GeneralResponse{}, err // Return found error
 	}
+
+	common.DataDir = oldDataDir // Reset
 
 	return &configProto.GeneralResponse{Message: fmt.Sprintf("\n%s", chainConfig.String())}, nil // Return response
 }
