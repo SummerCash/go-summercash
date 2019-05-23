@@ -55,7 +55,7 @@ func NewHost(ctx context.Context, port int) (*routed.RoutedHost, error) {
 		return &routed.RoutedHost{}, err // Return found error
 	}
 
-	dht, err := BootstrapDht(context.Background(), host) // Bootstrap DHT
+	dht, err := BootstrapDht(ctx, host) // Bootstrap DHT
 
 	if err != nil { // Check for errors
 		return &routed.RoutedHost{}, err // Return found error
@@ -63,7 +63,7 @@ func NewHost(ctx context.Context, port int) (*routed.RoutedHost, error) {
 
 	routingDiscovery := discovery.NewRoutingDiscovery(dht) // Initialize routing discovery
 
-	discovery.Advertise(context.Background(), routingDiscovery, config.Version) // Advertise network presence
+	discovery.Advertise(ctx, routingDiscovery, config.Version) // Advertise network presence
 
 	routedHost := routed.Wrap(host, dht) // Wrap host with DHT
 
@@ -75,19 +75,17 @@ func NewHost(ctx context.Context, port int) (*routed.RoutedHost, error) {
 		return &routed.RoutedHost{}, err // Return found error
 	}
 
-	go func() {
-		for peer := range peerChan { // Iterate through discovered peers
-			if peer.ID == host.ID() { // Check is self
-				continue // Skip
-			}
-
-			err = WorkingHost.Connect(ctx, peer) // Connect to discovered peer
-
-			if err != nil { // Check for errors
-				continue // Continue to next peer
-			}
+	for peer := range peerChan { // Iterate through discovered peers
+		if peer.ID == host.ID() { // Check is self
+			continue // Skip
 		}
-	}()
+
+		err = WorkingHost.Connect(ctx, peer) // Connect to discovered peer
+
+		if err != nil { // Check for errors
+			continue // Continue to next peer
+		}
+	}
 
 	common.Logf("== P2P == initialized host with ID: %s on listening port: %d with multiaddr: %s\n", host.ID().Pretty(), port, host.Addrs()[0].String()) // Log host
 
