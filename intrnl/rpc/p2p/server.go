@@ -3,6 +3,7 @@ package p2p
 import (
 	"context"
 	"fmt"
+	"strings"
 
 	"github.com/SummerCash/go-summercash/config"
 	p2pProto "github.com/SummerCash/go-summercash/intrnl/rpc/proto/p2p"
@@ -13,8 +14,8 @@ import (
 // Server - RPC server
 type Server struct{}
 
-// ConnectedPeers - p2p.ConnectedPeers RPC handler
-func (server *Server) ConnectedPeers(ctx context.Context, req *p2pProto.GeneralRequest) (*p2pProto.GeneralResponse, error) {
+// NumConnectedPeers - p2p.NumConnectedPeers RPC handler
+func (server *Server) NumConnectedPeers(ctx context.Context, req *p2pProto.GeneralRequest) (*p2pProto.GeneralResponse, error) {
 	if p2pPkg.WorkingHost == nil { // Check no working host
 		return &p2pProto.GeneralResponse{}, p2pPkg.ErrNoWorkingHost // Return error
 	}
@@ -28,6 +29,21 @@ func (server *Server) ConnectedPeers(ctx context.Context, req *p2pProto.GeneralR
 	}
 
 	return &p2pProto.GeneralResponse{Message: fmt.Sprintf("\n%d", numPeers)}, nil // Return num of peers
+}
+
+// ConnectedPeers - p2p.ConnectedPeers RPC handler.
+func (server *Server) ConnectedPeers(ctx context.Context, req *p2pProto.GeneralRequest) (*p2pProto.GeneralResponse, error) {
+	if p2pPkg.WorkingHost == nil { // Check no working host
+		return &p2pProto.GeneralResponse{}, p2pPkg.ErrNoWorkingHost // Return error
+	}
+
+	peers := []string{} // Initialize peer buffer
+
+	for _, peerInfo := range p2pPkg.WorkingHost.Peerstore().PeersWithAddrs() {
+		peers = append(peers, peerInfo.String()) // Append peer
+	}
+
+	return &p2pProto.GeneralResponse{Message: fmt.Sprintf("\n%s", strings.Join(peers, ", "))}, nil // Return peers
 }
 
 // SyncNetwork - p2p.SyncNetwork RPC handler
