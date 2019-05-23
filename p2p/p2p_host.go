@@ -77,7 +77,7 @@ func NewHost(ctx context.Context, port int) (*routed.RoutedHost, error) {
 				continue // Skip
 			}
 
-			err = host.Connect(ctx, peer) // Connect to discovered peer
+			err = WorkingHost.Connect(ctx, peer) // Connect to discovered peer
 
 			if err != nil { // Check for errors
 				continue // Continue to next peer
