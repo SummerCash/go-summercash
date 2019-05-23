@@ -69,7 +69,15 @@ func NewHost(ctx context.Context, port int) (*routed.RoutedHost, error) {
 
 	discovery.Advertise(ctx, routingDiscovery, config.Version) // Advertise network presence
 
+	routedHost := routed.Wrap(host, dht) // Wrap host with DHT
+
+	WorkingHost = routedHost // Set working host
+
 	peerChan, err := routingDiscovery.FindPeers(ctx, config.Version) // Look for peers
+
+	if err != nil { // Check for errors
+		return &routed.RoutedHost{}, err // Return found error
+	}
 
 	go func() {
 		for peer := range peerChan { // Iterate through discovered peers
@@ -84,10 +92,6 @@ func NewHost(ctx context.Context, port int) (*routed.RoutedHost, error) {
 			}
 		}
 	}()
-
-	routedHost := routed.Wrap(host, dht) // Wrap host with DHT
-
-	WorkingHost = routedHost // Set working host
 
 	common.Logf("== P2P == initialized host with ID: %s on listening port: %d with multiaddr: %s\n", host.ID().Pretty(), port, host.Addrs()[0].String()) // Log host
 
