@@ -14,22 +14,24 @@ require (
 	github.com/golang/protobuf v1.3.1
 	github.com/ipfs/go-datastore v0.0.5 // indirect
 	github.com/libp2p/go-libp2p v0.0.18
-	github.com/libp2p/go-libp2p-crypto v0.0.1
-	github.com/libp2p/go-libp2p-host v0.0.2
-	github.com/libp2p/go-libp2p-interface-connmgr v0.0.3 // indirect
+	github.com/libp2p/go-libp2p-crypto v0.0.2
+	github.com/libp2p/go-libp2p-discovery v0.0.4 // indirect
+	github.com/libp2p/go-libp2p-host v0.0.3
 	github.com/libp2p/go-libp2p-kad-dht v0.0.10
 	github.com/libp2p/go-libp2p-net v0.0.2
-	github.com/libp2p/go-libp2p-peer v0.1.0
-	github.com/libp2p/go-libp2p-peerstore v0.0.3
+	github.com/libp2p/go-libp2p-peer v0.1.1
+	github.com/libp2p/go-libp2p-peerstore v0.0.6
 	github.com/libp2p/go-libp2p-protocol v0.0.1
+	github.com/libp2p/go-mplex v0.0.3 // indirect
 	github.com/mattn/go-isatty v0.0.7 // indirect
 	github.com/mitchellh/mapstructure v1.1.2 // indirect
-	github.com/multiformats/go-multiaddr v0.0.2
-	github.com/multiformats/go-multihash v0.0.4 // indirect
+	github.com/multiformats/go-multiaddr v0.0.4
+	github.com/multiformats/go-multistream v0.0.4 // indirect
 	github.com/onsi/ginkgo v1.8.0 // indirect
 	github.com/onsi/gomega v1.5.0 // indirect
 	github.com/opentracing/opentracing-go v1.1.0 // indirect
 	github.com/twitchtv/twirp v5.7.0+incompatible
+	github.com/whyrusleeping/yamux v1.2.0 // indirect
 	gitlab.com/NebulousLabs/fastrand v0.0.0-20181126182046-603482d69e40 // indirect
 	gitlab.com/NebulousLabs/go-upnp v0.0.0-20181011194642-3a71999ed0d3 // indirect
 	go.opencensus.io v0.21.0 // indirect
