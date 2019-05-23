@@ -10,8 +10,6 @@ import (
 	"strings"
 	"time"
 
-	"github.com/SummerCash/go-summercash/validator"
-	"github.com/SummerCash/go-summercash/p2p"
 	"github.com/SummerCash/go-summercash/cli"
 	"github.com/SummerCash/go-summercash/common"
 	"github.com/SummerCash/go-summercash/config"
@@ -33,7 +31,9 @@ import (
 	upnpProto "github.com/SummerCash/go-summercash/intrnl/rpc/proto/upnp"
 	transactionServer "github.com/SummerCash/go-summercash/intrnl/rpc/transaction"
 	upnpServer "github.com/SummerCash/go-summercash/intrnl/rpc/upnp"
+	"github.com/SummerCash/go-summercash/p2p"
 	"github.com/SummerCash/go-summercash/upnp"
+	"github.com/SummerCash/go-summercash/validator"
 )
 
 var (
