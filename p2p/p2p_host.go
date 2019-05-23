@@ -9,10 +9,6 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/SummerCash/go-summercash/config"
-
-	"github.com/SummerCash/go-summercash/common"
-
 	"github.com/libp2p/go-libp2p"
 	host "github.com/libp2p/go-libp2p-host"
 	dht "github.com/libp2p/go-libp2p-kad-dht"
@@ -21,6 +17,9 @@ import (
 	protocol "github.com/libp2p/go-libp2p-protocol"
 	routed "github.com/libp2p/go-libp2p/p2p/host/routed"
 	multiaddr "github.com/multiformats/go-multiaddr"
+
+	"github.com/SummerCash/go-summercash/common"
+	"github.com/SummerCash/go-summercash/config"
 )
 
 var (
