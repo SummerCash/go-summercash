@@ -42,7 +42,7 @@ func GetBestBootstrapAddress(ctx context.Context, host *routed.RoutedHost, netwo
 			continue // Continue
 		}
 
-		host.Peerstore().AddAddr(peerID, multiaddr, 10*time.Second) // Add bootstrap peer
+		host.Peerstore().AddAddr(peerID, multiaddr, 0*time.Second) // Add bootstrap peer
 
 		peerInfo, err := peerstore.InfoFromP2pAddr(multiaddr) // Get peer info
 

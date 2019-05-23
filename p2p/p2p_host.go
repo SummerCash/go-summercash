@@ -10,6 +10,7 @@ import (
 	"strings"
 
 	"github.com/libp2p/go-libp2p"
+	discovery "github.com/libp2p/go-libp2p-discovery"
 	host "github.com/libp2p/go-libp2p-host"
 	dht "github.com/libp2p/go-libp2p-kad-dht"
 	peer "github.com/libp2p/go-libp2p-peer"
@@ -63,6 +64,12 @@ func NewHost(ctx context.Context, port int) (*routed.RoutedHost, error) {
 	if err != nil { // Check for errors
 		return &routed.RoutedHost{}, err // Return found error
 	}
+
+	routingDiscovery := discovery.NewRoutingDiscovery(dht) // Initialize routing discovery
+
+	discovery.Advertise(ctx, routingDiscovery, config.Version) // Advertise network presence
+
+	_, err = routingDiscovery.FindPeers(ctx, config.Version) // Look for peers
 
 	routedHost := routed.Wrap(host, dht) // Wrap host with DHT
 
