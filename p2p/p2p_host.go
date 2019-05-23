@@ -55,11 +55,7 @@ func NewHost(ctx context.Context, port int) (*routed.RoutedHost, error) {
 		return &routed.RoutedHost{}, err // Return found error
 	}
 
-	bootstrapCtx, cancel := context.WithCancel(ctx) // Get bootstrap context
-
-	defer cancel() // Cancel
-
-	dht, err := BootstrapDht(bootstrapCtx, host) // Bootstrap DHT
+	dht, err := BootstrapDht(context.Background(), host) // Bootstrap DHT
 
 	if err != nil { // Check for errors
 		return &routed.RoutedHost{}, err // Return found error
@@ -67,7 +63,7 @@ func NewHost(ctx context.Context, port int) (*routed.RoutedHost, error) {
 
 	routingDiscovery := discovery.NewRoutingDiscovery(dht) // Initialize routing discovery
 
-	discovery.Advertise(ctx, routingDiscovery, config.Version) // Advertise network presence
+	discovery.Advertise(context.Background(), routingDiscovery, config.Version) // Advertise network presence
 
 	routedHost := routed.Wrap(host, dht) // Wrap host with DHT
 
