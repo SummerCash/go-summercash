@@ -3,7 +3,8 @@ syntax = "proto3"; // Specify compiler version
 package p2p;
 
 service P2P {
-    rpc ConnectedPeers(GeneralRequest) returns (GeneralResponse) {} // Get the number of connected peers.
+    rpc NumConnectedPeers(GeneralRequest) returns (GeneralResponse) {} // Get the number of connected peers.
+    rpc ConnectedPeers(GeneralRequest) returns (GeneralResponse) {} // Get a list of connected peers.
     rpc SyncNetwork(GeneralRequest) returns (GeneralResponse) {} // Manually sync the working network.
 }
 

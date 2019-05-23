@@ -33,6 +33,8 @@ import url "net/url"
 // =============
 
 type P2P interface {
+	NumConnectedPeers(context.Context, *GeneralRequest) (*GeneralResponse, error)
+
 	ConnectedPeers(context.Context, *GeneralRequest) (*GeneralResponse, error)
 
 	SyncNetwork(context.Context, *GeneralRequest) (*GeneralResponse, error)
@@ -44,14 +46,15 @@ type P2P interface {
 
 type p2PProtobufClient struct {
 	client HTTPClient
-	urls   [2]string
+	urls   [3]string
 }
 
 // NewP2PProtobufClient creates a Protobuf client that implements the P2P interface.
 // It communicates using Protobuf and can be configured with a custom HTTPClient.
 func NewP2PProtobufClient(addr string, client HTTPClient) P2P {
 	prefix := urlBase(addr) + P2PPathPrefix
-	urls := [2]string{
+	urls := [3]string{
+		prefix + "NumConnectedPeers",
 		prefix + "ConnectedPeers",
 		prefix + "SyncNetwork",
 	}
@@ -67,12 +70,24 @@ func NewP2PProtobufClient(addr string, client HTTPClient) P2P {
 	}
 }
 
+func (c *p2PProtobufClient) NumConnectedPeers(ctx context.Context, in *GeneralRequest) (*GeneralResponse, error) {
+	ctx = ctxsetters.WithPackageName(ctx, "p2p")
+	ctx = ctxsetters.WithServiceName(ctx, "P2P")
+	ctx = ctxsetters.WithMethodName(ctx, "NumConnectedPeers")
+	out := new(GeneralResponse)
+	err := doProtobufRequest(ctx, c.client, c.urls[0], in, out)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *p2PProtobufClient) ConnectedPeers(ctx context.Context, in *GeneralRequest) (*GeneralResponse, error) {
 	ctx = ctxsetters.WithPackageName(ctx, "p2p")
 	ctx = ctxsetters.WithServiceName(ctx, "P2P")
 	ctx = ctxsetters.WithMethodName(ctx, "ConnectedPeers")
 	out := new(GeneralResponse)
-	err := doProtobufRequest(ctx, c.client, c.urls[0], in, out)
+	err := doProtobufRequest(ctx, c.client, c.urls[1], in, out)
 	if err != nil {
 		return nil, err
 	}
@@ -84,7 +99,7 @@ func (c *p2PProtobufClient) SyncNetwork(ctx context.Context, in *GeneralRequest)
 	ctx = ctxsetters.WithServiceName(ctx, "P2P")
 	ctx = ctxsetters.WithMethodName(ctx, "SyncNetwork")
 	out := new(GeneralResponse)
-	err := doProtobufRequest(ctx, c.client, c.urls[1], in, out)
+	err := doProtobufRequest(ctx, c.client, c.urls[2], in, out)
 	if err != nil {
 		return nil, err
 	}
@@ -97,14 +112,15 @@ func (c *p2PProtobufClient) SyncNetwork(ctx context.Context, in *GeneralRequest)
 
 type p2PJSONClient struct {
 	client HTTPClient
-	urls   [2]string
+	urls   [3]string
 }
 
 // NewP2PJSONClient creates a JSON client that implements the P2P interface.
 // It communicates using JSON and can be configured with a custom HTTPClient.
 func NewP2PJSONClient(addr string, client HTTPClient) P2P {
 	prefix := urlBase(addr) + P2PPathPrefix
-	urls := [2]string{
+	urls := [3]string{
+		prefix + "NumConnectedPeers",
 		prefix + "ConnectedPeers",
 		prefix + "SyncNetwork",
 	}
@@ -120,12 +136,24 @@ func NewP2PJSONClient(addr string, client HTTPClient) P2P {
 	}
 }
 
+func (c *p2PJSONClient) NumConnectedPeers(ctx context.Context, in *GeneralRequest) (*GeneralResponse, error) {
+	ctx = ctxsetters.WithPackageName(ctx, "p2p")
+	ctx = ctxsetters.WithServiceName(ctx, "P2P")
+	ctx = ctxsetters.WithMethodName(ctx, "NumConnectedPeers")
+	out := new(GeneralResponse)
+	err := doJSONRequest(ctx, c.client, c.urls[0], in, out)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *p2PJSONClient) ConnectedPeers(ctx context.Context, in *GeneralRequest) (*GeneralResponse, error) {
 	ctx = ctxsetters.WithPackageName(ctx, "p2p")
 	ctx = ctxsetters.WithServiceName(ctx, "P2P")
 	ctx = ctxsetters.WithMethodName(ctx, "ConnectedPeers")
 	out := new(GeneralResponse)
-	err := doJSONRequest(ctx, c.client, c.urls[0], in, out)
+	err := doJSONRequest(ctx, c.client, c.urls[1], in, out)
 	if err != nil {
 		return nil, err
 	}
@@ -137,7 +165,7 @@ func (c *p2PJSONClient) SyncNetwork(ctx context.Context, in *GeneralRequest) (*G
 	ctx = ctxsetters.WithServiceName(ctx, "P2P")
 	ctx = ctxsetters.WithMethodName(ctx, "SyncNetwork")
 	out := new(GeneralResponse)
-	err := doJSONRequest(ctx, c.client, c.urls[1], in, out)
+	err := doJSONRequest(ctx, c.client, c.urls[2], in, out)
 	if err != nil {
 		return nil, err
 	}
@@ -192,6 +220,9 @@ func (s *p2PServer) ServeHTTP(resp http.ResponseWriter, req *http.Request) {
 	}
 
 	switch req.URL.Path {
+	case "/twirp/p2p.P2P/NumConnectedPeers":
+		s.serveNumConnectedPeers(ctx, resp, req)
+		return
 	case "/twirp/p2p.P2P/ConnectedPeers":
 		s.serveConnectedPeers(ctx, resp, req)
 		return
@@ -204,6 +235,150 @@ func (s *p2PServer) ServeHTTP(resp http.ResponseWriter, req *http.Request) {
 		s.writeError(ctx, resp, err)
 		return
 	}
+}
+
+func (s *p2PServer) serveNumConnectedPeers(ctx context.Context, resp http.ResponseWriter, req *http.Request) {
+	header := req.Header.Get("Content-Type")
+	i := strings.Index(header, ";")
+	if i == -1 {
+		i = len(header)
+	}
+	switch strings.TrimSpace(strings.ToLower(header[:i])) {
+	case "application/json":
+		s.serveNumConnectedPeersJSON(ctx, resp, req)
+	case "application/protobuf":
+		s.serveNumConnectedPeersProtobuf(ctx, resp, req)
+	default:
+		msg := fmt.Sprintf("unexpected Content-Type: %q", req.Header.Get("Content-Type"))
+		twerr := badRouteError(msg, req.Method, req.URL.Path)
+		s.writeError(ctx, resp, twerr)
+	}
+}
+
+func (s *p2PServer) serveNumConnectedPeersJSON(ctx context.Context, resp http.ResponseWriter, req *http.Request) {
+	var err error
+	ctx = ctxsetters.WithMethodName(ctx, "NumConnectedPeers")
+	ctx, err = callRequestRouted(ctx, s.hooks)
+	if err != nil {
+		s.writeError(ctx, resp, err)
+		return
+	}
+
+	reqContent := new(GeneralRequest)
+	unmarshaler := jsonpb.Unmarshaler{AllowUnknownFields: true}
+	if err = unmarshaler.Unmarshal(req.Body, reqContent); err != nil {
+		err = wrapErr(err, "failed to parse request json")
+		s.writeError(ctx, resp, twirp.InternalErrorWith(err))
+		return
+	}
+
+	// Call service method
+	var respContent *GeneralResponse
+	func() {
+		defer func() {
+			// In case of a panic, serve a 500 error and then panic.
+			if r := recover(); r != nil {
+				s.writeError(ctx, resp, twirp.InternalError("Internal service panic"))
+				panic(r)
+			}
+		}()
+		respContent, err = s.P2P.NumConnectedPeers(ctx, reqContent)
+	}()
+
+	if err != nil {
+		s.writeError(ctx, resp, err)
+		return
+	}
+	if respContent == nil {
+		s.writeError(ctx, resp, twirp.InternalError("received a nil *GeneralResponse and nil error while calling NumConnectedPeers. nil responses are not supported"))
+		return
+	}
+
+	ctx = callResponsePrepared(ctx, s.hooks)
+
+	var buf bytes.Buffer
+	marshaler := &jsonpb.Marshaler{OrigName: true}
+	if err = marshaler.Marshal(&buf, respContent); err != nil {
+		err = wrapErr(err, "failed to marshal json response")
+		s.writeError(ctx, resp, twirp.InternalErrorWith(err))
+		return
+	}
+
+	ctx = ctxsetters.WithStatusCode(ctx, http.StatusOK)
+	resp.Header().Set("Content-Type", "application/json")
+	resp.WriteHeader(http.StatusOK)
+
+	respBytes := buf.Bytes()
+	if n, err := resp.Write(respBytes); err != nil {
+		msg := fmt.Sprintf("failed to write response, %d of %d bytes written: %s", n, len(respBytes), err.Error())
+		twerr := twirp.NewError(twirp.Unknown, msg)
+		callError(ctx, s.hooks, twerr)
+	}
+	callResponseSent(ctx, s.hooks)
+}
+
+func (s *p2PServer) serveNumConnectedPeersProtobuf(ctx context.Context, resp http.ResponseWriter, req *http.Request) {
+	var err error
+	ctx = ctxsetters.WithMethodName(ctx, "NumConnectedPeers")
+	ctx, err = callRequestRouted(ctx, s.hooks)
+	if err != nil {
+		s.writeError(ctx, resp, err)
+		return
+	}
+
+	buf, err := ioutil.ReadAll(req.Body)
+	if err != nil {
+		err = wrapErr(err, "failed to read request body")
+		s.writeError(ctx, resp, twirp.InternalErrorWith(err))
+		return
+	}
+	reqContent := new(GeneralRequest)
+	if err = proto.Unmarshal(buf, reqContent); err != nil {
+		err = wrapErr(err, "failed to parse request proto")
+		s.writeError(ctx, resp, twirp.InternalErrorWith(err))
+		return
+	}
+
+	// Call service method
+	var respContent *GeneralResponse
+	func() {
+		defer func() {
+			// In case of a panic, serve a 500 error and then panic.
+			if r := recover(); r != nil {
+				s.writeError(ctx, resp, twirp.InternalError("Internal service panic"))
+				panic(r)
+			}
+		}()
+		respContent, err = s.P2P.NumConnectedPeers(ctx, reqContent)
+	}()
+
+	if err != nil {
+		s.writeError(ctx, resp, err)
+		return
+	}
+	if respContent == nil {
+		s.writeError(ctx, resp, twirp.InternalError("received a nil *GeneralResponse and nil error while calling NumConnectedPeers. nil responses are not supported"))
+		return
+	}
+
+	ctx = callResponsePrepared(ctx, s.hooks)
+
+	respBytes, err := proto.Marshal(respContent)
+	if err != nil {
+		err = wrapErr(err, "failed to marshal proto response")
+		s.writeError(ctx, resp, twirp.InternalErrorWith(err))
+		return
+	}
+
+	ctx = ctxsetters.WithStatusCode(ctx, http.StatusOK)
+	resp.Header().Set("Content-Type", "application/protobuf")
+	resp.WriteHeader(http.StatusOK)
+	if n, err := resp.Write(respBytes); err != nil {
+		msg := fmt.Sprintf("failed to write response, %d of %d bytes written: %s", n, len(respBytes), err.Error())
+		twerr := twirp.NewError(twirp.Unknown, msg)
+		callError(ctx, s.hooks, twerr)
+	}
+	callResponseSent(ctx, s.hooks)
 }
 
 func (s *p2PServer) serveConnectedPeers(ctx context.Context, resp http.ResponseWriter, req *http.Request) {
@@ -923,16 +1098,16 @@ func callError(ctx context.Context, h *twirp.ServerHooks, err twirp.Error) conte
 }
 
 var twirpFileDescriptor0 = []byte{
-	// 163 bytes of a gzipped FileDescriptorProto
+	// 172 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe2, 0xe2, 0x2c, 0x30, 0x2a, 0xd0,
 	0x2b, 0x28, 0xca, 0x2f, 0xc9, 0x17, 0x62, 0x2e, 0x30, 0x2a, 0x50, 0xd2, 0xe2, 0xe2, 0x73, 0x4f,
 	0xcd, 0x4b, 0x2d, 0x4a, 0xcc, 0x09, 0x4a, 0x2d, 0x2c, 0x4d, 0x2d, 0x2e, 0x11, 0x92, 0xe0, 0x62,
 	0xcf, 0x4b, 0x2d, 0x29, 0xcf, 0x2f, 0xca, 0x96, 0x60, 0x54, 0x60, 0xd4, 0xe0, 0x0c, 0x82, 0x71,
 	0x95, 0xb4, 0xb9, 0xf8, 0xe1, 0x6a, 0x8b, 0x0b, 0xf2, 0xf3, 0x8a, 0x53, 0x41, 0x8a, 0x73, 0x53,
-	0x8b, 0x8b, 0x13, 0xd3, 0x53, 0x61, 0x8a, 0xa1, 0x5c, 0xa3, 0x06, 0x46, 0x2e, 0xe6, 0x00, 0xa3,
-	0x00, 0x21, 0x5b, 0x2e, 0x3e, 0xe7, 0xfc, 0xbc, 0xbc, 0xd4, 0xe4, 0x92, 0xd4, 0x94, 0x80, 0xd4,
-	0xd4, 0xa2, 0x62, 0x21, 0x61, 0x3d, 0x90, 0x1b, 0x50, 0x6d, 0x95, 0x12, 0x41, 0x15, 0x84, 0x18,
-	0xaf, 0xc4, 0x20, 0x64, 0xc5, 0xc5, 0x1d, 0x5c, 0x99, 0x97, 0xec, 0x07, 0x71, 0x02, 0x49, 0x7a,
-	0x93, 0xd8, 0xc0, 0xfe, 0x34, 0x06, 0x04, 0x00, 0x00, 0xff, 0xff, 0x6f, 0x62, 0xc1, 0xcc, 0xf4,
-	0x00, 0x00, 0x00,
+	0x8b, 0x8b, 0x13, 0xd3, 0x53, 0x61, 0x8a, 0xa1, 0x5c, 0xa3, 0x43, 0x8c, 0x5c, 0xcc, 0x01, 0x46,
+	0x01, 0x42, 0x0e, 0x5c, 0x82, 0x7e, 0xa5, 0xb9, 0xce, 0xf9, 0x79, 0x79, 0xa9, 0xc9, 0x25, 0xa9,
+	0x29, 0x01, 0xa9, 0xa9, 0x45, 0xc5, 0x42, 0xc2, 0x7a, 0x20, 0x67, 0xa0, 0x5a, 0x2c, 0x25, 0x82,
+	0x2a, 0x08, 0xb1, 0x41, 0x89, 0x41, 0xc8, 0x96, 0x8b, 0x8f, 0x12, 0xed, 0x56, 0x5c, 0xdc, 0xc1,
+	0x95, 0x79, 0xc9, 0x7e, 0x10, 0x4f, 0x90, 0xa4, 0x37, 0x89, 0x0d, 0x1c, 0x52, 0xc6, 0x80, 0x00,
+	0x00, 0x00, 0xff, 0xff, 0x93, 0x26, 0x82, 0x3d, 0x36, 0x01, 0x00, 0x00,
 }
