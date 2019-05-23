@@ -40,7 +40,9 @@ func (server *Server) ConnectedPeers(ctx context.Context, req *p2pProto.GeneralR
 	peers := []string{} // Initialize peer buffer
 
 	for _, peerInfo := range p2pPkg.WorkingHost.Peerstore().PeersWithAddrs() {
-		peers = append(peers, peerInfo.String()) // Append peer
+		if peerInfo != p2pPkg.WorkingHost.ID() { // Check is foreign peer
+			peers = append(peers, peerInfo.String()) // Append peer
+		}
 	}
 
 	return &p2pProto.GeneralResponse{Message: fmt.Sprintf("\n%s", strings.Join(peers, ", "))}, nil // Return peers
