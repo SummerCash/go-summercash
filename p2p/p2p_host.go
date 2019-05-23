@@ -69,7 +69,21 @@ func NewHost(ctx context.Context, port int) (*routed.RoutedHost, error) {
 
 	discovery.Advertise(ctx, routingDiscovery, config.Version) // Advertise network presence
 
-	_, err = routingDiscovery.FindPeers(ctx, config.Version) // Look for peers
+	peerChan, err := routingDiscovery.FindPeers(ctx, config.Version) // Look for peers
+
+	go func() {
+		for peer := range peerChan { // Iterate through discovered peers
+			if peer.ID == host.ID() { // Check is self
+				continue // Skip
+			}
+
+			err = host.Connect(ctx, peer) // Connect to discovered peer
+
+			if err != nil { // Check for errors
+				continue // Continue to next peer
+			}
+		}
+	}()
 
 	routedHost := routed.Wrap(host, dht) // Wrap host with DHT
 
