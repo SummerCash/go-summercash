@@ -56,6 +56,8 @@ func NewHost(ctx context.Context, port int) (*routed.RoutedHost, error) {
 		return &routed.RoutedHost{}, err // Return found error
 	}
 
+	common.Logf("== P2P == initialized host with ID: %s on listening port: %d with multiaddr: %s\n", host.ID().Pretty(), port, host.Addrs()[0].String()) // Log host
+
 	dht, err := BootstrapDht(ctx, host) // Bootstrap DHT
 
 	if err != nil { // Check for errors
@@ -92,8 +94,6 @@ func NewHost(ctx context.Context, port int) (*routed.RoutedHost, error) {
 			continue // Continue to next peer
 		}
 	}
-
-	common.Logf("== P2P == initialized host with ID: %s on listening port: %d with multiaddr: %s\n", host.ID().Pretty(), port, host.Addrs()[0].String()) // Log host
 
 	return WorkingHost, nil // Return working routed host
 }
