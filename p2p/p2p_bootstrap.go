@@ -22,6 +22,7 @@ var (
 	// BootstrapNodes represents all default bootstrap nodes on the given network.
 	BootstrapNodes = []string{
 		"/ip4/108.41.124.60/tcp/3000/ipfs/Qmd9u7weuyGz7Ld3SdjrDuwtPKpTZ4AhJX7VookPkr7Gbw",
+		"/ip4/108.41.124.60/tcp/3003/ipfs/QmVnW4u7Ejmfazmnd72JWrB3B9RGydX3V63mAUg9c1Y8Hg",
 	}
 )
 
