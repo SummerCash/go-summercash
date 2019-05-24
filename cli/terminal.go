@@ -12,6 +12,8 @@ import (
 	"strconv"
 	"strings"
 
+	figure "github.com/common-nighthawk/go-figure"
+
 	"github.com/SummerCash/go-summercash/common"
 	"github.com/SummerCash/go-summercash/config"
 	accountsProto "github.com/SummerCash/go-summercash/intrnl/rpc/proto/accounts"
@@ -20,9 +22,9 @@ import (
 	configProto "github.com/SummerCash/go-summercash/intrnl/rpc/proto/config"
 	coordinationChainProto "github.com/SummerCash/go-summercash/intrnl/rpc/proto/coordinationchain"
 	cryptoProto "github.com/SummerCash/go-summercash/intrnl/rpc/proto/crypto"
+	p2pProto "github.com/SummerCash/go-summercash/intrnl/rpc/proto/p2p"
 	transactionProto "github.com/SummerCash/go-summercash/intrnl/rpc/proto/transaction"
 	upnpProto "github.com/SummerCash/go-summercash/intrnl/rpc/proto/upnp"
-	figure "github.com/common-nighthawk/go-figure"
 )
 
 var (
@@ -76,6 +78,7 @@ func handleCommand(receiver string, methodname string, params []string, rpcPort 
 	chainClient := chainProto.NewChainProtobufClient("https://"+rpcAddress+":"+strconv.Itoa(int(rpcPort)), &http.Client{Transport: transport})                                     // Init chain client
 	coordinationChainClient := coordinationChainProto.NewCoordinationChainProtobufClient("https://"+rpcAddress+":"+strconv.Itoa(int(rpcPort)), &http.Client{Transport: transport}) // Init coordinationChain client
 	commonClient := commonProto.NewCommonProtobufClient("https://"+rpcAddress+":"+strconv.Itoa(int(rpcPort)), &http.Client{Transport: transport})                                  // Init common client
+	p2pClient := p2pProto.NewP2PProtobufClient("https://"+rpcAddress+":"+strconv.Itoa(int(rpcPort)), &http.Client{Transport: transport})                                           // Init p2p client
 
 	switch receiver {
 	case "crypto":
@@ -122,6 +125,12 @@ func handleCommand(receiver string, methodname string, params []string, rpcPort 
 		}
 	case "common":
 		err := handleCommon(&commonClient, methodname, params) // Handle common
+
+		if err != nil { // Check for errors
+			fmt.Println("\n" + err.Error()) // Log found error
+		}
+	case "p2p":
+		err := handleP2P(&p2pClient, methodname, params) // Handle p2p
 
 		if err != nil { // Check for errors
 			fmt.Println("\n" + err.Error()) // Log found error
@@ -427,6 +436,38 @@ func handleCommon(commonClient *commonProto.Common, methodname string, params []
 	result := reflect.ValueOf(*commonClient).MethodByName(methodname).Call(reflectParams) // Call method
 
 	response := result[0].Interface().(*commonProto.GeneralResponse) // Get response
+
+	if result[1].Interface() != nil { // Check for errors
+		return result[1].Interface().(error) // Return error
+	}
+
+	fmt.Println(response.Message) // Log response
+
+	return nil // No error occurred, return nil
+}
+
+// handleP2P - handle p2p receiver
+func handleP2P(p2pClient *p2pProto.P2P, methodname string, params []string) error {
+	reflectParams := []reflect.Value{} // Init buffer
+
+	reflectParams = append(reflectParams, reflect.ValueOf(context.Background())) // Append request context
+
+	switch methodname {
+	case "NumConnectedPeers", "ConnectedPeers":
+		reflectParams = append(reflectParams, reflect.ValueOf(&p2pProto.GeneralRequest{})) // Empty request
+	case "SyncNetwork":
+		if len(params) != 1 { // Check not enough params
+			return errors.New("invalid parameters (requires string)") // Return error
+		}
+
+		reflectParams = append(reflectParams, reflect.ValueOf(&p2pProto.GeneralRequest{Network: params[0]})) // Empty request
+	default:
+		return errors.New("illegal method: " + methodname + ", available methods: NumConnectedPeers(), ConnectedPeers(), SyncNetwork()") // Return error
+	}
+
+	result := reflect.ValueOf(*p2pClient).MethodByName(methodname).Call(reflectParams) // Call method
+
+	response := result[0].Interface().(*p2pProto.GeneralResponse) // Get response
 
 	if result[1].Interface() != nil { // Check for errors
 		return result[1].Interface().(error) // Return error
