@@ -32,7 +32,6 @@ import (
 	transactionServer "github.com/SummerCash/go-summercash/intrnl/rpc/transaction"
 	upnpServer "github.com/SummerCash/go-summercash/intrnl/rpc/upnp"
 	"github.com/SummerCash/go-summercash/p2p"
-	"github.com/SummerCash/go-summercash/upnp"
 	"github.com/SummerCash/go-summercash/validator"
 )
 
@@ -88,14 +87,6 @@ func main() {
 		}
 
 		common.BootstrapNodes = []string{ipAddr + ":" + strconv.Itoa(*nodePortFlag)} // Set bootstrap nodes to local host
-	}
-
-	if !*upnpFlag { // Check for UPnP
-		if *forwardRPCFlag {
-			go upnp.ForwardPortSilent(uint(*rpcPortFlag)) // Forward RPC port
-		}
-
-		go upnp.ForwardPortSilent(uint(*nodePortFlag)) // Forward port 3000
 	}
 
 	if strings.Contains(*rpcAddrFlag, "localhost") { // Check for default RPC address
