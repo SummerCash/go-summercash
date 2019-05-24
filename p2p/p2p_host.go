@@ -147,12 +147,6 @@ func BootstrapDht(ctx context.Context, host host.Host) (*dht.IpfsDHT, error) {
 		return nil, err // Return found error
 	}
 
-	err = dht.Bootstrap(ctx) // Bootstrap
-
-	if err != nil { // Check for errors
-		return nil, err // Return found error
-	}
-
 	for _, addr := range BootstrapNodes { // Iterate through bootstrap nodes
 		address, err := multiaddr.NewMultiaddr(addr) // Parse multi address
 
@@ -171,6 +165,12 @@ func BootstrapDht(ctx context.Context, host host.Host) (*dht.IpfsDHT, error) {
 		if err != nil { // Check for errors
 			continue // Continue to next peer
 		}
+	}
+
+	err = dht.Bootstrap(ctx) // Bootstrap
+
+	if err != nil { // Check for errors
+		return nil, err // Return found error
 	}
 
 	return dht, nil // Return DHT
