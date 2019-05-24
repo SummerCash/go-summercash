@@ -11,8 +11,6 @@ import (
 	"os"
 	"strings"
 	"time"
-
-	upnp "github.com/NebulousLabs/go-upnp"
 )
 
 var (
@@ -109,22 +107,6 @@ func ReadConnectionWaitAsyncNoTLS(conn net.Conn) ([]byte, error) {
 /*
 	BEGIN IP ADDR METHODS
 */
-
-// GetExtIPAddrWithUPnP - retrieve the external IP address of the current machine via upnp
-func GetExtIPAddrWithUPnP() (string, error) {
-	// connect to router
-	d, err := upnp.Discover()
-	if err != nil { // Check for errors
-		return "", err // return error
-	}
-
-	// discover external IP
-	ip, err := d.ExternalIP()
-	if err != nil { // Check for errors
-		return "", err // return error
-	}
-	return ip, nil
-}
 
 // GetExtIPAddrWithoutUPnP - retrieve the external IP address of the current machine w/o upnp
 func GetExtIPAddrWithoutUPnP() (string, error) {

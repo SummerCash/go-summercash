@@ -51,19 +51,6 @@ func TestReadConnectionWaitAsyncNoTLS(t *testing.T) {
 	BEGIN IP ADDR METHODS
 */
 
-// TestGetExtIPAddrWitUPnP - test functionality of GetExtIPAddrWithUPnP() method
-func TestGetExtIPAddrWitUPnP(t *testing.T) {
-	ip, err := GetExtIPAddrWithUPnP() // Get IP
-
-	if err != nil && !strings.Contains(err.Error(), "no UPnP") { // Check for non-no-upnp errors
-		t.Log(ip)    // Log IP for cov
-		t.Error(err) // Log found error
-		t.FailNow()  // Panic
-	}
-
-	t.Log(ip) // Log success
-}
-
 // TestGetExtIPAddrWithoutUPnP - test functionality of GetExtIPAddrWithoutUPnP() method
 func TestGetExtIPAddrWithoutUPnP(t *testing.T) {
 	ip, err := GetExtIPAddrWithoutUPnP() // Get IP
