@@ -6,6 +6,7 @@ import (
 	"bytes"
 	"context"
 	"errors"
+	"fmt"
 	"strconv"
 	"strings"
 
@@ -63,6 +64,8 @@ func NewHost(ctx context.Context, port int) (*routed.RoutedHost, error) {
 
 	routingDiscovery := discovery.NewRoutingDiscovery(dht) // Initialize routing discovery
 
+	common.Logf("== P2P == advertising network presence") // Log advertise
+
 	discovery.Advertise(ctx, routingDiscovery, config.Version) // Advertise network presence
 
 	routedHost := routed.Wrap(host, dht) // Wrap host with DHT
@@ -75,7 +78,10 @@ func NewHost(ctx context.Context, port int) (*routed.RoutedHost, error) {
 		return &routed.RoutedHost{}, err // Return found error
 	}
 
+	common.Logf("== P2P == searching for remote nodes via rendezvous discovery...") // Log search
+
 	for peer := range peerChan { // Iterate through discovered peers
+		fmt.Println("test")
 		if peer.ID == host.ID() { // Check is self
 			continue // Skip
 		}
