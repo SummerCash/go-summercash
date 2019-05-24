@@ -6,7 +6,6 @@ import (
 	"bytes"
 	"context"
 	"errors"
-	"fmt"
 	"strconv"
 	"strings"
 
@@ -82,8 +81,7 @@ func NewHost(ctx context.Context, port int) (*routed.RoutedHost, error) {
 
 	common.Logf("== P2P == searching for remote nodes via rendezvous discovery...\n") // Log search
 
-	for peer := range peerChan { // Iterate through discovered peers
-		fmt.Println("test")
+	for peer := range peerChan { // Iterate through discovered peersfmt.Println("test")
 		if peer.ID == host.ID() { // Check is self
 			continue // Skip
 		}
