@@ -86,7 +86,7 @@ func NewHost(ctx context.Context, port int) (*routed.RoutedHost, error) {
 			continue // Skip
 		}
 
-		common.Logf("== P2P == discovered peer: %s\n", peer.String()) // Log discovered peer
+		common.Logf("== P2P == discovered peer: %s\n", peer.ID.String()) // Log discovered peer
 
 		err = WorkingHost.Connect(ctx, peer) // Connect to discovered peer
 
