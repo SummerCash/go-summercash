@@ -42,8 +42,6 @@ func GetBestBootstrapAddress(ctx context.Context, host *routed.RoutedHost, netwo
 			continue // Continue
 		}
 
-		host.Peerstore().AddAddr(peerID, multiaddr, peerstore.PermanentAddrTTL) // Add bootstrap peer
-
 		peerInfo, err := peerstore.InfoFromP2pAddr(multiaddr) // Get peer info
 
 		if err != nil { // Check for errors
@@ -67,6 +65,8 @@ func GetBestBootstrapAddress(ctx context.Context, host *routed.RoutedHost, netwo
 
 			continue // Continue
 		}
+
+		host.Peerstore().AddAddr(peerID, multiaddr, peerstore.PermanentAddrTTL) // Add bootstrap peer
 
 		reader := bufio.NewReader(stream) // Get reader
 
