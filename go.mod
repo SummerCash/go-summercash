@@ -23,17 +23,12 @@ require (
 	github.com/libp2p/go-libp2p-peer v0.2.0
 	github.com/libp2p/go-libp2p-peerstore v0.1.0
 	github.com/libp2p/go-libp2p-protocol v0.1.0
-	github.com/libp2p/go-libp2p-yamux v0.1.3 // indirect
-	github.com/libp2p/go-mplex v0.0.4 // indirect
+	github.com/libp2p/go-libp2p-pubsub v0.1.0 // indirect
 	github.com/libp2p/go-stream-muxer v0.1.0 // indirect
 	github.com/libp2p/go-yamux v1.2.3 // indirect
 	github.com/mattn/go-colorable v0.1.2 // indirect
-	github.com/minio/sha256-simd v0.1.0 // indirect
 	github.com/mitchellh/mapstructure v1.1.2 // indirect
 	github.com/multiformats/go-multiaddr v0.0.4
-	github.com/multiformats/go-multistream v0.1.0 // indirect
-	github.com/onsi/ginkgo v1.8.0 // indirect
-	github.com/onsi/gomega v1.5.0 // indirect
 	github.com/opentracing/opentracing-go v1.1.0 // indirect
 	github.com/twitchtv/twirp v5.7.0+incompatible
 	gitlab.com/NebulousLabs/fastrand v0.0.0-20181126182046-603482d69e40 // indirect
