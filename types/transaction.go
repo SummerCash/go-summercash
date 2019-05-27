@@ -107,7 +107,7 @@ func NewTransaction(nonce uint64, parentTx *Transaction, sender *common.Address,
 		Recipient:        destination,      // Set recipient
 		Amount:           amount,           // Set amount
 		Payload:          payload,          // Set tx payload
-		ParentTx:         parentTx.Hash,         // Set parent
+		ParentTx:         parentTx.Hash,    // Set parent
 		Timestamp:        time.Now().UTC(), // Set timestamp
 		ContractCreation: false,            // Set should init contract
 	}
@@ -133,7 +133,7 @@ func NewContractCreation(nonce uint64, parentTx *Transaction, sender *common.Add
 		Recipient:               contractInstance, // Set dest
 		Amount:                  amount,           // Set amount
 		Payload:                 payload,          // Set tx payload
-		ParentTx:                parentTx.Hash,         // Set parent
+		ParentTx:                parentTx.Hash,    // Set parent
 		Timestamp:               time.Now().UTC(), // Set timestamp
 		ContractCreation:        true,             // Set should init contract
 		DeployedContractAddress: contractInstance, // Set deployed
@@ -390,7 +390,7 @@ func (transaction *Transaction) String() string {
 		Amount:                  floatVal,                                           // Set amount
 		Payload:                 transaction.Payload,                                // Set payload
 		Signature:               transaction.Signature,                              // Set signature
-		ParentTx:                transaction.ParentTx.String(),                               // Set parent
+		ParentTx:                transaction.ParentTx.String(),                      // Set parent
 		Timestamp:               transaction.Timestamp.Format("01/02/2006 3:04 PM"), // Set timestamp
 		DeployedContractAddress: transaction.DeployedContractAddress,                // Set deployed contract address
 		ContractCreation:        transaction.ContractCreation,                       // Set is contract creation
