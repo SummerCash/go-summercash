@@ -204,7 +204,7 @@ func (chain *Chain) QueryTransaction(hash common.Hash) (*Transaction, error) {
 // QueryTransactionByParent - attempt to fetch transaction with given parent
 func (chain *Chain) QueryTransactionByParent(parentHash common.Hash) (*Transaction, error) {
 	for _, transaction := range chain.Transactions { // Iterate through transactions
-		if bytes.Equal(transaction.ParentTx.Hash.Bytes(), parentHash.Bytes()) { // Check for match
+		if bytes.Equal(transaction.ParentTx.Bytes(), parentHash.Bytes()) { // Check for match
 			return transaction, nil // Return found transaction
 		}
 	}

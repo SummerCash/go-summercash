@@ -49,7 +49,7 @@ type Transaction struct {
 
 	Signature *Signature `json:"signature"` // Transaction signature meta
 
-	ParentTx *Transaction `json:"-"` // Parent transaction
+	ParentTx *common.Hash `json:"parent_hash"` // Parent transaction
 
 	Timestamp time.Time `json:"time"` // Transaction timestamp
 
@@ -80,7 +80,7 @@ type StringTransaction struct {
 
 	Signature *Signature `json:"signature"` // Transaction signature meta
 
-	ParentTx *Transaction `json:"-"` // Parent transaction
+	ParentTx string `json:"parent_hash"` // Parent transaction
 
 	Timestamp string `json:"time"` // Transaction timestamp
 
@@ -107,7 +107,7 @@ func NewTransaction(nonce uint64, parentTx *Transaction, sender *common.Address,
 		Recipient:        destination,      // Set recipient
 		Amount:           amount,           // Set amount
 		Payload:          payload,          // Set tx payload
-		ParentTx:         parentTx,         // Set parent
+		ParentTx:         parentTx.Hash,         // Set parent
 		Timestamp:        time.Now().UTC(), // Set timestamp
 		ContractCreation: false,            // Set should init contract
 	}
@@ -133,7 +133,7 @@ func NewContractCreation(nonce uint64, parentTx *Transaction, sender *common.Add
 		Recipient:               contractInstance, // Set dest
 		Amount:                  amount,           // Set amount
 		Payload:                 payload,          // Set tx payload
-		ParentTx:                parentTx,         // Set parent
+		ParentTx:                parentTx.Hash,         // Set parent
 		Timestamp:               time.Now().UTC(), // Set timestamp
 		ContractCreation:        true,             // Set should init contract
 		DeployedContractAddress: contractInstance, // Set deployed
@@ -192,20 +192,26 @@ func (transaction *Transaction) EvaluateNewState(gasPolicy *compiler.GasPolicy) 
 
 	workingVMTransaction = transaction // Set working vm tx
 
+	parentTx, err := recipientChain.QueryTransaction(*transaction.ParentTx) // Query parent
+
+	if err != nil { // Check for errors
+		return &vm.State{}, err // Return found error
+	}
+
 	if transaction.ParentTx != nil { // Check has parent
-		workingVM.CallStack = transaction.ParentTx.State.CallStack               // Set call stack
-		workingVM.CurrentFrame = transaction.ParentTx.State.CurrentFrame         // Set current frame
-		workingVM.Table = transaction.ParentTx.State.Table                       // Set table
-		workingVM.Globals = transaction.ParentTx.State.Globals                   // Set globals
-		workingVM.Memory = transaction.ParentTx.State.Memory                     // Set memory
-		workingVM.NumValueSlots = transaction.ParentTx.State.NumValueSlots       // Set num value slots
-		workingVM.Yielded = transaction.ParentTx.State.Yielded                   // Set yielded
-		workingVM.InsideExecute = transaction.ParentTx.State.InsideExecute       // Set inside execute
-		workingVM.Exited = transaction.ParentTx.State.Exited                     // Set has exited
-		workingVM.ExitError = transaction.ParentTx.State.ExitError               // Set exit error
-		workingVM.ReturnValue = transaction.ParentTx.State.ReturnValue           // Set return value
-		workingVM.Gas = transaction.ParentTx.State.Gas                           // Set gas
-		workingVM.GasLimitExceeded = transaction.ParentTx.State.GasLimitExceeded // Set gas limit exceeded
+		workingVM.CallStack = parentTx.State.CallStack               // Set call stack
+		workingVM.CurrentFrame = parentTx.State.CurrentFrame         // Set current frame
+		workingVM.Table = parentTx.State.Table                       // Set table
+		workingVM.Globals = parentTx.State.Globals                   // Set globals
+		workingVM.Memory = parentTx.State.Memory                     // Set memory
+		workingVM.NumValueSlots = parentTx.State.NumValueSlots       // Set num value slots
+		workingVM.Yielded = parentTx.State.Yielded                   // Set yielded
+		workingVM.InsideExecute = parentTx.State.InsideExecute       // Set inside execute
+		workingVM.Exited = parentTx.State.Exited                     // Set has exited
+		workingVM.ExitError = parentTx.State.ExitError               // Set exit error
+		workingVM.ReturnValue = parentTx.State.ReturnValue           // Set return value
+		workingVM.Gas = parentTx.State.Gas                           // Set gas
+		workingVM.GasLimitExceeded = parentTx.State.GasLimitExceeded // Set gas limit exceeded
 	}
 
 	callMethod, callParams, err := common.ParseStringMethodCallNoReceiver(string(transaction.Payload)) // Parse payload method call
@@ -384,7 +390,7 @@ func (transaction *Transaction) String() string {
 		Amount:                  floatVal,                                           // Set amount
 		Payload:                 transaction.Payload,                                // Set payload
 		Signature:               transaction.Signature,                              // Set signature
-		ParentTx:                transaction.ParentTx,                               // Set parent
+		ParentTx:                transaction.ParentTx.String(),                               // Set parent
 		Timestamp:               transaction.Timestamp.Format("01/02/2006 3:04 PM"), // Set timestamp
 		DeployedContractAddress: transaction.DeployedContractAddress,                // Set deployed contract address
 		ContractCreation:        transaction.ContractCreation,                       // Set is contract creation
