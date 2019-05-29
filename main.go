@@ -178,18 +178,18 @@ func startNode(archivalNode bool) {
 
 	client := p2p.NewClient(host, &validator, *networkFlag) // Initialize client
 
-	err = client.StartServingStreams() // Start serving
-
-	if err != nil { // Check for errors
-		panic(err) // Panic
-	}
-
 	if p2p.GetBestBootstrapAddress(ctx, host, *networkFlag) != "localhost" { // Check can sync
 		err = client.SyncNetwork() // Sync network
 
 		if err != nil { // Check for errors
 			panic(err) // Panic
 		}
+	}
+
+	err = client.StartServingStreams() // Start serving
+
+	if err != nil { // Check for errors
+		panic(err) // Panic
 	}
 
 	if !*terminalFlag { // Check is not locally running terminal

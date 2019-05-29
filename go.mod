@@ -10,21 +10,29 @@ require (
 	github.com/common-nighthawk/go-figure v0.0.0-20180619031829-18b2b544842c
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/dowlandaiello/GoP2P v0.0.0-20190310032419-c729bb3725f1
+	github.com/dowlandaiello/go-simplesub v0.0.0-20190529165630-fbb1989a36a6
 	github.com/fatih/structs v1.1.0 // indirect
 	github.com/golang/protobuf v1.3.1
 	github.com/google/go-cmp v0.3.0 // indirect
-	github.com/libp2p/go-libp2p v0.0.28
-	github.com/libp2p/go-libp2p-circuit v0.0.8 // indirect
+	github.com/jbenet/go-context v0.0.0-20150711004518-d14ea06fba99 // indirect
+	github.com/libp2p/go-conn-security v0.0.1 // indirect
+	github.com/libp2p/go-libp2p v0.1.0
+	github.com/libp2p/go-libp2p-core v0.0.1
 	github.com/libp2p/go-libp2p-crypto v0.1.0
-	github.com/libp2p/go-libp2p-discovery v0.0.4
+	github.com/libp2p/go-libp2p-discovery v0.1.0
 	github.com/libp2p/go-libp2p-host v0.0.3
-	github.com/libp2p/go-libp2p-kad-dht v0.0.13
-	github.com/libp2p/go-libp2p-net v0.0.2
+	github.com/libp2p/go-libp2p-interface-connmgr v0.0.5 // indirect
+	github.com/libp2p/go-libp2p-interface-pnet v0.0.1 // indirect
+	github.com/libp2p/go-libp2p-kad-dht v0.1.0
+	github.com/libp2p/go-libp2p-metrics v0.0.1 // indirect
+	github.com/libp2p/go-libp2p-net v0.1.0
 	github.com/libp2p/go-libp2p-peer v0.2.0
 	github.com/libp2p/go-libp2p-peerstore v0.1.0
 	github.com/libp2p/go-libp2p-protocol v0.1.0
 	github.com/libp2p/go-libp2p-pubsub v0.1.0 // indirect
+	github.com/libp2p/go-libp2p-transport v0.0.5 // indirect
 	github.com/libp2p/go-stream-muxer v0.1.0 // indirect
+	github.com/libp2p/go-testutil v0.0.1 // indirect
 	github.com/libp2p/go-yamux v1.2.3 // indirect
 	github.com/mattn/go-colorable v0.1.2 // indirect
 	github.com/mitchellh/mapstructure v1.1.2 // indirect
