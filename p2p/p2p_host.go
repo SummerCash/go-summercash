@@ -11,8 +11,8 @@ import (
 
 	"github.com/dowlandaiello/go-simplesub"
 	"github.com/libp2p/go-libp2p"
-	host "github.com/libp2p/go-libp2p-core/host"
 	discovery "github.com/libp2p/go-libp2p-discovery"
+	host "github.com/libp2p/go-libp2p-host"
 	dht "github.com/libp2p/go-libp2p-kad-dht"
 	peer "github.com/libp2p/go-libp2p-peer"
 	peerstore "github.com/libp2p/go-libp2p-peerstore"
