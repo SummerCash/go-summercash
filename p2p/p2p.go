@@ -8,13 +8,18 @@ import (
 	"errors"
 	"fmt"
 	"math"
-	"sync"
+	"time"
 
 	peer "github.com/libp2p/go-libp2p-peer"
 	protocol "github.com/libp2p/go-libp2p-protocol"
 	routed "github.com/libp2p/go-libp2p/p2p/host/routed"
 
 	"github.com/SummerCash/go-summercash/config"
+)
+
+var (
+	// ErrTimedOut defines an error describing a standard timeout.
+	ErrTimedOut = errors.New("request timed out")
 )
 
 /* BEGIN EXPORTED METHODS */
@@ -82,7 +87,7 @@ func BroadcastDht(ctx context.Context, host *routed.RoutedHost, message []byte, 
 }
 
 // BroadcastDhtResult send a given message to all nodes in a dht, and returns the result from each node.
-func BroadcastDhtResult(ctx context.Context, host *routed.RoutedHost, message []byte, streamProtocol string, dagIdentifier string, nPeers int) ([][]byte, error) {
+func BroadcastDhtResult(ctx context.Context, host *routed.RoutedHost, message []byte, streamProtocol string, dagIdentifier string, nPeers int) (responses [][]byte, err error) {
 	if bytes.Contains(message, []byte{'\r'}) { // Check control char
 		return nil, errors.New("message contains a restricted control character") // Return error
 	}
@@ -90,10 +95,6 @@ func BroadcastDhtResult(ctx context.Context, host *routed.RoutedHost, message []
 	peers := host.Network().Peers() // Get peers
 
 	results := [][]byte{} // Init results buffer
-
-	var wg sync.WaitGroup // Init wait group
-
-	wg.Add(int(math.Ceil((float64(nPeers) / 100) * float64(len(peers))))) // Set num peers
 
 	x := 0 // Init x buffer
 
@@ -136,14 +137,16 @@ func BroadcastDhtResult(ctx context.Context, host *routed.RoutedHost, message []
 			readWriter.Flush() // Flush
 
 			x++ // Increment
-
-			if x <= int(math.Ceil((float64(nPeers)/100)*float64(len(peers)))) { // Check has sent to enough peers
-				wg.Done() // Done
-			}
 		}(currentPeer) // Run
 	}
 
-	wg.Wait() // Wait
+	startTime := time.Now() // Get start time
+
+	for x < int(math.Ceil((float64(nPeers)/100)*float64(len(peers)))) { // Wait until enough responses
+		if time.Now().Sub(startTime) > 10*time.Second { // Check for timeout
+			return [][]byte{}, ErrTimedOut // Return error
+		}
+	}
 
 	return results, nil // No error occurred, return response
 }

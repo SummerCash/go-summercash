@@ -83,7 +83,7 @@ func NewHost(ctx context.Context, port int, network string) (*routed.RoutedHost,
 		return &routed.RoutedHost{}, err // Return found error
 	}
 
-	common.Logf("== P2P == searching for remote nodes via rendezvous discovery...\n") // Log search
+	common.Logf("== P2P == searching for peers via rendezvous discovery...\n") // Log search
 
 	for peer := range peerChan { // Iterate through discovered peers
 		if peer.ID == host.ID() || !CheckPeerCompatible(ctx, WorkingHost, peer.ID, network) { // Check is self
