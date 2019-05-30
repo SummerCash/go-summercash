@@ -7,11 +7,14 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"math"
+	"sync"
 
-	"github.com/SummerCash/go-summercash/config"
 	peer "github.com/libp2p/go-libp2p-peer"
 	protocol "github.com/libp2p/go-libp2p-protocol"
 	routed "github.com/libp2p/go-libp2p/p2p/host/routed"
+
+	"github.com/SummerCash/go-summercash/config"
 )
 
 /* BEGIN EXPORTED METHODS */
@@ -88,47 +91,62 @@ func BroadcastDhtResult(ctx context.Context, host *routed.RoutedHost, message []
 
 	results := [][]byte{} // Init results buffer
 
+	var wg sync.WaitGroup // Init wait group
+
+	wg.Add(int(math.Ceil((float64(nPeers) / 100) * float64(len(peers))))) // Set num peers
+
+	fmt.Println(int(math.Ceil((float64(nPeers) / 100) * float64(len(peers)))))
+
 	x := 0 // Init x buffer
 
-	for _, peer := range peers { // Iterate through peers
-		if x >= nPeers { // Check has sent to enough peers
+	for _, currentPeer := range peers { // Iterate through peers
+		fmt.Println(x)
+		if x >= int(math.Ceil((float64(nPeers)/100)*float64(len(peers)))) { // Check has sent to enough peers
 			break // Break
 		}
 
-		if peer == (*host).ID() || !CheckPeerCompatible(ctx, host, peer, dagIdentifier) { // Check not same node, compatible
-			continue // Continue
-		}
+		go func(peer peer.ID) {
+			if peer == (*host).ID() || !CheckPeerCompatible(ctx, host, peer, dagIdentifier) { // Check not same node, compatible
+				return // Continue
+			}
 
-		stream, err := (*host).NewStream(ctx, peer, protocol.ID(streamProtocol)) // Connect
+			stream, err := (*host).NewStream(ctx, peer, protocol.ID(streamProtocol)) // Connect
 
-		if err != nil { // Check for errors
-			continue // Continue
-		}
+			if err != nil { // Check for errors
+				return // Continue
+			}
 
-		readWriter := bufio.NewReadWriter(bufio.NewReader(stream), bufio.NewWriter(stream)) // Initialize reader/writer
+			readWriter := bufio.NewReadWriter(bufio.NewReader(stream), bufio.NewWriter(stream)) // Initialize reader/writer
 
-		_, err = readWriter.Write(append(message, byte('\r'))) // Write message
+			_, err = readWriter.Write(append(message, byte('\r'))) // Write message
 
-		if err != nil { // Check for errors
-			continue // Continue
-		}
+			if err != nil { // Check for errors
+				return // Continue
+			}
 
-		readWriter.Flush() // Flush
+			readWriter.Flush() // Flush
 
-		responseBytes, err := readWriter.ReadBytes('\r') // Read up to delimiter
+			responseBytes, err := readWriter.ReadBytes('\r') // Read up to delimiter
 
-		if err != nil { // Check for errors
-			continue // Continue
-		}
+			if err != nil { // Check for errors
+				return // Continue
+			}
 
-		responseBytes = bytes.Trim(responseBytes, "\r") // Trim delmiter
+			responseBytes = bytes.Trim(responseBytes, "\r") // Trim delmiter
 
-		results = append(results, responseBytes) // Append response
+			results = append(results, responseBytes) // Append response
 
-		readWriter.Flush() // Flush
+			readWriter.Flush() // Flush
 
-		x++ // Increment
+			x++ // Increment
+
+			if x <= int(math.Ceil((float64(nPeers)/100)*float64(len(peers)))) { // Check has sent to enough peers
+				wg.Done() // Done
+			}
+		}(currentPeer) // Run
 	}
+
+	wg.Wait() // Wait
 
 	return results, nil // No error occurred, return response
 }
