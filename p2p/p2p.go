@@ -95,12 +95,9 @@ func BroadcastDhtResult(ctx context.Context, host *routed.RoutedHost, message []
 
 	wg.Add(int(math.Ceil((float64(nPeers) / 100) * float64(len(peers))))) // Set num peers
 
-	fmt.Println(int(math.Ceil((float64(nPeers) / 100) * float64(len(peers)))))
-
 	x := 0 // Init x buffer
 
 	for _, currentPeer := range peers { // Iterate through peers
-		fmt.Println(x)
 		if x >= int(math.Ceil((float64(nPeers)/100)*float64(len(peers)))) { // Check has sent to enough peers
 			break // Break
 		}
