@@ -38,7 +38,7 @@ var (
 /* BEGIN EXPORTED METHODS */
 
 // NewHost initializes a new routed libp2p host with a given context.
-func NewHost(ctx context.Context, port int) (*routed.RoutedHost, error) {
+func NewHost(ctx context.Context, port int, network string) (*routed.RoutedHost, error) {
 	identity, err := GetPeerIdentity() // Get peer identity
 
 	if err != nil { // Check for errors
@@ -86,7 +86,7 @@ func NewHost(ctx context.Context, port int) (*routed.RoutedHost, error) {
 	common.Logf("== P2P == searching for remote nodes via rendezvous discovery...\n") // Log search
 
 	for peer := range peerChan { // Iterate through discovered peers
-		if peer.ID == host.ID() { // Check is self
+		if peer.ID == host.ID() || !CheckPeerCompatible(ctx, WorkingHost, peer.ID, network) { // Check is self
 			continue // Skip
 		}
 

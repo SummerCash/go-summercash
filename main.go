@@ -146,7 +146,7 @@ func startNode(archivalNode bool) {
 
 	defer cancel() // Cancel
 
-	host, err := p2p.NewHost(ctx, *nodePortFlag) // Initialize libp2p host with context and nat manager
+	host, err := p2p.NewHost(ctx, *nodePortFlag, *networkFlag) // Initialize libp2p host with context and nat manager
 
 	if err != nil { // Check for errors
 		panic(err) // Panic

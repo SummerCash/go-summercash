@@ -54,7 +54,7 @@ func BroadcastDht(ctx context.Context, host *routed.RoutedHost, message []byte, 
 		return errors.New("message contains a restricted control character") // Return error
 	}
 
-	peers := host.Peerstore().Peers() // Get peers
+	peers := host.Network().Peers() // Get peers
 
 	for _, peer := range peers { // Iterate through peers
 		if peer == (*host).ID() || !CheckPeerCompatible(ctx, host, peer, dagIdentifier) { // Check not same node, compatible
@@ -87,7 +87,7 @@ func BroadcastDhtResult(ctx context.Context, host *routed.RoutedHost, message []
 		return nil, errors.New("message contains a restricted control character") // Return error
 	}
 
-	peers := host.Peerstore().Peers() // Get peers
+	peers := host.Network().Peers() // Get peers
 
 	results := [][]byte{} // Init results buffer
 

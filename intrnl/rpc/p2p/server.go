@@ -22,7 +22,7 @@ func (server *Server) NumConnectedPeers(ctx context.Context, req *p2pProto.Gener
 
 	numPeers := 0 // Initialize peer num
 
-	for _, peer := range p2pPkg.WorkingHost.Peerstore().Peers() { // Iterate through peers
+	for _, peer := range p2pPkg.WorkingHost.Network().Peers() { // Iterate through peers
 		if peer != p2pPkg.WorkingHost.ID() { // Check is foreign peer
 			numPeers++ // Increment number of peers
 		}
@@ -39,7 +39,7 @@ func (server *Server) ConnectedPeers(ctx context.Context, req *p2pProto.GeneralR
 
 	peers := []string{} // Initialize peer buffer
 
-	for _, peerInfo := range p2pPkg.WorkingHost.Peerstore().PeersWithAddrs() {
+	for _, peerInfo := range p2pPkg.WorkingHost.Network().Peers() {
 		if peerInfo != p2pPkg.WorkingHost.ID() { // Check is foreign peer
 			peers = append(peers, peerInfo.String()) // Append peer
 		}

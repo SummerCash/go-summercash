@@ -10,17 +10,15 @@ import (
 	"strings"
 	"time"
 
+	protocol "github.com/libp2p/go-libp2p-protocol"
+	routed "github.com/libp2p/go-libp2p/p2p/host/routed"
+	commonGoP2P "github.com/dowlandaiello/GoP2P/common"
+
 	"github.com/SummerCash/go-summercash/accounts"
-
 	"github.com/SummerCash/go-summercash/crypto"
-
 	"github.com/SummerCash/go-summercash/common"
 	"github.com/SummerCash/go-summercash/types"
 	"github.com/SummerCash/go-summercash/validator"
-	protocol "github.com/libp2p/go-libp2p-protocol"
-	routed "github.com/libp2p/go-libp2p/p2p/host/routed"
-
-	commonGoP2P "github.com/dowlandaiello/GoP2P/common"
 )
 
 // Client represents a peer on the network with a known routed libp2p host.
@@ -56,7 +54,7 @@ func (client *Client) StartIntermittentSync(duration time.Duration) {
 
 // PublishTransaction publishes a given transaction.
 func (client *Client) PublishTransaction(ctx context.Context, transaction *types.Transaction) error {
-	peers := client.Host.Peerstore().Peers() // Get peers
+	peers := client.Host.Network().Peers() // Get peers
 
 	for _, peer := range peers { // Iterate through peers
 		if peer == (*client.Host).ID() { // Check not same node

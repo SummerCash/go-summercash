@@ -150,7 +150,7 @@ func (server *Server) Publish(ctx context.Context, req *transactionProto.General
 	publishCtx, cancel := context.WithCancel(ctx) // Get context
 
 	if p2p.WorkingHost == nil { // Check no working host
-		p2p.WorkingHost, err = p2p.NewHost(ctx, 2056) // Set host
+		p2p.WorkingHost, err = p2p.NewHost(ctx, 2056, network) // Set host
 
 		if err != nil { // Check for errors
 			cancel() // Cancel
