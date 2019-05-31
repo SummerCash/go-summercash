@@ -8,6 +8,7 @@ import (
 	"errors"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/dowlandaiello/go-simplesub"
 	"github.com/libp2p/go-libp2p"
@@ -61,11 +62,15 @@ func NewHost(ctx context.Context, port int, network string) (*routed.RoutedHost,
 
 	common.Logf("== P2P == initialized host with ID: %s on listening port: %d with multiaddr: %s\n", host.ID().Pretty(), port, host.Addrs()[0].String()) // Log host
 
+	common.Logf("== P2P == bootstrapping DHT...\n") // Log bootstrap
+
 	dht, err := BootstrapDht(ctx, host) // Bootstrap DHT
 
 	if err != nil { // Check for errors
 		return &routed.RoutedHost{}, err // Return found error
 	}
+
+	common.Logf("== P2P == finished bootstrapping DHT\n") // Log bootstrap
 
 	routingDiscovery := discovery.NewRoutingDiscovery(dht) // Initialize routing discovery
 
@@ -92,13 +97,39 @@ func NewHost(ctx context.Context, port int, network string) (*routed.RoutedHost,
 
 		common.Logf("== P2P == discovered peer: %s\n", peer.ID.String()) // Log discovered peer
 
-		err = WorkingHost.Connect(ctx, peer) // Connect to discovered peer
+		startTime := time.Now() // Get start time
 
-		if err != nil { // Check for errors
-			continue // Continue to next peer
+		done := false // Init done buffer
+
+		var connectionErr error // Init error buffer
+
+		go func(done *bool) {
+			err = WorkingHost.Connect(ctx, peer) // Connect to discovered peer
+
+			if err != nil { // Check for errors
+				connectionErr = err // Write error
+
+				return // Continue to next peer
+			}
+
+			common.Logf("== P2P == connected to peer %s\n", peer.ID.String()) // Log connected peer
+
+			*done = true // Set done
+		}(&done) // Run
+
+		for !done { // Wait until done
+			if time.Now().Sub(startTime) > 10*time.Second { // Check for timeout
+				common.Logf("== P2P == peer %s timed out\n", peer) // Log timeout
+
+				break // Break
+			}
+
+			if connectionErr != nil { // Check for errors
+				common.Logf("== P2P == errored while connecting to peer %s: %s\n", peer, connectionErr.Error()) // Log error
+
+				break // Break
+			}
 		}
-
-		common.Logf("== P2P == connected to peer %s\n", peer.ID.String()) // Log connected peer
 	}
 
 	return WorkingHost, nil // Return working routed host
@@ -172,10 +203,40 @@ func BootstrapDht(ctx context.Context, host host.Host) (*dht.IpfsDHT, error) {
 			continue // Continue to next peer
 		}
 
-		err = host.Connect(ctx, *peerInfo) // Connect to discovered peer
+		startTime := time.Now() // Get start time
 
-		if err != nil { // Check for errors
-			continue // Continue to next peer
+		done := false // Init done buffer
+
+		var connectionErr error // Init error buffer
+
+		go func(done *bool) {
+			common.Logf("== P2P == connecting to bootstrap node at address %s\n", address.String()) // Log bootstrap connect
+
+			err = host.Connect(ctx, *peerInfo) // Connect to discovered peer
+
+			if err != nil { // Check for errors
+				connectionErr = err // Set error
+
+				return // Continue to next peer
+			}
+
+			common.Logf("== P2P == connected\n") // Log connect
+
+			*done = true // Set done
+		}(&done) // Run
+
+		for !done { // Wait until done
+			if time.Now().Sub(startTime) > 10*time.Second { // Wait 10 seconds
+				common.Logf("== P2P == peer %s timed out\n", addr) // Log timeout
+
+				break // Break
+			}
+
+			if connectionErr != nil { // Check for errors
+				common.Logf("== P2P == errored while connecting to peer %s: %s\n", addr, connectionErr.Error()) // Log error
+
+				break // Break
+			}
 		}
 	}
 
