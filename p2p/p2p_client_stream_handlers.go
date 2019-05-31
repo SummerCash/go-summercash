@@ -4,6 +4,7 @@ package p2p
 import (
 	"bufio"
 	"bytes"
+	"context"
 	"fmt"
 	"strings"
 
@@ -61,6 +62,18 @@ func (client *Client) HandleReceiveTransaction(stream inet.Stream) {
 
 	if err != nil { // Check for errors
 		common.Logf("== P2P == error while validating given tx read from pub_tx stream: %s\n", err.Error()) // Log error
+
+		return // Return
+	}
+
+	ctx, cancel := context.WithCancel(context.Background()) // Get cancel context
+
+	defer cancel() // Cancel
+
+	err = client.PublishTransaction(ctx, tx) // Publish tx
+
+	if err != nil { // Check for errors
+		common.Logf("== P2P == error while broadcasting given tx from pub_tx stream: %s\n", err.Error()) // Log error
 
 		return // Return
 	}
