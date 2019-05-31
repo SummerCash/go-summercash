@@ -97,6 +97,8 @@ func NewHost(ctx context.Context, port int, network string) (*routed.RoutedHost,
 		if err != nil { // Check for errors
 			continue // Continue to next peer
 		}
+
+		common.Logf("== P2P == connected to peer %s\n", peer.ID.String()) // Log connected peer
 	}
 
 	return WorkingHost, nil // Return working routed host
