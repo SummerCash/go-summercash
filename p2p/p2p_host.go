@@ -54,6 +54,7 @@ func NewHost(ctx context.Context, port int, network string) (*routed.RoutedHost,
 			"/ip6/::1/tcp/"+strconv.Itoa(port),
 		),
 		libp2p.Identity(*identity),
+		libp2p.DefaultTransports,
 	) // Initialize host
 
 	if err != nil { // Check for errors
