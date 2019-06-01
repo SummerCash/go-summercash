@@ -52,6 +52,8 @@ func NewHost(ctx context.Context, port int, network string) (*routed.RoutedHost,
 		libp2p.ListenAddrStrings(
 			"/ip4/0.0.0.0/tcp/"+strconv.Itoa(port),
 			"/ip6/::1/tcp/"+strconv.Itoa(port),
+			"/ip4/0.0.0.0/tcp/"+strconv.Itoa(port)+"/ws",
+			"/ip6/::1/tcp/"+strconv.Itoa(port)+"/ws",
 		),
 		libp2p.Identity(*identity),
 		libp2p.DefaultTransports,
