@@ -28,7 +28,7 @@ type ChainConfig struct {
 
 const (
 	// Version - dist version def
-	Version = "0.6.95"
+	Version = "0.7.0"
 )
 
 // NewChainConfig - generate new ChainConfig from genesis.json file

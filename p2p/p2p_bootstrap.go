@@ -23,8 +23,8 @@ var (
 	BootstrapNodes = []string{
 		"/ip4/108.41.124.60/tcp/3000/ipfs/Qmd9u7weuyGz7Ld3SdjrDuwtPKpTZ4AhJX7VookPkr7Gbw",
 		"/ip4/108.41.124.60/tcp/3003/ipfs/QmVnW4u7Ejmfazmnd72JWrB3B9RGydX3V63mAUg9c1Y8Hg",
-		"/ip4/174.129.191.246/tcp/3000/ipfs/QmUXThFht8qoZGdKLMVmr8Bk34VJ9oS3WWw3a25jeZucYd",
-		"/ip4/54.234.2.165/tcp/3000/ipfs/Qma3QTswnKK48gzsaVhzakPApY4kPuBGsZLS1i837gns2s",
+		// "/ip4/174.129.191.246/tcp/3000/ipfs/QmUXThFht8qoZGdKLMVmr8Bk34VJ9oS3WWw3a25jeZucYd",
+		// "/ip4/54.234.2.165/tcp/3000/ipfs/Qma3QTswnKK48gzsaVhzakPApY4kPuBGsZLS1i837gns2s",
 	}
 )
 
