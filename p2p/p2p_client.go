@@ -214,33 +214,33 @@ func (client *Client) SyncNetwork() error {
 
 			common.Logf("== P2P == starting tx sync with local best tx %s\n", localBestTransaction.Hash.String()) // Log sync up to
 
-			localBestRemoteTxInstance, err := chain.QueryTransaction(remoteBestTransaction) // Query remote on local chain
+			// localBestRemoteTxInstance, err := chain.QueryTransaction(remoteBestTransaction) // Query remote on local chain
 
-			if err == nil || bytes.Equal(remoteBestTransaction.Bytes(), common.NewHash(crypto.Sha3(nil)).Bytes()) { // Check has instance
-				common.Logf("== P2P == detected possible necessary rebroadcast for tx with hash %s\n", localBestTransaction.Hash.String()) // Log sync up to
+			// if err == nil || bytes.Equal(remoteBestTransaction.Bytes(), common.NewHash(crypto.Sha3(nil)).Bytes()) { // Check has instance
+			// 	common.Logf("== P2P == detected possible necessary rebroadcast for tx with hash %s\n", localBestTransaction.Hash.String()) // Log sync up to
 
-				if localBestRemoteTxInstance.Timestamp.Before(localBestTransaction.Timestamp) || bytes.Equal(remoteBestTransaction.Bytes(), common.NewHash(crypto.Sha3(nil)).Bytes()) { // Check needs re-broadcast
-					common.Logf("== P2P == rebroadcasting tx with hash %s\n", localBestTransaction.Hash.String()) // Log sync up to
+			// 	if localBestRemoteTxInstance.Timestamp.Before(localBestTransaction.Timestamp) || bytes.Equal(remoteBestTransaction.Bytes(), common.NewHash(crypto.Sha3(nil)).Bytes()) { // Check needs re-broadcast
+			// 		common.Logf("== P2P == rebroadcasting tx with hash %s\n", localBestTransaction.Hash.String()) // Log sync up to
 
-					rebroadcastCtx, cancel := context.WithCancel(context.Background()) // Get context
+			// 		rebroadcastCtx, cancel := context.WithCancel(context.Background()) // Get context
 
-					err = client.PublishTransaction(rebroadcastCtx, localBestTransaction) // Re-broadcast
+			// 		err = client.PublishTransaction(rebroadcastCtx, localBestTransaction) // Re-broadcast
 
-					if err != nil { // Check for errors
-						cancel() // Cancel
+			// 		if err != nil { // Check for errors
+			// 			cancel() // Cancel
 
-						return err // Return found error
-					}
+			// 			return err // Return found error
+			// 		}
 
-					cancel() // Cancel
+			// 		cancel() // Cancel
 
-					remoteBestTransaction, err = client.RequestBestTransaction(address, 16) // Request best tx
+			// 		remoteBestTransaction, err = client.RequestBestTransaction(address, 16) // Request best tx
 
-					if err != nil { // Check for errors
-						return err // Return found error
-					}
-				}
-			}
+			// 		if err != nil { // Check for errors
+			// 			return err // Return found error
+			// 		}
+			// 	}
+			// }
 		}
 
 		for !bytes.Equal(localBestTransaction.Hash.Bytes(), remoteBestTransaction.Bytes()) { // Do until synced up to remote best tx
