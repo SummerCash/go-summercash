@@ -57,6 +57,8 @@ func (client *Client) StartIntermittentSync(duration time.Duration) {
 func (client *Client) PublishTransaction(ctx context.Context, transaction *types.Transaction) error {
 	peers := client.Host.Network().Peers() // Get peers
 
+	x := 0 // Init x buffer
+
 	for _, currentPeer := range peers { // Iterate through peers
 		if currentPeer == (*client.Host).ID() { // Check not same node
 			continue // Continue
@@ -84,7 +86,17 @@ func (client *Client) PublishTransaction(ctx context.Context, transaction *types
 			common.Logf("== P2P == wrote tx to peer %s\n", peer.Pretty()) // Log stream init
 
 			writer.Flush() // Flush
+
+			x++ // Increment buffer
 		}(currentPeer) // Send
+	}
+
+	startTime := time.Now() // Get start time
+
+	for float64(x) < 0.51*float64(len(peers)) { // Ensure broadcasts to 51% of network
+		if time.Now().Sub(startTime) > 10*time.Second { // Check for timeout
+			return ErrTimedOut // Return error
+		}
 	}
 
 	return nil // No error occurred, return nil
