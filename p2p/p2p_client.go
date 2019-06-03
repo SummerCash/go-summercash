@@ -253,7 +253,7 @@ func (client *Client) SyncNetwork() error {
 			err = (*client.Validator).ValidateTransaction(localBestTransaction) // Validate tx
 
 			if err != nil { // Check for errors
-				return err // Return
+				continue // Continue
 			}
 
 			err = chain.AddTransaction(localBestTransaction) // Add transaction
