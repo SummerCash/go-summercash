@@ -10,13 +10,14 @@ import (
 	"strings"
 	"time"
 
+	commonGoP2P "github.com/dowlandaiello/GoP2P/common"
+	peer "github.com/libp2p/go-libp2p-peer"
 	protocol "github.com/libp2p/go-libp2p-protocol"
 	routed "github.com/libp2p/go-libp2p/p2p/host/routed"
-	commonGoP2P "github.com/dowlandaiello/GoP2P/common"
 
 	"github.com/SummerCash/go-summercash/accounts"
-	"github.com/SummerCash/go-summercash/crypto"
 	"github.com/SummerCash/go-summercash/common"
+	"github.com/SummerCash/go-summercash/crypto"
 	"github.com/SummerCash/go-summercash/types"
 	"github.com/SummerCash/go-summercash/validator"
 )
@@ -56,32 +57,34 @@ func (client *Client) StartIntermittentSync(duration time.Duration) {
 func (client *Client) PublishTransaction(ctx context.Context, transaction *types.Transaction) error {
 	peers := client.Host.Network().Peers() // Get peers
 
-	for _, peer := range peers { // Iterate through peers
-		if peer == (*client.Host).ID() { // Check not same node
+	for _, currentPeer := range peers { // Iterate through peers
+		if currentPeer == (*client.Host).ID() { // Check not same node
 			continue // Continue
 		}
 
-		common.Logf("== P2P == sending tx to peer with ID %s\n", peer.Pretty()) // Log send
+		go func(peer peer.ID) {
+			common.Logf("== P2P == sending tx to peer with ID %s\n", peer.Pretty()) // Log send
 
-		stream, err := (*client.Host).NewStream(ctx, peer, protocol.ID(GetStreamHeaderProtocolPath(client.Network, PublishTransaction))) // Connect
+			stream, err := (*client.Host).NewStream(ctx, peer, protocol.ID(GetStreamHeaderProtocolPath(client.Network, PublishTransaction))) // Connect
 
-		if err != nil { // Check for errors
-			continue // Continue
-		}
+			if err != nil { // Check for errors
+				return // Return
+			}
 
-		common.Logf("== P2P == stream to peer %s initialized\n", peer.Pretty()) // Log stream init
+			common.Logf("== P2P == stream to peer %s initialized\n", peer.Pretty()) // Log stream init
 
-		writer := bufio.NewWriter(stream) // Initialize writer
+			writer := bufio.NewWriter(stream) // Initialize writer
 
-		_, err = writer.Write(append(transaction.Bytes(), '\r')) // Write message
+			_, err = writer.Write(append(transaction.Bytes(), '\r')) // Write message
 
-		if err != nil { // Check for errors
-			continue // Continue
-		}
+			if err != nil { // Check for errors
+				return // Return
+			}
 
-		common.Logf("== P2P == wrote tx to peer %s\n", peer.Pretty()) // Log stream init
+			common.Logf("== P2P == wrote tx to peer %s\n", peer.Pretty()) // Log stream init
 
-		writer.Flush() // Flush
+			writer.Flush() // Flush
+		}(currentPeer) // Send
 	}
 
 	return nil // No error occurred, return nil
