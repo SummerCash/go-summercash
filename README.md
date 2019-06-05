@@ -6,6 +6,7 @@ Go implementation of the SummerCash protocol.
 [![Go Report Card](https://goreportcard.com/badge/github.com/summercash/go-summercash)](https://goreportcard.com/report/github.com/summercash/go-summercash)
 [![Build Status](https://travis-ci.com/SummerCash/go-summercash.svg?branch=master)](https://travis-ci.com/SummerCash/go-summercash)
 [![Gluten Status](https://img.shields.io/badge/gluten-free-brightgreen.svg)](https://img.shields.io/badge/gluten-free-brightgreen.svg)
+[![Subreddit](https://img.shields.io/badge/sub-reddit-orange.svg)](https://reddit.com/r/summercash)
 
 ## Installation
 
