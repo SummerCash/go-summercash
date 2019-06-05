@@ -312,9 +312,9 @@ func handleTransaction(transactionClient *transactionProto.Transaction, methodna
 			return errors.New("invalid parameters (require string, string, float64, []byte)") // Return error
 		}
 
-		intVal, _ := strconv.Atoi(params[2]) // Get int val
+		floatVal, _ := strconv.ParseFloat(params[2], 64) // Parse float
 
-		reflectParams = append(reflectParams, reflect.ValueOf(&transactionProto.GeneralRequest{Address: params[0], Address2: params[1], Amount: float64(intVal), Payload: []byte(params[3])})) // Append params
+		reflectParams = append(reflectParams, reflect.ValueOf(&transactionProto.GeneralRequest{Address: params[0], Address2: params[1], Amount: floatVal, Payload: []byte(params[3])})) // Append params
 	case "TransactionFromBytes":
 		if len(params) != 1 { // Check for invalid parameters
 			return errors.New("invalid parameters (require []byte)") // Return error
