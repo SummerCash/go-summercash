@@ -100,6 +100,12 @@ type StringTransaction struct {
 
 // NewTransaction - attempt to initialize transaction primitive
 func NewTransaction(nonce uint64, parentTx *Transaction, sender *common.Address, destination *common.Address, amount *big.Float, payload []byte) (*Transaction, error) {
+	parentHash := &common.Hash{} // Init hash buffer
+
+	if parentTx != nil { // Check has parent
+		parentHash = parentTx.Hash // Set parent hash
+	}
+
 	transaction := Transaction{ // Init tx
 		AccountNonce:     nonce,            // Set nonce
 		HashNonce:        0,                // Set hash nonce
@@ -107,7 +113,7 @@ func NewTransaction(nonce uint64, parentTx *Transaction, sender *common.Address,
 		Recipient:        destination,      // Set recipient
 		Amount:           amount,           // Set amount
 		Payload:          payload,          // Set tx payload
-		ParentTx:         parentTx.Hash,    // Set parent
+		ParentTx:         parentHash,       // Set parent
 		Timestamp:        time.Now().UTC(), // Set timestamp
 		ContractCreation: false,            // Set should init contract
 	}
