@@ -381,12 +381,18 @@ func (transaction *Transaction) String() string {
 
 	var senderHex, recipientHex string // Init hex buffer
 
+	parent := "" // Init parent buffer
+
 	if transaction.Sender != nil { // Check has sender
 		senderHex = transaction.Sender.String() // Set string
 	}
 
 	if transaction.Recipient != nil { // Check has recipient
 		recipientHex = transaction.Recipient.String() // Set string
+	}
+
+	if transaction.ParentTx != nil { // Check has parent
+		parent = transaction.ParentTx.String() // Set parent
 	}
 
 	stringTransaction := &StringTransaction{
@@ -396,7 +402,7 @@ func (transaction *Transaction) String() string {
 		Amount:                  floatVal,                                           // Set amount
 		Payload:                 transaction.Payload,                                // Set payload
 		Signature:               transaction.Signature,                              // Set signature
-		ParentTx:                transaction.ParentTx.String(),                      // Set parent
+		ParentTx:                parent,                                             // Set parent
 		Timestamp:               transaction.Timestamp.Format("01/02/2006 3:04 PM"), // Set timestamp
 		DeployedContractAddress: transaction.DeployedContractAddress,                // Set deployed contract address
 		ContractCreation:        transaction.ContractCreation,                       // Set is contract creation
