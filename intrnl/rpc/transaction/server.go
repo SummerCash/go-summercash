@@ -119,32 +119,34 @@ func (server *Server) Publish(ctx context.Context, req *transactionProto.General
 
 	err = validator.ValidateTransaction(transaction) // Validate transaction
 
-	if err != nil { // Check for errors
+	if err != nil && err.Error() != "transaction already exists in the working chain (duplicate)" { // Check for errors
 		return &transactionProto.GeneralResponse{}, err // Return found error
 	}
 
-	chain, err := types.ReadChainFromMemory(*transaction.Sender) // Read sender chain
+	if err == nil { // Check no errors
+		chain, err := types.ReadChainFromMemory(*transaction.Sender) // Read sender chain
 
-	if err != nil { // Check for errors
-		return &transactionProto.GeneralResponse{}, err // Return found error
-	}
+		if err != nil { // Check for errors
+			return &transactionProto.GeneralResponse{}, err // Return found error
+		}
 
-	err = chain.AddTransaction(transaction) // Add transaction to sender chain
+		err = chain.AddTransaction(transaction) // Add transaction to sender chain
 
-	if err != nil { // Check for errors
-		return &transactionProto.GeneralResponse{}, err // Return found error
-	}
+		if err != nil { // Check for errors
+			return &transactionProto.GeneralResponse{}, err // Return found error
+		}
 
-	chain, err = types.ReadChainFromMemory(*transaction.Recipient) // Read recipient chain
+		chain, err = types.ReadChainFromMemory(*transaction.Recipient) // Read recipient chain
 
-	if err != nil { // Check for errors
-		return &transactionProto.GeneralResponse{}, err // Return found error
-	}
+		if err != nil { // Check for errors
+			return &transactionProto.GeneralResponse{}, err // Return found error
+		}
 
-	err = chain.AddTransaction(transaction) // Add transaction to recipient chain
+		err = chain.AddTransaction(transaction) // Add transaction to recipient chain
 
-	if err != nil { // Check for errors
-		return &transactionProto.GeneralResponse{}, err // Return found error
+		if err != nil { // Check for errors
+			return &transactionProto.GeneralResponse{}, err // Return found error
+		}
 	}
 
 	publishCtx, cancel := context.WithCancel(ctx) // Get context
