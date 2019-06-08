@@ -53,6 +53,28 @@ func (leaf *Leaf) GetOnlyChild() (*Leaf, error) {
 	return leaf.Children[0], nil // Return child
 }
 
+// GetNextCommonLeaf implements the functionality of the DAG
+// GetNextCommonLeaf method.
+func (leaf *Leaf) GetNextCommonLeaf() (*Leaf, error) {
+	if child, err := leaf.GetOnlyChild(); err == nil { // Check has child
+		return child, nil // Return child
+	}
+
+	for i, child := range leaf.Children { // Iterate through children
+		commonLeaf, err := child.GetNextCommonLeaf() // Get next common leaf
+
+		if err != nil && i == len(leaf.Children)-1 { // Check for errors
+			return &Leaf{}, err // Return found error
+		}
+
+		if commonLeaf != nil { // Check has leaf
+			return commonLeaf, nil // Return common leaf
+		}
+	}
+
+	return &Leaf{}, ErrNoCommonLeaf // Return error
+}
+
 /*
 	END HELPER METHODS
 */

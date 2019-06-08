@@ -47,27 +47,7 @@ func (dag *Dag) QueryTransactionWithHash(hash common.Hash) (*types.Transaction, 
 // A common leaf is defined as a leaf that has no siblings.
 // If no common leaf exists, an error is returned.
 func (dag *Dag) GetNextCommonLeaf(lastCommonLeaf *Leaf) (*Leaf, error) {
-	lastLeaf := lastCommonLeaf // Get last leaf
-
-	x := 0 // Init child buffer
-
-	for {
-		if lastLeaf.IsOnlyChild() { // Check is only child
-			return lastLeaf, nil // Return found common leaf
-		}
-
-		if child, err := lastLeaf.GetOnlyChild(); err == nil { // Check has child
-			return child, nil // Return child
-		}
-
-		x++ // Increment
-
-		if x == len(lastLeaf.Parents[0].Children) { // Check has gone through all children
-			
-		}
-
-		lastLeaf = lastLeaf.Parents[0].Children[x] // Set last leaf
-	}
+	return lastCommonLeaf.GetNextCommonLeaf() // Get next common leaf
 }
 
 /*
