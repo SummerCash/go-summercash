@@ -16,6 +16,9 @@ var (
 	// ErrNoMatchingLeaf represents an error describing a request for a child with a particular hash--that of which
 	// is nonexistent.
 	ErrNoMatchingLeaf = errors.New("no matching leaf")
+
+	// ErrNilLeafContents represents an error describing a leaf value of nil.
+	ErrNilLeafContents = errors.New("nil leaf contents")
 )
 
 // Leaf defines a leaf in the go-summercash DAG.
@@ -29,6 +32,17 @@ type Leaf struct {
 }
 
 /* BEGIN EXPORTED METHODS */
+
+// NewLeaf initializes a new leaf with the given transaction.
+func NewLeaf(transaction *types.Transaction) (*Leaf, error) {
+	if transaction == nil { // CHeck for nil transaction
+		return &Leaf{}, ErrNilLeafContents // Return error
+	}
+
+	return &Leaf{
+		Transaction: transaction,
+	}, nil // Return leaf
+}
 
 /*
 	BEGIN HELPER METHODS
