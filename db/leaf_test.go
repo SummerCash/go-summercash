@@ -77,7 +77,7 @@ func TestIsOnlyChild(t *testing.T) {
 		t.Fatal(err) // Panic
 	}
 
-	isOnlyChild := leaf.IsOnlyChild() { // Check is only child
+	if leaf.IsOnlyChild() { // Check is only child
 		t.Fatal("should not be only child") // Panic
 	}
 }
