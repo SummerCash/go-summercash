@@ -71,13 +71,29 @@ func TestIsOnlyChild(t *testing.T) {
 		t.FailNow()  // Panic
 	}
 
-	leaf, err := NewLeaf(transaction) // Initialize leaf
+	root, err := NewLeaf(transaction) // Initialize leaf
 
 	if err != nil { // Check for errors
 		t.Fatal(err) // Panic
 	}
 
-	if leaf.IsOnlyChild() { // Check is only child
+	if !root.IsOnlyChild() { // Check is only child
+		t.Fatal("should be only child") // Panic
+	}
+
+	for i := 0; i < 3; i++ { // Add children
+		leaf, err := NewLeaf(transaction) // Initialize leaf
+
+		if err != nil { // Check for errors
+			t.Fatal(err) // Panic
+		}
+
+		leaf.Parents = append(leaf.Parents, root) // Append root to parents
+
+		root.Children = append(root.Children, leaf) // Append leaf to root children
+	}
+
+	if root.Children[0].IsOnlyChild() { // Check is only child
 		t.Fatal("should not be only child") // Panic
 	}
 }
