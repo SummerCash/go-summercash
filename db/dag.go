@@ -21,9 +21,32 @@ type Dag struct {
 
 /* BEGIN EXPORTED METHODS */
 
+// NewDag initializes a new dag.
+func NewDag() *Dag {
+	return &Dag{} // Return dag
+}
+
+// NewDagWithRoot initializes a new dag from a given root.
+func NewDagWithRoot(root *Leaf) *Dag {
+	return &Dag{
+		Root: root, // Set root
+	} // Return dag
+}
+
 /*
 	BEGIN HELPER METHODS
 */
+
+// BEGIN LEAF HELPERS
+
+// AddLeaf adds a given leaf to the working dag
+func (dag *Dag) AddLeaf(leaf *Leaf) error {
+
+}
+
+// END LEAF HELPERS
+
+// BEGIN QUERY HELPERS
 
 // QueryTransactionWithHash queries the dag for a transaction with the corresponding hash.
 func (dag *Dag) QueryTransactionWithHash(hash common.Hash) (*types.Transaction, error) {
@@ -42,6 +65,8 @@ func (dag *Dag) QueryTransactionWithHash(hash common.Hash) (*types.Transaction, 
 func (dag *Dag) QueryNextCommonLeaf(lastCommonLeaf *Leaf) (*Leaf, error) {
 	return lastCommonLeaf.GetNextCommonLeaf() // Get next common leaf
 }
+
+// END QUERY HELPERS
 
 /*
 	END HELPER METHODS
