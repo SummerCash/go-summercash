@@ -2,6 +2,7 @@
 package db
 
 import (
+	"bytes"
 	"errors"
 
 	"github.com/SummerCash/go-summercash/common"
@@ -11,6 +12,10 @@ import (
 var (
 	// ErrNoOnlyChild represents an error describing a request for an only child where the leaf has multiple or no children.
 	ErrNoOnlyChild = errors.New("leaf has no only child")
+
+	// ErrNoMatchingLeaf represents an error describing a request for a child with a particular hash--that of which
+	// is nonexistent.
+	ErrNoMatchingLeaf = errors.New("no matching leaf")
 )
 
 // Leaf defines a leaf in the go-summercash DAG.
@@ -53,8 +58,43 @@ func (leaf *Leaf) GetOnlyChild() (*Leaf, error) {
 	return leaf.Children[0], nil // Return child
 }
 
+// GetChildByHash queries the leaf's children for a particular hash.
+// If the hash does not exist, an error is returned.
+func (leaf *Leaf) GetChildByHash(hash common.Hash) (*Leaf, error) {
+	if child, err := leaf.GetDirectChildByHash(hash); err == nil { // Check has child
+		return child, nil // Return child
+	}
+
+	for i, child := range leaf.Children { // Iterate through children
+		match, err := child.GetChildByHash(hash) // Get child
+
+		if err != nil && i == len(leaf.Children)-1 { // Check for errors
+			return &Leaf{}, err // Return found error
+		}
+
+		if match != nil { // Check for match
+			return match, nil // Return match
+		}
+	}
+
+	return &Leaf{}, ErrNoMatchingLeaf // Return error
+}
+
+// GetDirectChildByHash searches the set of immediate children for the
+// given hash. If no child exists with the corresponding hash, an
+// error is returned.
+func (leaf *Leaf) GetDirectChildByHash(hash common.Hash) (*Leaf, error) {
+	for _, child := range leaf.Children { // Iterate through children
+		if bytes.Equal(child.Hash[:], hash[:]) { // Check for match
+			return child, nil // Return child
+		}
+	}
+
+	return &Leaf{}, ErrNoMatchingLeaf // Return error
+}
+
 // GetNextCommonLeaf implements the functionality of the DAG
-// GetNextCommonLeaf method.
+// QueryNextCommonLeaf method.
 func (leaf *Leaf) GetNextCommonLeaf() (*Leaf, error) {
 	if child, err := leaf.GetOnlyChild(); err == nil { // Check has child
 		return child, nil // Return child

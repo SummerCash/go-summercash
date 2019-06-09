@@ -2,7 +2,6 @@
 package db
 
 import (
-	"bytes"
 	"errors"
 
 	"github.com/SummerCash/go-summercash/common"
@@ -28,25 +27,19 @@ type Dag struct {
 
 // QueryTransactionWithHash queries the dag for a transaction with the corresponding hash.
 func (dag *Dag) QueryTransactionWithHash(hash common.Hash) (*types.Transaction, error) {
-	lastLeaf := dag.Root // Get first leaf (root leaf)
+	leaf, err := dag.Root.GetChildByHash(hash) // Get child
 
-	for { // Wait for match
-		if bytes.Equal(lastLeaf.Hash[:], hash[:]) { // Check matching hash
-			return lastLeaf.Transaction, nil // Return match
-		}
-
-		for _, child := range lastLeaf.Children { // Iterate through children
-			if bytes.Equal(child.Hash[:], hash[:]) { // Check matching hash
-				return child.Transaction, nil // Return match
-			}
-		}
+	if err != nil { // Check for errors
+		return &types.Transaction{}, err // Return found error
 	}
+
+	return leaf.Transaction, nil // Return transaction
 }
 
-// GetNextCommonLeaf attempts to find the next common leaf in the dag.
+// QueryNextCommonLeaf attempts to find the next common leaf in the dag.
 // A common leaf is defined as a leaf that has no siblings.
 // If no common leaf exists, an error is returned.
-func (dag *Dag) GetNextCommonLeaf(lastCommonLeaf *Leaf) (*Leaf, error) {
+func (dag *Dag) QueryNextCommonLeaf(lastCommonLeaf *Leaf) (*Leaf, error) {
 	return lastCommonLeaf.GetNextCommonLeaf() // Get next common leaf
 }
 
