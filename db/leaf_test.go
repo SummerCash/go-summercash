@@ -266,6 +266,16 @@ func TestGetNextCommonLeaf(t *testing.T) {
 		child.Children = append(child.Children, newChild) // Append child to root
 	}
 
+	secondChild, err := NewLeaf(newTransaction) // Initialize leaf
+
+	if err != nil { // Check for errors
+		t.Fatal(err) // Panic
+	}
+
+	secondChild.Parents = append(secondChild.Parents, newChild) // Append second child as parent
+
+	newChild.Children = append(newChild.Children, secondChild) // Append second child
+
 	foundChild, err := root.GetNextCommonLeaf() // Get common leaf
 
 	if err != nil { // Check for errors
