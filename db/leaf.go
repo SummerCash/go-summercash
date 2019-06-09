@@ -35,12 +35,13 @@ type Leaf struct {
 
 // NewLeaf initializes a new leaf with the given transaction.
 func NewLeaf(transaction *types.Transaction) (*Leaf, error) {
-	if transaction == nil { // CHeck for nil transaction
+	if transaction == nil || transaction.Hash == nil { // CHeck for nil transaction
 		return &Leaf{}, ErrNilLeafContents // Return error
 	}
 
 	return &Leaf{
 		Transaction: transaction,
+		Hash:        *transaction.Hash,
 	}, nil // Return leaf
 }
 
