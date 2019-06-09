@@ -5,7 +5,6 @@ import (
 	"crypto/ecdsa"
 	"crypto/elliptic"
 	"crypto/rand"
-	"fmt"
 	"math/big"
 	"testing"
 
@@ -20,22 +19,19 @@ func TestNewLeaf(t *testing.T) {
 	privateKey, err := ecdsa.GenerateKey(elliptic.P521(), rand.Reader) // Generate private key
 
 	if err != nil { // Check for errors
-		t.Error(err) // Log found error
-		t.FailNow()  // Panic
+		t.Fatal(err) // Panic
 	}
 
 	sender, err := common.NewAddress(privateKey) // Initialize address from private key
 
 	if err != nil { // Check for errors
-		t.Error(err) // Log found error
-		t.FailNow()  // Panic
+		t.Fatal(err) // Panic
 	}
 
 	transaction, err := types.NewTransaction(0, nil, &sender, &sender, big.NewFloat(0), []byte("test")) // Initialize transaction
 
 	if err != nil { // Check for errors
-		t.Error(err) // Log found error
-		t.FailNow()  // Panic
+		t.Fatal(err) // Panic
 	}
 
 	leaf, err := NewLeaf(transaction) // Initialize leaf
@@ -54,22 +50,19 @@ func TestIsOnlyChild(t *testing.T) {
 	privateKey, err := ecdsa.GenerateKey(elliptic.P521(), rand.Reader) // Generate private key
 
 	if err != nil { // Check for errors
-		t.Error(err) // Log found error
-		t.FailNow()  // Panic
+		t.Fatal(err) // Panic
 	}
 
 	sender, err := common.NewAddress(privateKey) // Initialize address from private key
 
 	if err != nil { // Check for errors
-		t.Error(err) // Log found error
-		t.FailNow()  // Panic
+		t.Fatal(err) // Panic
 	}
 
 	transaction, err := types.NewTransaction(0, nil, &sender, &sender, big.NewFloat(0), []byte("test")) // Initialize transaction
 
 	if err != nil { // Check for errors
-		t.Error(err) // Log found error
-		t.FailNow()  // Panic
+		t.Fatal(err) // Panic
 	}
 
 	root, err := NewLeaf(transaction) // Initialize leaf
@@ -104,22 +97,19 @@ func TestGetOnlyChild(t *testing.T) {
 	privateKey, err := ecdsa.GenerateKey(elliptic.P521(), rand.Reader) // Generate private key
 
 	if err != nil { // Check for errors
-		t.Error(err) // Log found error
-		t.FailNow()  // Panic
+		t.Fatal(err) // Panic
 	}
 
 	sender, err := common.NewAddress(privateKey) // Initialize address from private key
 
 	if err != nil { // Check for errors
-		t.Error(err) // Log found error
-		t.FailNow()  // Panic
+		t.Fatal(err) // Panic
 	}
 
 	transaction, err := types.NewTransaction(0, nil, &sender, &sender, big.NewFloat(0), []byte("test")) // Initialize transaction
 
 	if err != nil { // Check for errors
-		t.Error(err) // Log found error
-		t.FailNow()  // Panic
+		t.Fatal(err) // Panic
 	}
 
 	root, err := NewLeaf(transaction) // Initialize leaf
@@ -154,22 +144,19 @@ func TestGetChildByHash(t *testing.T) {
 	privateKey, err := ecdsa.GenerateKey(elliptic.P521(), rand.Reader) // Generate private key
 
 	if err != nil { // Check for errors
-		t.Error(err) // Log found error
-		t.FailNow()  // Panic
+		t.Fatal(err) // Panic
 	}
 
 	sender, err := common.NewAddress(privateKey) // Initialize address from private key
 
 	if err != nil { // Check for errors
-		t.Error(err) // Log found error
-		t.FailNow()  // Panic
+		t.Fatal(err) // Panic
 	}
 
 	transaction, err := types.NewTransaction(0, nil, &sender, &sender, big.NewFloat(0), []byte("test")) // Initialize transaction
 
 	if err != nil { // Check for errors
-		t.Error(err) // Log found error
-		t.FailNow()  // Panic
+		t.Fatal(err) // Panic
 	}
 
 	root, err := NewLeaf(transaction) // Initialize leaf
@@ -182,8 +169,7 @@ func TestGetChildByHash(t *testing.T) {
 		transaction, err := types.NewTransaction(uint64(i+1), nil, &sender, &sender, big.NewFloat(0), []byte("test")) // Initialize transaction
 
 		if err != nil { // Check for errors
-			t.Error(err) // Log found error
-			t.FailNow()  // Panic
+			t.Fatal(err) // Panic
 		}
 
 		child, err := NewLeaf(transaction) // Initialize leaf
@@ -203,10 +189,91 @@ func TestGetChildByHash(t *testing.T) {
 		}
 
 		if foundChild != child { // Check not same child
-			fmt.Println(*foundChild)
-			fmt.Println(*child)
 			t.Fatal("child by hash query should lead to same child") // Panic
 		}
+	}
+}
+
+// TestGetNextCommonLeaf tests the functionality of the GetNextCommonLeaf helper method.
+func TestGetNextCommonLeaf(t *testing.T) {
+	privateKey, err := ecdsa.GenerateKey(elliptic.P521(), rand.Reader) // Generate private key
+
+	if err != nil { // Check for errors
+		t.Fatal(err) // Panic
+	}
+
+	sender, err := common.NewAddress(privateKey) // Initialize address from private key
+
+	if err != nil { // Check for errors
+		t.Fatal(err) // Panic
+	}
+
+	transaction, err := types.NewTransaction(0, nil, &sender, &sender, big.NewFloat(0), []byte("test")) // Initialize transaction
+
+	if err != nil { // Check for errors
+		t.Fatal(err) // Panic
+	}
+
+	root, err := NewLeaf(transaction) // Initialize leaf
+
+	if err != nil { // Check for errors
+		t.Fatal(err) // Panic
+	}
+
+	for i := 0; i < 3; i++ { // Add children
+		transaction, err := types.NewTransaction(uint64(i+1), nil, &sender, &sender, big.NewFloat(0), []byte("test")) // Initialize transaction
+
+		if err != nil { // Check for errors
+			t.Fatal(err) // Panic
+		}
+
+		child, err := NewLeaf(transaction) // Initialize leaf
+
+		if err != nil { // Check for errors
+			t.Fatal(err) // Panic
+		}
+
+		child.Parents = append(child.Parents, root) // Append root as parent
+
+		root.Children = append(root.Children, child) // Append child to root
+
+		foundChild, err := root.GetChildByHash(child.Hash) // Get child by hash
+
+		if err != nil { // Check for errors
+			t.Fatal(err) // Panic
+		}
+
+		if foundChild != child { // Check not same child
+			t.Fatal("child by hash query should lead to same child") // Panic
+		}
+	}
+
+	newTransaction, err := types.NewTransaction(4, nil, &sender, &sender, big.NewFloat(0), []byte("test")) // Initialize transaction
+
+	if err != nil { // Check for errors
+		t.Fatal(err) // Panic
+	}
+
+	newChild, err := NewLeaf(newTransaction) // Initialize leaf
+
+	if err != nil { // Check for errors
+		t.Fatal(err) // Panic
+	}
+
+	for _, child := range root.Children { // Iterate through future parents
+		newChild.Parents = append(newChild.Parents, child) // Append child as parent
+
+		child.Children = append(child.Children, newChild) // Append child to root
+	}
+
+	foundChild, err := root.GetNextCommonLeaf() // Get common leaf
+
+	if err != nil { // Check for errors
+		t.Fatal(err) // panic
+	}
+
+	if foundChild != newChild { // Check not same child
+		t.Fatal("common child should be last new child") // Panic
 	}
 }
 
