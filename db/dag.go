@@ -2,6 +2,7 @@
 package db
 
 import (
+	"bytes"
 	"errors"
 
 	"github.com/SummerCash/go-summercash/common"
@@ -11,6 +12,12 @@ import (
 var (
 	// ErrNoCommonLeaf defines an error describing a lack of common leaves.
 	ErrNoCommonLeaf = errors.New("no common leaf exists")
+
+	// ErrNoParents defines an error describing a lack of parent leaves.
+	ErrNoParents = errors.New("leaf has no parents")
+
+	// ErrDuplicateLeaf defines an error describing a duplicate dag leaf.
+	ErrDuplicateLeaf = errors.New("leaf already exists in dag")
 )
 
 // Dag implements the standard directed acyclic
@@ -41,7 +48,27 @@ func NewDagWithRoot(root *Leaf) *Dag {
 
 // AddLeaf adds a given leaf to the working dag
 func (dag *Dag) AddLeaf(leaf *Leaf) error {
+	if dag.Root == nil && len(leaf.Parents) == 0 { // Check no root
+		dag.Root = leaf // Set root
 
+		return nil // Return
+	}
+
+	if len(leaf.Parents) == 0 { // Check no parents
+		return ErrNoParents // Return error
+	}
+
+	for _, parent := range leaf.Parents { // Iterate through leaf parents
+		for _, child := range parent.Children { // Iterate through children
+			if bytes.Equal(child.Hash[:], leaf.Hash[:]) { // Check equal hashes
+				return ErrDuplicateLeaf // Return error
+			}
+		}
+
+		parent.Children = append(parent.Children, leaf) // Append child
+	}
+
+	return nil // Return
 }
 
 // END LEAF HELPERS
@@ -57,6 +84,11 @@ func (dag *Dag) QueryTransactionWithHash(hash common.Hash) (*types.Transaction, 
 	}
 
 	return leaf.Transaction, nil // Return transaction
+}
+
+// QueryLeafWithHash queries the dag for a leaf with the corresponding hash.
+func (dag *Dag) QueryLeafWithHash(hash common.Hash) (*Leaf, error) {
+	return dag.Root.GetChildByHash(hash) // Return leaf
 }
 
 // QueryNextCommonLeaf attempts to find the next common leaf in the dag.
