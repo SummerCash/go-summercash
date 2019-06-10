@@ -44,8 +44,7 @@ func handleConnection(conn net.Conn, isArchival bool) error {
 	common.Logf("== CONNECTION == incoming connection from peer %s\n", conn.RemoteAddr().String()) // Log conn
 
 	data, err := common.ReadConnectionWaitAsyncNoTLS(conn) // Read data
-
-	if err != nil { // Check for errors
+	if err != nil {                                        // Check for errors
 		return err // Return error
 	}
 
@@ -70,8 +69,7 @@ func handleConnection(conn net.Conn, isArchival bool) error {
 		common.Logf("== NETWORK == received chain request from peer %s\n", conn.RemoteAddr().String()) // Log request
 
 		chain, err := types.HandleReceivedChainRequest(data) // Handle received chain request
-
-		if err != nil { // Check for errors
+		if err != nil {                                      // Check for errors
 			common.Logf("== ERROR == error handling chain request from peer %s %s\n", conn.RemoteAddr().String(), err.Error()) // Log request
 
 			return err // Return found error
@@ -112,8 +110,7 @@ func handleConnection(conn net.Conn, isArchival bool) error {
 		common.Logf("== NETWORK == received coordination chain request from peer %s\n", conn.RemoteAddr().String()) // Log request
 
 		chainBytes, err := types.HandleReceivedCoordinationChainRequest() // Handle chain request
-
-		if err != nil { // Check for errors
+		if err != nil {                                                   // Check for errors
 			common.Logf("== ERROR == error handling coordination chain request from peer %s %s\n", conn.RemoteAddr().String(), err.Error()) // Log request
 
 			return err // Return found error
@@ -132,8 +129,7 @@ func handleConnection(conn net.Conn, isArchival bool) error {
 		common.Logf("== NETWORK == received chain config request from peer %s\n", conn.RemoteAddr().String()) // Log request
 
 		configBytes, err := config.HandleReceivedConfigRequest() // Handle config request
-
-		if err != nil { // Check for errors
+		if err != nil {                                          // Check for errors
 			common.Logf("== ERROR == error handling chain config request from peer %s %s\n", conn.RemoteAddr().String(), err.Error()) // Log request
 
 			return err // Return found error
@@ -152,8 +148,7 @@ func handleConnection(conn net.Conn, isArchival bool) error {
 		common.Logf("== NETWORK == received state request from peer %s\n", conn.RemoteAddr().String()) // Log request
 
 		state, err := types.HandleReceivedStateRequest(data) // Handle received state request
-
-		if err != nil { // Check for errors
+		if err != nil {                                      // Check for errors
 			common.Logf("== ERROR == error handling state request from peer %s %s\n", conn.RemoteAddr().String(), err.Error()) // Log request
 
 			return err // Return found error

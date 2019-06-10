@@ -12,14 +12,12 @@ import (
 // WriteToMemory - write given coordination chain to memory
 func (coordinationChain *CoordinationChain) WriteToMemory() error {
 	err := common.CreateDirIfDoesNotExist(fmt.Sprintf("%s/db/coordination_chain", common.DataDir)) // Create dir if necessary
-
-	if err != nil { // Check for errors
+	if err != nil {                                                                                // Check for errors
 		return err // Return error
 	}
 
 	json, err := json.MarshalIndent(*coordinationChain, "", "  ") // Marshal coordination chain
-
-	if err != nil { // Check for errors
+	if err != nil {                                               // Check for errors
 		return err // Return error
 	}
 
@@ -37,8 +35,7 @@ func ReadCoordinationChainFromMemory() (*CoordinationChain, error) {
 	coordinationChain := &CoordinationChain{} // Init buffer
 
 	data, err := ioutil.ReadFile(filepath.FromSlash(fmt.Sprintf("%s/db/coordination_chain/chain.json", common.DataDir))) // Read file
-
-	if err != nil { // Check for errors
+	if err != nil {                                                                                                      // Check for errors
 		return &CoordinationChain{}, err // Return error
 	}
 

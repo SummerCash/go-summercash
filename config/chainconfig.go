@@ -26,16 +26,13 @@ type ChainConfig struct {
 	ChainVersion string      `json:"version"` // Network version
 }
 
-const (
-	// Version - dist version def
-	Version = "0.7.3"
-)
+// Version - dist version def
+const Version = "0.7.3"
 
 // NewChainConfig - generate new ChainConfig from genesis.json file
 func NewChainConfig(genesisFilePath string) (*ChainConfig, error) {
 	rawJSON, err := ioutil.ReadFile(genesisFilePath) // Read genesis file
-
-	if err != nil { // Check for errors
+	if err != nil {                                  // Check for errors
 		return &ChainConfig{}, err // Return error
 	}
 
@@ -57,8 +54,7 @@ func NewChainConfig(genesisFilePath string) (*ChainConfig, error) {
 		floatVal, _, _ := big.ParseFloat(value.(map[string]interface{})["balance"].(string), 10, 350, big.ToNearestEven) // Parse float
 
 		address, err := common.StringToAddress(key) // Get address value
-
-		if err != nil { // Check for errors
+		if err != nil {                             // Check for errors
 			return &ChainConfig{}, err // Return error
 		}
 
@@ -106,8 +102,7 @@ func FromBytes(b []byte) (*ChainConfig, error) {
 	buffer := &ChainConfig{} // Initialize buffer
 
 	err := json.Unmarshal(b, buffer) // Read json into buffer
-
-	if err != nil { // Check for errors
+	if err != nil {                  // Check for errors
 		return &ChainConfig{}, err // Return error
 	}
 
@@ -124,8 +119,7 @@ func (chainConfig *ChainConfig) String() string {
 // WriteToMemory - write given chainConfig to memory
 func (chainConfig *ChainConfig) WriteToMemory() error {
 	json, err := json.MarshalIndent(*chainConfig, "", "  ") // Marshal config
-
-	if err != nil { // Check for errors
+	if err != nil {                                         // Check for errors
 		return err // Return error
 	}
 
@@ -147,8 +141,7 @@ func (chainConfig *ChainConfig) WriteToMemory() error {
 // ReadChainConfigFromMemory - read chain configuration from chain config json file
 func ReadChainConfigFromMemory() (*ChainConfig, error) {
 	data, err := ioutil.ReadFile(filepath.FromSlash(fmt.Sprintf("%s/config/config.json", common.DataDir))) // Read file
-
-	if err != nil { // Check for errors
+	if err != nil {                                                                                        // Check for errors
 		return &ChainConfig{}, err // Return error
 	}
 

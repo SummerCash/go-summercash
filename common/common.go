@@ -67,7 +67,7 @@ var (
 	}
 
 	// GasPolicy - global gas policy
-	GasPolicy = &compiler.SimpleGasPolicy{ //TODO: better gas policy
+	GasPolicy = &compiler.SimpleGasPolicy{ // TODO: better gas policy
 		GasPerInstruction: 1,
 	}
 )
@@ -194,8 +194,7 @@ func GenerateTLSCertificates(namePrefix string) error {
 
 	if os.IsNotExist(certErr) || os.IsNotExist(keyErr) { // Check for does not exist error
 		privateKey, err := generateTLSKey(namePrefix) // Generate key
-
-		if err != nil { // Check for errors
+		if err != nil {                               // Check for errors
 			return err // Return found error
 		}
 
@@ -239,14 +238,12 @@ func Forever() {
 // generateTLSKey - generates necessary TLS key
 func generateTLSKey(namePrefix string) (*ecdsa.PrivateKey, error) {
 	privateKey, err := ecdsa.GenerateKey(elliptic.P256(), rand.Reader) // Generate private key
-
-	if err != nil { // Check for errors
+	if err != nil {                                                    // Check for errors
 		return nil, err // Return found error
 	}
 
 	marshaledPrivateKey, err := x509.MarshalECPrivateKey(privateKey) // Marshal private key
-
-	if err != nil { // Check for errors
+	if err != nil {                                                  // Check for errors
 		return nil, err // Return found error
 	}
 
@@ -269,8 +266,7 @@ func generateTLSCert(privateKey *ecdsa.PrivateKey, namePrefix string) error {
 
 	serialNumberLimit := new(big.Int).Lsh(big.NewInt(1), 128)     // Init limit
 	serialNumber, err := rand.Int(rand.Reader, serialNumberLimit) // Init serial number
-
-	if err != nil { // Check for errors
+	if err != nil {                                               // Check for errors
 		return err // Return found error
 	}
 
@@ -288,8 +284,7 @@ func generateTLSCert(privateKey *ecdsa.PrivateKey, namePrefix string) error {
 	}
 
 	cert, err := x509.CreateCertificate(rand.Reader, &template, &template, publicKey(privateKey), privateKey) // Generate certificate
-
-	if err != nil { // Check for errors
+	if err != nil {                                                                                           // Check for errors
 		return err // Return found error
 	}
 
@@ -309,8 +304,7 @@ func getTLSCerts(certPrefix string) tls.Certificate {
 	GenerateTLSCertificates(certPrefix) // Generate certs
 
 	cert, err := tls.LoadX509KeyPair(fmt.Sprintf("%sCert.pem", certPrefix), fmt.Sprintf("%sKey.pem", certPrefix)) // Load key pair
-
-	if err != nil { // Check for errors
+	if err != nil {                                                                                               // Check for errors
 		panic(err) // Panic
 	}
 

@@ -23,10 +23,8 @@ type AddressSpace struct {
 	ID        Hash      `json:"ID"`        // AddressSpace identifier
 }
 
-var (
-	// ErrDuplicateAddress - error definition describing two addresses of equal value
-	ErrDuplicateAddress = errors.New("duplicate address")
-)
+// ErrDuplicateAddress - error definition describing two addresses of equal value
+var ErrDuplicateAddress = errors.New("duplicate address")
 
 const (
 	// AddressLength - max addr length
@@ -73,8 +71,7 @@ func StringToAddress(s string) (Address, error) {
 	var address Address // Init buffer
 
 	decoded, err := hex.DecodeString(s[2:]) // Decode string
-
-	if err != nil { // Check for errors
+	if err != nil {                         // Check for errors
 		return Address{}, err // Return found error
 	}
 
@@ -127,8 +124,7 @@ func StringToHash(s string) (Hash, error) {
 	var hash Hash // Init buffer
 
 	decoded, err := hex.DecodeString(s[2:]) // Decode string
-
-	if err != nil { // Check for errors
+	if err != nil {                         // Check for errors
 		return Hash{}, err // Return found error
 	}
 

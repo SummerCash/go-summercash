@@ -59,8 +59,7 @@ var (
 // NewChain - initialize new chain
 func NewChain(account common.Address) (*Chain, error) {
 	config, err := config.ReadChainConfigFromMemory() // Read config from memory
-
-	if err != nil { // Check for errors
+	if err != nil {                                   // Check for errors
 		return &Chain{}, err // Return error
 	}
 
@@ -92,8 +91,7 @@ func NewChain(account common.Address) (*Chain, error) {
 // NewContractChain - initialize new contract chain
 func NewContractChain(controlingAccount common.Address, contractSource []byte, deploymentTransaction *Transaction) (*Chain, error) {
 	config, err := config.ReadChainConfigFromMemory() // Read config from memory
-
-	if err != nil { // Check for errors
+	if err != nil {                                   // Check for errors
 		return &Chain{}, err // Return error
 	}
 
@@ -138,14 +136,12 @@ func (chain *Chain) AddTransaction(transaction *Transaction) error {
 	}
 
 	chainConfig, err := config.ReadChainConfigFromMemory() // Read chain config
-
-	if err != nil { // Check for errors
+	if err != nil {                                        // Check for errors
 		return err // Return found error
 	}
 
 	genesisChain, err := ReadGenesisChainFromMemory(chainConfig) // Read genesis with config
-
-	if err != nil { // Check for errors
+	if err != nil {                                              // Check for errors
 		return err // Return found error
 	}
 
@@ -248,8 +244,7 @@ func (chain *Chain) CalculateBalance() *big.Float {
 func (chain *Chain) MakeEncodingSafe() error {
 	for _, transaction := range chain.Transactions { // Iterate through transactions
 		err := transaction.MakeEncodingSafe() // Make encoding safe
-
-		if err != nil { // Check for errors
+		if err != nil {                       // Check for errors
 			return err // Return found error
 		}
 	}
@@ -261,8 +256,7 @@ func (chain *Chain) MakeEncodingSafe() error {
 func (chain *Chain) RecoverSafeEncoding() error {
 	for _, transaction := range chain.Transactions { // Iterate through transactions
 		err := transaction.RecoverSafeEncoding() // Recover
-
-		if err != nil { // Check for errors
+		if err != nil {                          // Check for errors
 			return err // Return found error
 		}
 	}
@@ -275,8 +269,7 @@ func FromBytes(b []byte) (*Chain, error) {
 	chain := Chain{} // Init buffer
 
 	err := json.NewDecoder(bytes.NewReader(b)).Decode(&chain) // Decode into buffer
-
-	if err != nil { // Check for errors
+	if err != nil {                                           // Check for errors
 		return nil, err // Return found error
 	}
 
@@ -306,8 +299,7 @@ func (chain *Chain) String() string {
 // handleContractCall - handle given contract call
 func (chain *Chain) handleContractCall(transaction *Transaction) error {
 	env, err := vm.ReadEnvironmentFromMemory() // Read environment from memory
-
-	if err != nil { // Check for errors
+	if err != nil {                            // Check for errors
 		env = &common.VMConfig // Get VM config
 
 		err = env.WriteToMemory() // Write to persistent memory
@@ -318,8 +310,7 @@ func (chain *Chain) handleContractCall(transaction *Transaction) error {
 	}
 
 	vm, err := vm.NewVirtualMachine(chain.ContractSource, common.VMConfig, new(TransactionMetaResolver), common.GasPolicy) // Init vm
-
-	if err != nil { // Check for errors
+	if err != nil {                                                                                                        // Check for errors
 		return err // Return found error
 	}
 
@@ -336,8 +327,7 @@ func (chain *Chain) handleContractCall(transaction *Transaction) error {
 	}
 
 	callMethod, callParams, err := common.ParseStringMethodCallNoReceiver(string(transaction.Payload)) // Parse payload method call
-
-	if err != nil { // Check for errors
+	if err != nil {                                                                                    // Check for errors
 		return err // Return found error
 	}
 
@@ -351,8 +341,7 @@ func (chain *Chain) handleContractCall(transaction *Transaction) error {
 
 	for _, param := range callParams { // Iterate through params
 		intVal, err := strconv.ParseInt(param, 10, 64) // Parse int
-
-		if err != nil { // Check for errors
+		if err != nil {                                // Check for errors
 			return err // Return found error
 		}
 
@@ -360,8 +349,7 @@ func (chain *Chain) handleContractCall(transaction *Transaction) error {
 	}
 
 	result, err := vm.Run(entryID, parsedCallParams...) // Run
-
-	if err != nil { // Check for errors
+	if err != nil {                                     // Check for errors
 		errLog := NewLog("error", []byte(err.Error()), Error) // Init log
 
 		(*transaction).Logs = append((*transaction).Logs, errLog) // Append error log
@@ -411,8 +399,7 @@ func (chain *Chain) MakeGenesis(genesis *config.ChainConfig, genesisPrivateKey *
 	}
 
 	genesisTx, err := NewTransaction(0, nil, nil, &genesis.AllocAddresses[0], genesis.Alloc[genesis.AllocAddresses[0].String()], []byte("genesis")) // Init transaction
-
-	if err != nil { // Check for errors
+	if err != nil {                                                                                                                                 // Check for errors
 		return common.Hash{}, err // Return error
 	}
 
@@ -459,8 +446,7 @@ func (chain *Chain) MakeGenesis(genesis *config.ChainConfig, genesisPrivateKey *
 			}
 
 			recipientChain, err := ReadChainFromMemory(genesis.AllocAddresses[x]) // Read recipient chain
-
-			if err != nil { // Check for errors
+			if err != nil {                                                       // Check for errors
 				recipientChain, err = NewChain(genesis.AllocAddresses[x]) // Init recipient chain
 
 				if err != nil { // Check for errors

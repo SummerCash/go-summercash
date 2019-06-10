@@ -16,16 +16,14 @@ import (
 // GetAllLocalizedChains gets a list of the locally-provided chains, and their addresses.
 func GetAllLocalizedChains() ([]string, error) {
 	err := common.CreateDirIfDoesNotExist(filepath.FromSlash(fmt.Sprintf("%s/db/chain", common.DataDir))) // Make chain dir
-
-	if err != nil { // Check for errors
+	if err != nil {                                                                                       // Check for errors
 		return []string{}, err // Return found error
 	}
 
 	buffer := []string{} // Init buffer
 
 	files, err := ioutil.ReadDir(filepath.FromSlash(fmt.Sprintf("%s/db/chain", common.DataDir))) // Walk keystore dir
-
-	if err != nil { // Check for errors
+	if err != nil {                                                                              // Check for errors
 		return []string{}, err // Return found error
 	}
 
@@ -39,8 +37,7 @@ func GetAllLocalizedChains() ([]string, error) {
 // WriteToMemory - write given chain to memory
 func (chain *Chain) WriteToMemory() error {
 	err := common.CreateDirIfDoesNotExist(fmt.Sprintf("%s/db/chain", common.DataDir)) // Create dir if necessary
-
-	if err != nil { // Check for errors
+	if err != nil {                                                                   // Check for errors
 		return err // Return error
 	}
 
@@ -51,8 +48,7 @@ func (chain *Chain) WriteToMemory() error {
 	}
 
 	json, err := json.MarshalIndent(*chain, "", "  ") // Marshal chain
-
-	if err != nil { // Check for errors
+	if err != nil {                                   // Check for errors
 		return err // Return error
 	}
 
@@ -76,8 +72,7 @@ func ReadGenesisChainFromMemory(config *config.ChainConfig) (*Chain, error) {
 	genesis := config.AllocAddresses[0] // Get genesis
 
 	genesisChain, err := ReadChainFromMemory(genesis) // Read genesis
-
-	if err != nil { // Check for errors
+	if err != nil {                                   // Check for errors
 		return &Chain{}, err // Return found error
 	}
 
@@ -87,8 +82,7 @@ func ReadGenesisChainFromMemory(config *config.ChainConfig) (*Chain, error) {
 // ReadChainFromMemory - read chain from memory
 func ReadChainFromMemory(address common.Address) (*Chain, error) {
 	data, err := ioutil.ReadFile(filepath.FromSlash(fmt.Sprintf("%s/db/chain/chain_%s.json", common.DataDir, address.String()))) // Read chain
-
-	if err != nil { // Check for errors
+	if err != nil {                                                                                                              // Check for errors
 		return &Chain{}, err // Return error
 	}
 

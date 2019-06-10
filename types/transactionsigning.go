@@ -102,8 +102,7 @@ func selfSignTransaction(transaction *Transaction, privateKey *ecdsa.PrivateKey)
 	}
 
 	r, s, err := ecdsa.Sign(rand.Reader, &pkCopy, crypto.Sha3(transaction.Bytes())) // Sign tx
-
-	if err != nil { // Check for errors
+	if err != nil {                                                                 // Check for errors
 		return err // Return found error
 	}
 

@@ -17,8 +17,7 @@ import (
 // TestNewAccount - test functionality of account generation
 func TestNewAccount(t *testing.T) {
 	address, err := common.StringToAddress("0x040028d536d5351e83fbbec320c194629ace") // Get addr value
-
-	if err != nil { // Check for errors
+	if err != nil {                                                                  // Check for errors
 		t.Error(err) // Log found error
 		t.FailNow()  // Panic
 	}
@@ -31,8 +30,7 @@ func TestNewAccount(t *testing.T) {
 	}
 
 	account, err := NewAccount() // Generate account
-
-	if err != nil { // Check for errors
+	if err != nil {              // Check for errors
 		t.Error(err) // Log found error
 		t.FailNow()  // Panic
 	}
@@ -43,8 +41,7 @@ func TestNewAccount(t *testing.T) {
 // TestNewContractAccount - test contract deploy
 func TestNewContractAccount(t *testing.T) {
 	address, err := common.StringToAddress("0x040028d536d5351e83fbbec320c194629ace") // Get addr value
-
-	if err != nil { // Check for errors
+	if err != nil {                                                                  // Check for errors
 		t.Error(err) // Log found error
 		t.FailNow()  // Panic
 	}
@@ -57,8 +54,7 @@ func TestNewContractAccount(t *testing.T) {
 	}
 
 	account, err := NewAccount() // Generate account
-
-	if err != nil { // Check for errors
+	if err != nil {              // Check for errors
 		t.Error(err) // Log found error
 		t.FailNow()  // Panic
 	}
@@ -66,15 +62,13 @@ func TestNewContractAccount(t *testing.T) {
 	path, _ := filepath.Abs(filepath.FromSlash("../types/main.wasm")) // Get path
 
 	contractSource, err := ioutil.ReadFile(path) // Read contract source
-
-	if err != nil { // Check for errors
+	if err != nil {                              // Check for errors
 		t.Error(err) // Log found error
 		t.FailNow()  // Panic
 	}
 
 	contractInstance, err := NewContractAccount(contractSource, &account.Address) // Deploy contract
-
-	if err != nil { // Check for errors
+	if err != nil {                                                               // Check for errors
 		t.Error(err) // Log found error
 		t.FailNow()  // Panic
 	}
@@ -85,15 +79,13 @@ func TestNewContractAccount(t *testing.T) {
 // TestAccountFromKey - test functionality of account generation given a privateKey x
 func TestAccountFromKey(t *testing.T) {
 	privateKey, err := ecdsa.GenerateKey(elliptic.P521(), rand.Reader) // Generate private key
-
-	if err != nil { // Check for errors
+	if err != nil {                                                    // Check for errors
 		t.Error(err) // Log found error
 		t.FailNow()  // Panic
 	}
 
 	account, err := AccountFromKey(privateKey) // Generate account from key
-
-	if err != nil { // Check for errors
+	if err != nil {                            // Check for errors
 		t.Error(err) // Log found error
 		t.FailNow()  // Panic
 	}
@@ -104,8 +96,7 @@ func TestAccountFromKey(t *testing.T) {
 // TestGetAllAccounts - test functionality of keystore walk method
 func TestGetAllAccounts(t *testing.T) {
 	account, err := NewAccount() // Generate account
-
-	if err != nil { // Check for errors
+	if err != nil {              // Check for errors
 		t.Error(err) // Log found error
 		t.FailNow()  // Panic
 	}
@@ -118,8 +109,7 @@ func TestGetAllAccounts(t *testing.T) {
 	}
 
 	addresses, err := GetAllAccounts() // Walk
-
-	if err != nil { // Check for errors
+	if err != nil {                    // Check for errors
 		t.Error(err) // Log found error
 		t.FailNow()  // Panic
 	}
@@ -130,8 +120,7 @@ func TestGetAllAccounts(t *testing.T) {
 // TestGetAllContracts - test functionality of contract walk method
 func TestGetAllContracts(t *testing.T) {
 	coordinationChain, err := types.NewCoordinationChain() // Init coordination chain
-
-	if err != nil { // Check for errors
+	if err != nil {                                        // Check for errors
 		t.Error(err) // Log found error
 		t.FailNow()  // Panic
 	}
@@ -144,8 +133,7 @@ func TestGetAllContracts(t *testing.T) {
 	}
 
 	account, err := NewAccount() // Generate account
-
-	if err != nil { // Check for errors
+	if err != nil {              // Check for errors
 		t.Error(err) // Log found error
 		t.FailNow()  // Panic
 	}
@@ -160,8 +148,7 @@ func TestGetAllContracts(t *testing.T) {
 	path, _ := filepath.Abs(filepath.FromSlash("../types/main.wasm")) // Get path
 
 	contractSource, err := ioutil.ReadFile(path) // Read contract source
-
-	if err != nil { // Check for errors
+	if err != nil {                              // Check for errors
 		t.Error(err) // Log found error
 		t.FailNow()  // Panic
 	}
@@ -174,8 +161,7 @@ func TestGetAllContracts(t *testing.T) {
 	}
 
 	contractAddresses, err := GetAllContracts(account.Address) // Get all contracts
-
-	if err != nil { // Check for errors
+	if err != nil {                                            // Check for errors
 		t.Error(err) // Log found error
 		t.FailNow()  // Panic
 	}
@@ -186,15 +172,13 @@ func TestGetAllContracts(t *testing.T) {
 // TestMakeEncodingSafe - test functionality of safe account encoding
 func TestMakeEncodingSafe(t *testing.T) {
 	privateKey, err := ecdsa.GenerateKey(elliptic.P521(), rand.Reader) // Generate private key
-
-	if err != nil { // Check for errors
+	if err != nil {                                                    // Check for errors
 		t.Error(err) // Log found error
 		t.FailNow()  // Panic
 	}
 
 	account, err := AccountFromKey(privateKey) // Generate account from key
-
-	if err != nil { // Check for errors
+	if err != nil {                            // Check for errors
 		t.Error(err) // Log found error
 		t.FailNow()  // Panic
 	}
@@ -212,15 +196,13 @@ func TestMakeEncodingSafe(t *testing.T) {
 // TestRecoverSafeEncoding - test functionality of safe account encoding recovery
 func TestRecoverSafeEncoding(t *testing.T) {
 	privateKey, err := ecdsa.GenerateKey(elliptic.P521(), rand.Reader) // Generate private key
-
-	if err != nil { // Check for errors
+	if err != nil {                                                    // Check for errors
 		t.Error(err) // Log found error
 		t.FailNow()  // Panic
 	}
 
 	account, err := AccountFromKey(privateKey) // Generate account from key
-
-	if err != nil { // Check for errors
+	if err != nil {                            // Check for errors
 		t.Error(err) // Log found error
 		t.FailNow()  // Panic
 	}
@@ -245,15 +227,13 @@ func TestRecoverSafeEncoding(t *testing.T) {
 // TestString - test functionality of string account serialization
 func TestString(t *testing.T) {
 	privateKey, err := ecdsa.GenerateKey(elliptic.P521(), rand.Reader) // Generate private key
-
-	if err != nil { // Check for errors
+	if err != nil {                                                    // Check for errors
 		t.Error(err) // Log found error
 		t.FailNow()  // Panic
 	}
 
 	account, err := AccountFromKey(privateKey) // Generate account from key
-
-	if err != nil { // Check for errors
+	if err != nil {                            // Check for errors
 		t.Error(err) // Log found error
 		t.FailNow()  // Panic
 	}
@@ -271,15 +251,13 @@ func TestString(t *testing.T) {
 // TestBytes - test byte array serialization of account
 func TestBytes(t *testing.T) {
 	privateKey, err := ecdsa.GenerateKey(elliptic.P521(), rand.Reader) // Generate private key
-
-	if err != nil { // Check for errors
+	if err != nil {                                                    // Check for errors
 		t.Error(err) // Log found error
 		t.FailNow()  // Panic
 	}
 
 	account, err := AccountFromKey(privateKey) // Generate account from key
-
-	if err != nil { // Check for errors
+	if err != nil {                            // Check for errors
 		t.Error(err) // Log found error
 		t.FailNow()  // Panic
 	}
@@ -311,8 +289,7 @@ func makeChainConfig(address common.Address) error {
 	genesis := genesis{NetworkID: 0, Alloc: alloc} // Init genesis
 
 	json, err := json.MarshalIndent(genesis, "", "  ") // Marshal genesis
-
-	if err != nil { // Check for errors
+	if err != nil {                                    // Check for errors
 		return err // Return error
 	}
 
@@ -323,8 +300,7 @@ func makeChainConfig(address common.Address) error {
 	}
 
 	config, err := config.NewChainConfig("genesis.json") // Generate config
-
-	if err != nil { // Check for errors
+	if err != nil {                                      // Check for errors
 		return err // Return error
 	}
 
@@ -335,8 +311,7 @@ func makeChainConfig(address common.Address) error {
 	}
 
 	coordinationChain, err := types.NewCoordinationChain() // Init coordinationChain
-
-	if err != nil { // Check for errors
+	if err != nil {                                        // Check for errors
 		return err // Return error
 	}
 

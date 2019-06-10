@@ -11,8 +11,7 @@ import "testing"
 // TestLog - test functionality of fmt.Println wrapper
 func TestLog(t *testing.T) {
 	_, err := Log("test") // Log test
-
-	if err != nil { // Check for errors
+	if err != nil {       // Check for errors
 		t.Error(err) // Log found error
 		t.FailNow()  // Panic
 	}
@@ -21,8 +20,7 @@ func TestLog(t *testing.T) {
 // TestLogf - test functionality of fmt.Printf wrapper
 func TestLogf(t *testing.T) {
 	_, err := Logf("test: %s", "test") // Log test
-
-	if err != nil { // Check for errors
+	if err != nil {                    // Check for errors
 		t.Error(err) // Log found error
 		t.FailNow()  // Panic
 	}
@@ -33,8 +31,7 @@ func TestParseStringMethodCall(t *testing.T) {
 	input := "transaction.NewTransaction(0x04016c01b07433ad0da6153c2ab1bdd67d8e, 0x0400a98cf9f337d5c82cb5e58fd0aad95bad, 0, main(test))" // Init input
 
 	receiver, methodName, params, err := ParseStringMethodCall(input) // Parse string method call
-
-	if err != nil { // Check for errors
+	if err != nil {                                                   // Check for errors
 		t.Errorf(err.Error()) // Log error
 		t.FailNow()           // Panic
 	}
@@ -47,8 +44,7 @@ func TestParseStringMethodCallNoReceiver(t *testing.T) {
 	input := "Sha3(test)" // Init input
 
 	methodName, params, err := ParseStringMethodCallNoReceiver(input) // Parse string method call
-
-	if err != nil { // Check for errors
+	if err != nil {                                                   // Check for errors
 		t.Errorf(err.Error()) // Log error
 		t.FailNow()           // Panic
 	}
@@ -61,8 +57,7 @@ func TestParseStringParams(t *testing.T) {
 	input := "crypto.Sha3(test)" // Init input
 
 	params, err := ParseStringParams(input) // Parse string params
-
-	if err != nil { // Check for errors
+	if err != nil {                         // Check for errors
 		t.Errorf(err.Error()) // Log error
 		t.FailNow()           // Panic
 	}
@@ -110,8 +105,7 @@ func TestGetNonNilInStringSlice(t *testing.T) {
 	slice := []string{"test", "", "test2"} // Init slice
 
 	s, err := getNonNilInStringSlice(slice) // Get non-nil
-
-	if err != nil { // Check for errors
+	if err != nil {                         // Check for errors
 		t.Error(err) // Log found error
 		t.FailNow()  // Panic
 	}

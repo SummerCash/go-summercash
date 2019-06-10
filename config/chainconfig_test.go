@@ -5,8 +5,7 @@ import "testing"
 // TestNewChainConfig - test init method for chainConfigs
 func TestNewChainConfig(t *testing.T) {
 	chainConfig, err := NewChainConfig("genesis.json") // Initialize chain configuration
-
-	if err != nil { // Check for errors
+	if err != nil {                                    // Check for errors
 		t.Error(err) // Log found error
 		t.FailNow()  // Panic
 	}
@@ -17,8 +16,7 @@ func TestNewChainConfig(t *testing.T) {
 // TestStringChainConfig - test conversion from chainConfig to string
 func TestStringChainConfig(t *testing.T) {
 	chainConfig, err := NewChainConfig("genesis.json") // Initialize chain configuration
-
-	if err != nil { // Check for errors
+	if err != nil {                                    // Check for errors
 		t.Error(err) // Log found error
 		t.FailNow()  // Panic
 	}
@@ -36,8 +34,7 @@ func TestStringChainConfig(t *testing.T) {
 // TestBytesChainConfig - test conversion from chainConfig to bytes
 func TestBytesChainConfig(t *testing.T) {
 	chainConfig, err := NewChainConfig("genesis.json") // Initialize chain configuration
-
-	if err != nil { // Check for errors
+	if err != nil {                                    // Check for errors
 		t.Error(err) // Log found error
 		t.FailNow()  // Panic
 	}
@@ -55,8 +52,7 @@ func TestBytesChainConfig(t *testing.T) {
 // TestFromBytes - test decode byte array into chain config
 func TestFromBytes(t *testing.T) {
 	chainConfig, err := NewChainConfig("genesis.json") // Initialize chain configuration
-
-	if err != nil { // Check for errors
+	if err != nil {                                    // Check for errors
 		t.Error(err) // Log found error
 		t.FailNow()  // Panic
 	}
@@ -76,8 +72,7 @@ func TestFromBytes(t *testing.T) {
 // TestWriteToMemoryChainConfig - test i/o for chainConfig
 func TestWriteToMemoryChainConfig(t *testing.T) {
 	chainConfig, err := NewChainConfig("genesis.json") // Initialize chain configuration
-
-	if err != nil { // Check for errors
+	if err != nil {                                    // Check for errors
 		t.Error(err) // Log found error
 		t.FailNow()  // Panic
 	}
@@ -95,8 +90,7 @@ func TestWriteToMemoryChainConfig(t *testing.T) {
 // TestReadChainConfigFromMemory - test read chain config from json file
 func TestReadChainConfigFromMemory(t *testing.T) {
 	chainConfig, err := NewChainConfig("genesis.json") // Initialize chain configuration
-
-	if err != nil { // Check for errors
+	if err != nil {                                    // Check for errors
 		t.Error(err) // Log found error
 		t.FailNow()  // Panic
 	}

@@ -39,8 +39,7 @@ func (client *Client) HandleReceiveTransaction(stream inet.Stream) {
 	reader := bufio.NewReader(stream) // Initialize reader
 
 	b, err := reader.ReadBytes('\r') // Read up to delimiter
-
-	if err != nil { // Check for errors
+	if err != nil {                  // Check for errors
 		common.Logf("== P2P == error while reading pub_tx stream: %s\n", err.Error()) // Log error
 
 		return // Return
@@ -49,8 +48,7 @@ func (client *Client) HandleReceiveTransaction(stream inet.Stream) {
 	b = bytes.Trim(b, "\r") // Trim delimiter
 
 	tx, err := types.TransactionFromBytes(b) // Marshal bytes to transaction
-
-	if err != nil { // Check for errors
+	if err != nil {                          // Check for errors
 		common.Logf("== P2P == error while deserializing tx read from pub_tx stream: %s\n", err.Error()) // Log error
 
 		return // Return
@@ -79,8 +77,7 @@ func (client *Client) HandleReceiveTransaction(stream inet.Stream) {
 	}
 
 	senderChain, err := types.ReadChainFromMemory(*tx.Sender) // Read chain
-
-	if err != nil { // Check for errors
+	if err != nil {                                           // Check for errors
 		common.Logf("== P2P == error while reading sender chain from pub_tx stream: %s\n", err.Error()) // Log error
 
 		return // Return
@@ -95,8 +92,7 @@ func (client *Client) HandleReceiveTransaction(stream inet.Stream) {
 	}
 
 	chain, err := types.ReadChainFromMemory(*tx.Recipient) // Read chain
-
-	if err != nil { // Check for errors
+	if err != nil {                                        // Check for errors
 		common.Logf("== P2P == error while reading recipient chain from pub_tx stream: %s\n", err.Error()) // Log error
 
 		return // Return
@@ -118,8 +114,7 @@ func (client *Client) HandleReceiveBestTransaction(stream inet.Stream) {
 	readWriter := bufio.NewReadWriter(bufio.NewReader(stream), bufio.NewWriter(stream)) // Initialize reader/writer
 
 	accountString, err := readWriter.ReadBytes('\r') // Read
-
-	if err != nil { // Check for errors
+	if err != nil {                                  // Check for errors
 		common.Logf("== P2P == error while reading req_best_tx stream: %s\n", err.Error()) // Log error
 	}
 
@@ -128,14 +123,12 @@ func (client *Client) HandleReceiveBestTransaction(stream inet.Stream) {
 	accountString = bytes.Trim(accountString, "\r") // Trim delimiter
 
 	address, err := common.StringToAddress(string(accountString)) // Get address
-
-	if err != nil { // Check for errors
+	if err != nil {                                               // Check for errors
 		common.Logf("== P2P == error while parsing req_best_tx stream: %s\n", err.Error()) // Log error
 	}
 
 	chain, err := types.ReadChainFromMemory(address) // Read chain
-
-	if err != nil { // Check for errors
+	if err != nil {                                  // Check for errors
 		common.Logf("== P2P == error while reading chain from req_best_tx stream: %s\n", err.Error()) // Log error
 	}
 
@@ -155,28 +148,24 @@ func (client *Client) HandleReceiveNextTransactionRequest(stream inet.Stream) {
 	readWriter := bufio.NewReadWriter(bufio.NewReader(stream), bufio.NewWriter(stream)) // Initialize reader/writer
 
 	lastTxAccount, err := readWriter.ReadBytes('\r') // Read
-
-	if err != nil { // Check for errors
+	if err != nil {                                  // Check for errors
 		common.Logf("== P2P == error while reading req_next_tx stream: %s\n", err.Error()) // Log error
 	}
 
 	lastTxAccount = bytes.Trim(lastTxAccount, "\r") // Trim delimiter
 
 	address, err := common.StringToAddress(strings.Split(string(lastTxAccount), "_")[0]) // Get address
-
-	if err != nil { // Check for errors
+	if err != nil {                                                                      // Check for errors
 		common.Logf("== P2P == error while parsing req_next_tx stream: %s\n", err.Error()) // Log error
 	}
 
 	hash, err := common.StringToHash(strings.Split(string(lastTxAccount), "_")[1]) // Get hash
-
-	if err != nil { // Check for errors
+	if err != nil {                                                                // Check for errors
 		common.Logf("== P2P == error while parsing req_next_tx stream: %s\n", err.Error()) // Log error
 	}
 
 	accountChain, err := types.ReadChainFromMemory(address) // Read account chain
-
-	if err != nil { // Check for errors
+	if err != nil {                                         // Check for errors
 		common.Logf("== P2P == error reading req_next_tx stream: %s\n", err.Error()) // Log error
 	}
 
@@ -214,8 +203,7 @@ func (client *Client) HandleReceiveAllChainsRequest(stream inet.Stream) {
 	writer := bufio.NewWriter(stream) // Initialize writer
 
 	allLocalChains, err := types.GetAllLocalizedChains() // Get all localized chains
-
-	if err != nil { // Check for errors
+	if err != nil {                                      // Check for errors
 		common.Logf("== P2P == error while fetching local chains tx from pub_tx stream to recipient chain: %s\n", err.Error()) // Log error
 	}
 
@@ -237,8 +225,7 @@ func (client *Client) HandleReceiveChainRequest(stream inet.Stream) {
 	readWriter := bufio.NewReadWriter(bufio.NewReader(stream), bufio.NewWriter(stream)) // Initialize reader/writer
 
 	addressBytes, err := readWriter.ReadBytes('\r') // Read up to delimiter
-
-	if err != nil { // Check for errors
+	if err != nil {                                 // Check for errors
 		common.Logf("== P2P == error while reading req_chain stream: %s\n", err.Error()) // Log error
 	}
 
@@ -249,8 +236,7 @@ func (client *Client) HandleReceiveChainRequest(stream inet.Stream) {
 	copy(address[:], addressBytes) // Write to buffer
 
 	chain, err := types.ReadChainFromMemory(address) // Read chain
-
-	if err != nil { // Check for errors
+	if err != nil {                                  // Check for errors
 		common.Logf("== P2P == error while reading req_chain stream: %s\n", err.Error()) // Log error
 	}
 
@@ -274,8 +260,7 @@ func (client *Client) HandleReceiveAliveRequest(stream inet.Stream) {
 	config, _ := config.ReadChainConfigFromMemory() // Read chain config from persistent memory
 
 	_, err := writer.Write(append([]byte(fmt.Sprintf("despacito: %s", config.ChainVersion)), '\r')) // Write alive
-
-	if err != nil { // Check for errors
+	if err != nil {                                                                                 // Check for errors
 		common.Logf("== P2P == error while writing req_not_dead_lol stream: %s\n", err.Error()) // Log error
 	}
 

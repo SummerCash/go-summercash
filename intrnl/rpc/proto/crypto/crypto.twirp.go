@@ -1438,6 +1438,7 @@ func twirpErrorFromIntermediary(status int, msg string, bodyOrLocation string) t
 	}
 	return twerr
 }
+
 func isHTTPRedirect(status int) bool {
 	return status >= 300 && status <= 399
 }

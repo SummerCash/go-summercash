@@ -71,8 +71,7 @@ var (
 // NewCoordinationChain - initialize new CoordinationChain
 func NewCoordinationChain() (*CoordinationChain, error) {
 	config, err := config.ReadChainConfigFromMemory() // Read config from memory
-
-	if err != nil { // Check for errors
+	if err != nil {                                   // Check for errors
 		return &CoordinationChain{}, err // Return error
 	}
 
@@ -108,8 +107,7 @@ func (coordinationChain *CoordinationChain) AddNode(coordinationNode *Coordinati
 
 	if updateRemote { // Check should update remote db
 		err := coordinationChain.PushNode(coordinationNode) // Push to remote chains
-
-		if err != nil { // Check for errors
+		if err != nil {                                     // Check for errors
 			return err // Return error
 		}
 	}
@@ -213,14 +211,12 @@ func JoinNetwork(bootstrapNode string, archivalNode bool) error {
 	common.Logf("== NETWORK == requesting coordination chain from node %s\n", bootstrapNode) // Log req
 
 	coordinationChainBytes, err := common.SendBytesResult([]byte("cChainRequest"), bootstrapNode) // Get coordination chain
-
-	if err != nil { // Check for errors
+	if err != nil {                                                                               // Check for errors
 		return err // Return found error
 	}
 
 	coordinationChain, err := CoordinationChainFromBytes(coordinationChainBytes) // Decode result
-
-	if err != nil { // Check for errors
+	if err != nil {                                                              // Check for errors
 		return err // Return found error
 	}
 
@@ -234,14 +230,12 @@ func JoinNetwork(bootstrapNode string, archivalNode bool) error {
 	common.Logf("== NETWORK == requesting chain config from node %s\n", bootstrapNode)                                            // Log request config
 
 	configBytes, err := common.SendBytesResult([]byte("configReq"), bootstrapNode) // Get chain config
-
-	if err != nil { // Check for errors
+	if err != nil {                                                                // Check for errors
 		return err // Return found error
 	}
 
 	config, err := config.FromBytes(configBytes) // Decode config
-
-	if err != nil { // Check for errors
+	if err != nil {                              // Check for errors
 		return err // Return found error
 	}
 
@@ -272,8 +266,7 @@ func SyncNetwork(archival bool, updateRemote bool) error {
 	var err error                     // Init error buffer
 
 	ip, err := common.GetExtIPAddrWithoutUPnP() // Get IP
-
-	if err != nil { // Check for errors
+	if err != nil {                             // Check for errors
 		return err // Return found error
 	}
 
@@ -294,8 +287,7 @@ func SyncNetwork(archival bool, updateRemote bool) error {
 			}
 
 			archivalNodes, err := coordinationChain.QueryAllArchivalNodes() // Query all archival nodes
-
-			if err != nil { // Check for errors
+			if err != nil {                                                 // Check for errors
 				return err // Return found error
 			}
 
@@ -364,8 +356,7 @@ func SyncNetwork(archival bool, updateRemote bool) error {
 			}
 
 			chain, err := FromBytes(chainBytes) // Get chain
-
-			if err != nil { // Check for errors
+			if err != nil {                     // Check for errors
 				return err // Return found error
 			}
 
@@ -396,20 +387,17 @@ func SyncNetwork(archival bool, updateRemote bool) error {
 	if err == nil { // Check no error
 		for _, file := range files { // Iterate through files
 			data, err := ioutil.ReadFile(file.Name()) // Read file JSON bytes
-
-			if err != nil { // Check for errors
+			if err != nil {                           // Check for errors
 				return err // Return found error
 			}
 
 			chain, err := FromBytes(data) // Read chain from bytes
-
-			if err != nil { // Check for errors
+			if err != nil {               // Check for errors
 				return err // Return found error
 			}
 
 			node, err := coordinationChain.QueryAddress(chain.Account) // Query address
-
-			if err != nil { // Check for errors
+			if err != nil {                                            // Check for errors
 				return err // Return found error
 			}
 
@@ -452,14 +440,12 @@ func StartManagedSync(cacheClearOnly bool, archival bool, duration time.Duration
 // RegisterArchivalNode - register archival node on network
 func RegisterArchivalNode() error {
 	coordinationChain, err := ReadCoordinationChainFromMemory() // Read coordination chain from persistent memory
-
-	if err != nil { // Check for errors
+	if err != nil {                                             // Check for errors
 		return err // Return found error
 	}
 
 	ip, err := common.GetExtIPAddrWithoutUPnP() // Get IP
-
-	if err != nil { // Check for errors
+	if err != nil {                             // Check for errors
 		return err // Return found error
 	}
 
@@ -476,8 +462,7 @@ func RegisterArchivalNode() error {
 	if err != nil { // Check for errors
 		for _, node := range coordinationChain.Nodes { // Iterate through nodes
 			nodeInstance, err := NewCoordinationNode(node.Address, []string{ip}) // Init node
-
-			if err != nil { // Check for errors
+			if err != nil {                                                      // Check for errors
 				return err // Return found error
 			}
 
@@ -599,8 +584,7 @@ func (coordinationChain *CoordinationChain) PushNode(coordinationNode *Coordinat
 	common.Logf("== NETWORK == pushing coordination chain node %s to network\n", coordinationNode.Address.String()) // Log push
 
 	localIP, err := common.GetExtIPAddrWithoutUPnP() // Get IP address
-
-	if err != nil { // Check for errors
+	if err != nil {                                  // Check for errors
 		return err // Return error
 	}
 
@@ -649,8 +633,7 @@ func (coordinationChain *CoordinationChain) GetGenesis() (*CoordinationNode, err
 // GetBalance - attempt to get balance of account
 func (coordinationChain *CoordinationChain) GetBalance(address common.Address) (*big.Float, error) {
 	node, err := coordinationChain.QueryAddress(address) // Get node
-
-	if err != nil { // Check for errors
+	if err != nil {                                      // Check for errors
 		return big.NewFloat(0), err // Return found error
 	}
 
@@ -665,8 +648,7 @@ func (coordinationChain *CoordinationChain) GetBalance(address common.Address) (
 	}
 
 	chain, err := FromBytes(result) // Get chain from bytes
-
-	if err != nil { // Check for errors
+	if err != nil {                 // Check for errors
 		return big.NewFloat(0), err // Return found error
 	}
 
@@ -676,8 +658,7 @@ func (coordinationChain *CoordinationChain) GetBalance(address common.Address) (
 // GetChain - attempt to fetch remote account/contract chain
 func (coordinationChain *CoordinationChain) GetChain(address common.Address) (*Chain, error) {
 	node, err := coordinationChain.QueryAddress(address) // Get node
-
-	if err != nil { // Check for errors
+	if err != nil {                                      // Check for errors
 		return &Chain{}, err // Return found error
 	}
 
@@ -692,8 +673,7 @@ func (coordinationChain *CoordinationChain) GetChain(address common.Address) (*C
 	}
 
 	chain, err := FromBytes(result) // Get chain from bytes
-
-	if err != nil { // Check for errors
+	if err != nil {                 // Check for errors
 		return &Chain{}, err // Return found error
 	}
 
@@ -705,8 +685,7 @@ func CoordinationChainFromBytes(b []byte) (*CoordinationChain, error) {
 	coordinationChain := CoordinationChain{} // Init buffer
 
 	err := json.NewDecoder(bytes.NewReader(b)).Decode(&coordinationChain) // Decode into buffer
-
-	if err != nil { // Check for errors
+	if err != nil {                                                       // Check for errors
 		return nil, err // Return found error
 	}
 
@@ -759,8 +738,7 @@ func CoordinationNodeFromBytes(b []byte) (*CoordinationNode, error) {
 	coordinationNode := CoordinationNode{} // Init buffer
 
 	err := json.NewDecoder(bytes.NewReader(b)).Decode(&coordinationNode) // Decode into buffer
-
-	if err != nil { // Check for errors
+	if err != nil {                                                      // Check for errors
 		return nil, err // Return found error
 	}
 
@@ -808,13 +786,11 @@ func syncChainConfig() error {
 	}
 
 	remoteConfig, err := config.FromBytes(configBytes) // Get config from bytes
-
-	if err != nil { // Check for errors
+	if err != nil {                                    // Check for errors
 		return err // Return found error
 	}
 
 	localConfig, err := config.ReadChainConfigFromMemory() // Read local chain config
-
 	if err != nil {
 		return remoteConfig.WriteToMemory() // Write config to persistent memory
 	}
@@ -835,15 +811,13 @@ func syncChainConfig() error {
 // syncAllStates - sync all contract states
 func syncAllStates() error {
 	coordinationChain, err := ReadCoordinationChainFromMemory() // Read coordination chain from persistent memory
-
-	if err != nil { // Check for errors
+	if err != nil {                                             // Check for errors
 		return err // Return found error
 	}
 
 	for _, node := range coordinationChain.Nodes { // Iterate through nodes
 		chain, err := ReadChainFromMemory(node.Address) // Read chain
-
-		if err != nil { // Check for errors
+		if err != nil {                                 // Check for errors
 			continue // Continue
 		}
 
@@ -864,8 +838,7 @@ func syncState(contract common.Address) error {
 	var err error         // Init error buffer
 
 	ip, err := common.GetExtIPAddrWithoutUPnP() // Get self IP
-
-	if err != nil { // Check for errors
+	if err != nil {                             // Check for errors
 		return err // Return found error
 	}
 
@@ -890,8 +863,7 @@ func syncState(contract common.Address) error {
 	}
 
 	state, err := vm.StateDatabaseFromBytes(stateBytes) // Decode state bytes
-
-	if err != nil { // Check for errors
+	if err != nil {                                     // Check for errors
 		return err // Return found error
 	}
 

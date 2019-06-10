@@ -17,8 +17,7 @@ type Server struct{}
 // NewChainConfig - config.NewChainConfig RPC handler
 func (server *Server) NewChainConfig(ctx context.Context, req *configProto.GeneralRequest) (*configProto.GeneralResponse, error) {
 	chainConfig, err := config.NewChainConfig(req.GenesisPath) // Init config
-
-	if err != nil { // Check for errors
+	if err != nil {                                            // Check for errors
 		return &configProto.GeneralResponse{}, err // Return found error
 	}
 
@@ -42,14 +41,12 @@ func (server *Server) NewChainConfig(ctx context.Context, req *configProto.Gener
 // Bytes - config.Bytes RPC handler
 func (server *Server) Bytes(ctx context.Context, req *configProto.GeneralRequest) (*configProto.GeneralResponse, error) {
 	chainConfig, err := config.ReadChainConfigFromMemory() // Read chain config from memory
-
-	if err != nil { // Check for errors
+	if err != nil {                                        // Check for errors
 		return &configProto.GeneralResponse{}, err // Return found error
 	}
 
 	hex, err := common.EncodeString(chainConfig.Bytes()) // Encode bytes to string
-
-	if err != nil { // Check for errors
+	if err != nil {                                      // Check for errors
 		return &configProto.GeneralResponse{}, err // Return found error
 	}
 
@@ -59,8 +56,7 @@ func (server *Server) Bytes(ctx context.Context, req *configProto.GeneralRequest
 // String - config.String RPC handler
 func (server *Server) String(ctx context.Context, req *configProto.GeneralRequest) (*configProto.GeneralResponse, error) {
 	chainConfig, err := config.ReadChainConfigFromMemory() // Read chain config from memory
-
-	if err != nil { // Check for errors
+	if err != nil {                                        // Check for errors
 		return &configProto.GeneralResponse{}, err // Return found error
 	}
 
@@ -70,8 +66,7 @@ func (server *Server) String(ctx context.Context, req *configProto.GeneralReques
 // WriteToMemory - config.WriteToMemory RPC handler
 func (server *Server) WriteToMemory(ctx context.Context, req *configProto.GeneralRequest) (*configProto.GeneralResponse, error) {
 	chainConfig, err := config.ReadChainConfigFromMemory() // Read chain config from memory
-
-	if err != nil { // Check for errors
+	if err != nil {                                        // Check for errors
 		return &configProto.GeneralResponse{}, err // Return found error
 	}
 
@@ -87,8 +82,7 @@ func (server *Server) WriteToMemory(ctx context.Context, req *configProto.Genera
 // ReadChainConfigFromMemory - config.ReadChainConfigFromMemory RPC handler
 func (server *Server) ReadChainConfigFromMemory(ctx context.Context, req *configProto.GeneralRequest) (*configProto.GeneralResponse, error) {
 	chainConfig, err := config.ReadChainConfigFromMemory() // Read chain config from memory
-
-	if err != nil { // Check for errors
+	if err != nil {                                        // Check for errors
 		return &configProto.GeneralResponse{}, err // Return found error
 	}
 
@@ -98,8 +92,7 @@ func (server *Server) ReadChainConfigFromMemory(ctx context.Context, req *config
 // GetInflationRate - config.GetInflationRate RPC handler
 func (server *Server) GetInflationRate(ctx context.Context, req *configProto.GeneralRequest) (*configProto.GeneralResponse, error) {
 	chainConfig, err := config.ReadChainConfigFromMemory() // Read chain config from memory
-
-	if err != nil { // Check for errors
+	if err != nil {                                        // Check for errors
 		return &configProto.GeneralResponse{}, err // Return found error
 	}
 
@@ -109,8 +102,7 @@ func (server *Server) GetInflationRate(ctx context.Context, req *configProto.Gen
 // GetTotalSupply - config.GetTotalSupply RPC handler
 func (server *Server) GetTotalSupply(ctx context.Context, req *configProto.GeneralRequest) (*configProto.GeneralResponse, error) {
 	chainConfig, err := config.ReadChainConfigFromMemory() // Read chain config from memory
-
-	if err != nil { // Check for errors
+	if err != nil {                                        // Check for errors
 		return &configProto.GeneralResponse{}, err // Return found error
 	}
 

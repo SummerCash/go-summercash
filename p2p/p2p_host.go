@@ -41,8 +41,7 @@ var (
 // NewHost initializes a new routed libp2p host with a given context.
 func NewHost(ctx context.Context, port int, network string) (*routed.RoutedHost, error) {
 	identity, err := GetPeerIdentity() // Get peer identity
-
-	if err != nil { // Check for errors
+	if err != nil {                    // Check for errors
 		return &routed.RoutedHost{}, err // Return found error
 	}
 
@@ -58,7 +57,6 @@ func NewHost(ctx context.Context, port int, network string) (*routed.RoutedHost,
 		libp2p.Identity(*identity),
 		libp2p.DefaultTransports,
 	) // Initialize host
-
 	if err != nil { // Check for errors
 		return &routed.RoutedHost{}, err // Return found error
 	}
@@ -68,8 +66,7 @@ func NewHost(ctx context.Context, port int, network string) (*routed.RoutedHost,
 	common.Logf("== P2P == bootstrapping DHT...\n") // Log bootstrap
 
 	dht, err := BootstrapDht(ctx, host) // Bootstrap DHT
-
-	if err != nil { // Check for errors
+	if err != nil {                     // Check for errors
 		return &routed.RoutedHost{}, err // Return found error
 	}
 
@@ -86,8 +83,7 @@ func NewHost(ctx context.Context, port int, network string) (*routed.RoutedHost,
 	WorkingHost = routedHost // Set working host
 
 	peerChan, err := routingDiscovery.FindPeers(ctx, config.Version) // Look for peers
-
-	if err != nil { // Check for errors
+	if err != nil {                                                  // Check for errors
 		return &routed.RoutedHost{}, err // Return found error
 	}
 
@@ -143,16 +139,14 @@ func BootstrapConfig(ctx context.Context, host *routed.RoutedHost, bootstrapAddr
 	common.Logf("== P2P == bootstrapping config with bootstrap node address %s\n", bootstrapAddress) // Log bootstrap config
 
 	peerID, err := peer.IDB58Decode(strings.Split(bootstrapAddress, "ipfs/")[1]) // Get peer ID
-
-	if err != nil { // Check for errors
+	if err != nil {                                                              // Check for errors
 		return &config.ChainConfig{}, err // Return found error
 	}
 
 	readCtx, cancel := context.WithCancel(ctx) // Get context
 
 	stream, err := (*host).NewStream(readCtx, peerID, protocol.ID(GetStreamHeaderProtocolPath(network, RequestConfig))) // Initialize new stream
-
-	if err != nil { // Check for errors
+	if err != nil {                                                                                                     // Check for errors
 		cancel() // Cancel
 
 		return &config.ChainConfig{}, err // Return found error
@@ -161,8 +155,7 @@ func BootstrapConfig(ctx context.Context, host *routed.RoutedHost, bootstrapAddr
 	reader := bufio.NewReader(stream) // Initialize reader from stream
 
 	dagConfigBytes, err := reader.ReadBytes('\r') // Read
-
-	if err != nil { // Check for errors
+	if err != nil {                               // Check for errors
 		cancel() // Cancel
 
 		return &config.ChainConfig{}, err // Return found error
@@ -171,8 +164,7 @@ func BootstrapConfig(ctx context.Context, host *routed.RoutedHost, bootstrapAddr
 	dagConfigBytes = bytes.Trim(dagConfigBytes, "\r") // Trim delimiter
 
 	deserializedConfig, err := config.FromBytes(dagConfigBytes) // Deserialize
-
-	if err != nil { // Check for errors
+	if err != nil {                                             // Check for errors
 		cancel() // Cancel
 
 		return &config.ChainConfig{}, err // Return found error
@@ -188,21 +180,18 @@ func BootstrapConfig(ctx context.Context, host *routed.RoutedHost, bootstrapAddr
 // BootstrapDht bootstraps a KadDht to the list of bootstrap nodes.
 func BootstrapDht(ctx context.Context, host host.Host) (*dht.IpfsDHT, error) {
 	dht, err := dht.New(ctx, host) // Initialize DHT with host and context
-
-	if err != nil { // Check for errors
+	if err != nil {                // Check for errors
 		return nil, err // Return found error
 	}
 
 	for _, addr := range BootstrapNodes { // Iterate through bootstrap nodes
 		address, err := multiaddr.NewMultiaddr(addr) // Parse multi address
-
-		if err != nil { // Check for errors
+		if err != nil {                              // Check for errors
 			continue // Continue to next peer
 		}
 
 		peerInfo, err := peerstore.InfoFromP2pAddr(address) // Get peer info
-
-		if err != nil { // Check for errors
+		if err != nil {                                     // Check for errors
 			continue // Continue to next peer
 		}
 

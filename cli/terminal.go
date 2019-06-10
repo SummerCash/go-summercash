@@ -57,8 +57,7 @@ func NewTerminal(rpcPort uint, rpcAddress string, network string) {
 		input = strings.TrimSuffix(input, "\n") // Trim newline
 
 		receiver, methodname, params, err := common.ParseStringMethodCall(input) // Attempt to parse as method call
-
-		if err != nil { // Check for errors
+		if err != nil {                                                          // Check for errors
 			fmt.Println(err.Error()) // Log found error
 
 			continue // Continue
@@ -83,56 +82,47 @@ func handleCommand(receiver string, methodname string, params []string, rpcPort 
 	switch receiver {
 	case "crypto":
 		err := handleCrypto(&cryptoClient, methodname, params) // Handle crypto
-
-		if err != nil { // Check for errors
+		if err != nil {                                        // Check for errors
 			fmt.Println("\n" + err.Error()) // Log found error
 		}
 	case "upnp":
 		err := handleUpnp(&upnpClient, methodname, params) // Handle upnp
-
-		if err != nil { // Check for errors
+		if err != nil {                                    // Check for errors
 			fmt.Println("\n" + err.Error()) // Log found error
 		}
 	case "accounts":
 		err := handleAccounts(&accountsClient, methodname, params) // Handle accounts
-
-		if err != nil { // Check for errors
+		if err != nil {                                            // Check for errors
 			fmt.Println("\n" + err.Error()) // Log found error
 		}
 	case "config":
 		err := handleConfig(&configClient, methodname, params) // Handle config
-
-		if err != nil { // Check for errors
+		if err != nil {                                        // Check for errors
 			fmt.Println("\n" + err.Error()) // Log found error
 		}
 	case "transaction":
 		err := handleTransaction(&transactionClient, methodname, params) // Handle tx
-
-		if err != nil { // Check for errors
+		if err != nil {                                                  // Check for errors
 			fmt.Println("\n" + err.Error()) // Log found error
 		}
 	case "chain":
 		err := handleChain(&chainClient, methodname, params) // Handle chain
-
-		if err != nil { // Check for errors
+		if err != nil {                                      // Check for errors
 			fmt.Println("\n" + err.Error()) // Log found error
 		}
 	case "coordinationChain":
 		err := handleCoordinationChain(&coordinationChainClient, methodname, params) // Handle coordination chain
-
-		if err != nil { // Check for errors
+		if err != nil {                                                              // Check for errors
 			fmt.Println("\n" + err.Error()) // Log found error
 		}
 	case "common":
 		err := handleCommon(&commonClient, methodname, params) // Handle common
-
-		if err != nil { // Check for errors
+		if err != nil {                                        // Check for errors
 			fmt.Println("\n" + err.Error()) // Log found error
 		}
 	case "p2p":
 		err := handleP2P(&p2pClient, methodname, params) // Handle p2p
-
-		if err != nil { // Check for errors
+		if err != nil {                                  // Check for errors
 			fmt.Println("\n" + err.Error()) // Log found error
 		}
 	default:
@@ -197,8 +187,7 @@ func handleUpnp(upnpClient *upnpProto.Upnp, methodname string, params []string) 
 		}
 
 		port, err := strconv.Atoi(params[0]) // Convert to int
-
-		if err != nil { // Check for errors
+		if err != nil {                      // Check for errors
 			return err // Return found error
 		}
 

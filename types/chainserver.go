@@ -8,10 +8,8 @@ import (
 	"github.com/SummerCash/ursa/vm"
 )
 
-var (
-	// ErrBadChain - error describing input chain with tx length shorter than current
-	ErrBadChain = errors.New("chain out of date")
-)
+// ErrBadChain - error describing input chain with tx length shorter than current
+var ErrBadChain = errors.New("chain out of date")
 
 /* BEGIN EXPORTED METHODS */
 
@@ -22,8 +20,7 @@ func HandleReceivedChainRequest(b []byte) (*Chain, error) {
 	copy(address[:], b[12:][:]) // Copy read address
 
 	chain, err := ReadChainFromMemory(address) // Read chain from memory
-
-	if err != nil { // Check for errors
+	if err != nil {                            // Check for errors
 		return &Chain{}, err // Return found error
 	}
 
@@ -33,16 +30,14 @@ func HandleReceivedChainRequest(b []byte) (*Chain, error) {
 // HandleReceivedTransaction - handle received transaction
 func HandleReceivedTransaction(b []byte) error {
 	tx, err := TransactionFromBytes(b) // Marshal bytes to transaction
-
-	if err != nil { // Check for errors
+	if err != nil {                    // Check for errors
 		return err // Return error
 	}
 
 	tx.RecoverSafeEncoding() // Recover from safe encoding
 
 	chain, err := ReadChainFromMemory(*tx.Recipient) // Read chain
-
-	if err != nil { // Check for errors
+	if err != nil {                                  // Check for errors
 		return err // Return found error
 	}
 
@@ -90,16 +85,14 @@ func HandleReceivedTransaction(b []byte) error {
 // HandleReceivedContractCreation - handle received transaction creating contract
 func HandleReceivedContractCreation(b []byte) error {
 	tx, err := TransactionFromBytes(b) // Marshal bytes to transaction
-
-	if err != nil { // Check for errors
+	if err != nil {                    // Check for errors
 		return err // Return error
 	}
 
 	tx.RecoverSafeEncoding() // Recover from safe encoding
 
 	chain, err := ReadChainFromMemory(*tx.Recipient) // Read chain
-
-	if err != nil { // Check for errors
+	if err != nil {                                  // Check for errors
 		return err // Return found error
 	}
 
@@ -151,14 +144,12 @@ func HandleReceivedStateRequest(b []byte) ([]byte, error) {
 	copy(address[:], b[9:][:]) // Copy read address
 
 	chain, err := ReadChainFromMemory(address) // Read chain
-
-	if err != nil { // Check for errors
+	if err != nil {                            // Check for errors
 		return nil, err // Return found error
 	}
 
 	env, err := vm.ReadEnvironmentFromMemory() // Read environment from memory
-
-	if err != nil { // Check for errors
+	if err != nil {                            // Check for errors
 		env = &common.VMConfig // Get VM config
 
 		err = env.WriteToMemory() // Write to persistent memory
@@ -169,14 +160,12 @@ func HandleReceivedStateRequest(b []byte) ([]byte, error) {
 	}
 
 	virtualMachine, err := vm.NewVirtualMachine(chain.ContractSource, *env, new(TransactionMetaResolver), nil) // Init vm
-
-	if err != nil { // Check for errors
+	if err != nil {                                                                                            // Check for errors
 		return nil, err // Return found error
 	}
 
 	state, err := vm.ReadStateDBFromMemory(hex.EncodeToString(virtualMachine.StateDB.ID)) // Read state DB
-
-	if err != nil { // Check for errors
+	if err != nil {                                                                       // Check for errors
 		return nil, err // Return found error
 	}
 
@@ -186,8 +175,7 @@ func HandleReceivedStateRequest(b []byte) ([]byte, error) {
 // HandleReceivedChain - handle received chain
 func HandleReceivedChain(b []byte) error {
 	chain, err := FromBytes(b) // Marshal bytes to chain
-
-	if err != nil { // Check for errors
+	if err != nil {            // Check for errors
 		return err // Return error
 	}
 

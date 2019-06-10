@@ -6,11 +6,9 @@ import (
 	"github.com/SummerCash/ursa/vm"
 )
 
-var (
-	// workingVMTransaction is the working virtual machine transaction.
-	// Useful for tx state logging.
-	workingVMTransaction *Transaction
-)
+// workingVMTransaction is the working virtual machine transaction.
+// Useful for tx state logging.
+var workingVMTransaction *Transaction
 
 // TransactionMetaResolver outlines the default go-summercash WASM tx meta resolver.
 type TransactionMetaResolver struct {

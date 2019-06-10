@@ -18,15 +18,13 @@ import (
 	"github.com/SummerCash/go-summercash/config"
 )
 
-var (
-	// BootstrapNodes represents all default bootstrap nodes on the given network.
-	BootstrapNodes = []string{
-		"/ip4/108.41.124.60/tcp/3000/ipfs/QmWRdp5HQ1SfENPnLFrXviY9gr6Y5BcWYbkWuqDkZSizAj",
-		"/ip4/108.41.124.60/tcp/3003/ipfs/QmYEaiPPsqtPes1AtPZA1zpqozmDzfgFJv3ygjTjLVXedp",
-		"/ip4/174.129.191.246/tcp/3000/ipfs/QmUXThFht8qoZGdKLMVmr8Bk34VJ9oS3WWw3a25jeZucYd",
-		"/ip4/54.234.2.165/tcp/3000/ipfs/Qma3QTswnKK48gzsaVhzakPApY4kPuBGsZLS1i837gns2s",
-	}
-)
+// BootstrapNodes represents all default bootstrap nodes on the given network.
+var BootstrapNodes = []string{
+	"/ip4/108.41.124.60/tcp/3000/ipfs/QmWRdp5HQ1SfENPnLFrXviY9gr6Y5BcWYbkWuqDkZSizAj",
+	"/ip4/108.41.124.60/tcp/3003/ipfs/QmYEaiPPsqtPes1AtPZA1zpqozmDzfgFJv3ygjTjLVXedp",
+	"/ip4/174.129.191.246/tcp/3000/ipfs/QmUXThFht8qoZGdKLMVmr8Bk34VJ9oS3WWw3a25jeZucYd",
+	"/ip4/54.234.2.165/tcp/3000/ipfs/Qma3QTswnKK48gzsaVhzakPApY4kPuBGsZLS1i837gns2s",
+}
 
 /* BEGIN EXPORTED METHODS */
 
@@ -34,20 +32,17 @@ var (
 func GetBestBootstrapAddress(ctx context.Context, host *routed.RoutedHost, network string) string {
 	for _, bootstrapAddress := range BootstrapNodes { // Iterate through bootstrap nodes
 		multiaddr, err := multiaddr.NewMultiaddr(bootstrapAddress) // Parse address
-
-		if err != nil { // Check for errors
+		if err != nil {                                            // Check for errors
 			continue // Continue
 		}
 
 		peerID, err := peer.IDB58Decode(strings.Split(bootstrapAddress, "ipfs/")[1]) // Get peer ID
-
-		if err != nil { // Check for errors
+		if err != nil {                                                              // Check for errors
 			continue // Continue
 		}
 
 		peerInfo, err := peerstore.InfoFromP2pAddr(multiaddr) // Get peer info
-
-		if err != nil { // Check for errors
+		if err != nil {                                       // Check for errors
 			continue // Continue
 		}
 
@@ -62,8 +57,7 @@ func GetBestBootstrapAddress(ctx context.Context, host *routed.RoutedHost, netwo
 		}
 
 		stream, err := (*host).NewStream(ctx, peerInfo.ID, protocol.ID(GetStreamHeaderProtocolPath(network, RequestAlive))) // Get stream
-
-		if err != nil { // Check for errors
+		if err != nil {                                                                                                     // Check for errors
 			cancel() // Cancel
 
 			continue // Continue
@@ -80,8 +74,7 @@ func GetBestBootstrapAddress(ctx context.Context, host *routed.RoutedHost, netwo
 
 		go func() {
 			network, err := reader.ReadBytes('\r') // Read
-
-			if err != nil { // Check for errors
+			if err != nil {                        // Check for errors
 				err = host.Network().ClosePeer(peerInfo.ID) // Disconnect from peer
 
 				if err != nil { // Check for errors

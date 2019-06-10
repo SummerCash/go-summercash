@@ -55,8 +55,7 @@ func (server *Server) SyncNetwork(ctx context.Context, req *p2pProto.GeneralRequ
 	}
 
 	config, err := config.ReadChainConfigFromMemory() // Read config from memory
-
-	if err != nil { // Check for errors
+	if err != nil {                                   // Check for errors
 		return &p2pProto.GeneralResponse{}, err // Return found error
 	}
 

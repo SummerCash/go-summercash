@@ -5,8 +5,7 @@ import "testing"
 // TestHandleReceivedConfigRequest - handle config request
 func TestHandleReceivedConfigRequest(t *testing.T) {
 	chainConfig, err := NewChainConfig("genesis.json") // Initialize chain configuration
-
-	if err != nil { // Check for errors
+	if err != nil {                                    // Check for errors
 		t.Error(err) // Log found error
 		t.FailNow()  // Panic
 	}
@@ -19,8 +18,7 @@ func TestHandleReceivedConfigRequest(t *testing.T) {
 	}
 
 	configBytes, err := HandleReceivedConfigRequest() // Handle request
-
-	if err != nil { // Check for errors
+	if err != nil {                                   // Check for errors
 		t.Error(err) // Log found error
 		t.FailNow()  // Panic
 	}

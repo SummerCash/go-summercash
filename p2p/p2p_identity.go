@@ -27,8 +27,7 @@ var (
 // GetPeerIdentity gets the peer identity. If no identity exists persistently, it creates one.
 func GetPeerIdentity() (*crypto.PrivKey, error) {
 	identity, err := GetExistingPeerIdentity() // Get existing peer identity
-
-	if err != nil { // Check for errors
+	if err != nil {                            // Check for errors
 		if err != ErrNoExistingIdentity { // Check for errors
 			return nil, err // Return found error
 		}
@@ -46,8 +45,7 @@ func GetPeerIdentity() (*crypto.PrivKey, error) {
 // NewPeerIdentity creates a new p2p identity, and writes it to memory.
 func NewPeerIdentity() (*crypto.PrivKey, error) {
 	privateKey, _, err := crypto.GenerateRSAKeyPair(2048, rand.Reader) // Generate RSA key pair
-
-	if err != nil { // Check for errors
+	if err != nil {                                                    // Check for errors
 		return nil, err // Return found error
 	}
 
@@ -67,8 +65,7 @@ func WritePeerIdentity(identity *crypto.PrivKey) error {
 	}
 
 	encoded, err := crypto.MarshalPrivateKey(*identity) // Marshal identity
-
-	if err != nil { // Check for errors
+	if err != nil {                                     // Check for errors
 		return err // Return found error
 	}
 
@@ -94,14 +91,12 @@ func GetExistingPeerIdentity() (*crypto.PrivKey, error) {
 	}
 
 	data, err := ioutil.ReadFile(filepath.FromSlash(fmt.Sprintf("%s/identity.pem", common.PeerToPeerDir))) // Read identity
-
-	if err != nil { // Check for errors
+	if err != nil {                                                                                        // Check for errors
 		return nil, err // Return found error
 	}
 
 	peerIdentity, err := crypto.UnmarshalPrivateKey(data) // Unmarshal data
-
-	if err != nil { // Check for errors
+	if err != nil {                                       // Check for errors
 		return nil, err // Return found error
 	}
 

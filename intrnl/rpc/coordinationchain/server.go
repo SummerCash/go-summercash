@@ -17,14 +17,12 @@ type Server struct{}
 // SyncNetwork - coordinationChain.SyncNetwork RPC handler
 func (server *Server) SyncNetwork(ctx context.Context, req *coordinationChainProto.GeneralRequest) (*coordinationChainProto.GeneralResponse, error) {
 	err := types.SyncNetwork(true, true) // Sync network
-
-	if err != nil { // Check for errors
+	if err != nil {                      // Check for errors
 		return &coordinationChainProto.GeneralResponse{}, err // Return found error
 	}
 
 	chain, err := types.ReadCoordinationChainFromMemory() // Read chain
-
-	if err != nil { // Check for errors
+	if err != nil {                                       // Check for errors
 		return &coordinationChainProto.GeneralResponse{}, err // Return found error
 	}
 
@@ -34,8 +32,7 @@ func (server *Server) SyncNetwork(ctx context.Context, req *coordinationChainPro
 // GetPeers - get all peers in coordination chain
 func (server *Server) GetPeers(ctx context.Context, req *coordinationChainProto.GeneralRequest) (*coordinationChainProto.GeneralResponse, error) {
 	chain, err := types.ReadCoordinationChainFromMemory() // Read chain
-
-	if err != nil { // Check for errors
+	if err != nil {                                       // Check for errors
 		return &coordinationChainProto.GeneralResponse{}, err // Return found error
 	}
 
@@ -53,8 +50,7 @@ func (server *Server) GetPeers(ctx context.Context, req *coordinationChainProto.
 	}
 
 	json, err := json.MarshalIndent(knownPeers, "", "  ") // Marshal
-
-	if err != nil { // Check for errors
+	if err != nil {                                       // Check for errors
 		return &coordinationChainProto.GeneralResponse{}, err // Return found error
 	}
 
@@ -64,14 +60,12 @@ func (server *Server) GetPeers(ctx context.Context, req *coordinationChainProto.
 // Bytes - coordinationChain.Bytes RPC handler
 func (server *Server) Bytes(ctx context.Context, req *coordinationChainProto.GeneralRequest) (*coordinationChainProto.GeneralResponse, error) {
 	chain, err := types.ReadCoordinationChainFromMemory() // Read chain
-
-	if err != nil { // Check for errors
+	if err != nil {                                       // Check for errors
 		return &coordinationChainProto.GeneralResponse{}, err // Return found error
 	}
 
 	hex, err := common.EncodeString(chain.Bytes()) // Encode chain byte value to hex
-
-	if err != nil { // Check for errors
+	if err != nil {                                // Check for errors
 		return &coordinationChainProto.GeneralResponse{}, err // Return found error
 	}
 
@@ -81,8 +75,7 @@ func (server *Server) Bytes(ctx context.Context, req *coordinationChainProto.Gen
 // String - coordinationChain.String RPC handler
 func (server *Server) String(ctx context.Context, req *coordinationChainProto.GeneralRequest) (*coordinationChainProto.GeneralResponse, error) {
 	chain, err := types.ReadCoordinationChainFromMemory() // Read chain
-
-	if err != nil { // Check for errors
+	if err != nil {                                       // Check for errors
 		return &coordinationChainProto.GeneralResponse{}, err // Return found error
 	}
 

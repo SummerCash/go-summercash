@@ -41,8 +41,7 @@ func TestErrNoMem(t *testing.T) {
 // TestEncode - test functionality of Encode() method
 func TestEncode(t *testing.T) {
 	encoded, err := Encode([]byte("test")) // Encode
-
-	if err != nil { // Check for errors
+	if err != nil {                        // Check for errors
 		t.Error(err) // Log found error
 		t.FailNow()  // Panic
 	}
@@ -53,8 +52,7 @@ func TestEncode(t *testing.T) {
 // TestEncodeString - test functionality of EncodeString() method
 func TestEncodeString(t *testing.T) {
 	encoded, err := EncodeString([]byte("test")) // Encode
-
-	if err != nil { // Check for errors
+	if err != nil {                              // Check for errors
 		t.Error(err) // Log found error
 		t.FailNow()  // Panic
 	}
@@ -65,15 +63,13 @@ func TestEncodeString(t *testing.T) {
 // TestDecode - test functionality of Decode() method
 func TestDecode(t *testing.T) {
 	encoded, err := Encode([]byte("test")) // Encode
-
-	if err != nil { // Check for errors
+	if err != nil {                        // Check for errors
 		t.Error(err) // Log found error
 		t.FailNow()  // Panic
 	}
 
 	decoded, err := Decode(encoded) // Decode
-
-	if err != nil { // Check for errors
+	if err != nil {                 // Check for errors
 		t.Error(err) // Log found error
 		t.FailNow()  // Panic
 	}
@@ -84,15 +80,13 @@ func TestDecode(t *testing.T) {
 // TestDecodeString - test functionality of DecodeString() method
 func TestDecodeString(t *testing.T) {
 	encoded, err := EncodeString([]byte("test")) // Encode
-
-	if err != nil { // Check for errors
+	if err != nil {                              // Check for errors
 		t.Error(err) // Log found error
 		t.FailNow()  // Panic
 	}
 
 	decoded, err := DecodeString(encoded) // Decode
-
-	if err != nil { // Check for errors
+	if err != nil {                       // Check for errors
 		t.Error(err) // Log found error
 		t.FailNow()  // Panic
 	}
