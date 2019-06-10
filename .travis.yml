@@ -28,7 +28,7 @@ jobs:
         - go vet ./... # Run static analyzer
     - name: "gofmt"
       script:
-        - cd $(mktemp -d); go mod init tmp; go get mvdan.cc/gofumpt; cd ~/SummerCash/go-summercash
+        - cd $(mktemp -d); go mod init tmp; go get mvdan.cc/gofumpt; cd $TRAVIS_BUILD_DIR
         - git diff --quiet || (echo "\033[0;31mWorking directory not clean!\033[0m" && exit 1) # Check working dir clean
         - gofumpt -w -s . # Fmt
         - git diff --exit-code || (git checkout . && exit 1) # Ensure no changes made in working dir
