@@ -11,7 +11,6 @@ notifications:
   email: false
 
 install:
-  - go get mvdan.cc/gofumpt; cd ~/go/src/mvdan.cc/gofumpt; go install; cd
   - export GO111MODULE=on
   - go get -u
 
@@ -29,6 +28,9 @@ jobs:
         - go vet ./... # Run static analyzer
     - name: "gofmt"
       script:
+        - export GO111MODULE=off
+        - go get mvdan.cc/gofumpt; cd ~/go/src/mvdan.cc/gofumpt; go install; cd ~/go/src/github.com/SummerCash/go-summercash
+        - export GO111MODULE=on
         - git diff --quiet || (echo "\033[0;31mWorking directory not clean!\033[0m" && exit 1) # Check working dir clean
         - gofumpt -w -s . # Fmt
         - git diff --exit-code || (git checkout . && exit 1) # Ensure no changes made in working dir
