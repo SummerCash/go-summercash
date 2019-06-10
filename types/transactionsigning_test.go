@@ -16,22 +16,19 @@ import (
 // TestSignTransaction - test functionality of SignTransaction() method
 func TestSignTransaction(t *testing.T) {
 	privateKey, err := ecdsa.GenerateKey(elliptic.P521(), rand.Reader) // Generate private key
-
-	if err != nil { // Check for errors
+	if err != nil {                                                    // Check for errors
 		t.Error(err) // Log found error
 		t.FailNow()  // Panic
 	}
 
 	sender, err := common.NewAddress(privateKey) // Initialize address from private key
-
-	if err != nil { // Check for errors
+	if err != nil {                              // Check for errors
 		t.Error(err) // Log found error
 		t.FailNow()  // Panic
 	}
 
 	transaction, err := NewTransaction(0, nil, &sender, &sender, big.NewFloat(0), []byte("test")) // Initialize transaction
-
-	if err != nil { // Check for errors
+	if err != nil {                                                                               // Check for errors
 		t.Error(err) // Log found error
 		t.FailNow()  // Panic
 	}
@@ -44,8 +41,7 @@ func TestSignTransaction(t *testing.T) {
 	}
 
 	marshaledVal, err := json.MarshalIndent(*transaction, "", "  ") // Marshal tx
-
-	if err != nil { // Check for errors
+	if err != nil {                                                 // Check for errors
 		t.Error(err) // Log found error
 		t.FailNow()  // Panic
 	}
@@ -56,22 +52,19 @@ func TestSignTransaction(t *testing.T) {
 // TestVerifyTransactionSignature - test functionality of VerifyTransactionSignature() method
 func TestVerifyTransactionSignature(t *testing.T) {
 	privateKey, err := ecdsa.GenerateKey(elliptic.P521(), rand.Reader) // Generate private key
-
-	if err != nil { // Check for errors
+	if err != nil {                                                    // Check for errors
 		t.Error(err) // Log found error
 		t.FailNow()  // Panic
 	}
 
 	sender, err := common.NewAddress(privateKey) // Initialize address from private key
-
-	if err != nil { // Check for errors
+	if err != nil {                              // Check for errors
 		t.Error(err) // Log found error
 		t.FailNow()  // Panic
 	}
 
 	validTransaction, err := NewTransaction(0, nil, &sender, &sender, big.NewFloat(0), []byte("test")) // Initialize transaction
-
-	if err != nil { // Check for errors
+	if err != nil {                                                                                    // Check for errors
 		t.Error(err) // Log found error
 		t.FailNow()  // Panic
 	}
@@ -96,22 +89,19 @@ func TestVerifyTransactionSignature(t *testing.T) {
 // TestBytesSignature - test functionality of signature to bytes extension method
 func TestBytesSignature(t *testing.T) {
 	privateKey, err := ecdsa.GenerateKey(elliptic.P521(), rand.Reader) // Generate private key
-
-	if err != nil { // Check for errors
+	if err != nil {                                                    // Check for errors
 		t.Error(err) // Log found error
 		t.FailNow()  // Panic
 	}
 
 	sender, err := common.NewAddress(privateKey) // Initialize address from private key
-
-	if err != nil { // Check for errors
+	if err != nil {                              // Check for errors
 		t.Error(err) // Log found error
 		t.FailNow()  // Panic
 	}
 
 	transaction, err := NewTransaction(0, nil, &sender, &sender, big.NewFloat(0), []byte("test")) // Initialize transaction
-
-	if err != nil { // Check for errors
+	if err != nil {                                                                               // Check for errors
 		t.Error(err) // Log found error
 		t.FailNow()  // Panic
 	}
@@ -136,22 +126,19 @@ func TestBytesSignature(t *testing.T) {
 // TestStringSignature - test functionality of signature to string extension method
 func TestStringSignature(t *testing.T) {
 	privateKey, err := ecdsa.GenerateKey(elliptic.P521(), rand.Reader) // Generate private key
-
-	if err != nil { // Check for errors
+	if err != nil {                                                    // Check for errors
 		t.Error(err) // Log found error
 		t.FailNow()  // Panic
 	}
 
 	sender, err := common.NewAddress(privateKey) // Initialize address from private key
-
-	if err != nil { // Check for errors
+	if err != nil {                              // Check for errors
 		t.Error(err) // Log found error
 		t.FailNow()  // Panic
 	}
 
 	transaction, err := NewTransaction(0, nil, &sender, &sender, big.NewFloat(0), []byte("test")) // Initialize transaction
-
-	if err != nil { // Check for errors
+	if err != nil {                                                                               // Check for errors
 		t.Error(err) // Log found error
 		t.FailNow()  // Panic
 	}
@@ -176,22 +163,19 @@ func TestStringSignature(t *testing.T) {
 // TestSelfSignTransaction - test functionality of self tx-signing
 func TestSelfSignTransaction(t *testing.T) {
 	privateKey, err := ecdsa.GenerateKey(elliptic.P521(), rand.Reader) // Generate private key
-
-	if err != nil { // Check for errors
+	if err != nil {                                                    // Check for errors
 		t.Error(err) // Log found error
 		t.FailNow()  // Panic
 	}
 
 	sender, err := common.NewAddress(privateKey) // Initialize address from private key
-
-	if err != nil { // Check for errors
+	if err != nil {                              // Check for errors
 		t.Error(err) // Log found error
 		t.FailNow()  // Panic
 	}
 
 	transaction, err := NewTransaction(0, nil, &sender, &sender, big.NewFloat(0), []byte("test")) // Initialize transaction
-
-	if err != nil { // Check for errors
+	if err != nil {                                                                               // Check for errors
 		t.Error(err) // Log found error
 		t.FailNow()  // Panic
 	}
@@ -204,8 +188,7 @@ func TestSelfSignTransaction(t *testing.T) {
 	}
 
 	marshaledVal, err := json.MarshalIndent(*transaction, "", "  ") // Marshal tx
-
-	if err != nil { // Check for errors
+	if err != nil {                                                 // Check for errors
 		t.Error(err) // Log found error
 		t.FailNow()  // Panic
 	}

@@ -14,29 +14,25 @@ import (
 
 /* BEGIN EXPORTED METHODS HELPERS */
 
-// TestNewLeaf test the functionality of the NewLeaf helper.
+// TestNewLeaf test the functionality of the NewLeaf helper method.
 func TestNewLeaf(t *testing.T) {
 	privateKey, err := ecdsa.GenerateKey(elliptic.P521(), rand.Reader) // Generate private key
-
-	if err != nil { // Check for errors
+	if err != nil {                                                    // Check for errors
 		t.Fatal(err) // Panic
 	}
 
 	sender, err := common.NewAddress(privateKey) // Initialize address from private key
-
-	if err != nil { // Check for errors
+	if err != nil {                              // Check for errors
 		t.Fatal(err) // Panic
 	}
 
 	transaction, err := types.NewTransaction(0, nil, &sender, &sender, big.NewFloat(0), []byte("test")) // Initialize transaction
-
-	if err != nil { // Check for errors
+	if err != nil {                                                                                     // Check for errors
 		t.Fatal(err) // Panic
 	}
 
 	leaf, err := NewLeaf(transaction) // Initialize leaf
-
-	if err != nil { // Check for errors
+	if err != nil {                   // Check for errors
 		t.Fatal(err) // Panic
 	}
 
@@ -48,26 +44,22 @@ func TestNewLeaf(t *testing.T) {
 // TestIsOnlyChild tests the functionality of the IsOnlyChild helper method.
 func TestIsOnlyChild(t *testing.T) {
 	privateKey, err := ecdsa.GenerateKey(elliptic.P521(), rand.Reader) // Generate private key
-
-	if err != nil { // Check for errors
+	if err != nil {                                                    // Check for errors
 		t.Fatal(err) // Panic
 	}
 
 	sender, err := common.NewAddress(privateKey) // Initialize address from private key
-
-	if err != nil { // Check for errors
+	if err != nil {                              // Check for errors
 		t.Fatal(err) // Panic
 	}
 
 	transaction, err := types.NewTransaction(0, nil, &sender, &sender, big.NewFloat(0), []byte("test")) // Initialize transaction
-
-	if err != nil { // Check for errors
+	if err != nil {                                                                                     // Check for errors
 		t.Fatal(err) // Panic
 	}
 
 	root, err := NewLeaf(transaction) // Initialize leaf
-
-	if err != nil { // Check for errors
+	if err != nil {                   // Check for errors
 		t.Fatal(err) // Panic
 	}
 
@@ -77,8 +69,7 @@ func TestIsOnlyChild(t *testing.T) {
 
 	for i := 0; i < 3; i++ { // Add children
 		leaf, err := NewLeaf(transaction) // Initialize leaf
-
-		if err != nil { // Check for errors
+		if err != nil {                   // Check for errors
 			t.Fatal(err) // Panic
 		}
 
@@ -95,32 +86,27 @@ func TestIsOnlyChild(t *testing.T) {
 // TestGetOnlyChild tests the functionality of the GetOnlyChild helper method.
 func TestGetOnlyChild(t *testing.T) {
 	privateKey, err := ecdsa.GenerateKey(elliptic.P521(), rand.Reader) // Generate private key
-
-	if err != nil { // Check for errors
+	if err != nil {                                                    // Check for errors
 		t.Fatal(err) // Panic
 	}
 
 	sender, err := common.NewAddress(privateKey) // Initialize address from private key
-
-	if err != nil { // Check for errors
+	if err != nil {                              // Check for errors
 		t.Fatal(err) // Panic
 	}
 
 	transaction, err := types.NewTransaction(0, nil, &sender, &sender, big.NewFloat(0), []byte("test")) // Initialize transaction
-
-	if err != nil { // Check for errors
+	if err != nil {                                                                                     // Check for errors
 		t.Fatal(err) // Panic
 	}
 
 	root, err := NewLeaf(transaction) // Initialize leaf
-
-	if err != nil { // Check for errors
+	if err != nil {                   // Check for errors
 		t.Fatal(err) // Panic
 	}
 
 	child, err := NewLeaf(transaction) // Initialize leaf
-
-	if err != nil { // Check for errors
+	if err != nil {                    // Check for errors
 		t.Fatal(err) // Panic
 	}
 
@@ -129,8 +115,7 @@ func TestGetOnlyChild(t *testing.T) {
 	child.Parents = append(child.Parents, root) // Append root as parent
 
 	onlyChild, err := root.GetOnlyChild() // Get only child
-
-	if err != nil { // Check for errors
+	if err != nil {                       // Check for errors
 		t.Fatal(err) // Panic
 	}
 
@@ -142,39 +127,33 @@ func TestGetOnlyChild(t *testing.T) {
 // TestGetChildByHash tests the functionality of the GetChildByHash helper method.
 func TestGetChildByHash(t *testing.T) {
 	privateKey, err := ecdsa.GenerateKey(elliptic.P521(), rand.Reader) // Generate private key
-
-	if err != nil { // Check for errors
+	if err != nil {                                                    // Check for errors
 		t.Fatal(err) // Panic
 	}
 
 	sender, err := common.NewAddress(privateKey) // Initialize address from private key
-
-	if err != nil { // Check for errors
+	if err != nil {                              // Check for errors
 		t.Fatal(err) // Panic
 	}
 
 	transaction, err := types.NewTransaction(0, nil, &sender, &sender, big.NewFloat(0), []byte("test")) // Initialize transaction
-
-	if err != nil { // Check for errors
+	if err != nil {                                                                                     // Check for errors
 		t.Fatal(err) // Panic
 	}
 
 	root, err := NewLeaf(transaction) // Initialize leaf
-
-	if err != nil { // Check for errors
+	if err != nil {                   // Check for errors
 		t.Fatal(err) // Panic
 	}
 
 	for i := 0; i < 3; i++ { // Add children
 		transaction, err := types.NewTransaction(uint64(i+1), nil, &sender, &sender, big.NewFloat(0), []byte("test")) // Initialize transaction
-
-		if err != nil { // Check for errors
+		if err != nil {                                                                                               // Check for errors
 			t.Fatal(err) // Panic
 		}
 
 		child, err := NewLeaf(transaction) // Initialize leaf
-
-		if err != nil { // Check for errors
+		if err != nil {                    // Check for errors
 			t.Fatal(err) // Panic
 		}
 
@@ -183,8 +162,7 @@ func TestGetChildByHash(t *testing.T) {
 		root.Children = append(root.Children, child) // Append child to root
 
 		foundChild, err := root.GetChildByHash(child.Hash) // Get child by hash
-
-		if err != nil { // Check for errors
+		if err != nil {                                    // Check for errors
 			t.Fatal(err) // Panic
 		}
 
@@ -197,39 +175,33 @@ func TestGetChildByHash(t *testing.T) {
 // TestGetNextCommonLeaf tests the functionality of the GetNextCommonLeaf helper method.
 func TestGetNextCommonLeaf(t *testing.T) {
 	privateKey, err := ecdsa.GenerateKey(elliptic.P521(), rand.Reader) // Generate private key
-
-	if err != nil { // Check for errors
+	if err != nil {                                                    // Check for errors
 		t.Fatal(err) // Panic
 	}
 
 	sender, err := common.NewAddress(privateKey) // Initialize address from private key
-
-	if err != nil { // Check for errors
+	if err != nil {                              // Check for errors
 		t.Fatal(err) // Panic
 	}
 
 	transaction, err := types.NewTransaction(0, nil, &sender, &sender, big.NewFloat(0), []byte("test")) // Initialize transaction
-
-	if err != nil { // Check for errors
+	if err != nil {                                                                                     // Check for errors
 		t.Fatal(err) // Panic
 	}
 
 	root, err := NewLeaf(transaction) // Initialize leaf
-
-	if err != nil { // Check for errors
+	if err != nil {                   // Check for errors
 		t.Fatal(err) // Panic
 	}
 
 	for i := 0; i < 3; i++ { // Add children
 		transaction, err := types.NewTransaction(uint64(i+1), nil, &sender, &sender, big.NewFloat(0), []byte("test")) // Initialize transaction
-
-		if err != nil { // Check for errors
+		if err != nil {                                                                                               // Check for errors
 			t.Fatal(err) // Panic
 		}
 
 		child, err := NewLeaf(transaction) // Initialize leaf
-
-		if err != nil { // Check for errors
+		if err != nil {                    // Check for errors
 			t.Fatal(err) // Panic
 		}
 
@@ -238,8 +210,7 @@ func TestGetNextCommonLeaf(t *testing.T) {
 		root.Children = append(root.Children, child) // Append child to root
 
 		foundChild, err := root.GetChildByHash(child.Hash) // Get child by hash
-
-		if err != nil { // Check for errors
+		if err != nil {                                    // Check for errors
 			t.Fatal(err) // Panic
 		}
 
@@ -249,14 +220,12 @@ func TestGetNextCommonLeaf(t *testing.T) {
 	}
 
 	newTransaction, err := types.NewTransaction(4, nil, &sender, &sender, big.NewFloat(0), []byte("test")) // Initialize transaction
-
-	if err != nil { // Check for errors
+	if err != nil {                                                                                        // Check for errors
 		t.Fatal(err) // Panic
 	}
 
 	newChild, err := NewLeaf(newTransaction) // Initialize leaf
-
-	if err != nil { // Check for errors
+	if err != nil {                          // Check for errors
 		t.Fatal(err) // Panic
 	}
 
@@ -267,8 +236,7 @@ func TestGetNextCommonLeaf(t *testing.T) {
 	}
 
 	secondChild, err := NewLeaf(newTransaction) // Initialize leaf
-
-	if err != nil { // Check for errors
+	if err != nil {                             // Check for errors
 		t.Fatal(err) // Panic
 	}
 
@@ -277,8 +245,7 @@ func TestGetNextCommonLeaf(t *testing.T) {
 	newChild.Children = append(newChild.Children, secondChild) // Append second child
 
 	foundChild, err := root.GetNextCommonLeaf() // Get common leaf
-
-	if err != nil { // Check for errors
+	if err != nil {                             // Check for errors
 		t.Fatal(err) // panic
 	}
 

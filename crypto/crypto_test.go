@@ -11,15 +11,13 @@ import (
 // TestBytesSignature - test functionality of signature to bytes extension method
 func TestBytesSignature(t *testing.T) {
 	privateKey, err := ecdsa.GenerateKey(elliptic.P521(), rand.Reader) // Generate private key
-
-	if err != nil { // Check for errors
+	if err != nil {                                                    // Check for errors
 		t.Error(err) // Log found error
 		t.FailNow()  // Panic
 	}
 
 	r, s, err := ecdsa.Sign(rand.Reader, privateKey, []byte("test")) // Sign
-
-	if err != nil { // Check for errors
+	if err != nil {                                                  // Check for errors
 		t.Error(err) // Log found error
 		t.FailNow()  // Panic
 	}
@@ -45,15 +43,13 @@ func TestBytesSignature(t *testing.T) {
 // TestStringSignature - test functionality of signature to string extension method
 func TestStringSignature(t *testing.T) {
 	privateKey, err := ecdsa.GenerateKey(elliptic.P521(), rand.Reader) // Generate private key
-
-	if err != nil { // Check for errors
+	if err != nil {                                                    // Check for errors
 		t.Error(err) // Log found error
 		t.FailNow()  // Panic
 	}
 
 	r, s, err := ecdsa.Sign(rand.Reader, privateKey, []byte("test")) // Sign
-
-	if err != nil { // Check for errors
+	if err != nil {                                                  // Check for errors
 		t.Error(err) // Log found error
 		t.FailNow()  // Panic
 	}

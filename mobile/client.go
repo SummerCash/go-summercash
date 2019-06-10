@@ -42,8 +42,7 @@ func Run() {
 // startRPCServer - start RPC server
 func startRPCServer() {
 	err := common.GenerateTLSCertificates("term") // Generate certs
-
-	if err != nil { // Check for errors
+	if err != nil {                               // Check for errors
 		panic(err) // Panic
 	}
 
@@ -80,14 +79,12 @@ func startNode(archivalNode bool) {
 	defer cancel() // Cancel
 
 	host, err := p2p.NewHost(ctx, 3000, "main_net") // Initialize libp2p host with context and nat manager
-
-	if err != nil { // Check for errors
+	if err != nil {                                 // Check for errors
 		panic(err) // Panic
 	}
 
 	config, err := config.ReadChainConfigFromMemory() // Read chain config
-
-	if err != nil { // Check for errors
+	if err != nil {                                   // Check for errors
 		config, err = p2p.BootstrapConfig(ctx, host, p2p.GetBestBootstrapAddress(ctx, host, "main_net"), "main_net") // Bootstrap config
 
 		if err != nil { // Check for errors

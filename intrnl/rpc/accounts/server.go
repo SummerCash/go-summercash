@@ -21,8 +21,7 @@ type Server struct{}
 // NewAccount - accounts.NewAccount RPC handler
 func (server *Server) NewAccount(ctx context.Context, req *accountsProto.GeneralRequest) (*accountsProto.GeneralResponse, error) {
 	account, err := accounts.NewAccount() // Create new account
-
-	if err != nil { // Check for errors
+	if err != nil {                       // Check for errors
 		return &accountsProto.GeneralResponse{}, err // Return found error
 	}
 
@@ -33,16 +32,14 @@ func (server *Server) NewAccount(ctx context.Context, req *accountsProto.General
 	}
 
 	marshaledPrivateKey, err := x509.MarshalECPrivateKey(account.PrivateKey) // Marshal private key
-
-	if err != nil { // Check for errors
+	if err != nil {                                                          // Check for errors
 		return &accountsProto.GeneralResponse{}, err // Return found error
 	}
 
 	pemEncoded := pem.EncodeToMemory(&pem.Block{Type: "PRIVATE KEY", Bytes: marshaledPrivateKey}) // Encode to memory
 
 	stringEncoded, err := common.EncodeString(pemEncoded) // Encode to string
-
-	if err != nil { // Check for errors
+	if err != nil {                                       // Check for errors
 		return &accountsProto.GeneralResponse{}, err // Return found error
 	}
 
@@ -52,40 +49,34 @@ func (server *Server) NewAccount(ctx context.Context, req *accountsProto.General
 // NewContractAccount - accounts.NewContractAccount RPC handler
 func (server *Server) NewContractAccount(ctx context.Context, req *accountsProto.GeneralRequest) (*accountsProto.GeneralResponse, error) {
 	filepath, err := filepath.Abs(filepath.FromSlash(req.Address)) // Get filepath
-
-	if err != nil { // Check for errors
+	if err != nil {                                                // Check for errors
 		return &accountsProto.GeneralResponse{}, err // Return found error
 	}
 
 	contractSource, err := ioutil.ReadFile(filepath) // Read contract source
-
-	if err != nil { // Check for errors
+	if err != nil {                                  // Check for errors
 		return &accountsProto.GeneralResponse{}, err // Return found error
 	}
 
 	address, err := common.StringToAddress(req.PrivateKey) // Get address value
-
-	if err != nil { // Check for errors
+	if err != nil {                                        // Check for errors
 		return &accountsProto.GeneralResponse{}, err // Return found error
 	}
 
 	contractInstance, err := accounts.NewContractAccount(contractSource, &address) // Deploy from contract source
-
-	if err != nil { // Check for errors
+	if err != nil {                                                                // Check for errors
 		return &accountsProto.GeneralResponse{}, err // Return found error
 	}
 
 	marshaledPrivateKey, err := x509.MarshalECPrivateKey(contractInstance.PrivateKey) // Marshal private key
-
-	if err != nil { // Check for errors
+	if err != nil {                                                                   // Check for errors
 		return &accountsProto.GeneralResponse{}, err // Return found error
 	}
 
 	pemEncoded := pem.EncodeToMemory(&pem.Block{Type: "PRIVATE KEY", Bytes: marshaledPrivateKey}) // Encode to memory
 
 	stringEncoded, err := common.EncodeString(pemEncoded) // Encode to string
-
-	if err != nil { // Check for errors
+	if err != nil {                                       // Check for errors
 		return &accountsProto.GeneralResponse{}, err // Return found error
 	}
 
@@ -95,8 +86,7 @@ func (server *Server) NewContractAccount(ctx context.Context, req *accountsProto
 // AccountFromKey - accounts.AccountFromKey RPC handler
 func (server *Server) AccountFromKey(ctx context.Context, req *accountsProto.GeneralRequest) (*accountsProto.GeneralResponse, error) {
 	data, err := common.DecodeString(req.PrivateKey) // Decode private key
-
-	if err != nil { // Check for errors
+	if err != nil {                                  // Check for errors
 		return &accountsProto.GeneralResponse{}, err // Return found error
 	}
 
@@ -105,14 +95,12 @@ func (server *Server) AccountFromKey(ctx context.Context, req *accountsProto.Gen
 	x509EncodedPrivateKey := blockPrivate.Bytes // Get x509 byte val
 
 	privateKey, err := x509.ParseECPrivateKey(x509EncodedPrivateKey) // Parse private key
-
-	if err != nil { // Check for errors
+	if err != nil {                                                  // Check for errors
 		return &accountsProto.GeneralResponse{}, err // Return found error
 	}
 
 	account, err := accounts.AccountFromKey(privateKey) // Get account
-
-	if err != nil { // Check for errors
+	if err != nil {                                     // Check for errors
 		return &accountsProto.GeneralResponse{}, err // Return found error
 	}
 
@@ -128,8 +116,7 @@ func (server *Server) AccountFromKey(ctx context.Context, req *accountsProto.Gen
 // GetAllAccounts - accounts.GetAllAccounts RPC handler
 func (server *Server) GetAllAccounts(ctx context.Context, req *accountsProto.GeneralRequest) (*accountsProto.GeneralResponse, error) {
 	addresses, err := accounts.GetAllAccounts() // Walk
-
-	if err != nil { // Check for errors
+	if err != nil {                             // Check for errors
 		if strings.Contains(err.Error(), "no such file or directory") { // Check no local accounts
 			return &accountsProto.GeneralResponse{Message: "\nno local accounts"}, nil // No error occurred, return response
 		}
@@ -143,14 +130,12 @@ func (server *Server) GetAllAccounts(ctx context.Context, req *accountsProto.Gen
 // GetAllContracts - accounts.GetAllContracts RPC handler
 func (server *Server) GetAllContracts(ctx context.Context, req *accountsProto.GeneralRequest) (*accountsProto.GeneralResponse, error) {
 	address, err := common.StringToAddress(req.Address) // Get address
-
-	if err != nil { // Check for errors
+	if err != nil {                                     // Check for errors
 		return &accountsProto.GeneralResponse{}, err // Return found error
 	}
 
 	addresses, err := accounts.GetAllContracts(address) // Walk with deploying address
-
-	if err != nil { // Check for errors
+	if err != nil {                                     // Check for errors
 		return &accountsProto.GeneralResponse{}, err // Return found error
 	}
 
@@ -160,14 +145,12 @@ func (server *Server) GetAllContracts(ctx context.Context, req *accountsProto.Ge
 // MakeEncodingSafe - accounts.MakeEncodingSafe RPC handler
 func (server *Server) MakeEncodingSafe(ctx context.Context, req *accountsProto.GeneralRequest) (*accountsProto.GeneralResponse, error) {
 	address, err := common.StringToAddress(req.Address) // Get address
-
-	if err != nil { // Check for errors
+	if err != nil {                                     // Check for errors
 		return &accountsProto.GeneralResponse{}, err // Return found error
 	}
 
 	account, err := accounts.ReadAccountFromMemory(address) // Read account
-
-	if err != nil { // Check for errors
+	if err != nil {                                         // Check for errors
 		return &accountsProto.GeneralResponse{}, err // Return found error
 	}
 
@@ -178,8 +161,7 @@ func (server *Server) MakeEncodingSafe(ctx context.Context, req *accountsProto.G
 	}
 
 	marshaledVal, err := json.MarshalIndent(*account, "", "  ") // Marshal JSON
-
-	if err != nil { // Check for errors
+	if err != nil {                                             // Check for errors
 		return &accountsProto.GeneralResponse{}, err // Return found error
 	}
 
@@ -189,14 +171,12 @@ func (server *Server) MakeEncodingSafe(ctx context.Context, req *accountsProto.G
 // RecoverSafeEncoding - accounts.RecoverSafeEncoding RPC handler
 func (server *Server) RecoverSafeEncoding(ctx context.Context, req *accountsProto.GeneralRequest) (*accountsProto.GeneralResponse, error) {
 	address, err := common.StringToAddress(req.Address) // Get address
-
-	if err != nil { // Check for errors
+	if err != nil {                                     // Check for errors
 		return &accountsProto.GeneralResponse{}, err // Return found error
 	}
 
 	account, err := accounts.ReadAccountFromMemory(address) // Read account
-
-	if err != nil { // Check for errors
+	if err != nil {                                         // Check for errors
 		return &accountsProto.GeneralResponse{}, err // Return found error
 	}
 
@@ -207,8 +187,7 @@ func (server *Server) RecoverSafeEncoding(ctx context.Context, req *accountsProt
 	}
 
 	marshaledVal, err := json.MarshalIndent(*account, "", "  ") // Marshal JSON
-
-	if err != nil { // Check for errors
+	if err != nil {                                             // Check for errors
 		return &accountsProto.GeneralResponse{}, err // Return found error
 	}
 
@@ -218,14 +197,12 @@ func (server *Server) RecoverSafeEncoding(ctx context.Context, req *accountsProt
 // String - accounts.String RPC handler
 func (server *Server) String(ctx context.Context, req *accountsProto.GeneralRequest) (*accountsProto.GeneralResponse, error) {
 	address, err := common.StringToAddress(req.Address) // Get address
-
-	if err != nil { // Check for errors
+	if err != nil {                                     // Check for errors
 		return &accountsProto.GeneralResponse{}, err // Return found error
 	}
 
 	account, err := accounts.ReadAccountFromMemory(address) // Read account
-
-	if err != nil { // Check for errors
+	if err != nil {                                         // Check for errors
 		return &accountsProto.GeneralResponse{}, err // Return found error
 	}
 
@@ -235,20 +212,17 @@ func (server *Server) String(ctx context.Context, req *accountsProto.GeneralRequ
 // Bytes - accounts.Bytes RPC handler
 func (server *Server) Bytes(ctx context.Context, req *accountsProto.GeneralRequest) (*accountsProto.GeneralResponse, error) {
 	address, err := common.StringToAddress(req.Address) // Get address
-
-	if err != nil { // Check for errors
+	if err != nil {                                     // Check for errors
 		return &accountsProto.GeneralResponse{}, err // Return found error
 	}
 
 	account, err := accounts.ReadAccountFromMemory(address) // Read account
-
-	if err != nil { // Check for errors
+	if err != nil {                                         // Check for errors
 		return &accountsProto.GeneralResponse{}, err // Return found error
 	}
 
 	encoded, err := common.EncodeString(account.Bytes()) // Encode byte val
-
-	if err != nil { // Check for errors
+	if err != nil {                                      // Check for errors
 		return &accountsProto.GeneralResponse{}, err // Return found error
 	}
 
@@ -258,14 +232,12 @@ func (server *Server) Bytes(ctx context.Context, req *accountsProto.GeneralReque
 // ReadAccountFromMemory - account.ReadAccountFromMemory RPC handler
 func (server *Server) ReadAccountFromMemory(ctx context.Context, req *accountsProto.GeneralRequest) (*accountsProto.GeneralResponse, error) {
 	address, err := common.StringToAddress(req.Address) // Get address
-
-	if err != nil { // Check for errors
+	if err != nil {                                     // Check for errors
 		return &accountsProto.GeneralResponse{}, err // Return found error
 	}
 
 	account, err := accounts.ReadAccountFromMemory(address) // Read account
-
-	if err != nil { // Check for errors
+	if err != nil {                                         // Check for errors
 		return &accountsProto.GeneralResponse{}, err // Return found error
 	}
 
@@ -276,8 +248,7 @@ func (server *Server) ReadAccountFromMemory(ctx context.Context, req *accountsPr
 	}
 
 	encoded, err := common.EncodeString(account.SerializedPrivateKey) // Encode private key
-
-	if err != nil { // Check for errors
+	if err != nil {                                                   // Check for errors
 		return &accountsProto.GeneralResponse{}, err // Return found error
 	}
 

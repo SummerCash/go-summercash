@@ -13,17 +13,15 @@ import (
 	"time"
 )
 
-var (
-	// ExtIPProviders - preset macro defining list of available external IP checking services
-	ExtIPProviders = []string{
-		"http://checkip.amazonaws.com/",
-		"http://icanhazip.com/",
-		"http://www.trackip.net/ip",
-		"http://bot.whatismyipaddress.com/",
-		"https://ipecho.net/plain",
-		"http://myexternalip.com/raw",
-	}
-)
+// ExtIPProviders - preset macro defining list of available external IP checking services
+var ExtIPProviders = []string{
+	"http://checkip.amazonaws.com/",
+	"http://icanhazip.com/",
+	"http://www.trackip.net/ip",
+	"http://bot.whatismyipaddress.com/",
+	"https://ipecho.net/plain",
+	"http://myexternalip.com/raw",
+}
 
 /* BEGIN EXPORTED METHODS */
 
@@ -34,8 +32,7 @@ func SendBytes(b []byte, address string) error {
 	}
 
 	connection, err := tls.Dial("tcp", address, GeneralTLSConfig) // Connect to given address
-
-	if err != nil { // Check for errors
+	if err != nil {                                               // Check for errors
 		return err // Return found error
 	}
 
@@ -67,8 +64,7 @@ func SendBytesResult(b []byte, address string) ([]byte, error) {
 	d := net.Dialer{Timeout: 5 * time.Second} // Init dialer with timeout
 
 	connection, err := tls.DialWithDialer(&d, "tcp", address, GeneralTLSConfig) // Connect to given address
-
-	if err != nil { // Check for errors
+	if err != nil {                                                             // Check for errors
 		return nil, err // Return found error
 	}
 
@@ -83,8 +79,7 @@ func SendBytesResult(b []byte, address string) ([]byte, error) {
 	readWriter.Flush() // Flush
 
 	response, err := readWriter.ReadBytes('\r') // Read up to delimiter
-
-	if err != nil { // Check for errors
+	if err != nil {                             // Check for errors
 		return nil, err // Return found error
 	}
 
@@ -96,8 +91,7 @@ func ReadConnectionWaitAsyncNoTLS(conn net.Conn) ([]byte, error) {
 	reader := bufio.NewReader(conn) // Initialize reader
 
 	readBytes, err := reader.ReadBytes('\r') // Read up to delimiter
-
-	if err != nil { // Check for errors
+	if err != nil {                          // Check for errors
 		return nil, err // Return found error
 	}
 
@@ -112,14 +106,12 @@ func ReadConnectionWaitAsyncNoTLS(conn net.Conn) ([]byte, error) {
 func GetExtIPAddrWithoutUPnP() (string, error) {
 	if len(ExtIPProviders) == 0 { // Check no providers
 		host, err := os.Hostname() // Get host
-
-		if err != nil { // Check for errors
+		if err != nil {            // Check for errors
 			return "localhost", err // Return found error
 		}
 
 		addrs, err := net.LookupIP(host) // Get IP
-
-		if err != nil { // Check for errors
+		if err != nil {                  // Check for errors
 			return "localhost", err // Return found error
 		}
 
@@ -156,8 +148,7 @@ func GetExtIPAddrWithoutUPnP() (string, error) {
 // Connected - check if connected to internet
 func Connected() (connected bool) {
 	resp, err := http.Get("http://clients3.google.com/generate_204") // Perform request
-
-	if err != nil { // Check for errors
+	if err != nil {                                                  // Check for errors
 		return false // Return result
 	}
 
@@ -183,16 +174,14 @@ func Connected() (connected bool) {
 // getIPFromProvider - get IP address from given IP provider
 func getIPFromProvider(provider string) (string, error) {
 	resp, err := http.Get(provider) // Attempt to check IP via provider
-
-	if err != nil { // Check for errors
+	if err != nil {                 // Check for errors
 		return "", err // Return error
 	}
 
 	defer resp.Body.Close() // Close connection
 
 	ip, err := ioutil.ReadAll(resp.Body) // Read address
-
-	if err != nil { // Check for errors
+	if err != nil {                      // Check for errors
 		return "", err // Return error
 	}
 

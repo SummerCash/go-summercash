@@ -20,22 +20,19 @@ import (
 // TestNewChain - test chain initializer
 func TestNewChain(t *testing.T) {
 	privateKey, err := ecdsa.GenerateKey(elliptic.P521(), rand.Reader) // Generate private key
-
-	if err != nil { // Check for errors
+	if err != nil {                                                    // Check for errors
 		t.Error(err) // Log found error
 		t.FailNow()  // Panic
 	}
 
 	address, err := common.NewAddress(privateKey) // Generate address
-
-	if err != nil { // Check for errors
+	if err != nil {                               // Check for errors
 		t.Error(err) // Log found error
 		t.FailNow()  // Panic
 	}
 
 	coordinationChain, err := NewCoordinationChain() // Init coordinationChain
-
-	if err != nil { // Check for errors
+	if err != nil {                                  // Check for errors
 		t.Error(err) // Log found error
 		t.FailNow()  // Panic
 	}
@@ -48,8 +45,7 @@ func TestNewChain(t *testing.T) {
 	}
 
 	chain, err := NewChain(address) // Initialize chain
-
-	if err != nil { // Check for errors
+	if err != nil {                 // Check for errors
 		t.Error(err) // Log found error
 		t.FailNow()  // Panic
 	}
@@ -60,15 +56,13 @@ func TestNewChain(t *testing.T) {
 // TestAddTransaction - test functionality of transaction appending
 func TestAddTransaction(t *testing.T) {
 	privateKey, err := ecdsa.GenerateKey(elliptic.P521(), rand.Reader) // Generate private key
-
-	if err != nil { // Check for errors
+	if err != nil {                                                    // Check for errors
 		t.Error(err) // Log found error
 		t.FailNow()  // Panic
 	}
 
 	sender, err := common.NewAddress(privateKey) // Initialize address from private key
-
-	if err != nil { // Check for errors
+	if err != nil {                              // Check for errors
 		t.Error(err) // Log found error
 		t.FailNow()  // Panic
 	}
@@ -81,8 +75,7 @@ func TestAddTransaction(t *testing.T) {
 	}
 
 	transaction, err := NewTransaction(0, nil, &sender, &sender, big.NewFloat(0), []byte("test")) // Initialize transaction
-
-	if err != nil { // Check for errors
+	if err != nil {                                                                               // Check for errors
 		t.Error(err) // Log found error
 		t.FailNow()  // Panic
 	}
@@ -97,8 +90,7 @@ func TestAddTransaction(t *testing.T) {
 	}
 
 	chain, err := NewChain(sender) // Initialize chain
-
-	if err != nil { // Check for errors
+	if err != nil {                // Check for errors
 		t.Error(err) // Log found error
 		t.FailNow()  // Panic
 	}
@@ -131,8 +123,7 @@ func TestAddTransaction(t *testing.T) {
 	t.Logf("added transaction: %s", transaction.Hash.String()) // Log signed
 
 	coordinationChain, err := ReadCoordinationChainFromMemory() // Read chain from memory
-
-	if err != nil { // Check for errors
+	if err != nil {                                             // Check for errors
 		t.Error(err) // Log found error
 		t.FailNow()  // Panic
 	}
@@ -150,15 +141,13 @@ func TestAddTransaction(t *testing.T) {
 // TestQueryTransaction - test tx querying
 func TestQueryTransaction(t *testing.T) {
 	privateKey, err := ecdsa.GenerateKey(elliptic.P521(), rand.Reader) // Generate private key
-
-	if err != nil { // Check for errors
+	if err != nil {                                                    // Check for errors
 		t.Error(err) // Log found error
 		t.FailNow()  // Panic
 	}
 
 	sender, err := common.NewAddress(privateKey) // Initialize address from private key
-
-	if err != nil { // Check for errors
+	if err != nil {                              // Check for errors
 		t.Error(err) // Log found error
 		t.FailNow()  // Panic
 	}
@@ -171,8 +160,7 @@ func TestQueryTransaction(t *testing.T) {
 	}
 
 	transaction, err := NewTransaction(0, nil, &sender, &sender, big.NewFloat(0), []byte("test")) // Initialize transaction
-
-	if err != nil { // Check for errors
+	if err != nil {                                                                               // Check for errors
 		t.Error(err) // Log found error
 		t.FailNow()  // Panic
 	}
@@ -187,8 +175,7 @@ func TestQueryTransaction(t *testing.T) {
 	}
 
 	chain, err := NewChain(sender) // Initialize chain
-
-	if err != nil { // Check for errors
+	if err != nil {                // Check for errors
 		t.Error(err) // Log found error
 		t.FailNow()  // Panic
 	}
@@ -231,22 +218,19 @@ func TestQueryTransaction(t *testing.T) {
 // TestBytesChain - test chain to bytes conversion
 func TestBytesChain(t *testing.T) {
 	privateKey, err := ecdsa.GenerateKey(elliptic.P521(), rand.Reader) // Generate private key
-
-	if err != nil { // Check for errors
+	if err != nil {                                                    // Check for errors
 		t.Error(err) // Log found error
 		t.FailNow()  // Panic
 	}
 
 	address, err := common.NewAddress(privateKey) // Generate address
-
-	if err != nil { // Check for errors
+	if err != nil {                               // Check for errors
 		t.Error(err) // Log found error
 		t.FailNow()  // Panic
 	}
 
 	chain, err := NewChain(address) // Initialize chain
-
-	if err != nil { // Check for errors
+	if err != nil {                 // Check for errors
 		t.Error(err) // Log found error
 		t.FailNow()  // Panic
 	}
@@ -264,22 +248,19 @@ func TestBytesChain(t *testing.T) {
 // TestStringChain - test chain to string conversion
 func TestStringChain(t *testing.T) {
 	privateKey, err := ecdsa.GenerateKey(elliptic.P521(), rand.Reader) // Generate private key
-
-	if err != nil { // Check for errors
+	if err != nil {                                                    // Check for errors
 		t.Error(err) // Log found error
 		t.FailNow()  // Panic
 	}
 
 	address, err := common.NewAddress(privateKey) // Generate address
-
-	if err != nil { // Check for errors
+	if err != nil {                               // Check for errors
 		t.Error(err) // Log found error
 		t.FailNow()  // Panic
 	}
 
 	chain, err := NewChain(address) // Initialize chain
-
-	if err != nil { // Check for errors
+	if err != nil {                 // Check for errors
 		t.Error(err) // Log found error
 		t.FailNow()  // Panic
 	}
@@ -315,8 +296,7 @@ func makeChainConfig(address common.Address) error {
 	genesis := genesis{NetworkID: 0, Alloc: alloc} // Init genesis
 
 	json, err := json.MarshalIndent(genesis, "", "  ") // Marshal genesis
-
-	if err != nil { // Check for errors
+	if err != nil {                                    // Check for errors
 		return err // Return error
 	}
 
@@ -327,8 +307,7 @@ func makeChainConfig(address common.Address) error {
 	}
 
 	config, err := config.NewChainConfig("genesis.json") // Generate config
-
-	if err != nil { // Check for errors
+	if err != nil {                                      // Check for errors
 		return err // Return error
 	}
 
@@ -339,8 +318,7 @@ func makeChainConfig(address common.Address) error {
 	}
 
 	coordinationChain, err := NewCoordinationChain() // Init coordinationChain
-
-	if err != nil { // Check for errors
+	if err != nil {                                  // Check for errors
 		return err // Return error
 	}
 

@@ -33,21 +33,19 @@ const (
 	RequestAlive
 )
 
-var (
-	// StreamHeaderProtocolNames represents all stream header protocol names.
-	StreamHeaderProtocolNames = []string{
-		"pub_transaction",
-		"req_config",
-		"req_best_transaction",
-		"req_transaction",
-		"req_genesis_hash",
-		"req_transaction_children_hashes",
-		"req_chain",
-		"req_all_chains",
-		"req_next_transaction",
-		"req_not_dead_lol",
-	}
-)
+// StreamHeaderProtocolNames represents all stream header protocol names.
+var StreamHeaderProtocolNames = []string{
+	"pub_transaction",
+	"req_config",
+	"req_best_transaction",
+	"req_transaction",
+	"req_genesis_hash",
+	"req_transaction_children_hashes",
+	"req_chain",
+	"req_all_chains",
+	"req_next_transaction",
+	"req_not_dead_lol",
+}
 
 // StreamHeaderProtocol represents the stream protocol type enum.
 type StreamHeaderProtocol int
@@ -61,8 +59,7 @@ func (client *Client) StartServingStreams() error {
 	network := client.Network // Get network
 
 	err := client.StartServingStream(GetStreamHeaderProtocolPath(network, PublishTransaction), client.HandleReceiveTransaction) // Start serving pub tx
-
-	if err != nil { // Check for errors
+	if err != nil {                                                                                                             // Check for errors
 		return err // Return found error
 	}
 

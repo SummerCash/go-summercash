@@ -15,14 +15,12 @@ import (
 // HandleReceivedCoordinationNode - handle received node
 func HandleReceivedCoordinationNode(b []byte, isArchival bool) error {
 	coordinationChain, err := ReadCoordinationChainFromMemory() // Read coordination chain
-
-	if err != nil { // Check for errors
+	if err != nil {                                             // Check for errors
 		return err // Return found error
 	}
 
 	coordinationNode, err := CoordinationNodeFromBytes(b) // Convert to coordinationNode
-
-	if err != nil { // Check for errors
+	if err != nil {                                       // Check for errors
 		return err // Return found error
 	}
 
@@ -37,8 +35,7 @@ func HandleReceivedCoordinationNode(b []byte, isArchival bool) error {
 	}
 
 	ip, err := common.GetExtIPAddrWithoutUPnP() // Get IP
-
-	if err != nil { // Check for errors
+	if err != nil {                             // Check for errors
 		return err // Return error
 	}
 
@@ -100,8 +97,7 @@ func HandleReceivedCoordinationNode(b []byte, isArchival bool) error {
 // HandleReceivedCoordinationChainRequest - handle received byte value for coordination chain request
 func HandleReceivedCoordinationChainRequest() ([]byte, error) {
 	coordinationChain, err := ReadCoordinationChainFromMemory() // Read coordination chain
-
-	if err != nil { // Check for errors
+	if err != nil {                                             // Check for errors
 		coordinationChain, err = NewCoordinationChain() // Init coordination chain
 
 		if err != nil { // Check for errors
@@ -115,8 +111,7 @@ func HandleReceivedCoordinationChainRequest() ([]byte, error) {
 		}
 
 		chainConfig, err := config.ReadChainConfigFromMemory() // Read chain config
-
-		if err != nil { // Check for errors
+		if err != nil {                                        // Check for errors
 			return nil, err // Return found error
 		}
 
@@ -125,8 +120,7 @@ func HandleReceivedCoordinationChainRequest() ([]byte, error) {
 
 			if err == nil { // Check for errors
 				_, err := NewChain(address) // Init chain
-
-				if err != nil { // Check for err`ors
+				if err != nil {             // Check for err`ors
 					return nil, err // Return found error
 				}
 			}

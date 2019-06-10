@@ -46,8 +46,7 @@ func NewClient(host *routed.RoutedHost, validator *validator.Validator, network 
 func (client *Client) StartIntermittentSync(duration time.Duration) {
 	for range time.Tick(duration) { // Sync every duration seconds
 		err := client.SyncNetwork() // Sync network
-
-		if err != nil { // Check for errors
+		if err != nil {             // Check for errors
 			common.Logf("== P2P == intermittent sync errored (if private net, this is expected): %s\n", err.Error()) // Log error
 		}
 	}
@@ -68,8 +67,7 @@ func (client *Client) PublishTransaction(ctx context.Context, transaction *types
 			common.Logf("== P2P == sending tx to peer with ID %s\n", peer.Pretty()) // Log send
 
 			stream, err := (*client.Host).NewStream(ctx, peer, protocol.ID(GetStreamHeaderProtocolPath(client.Network, PublishTransaction))) // Connect
-
-			if err != nil { // Check for errors
+			if err != nil {                                                                                                                  // Check for errors
 				return // Return
 			}
 
@@ -107,16 +105,14 @@ func (client *Client) SyncNetwork() error {
 	common.Logf("== P2P == starting sync...\n") // Log sync chain
 
 	localChains, err := types.GetAllLocalizedChains() // Get all local chains
-
-	if err != nil { // Check for errors
+	if err != nil {                                   // Check for errors
 		return err // Return found error
 	}
 
 	common.Logf("== P2P == requesting peers for chains to sync\n") // Log sync chain
 
 	remoteChains, err := client.RequestAllChains(16) // Request remote chains
-
-	if err != nil { // Check for errors
+	if err != nil {                                  // Check for errors
 		return err // Return found error
 	}
 
@@ -124,8 +120,7 @@ func (client *Client) SyncNetwork() error {
 
 	if len(remoteChains) == 0 && (*client.Validator).GetWorkingConfig() != nil { // Check no remote chains
 		localAccounts, err := accounts.GetAllAccounts() // Get all accounts
-
-		if err != nil { // Check for errors
+		if err != nil {                                 // Check for errors
 			return err // Return found error
 		}
 
@@ -134,14 +129,12 @@ func (client *Client) SyncNetwork() error {
 		}
 
 		genesisAddress, err := common.StringToAddress(localAccounts[0]) // Get account addr
-
-		if err != nil { // Check for errors
+		if err != nil {                                                 // Check for errors
 			return err // Return found error
 		}
 
 		chain, err := types.ReadChainFromMemory(genesisAddress) // Read genesis chain
-
-		if err != nil { // Check for errors
+		if err != nil {                                         // Check for errors
 			chain, err = types.NewChain(genesisAddress) // Initialize chain
 
 			if err != nil { // Check for errors
@@ -150,8 +143,7 @@ func (client *Client) SyncNetwork() error {
 		}
 
 		genesisAccount, err := accounts.ReadAccountFromMemory(genesisAddress) // Read genesis account
-
-		if err != nil { // Check for errors
+		if err != nil {                                                       // Check for errors
 			return err // Return found error
 		}
 
@@ -172,8 +164,7 @@ func (client *Client) SyncNetwork() error {
 		}
 
 		address, err := common.StringToAddress(remoteChain) // Get address value
-
-		if err != nil { // Check for errors
+		if err != nil {                                     // Check for errors
 			return err // Return found error
 		}
 
@@ -198,8 +189,7 @@ func (client *Client) SyncNetwork() error {
 		}
 
 		remoteBestTransaction, err := client.RequestBestTransaction(address, 16) // Request best tx
-
-		if err != nil { // Check for errors
+		if err != nil {                                                          // Check for errors
 			return err // Return found error
 		}
 
@@ -284,8 +274,7 @@ func (client *Client) RequestBestTransaction(account common.Address, sampleSize 
 	defer cancel() // Cancel
 
 	responses, err := BroadcastDhtResult(ctx, client.Host, []byte(account.String()), GetStreamHeaderProtocolPath(client.Network, RequestBestTransaction), client.Network, int(sampleSize)) // Broadcast, get result
-
-	if err != nil { // Check for errors
+	if err != nil {                                                                                                                                                                        // Check for errors
 		return common.Hash{}, err // Return found error
 	}
 
@@ -319,8 +308,7 @@ func (client *Client) RequestNextTransaction(lastTransactionHash common.Hash, ac
 	defer cancel() // Cancel
 
 	responses, err := BroadcastDhtResult(ctx, client.Host, []byte(fmt.Sprintf("%s_%s", account.String(), lastTransactionHash.String())), GetStreamHeaderProtocolPath(client.Network, RequestNextTransaction), client.Network, int(sampleSize)) // Broadcast, get result
-
-	if err != nil { // Check for errors
+	if err != nil {                                                                                                                                                                                                                            // Check for errors
 		return &types.Transaction{}, err // Return found error
 	}
 
@@ -341,8 +329,7 @@ func (client *Client) RequestNextTransaction(lastTransactionHash common.Hash, ac
 	}
 
 	transaction, err := types.TransactionFromBytes(bestResponse) // Get transaction value
-
-	if err != nil { // Check for errors
+	if err != nil {                                              // Check for errors
 		return &types.Transaction{}, err // Return found error
 	}
 
@@ -356,8 +343,7 @@ func (client *Client) RequestAllChains(sampleSize uint) ([]string, error) {
 	defer cancel() // Cancel
 
 	responses, err := BroadcastDhtResult(ctx, client.Host, []byte("req_all_chains"), GetStreamHeaderProtocolPath(client.Network, RequestAllChains), client.Network, int(sampleSize)) // Broadcast, get result
-
-	if err != nil { // Check for errors
+	if err != nil {                                                                                                                                                                  // Check for errors
 		return []string{}, err // Return found error
 	}
 
@@ -389,8 +375,7 @@ func (client *Client) RequestChain(account common.Address, sampleSize uint) (*ty
 	defer cancel() // Cancel
 
 	responses, err := BroadcastDhtResult(ctx, client.Host, account.Bytes(), GetStreamHeaderProtocolPath(client.Network, RequestChain), client.Network, int(sampleSize)) // Broadcast, get result
-
-	if err != nil { // Check for errors
+	if err != nil {                                                                                                                                                     // Check for errors
 		return &types.Chain{}, err // Return found error
 	}
 
@@ -411,8 +396,7 @@ func (client *Client) RequestChain(account common.Address, sampleSize uint) (*ty
 	}
 
 	chain, err := types.FromBytes(bestResponse) // Deserialize chain
-
-	if err != nil { // Check for errors
+	if err != nil {                             // Check for errors
 		return &types.Chain{}, err // Return found error
 	}
 

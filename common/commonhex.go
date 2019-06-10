@@ -66,8 +66,7 @@ func Decode(b []byte) ([]byte, error) {
 	b = b[2:] // Trim 0x
 
 	n, err := hex.Decode(b, b) // Decode
-
-	if err != nil { // Check for errors
+	if err != nil {            // Check for errors
 		return []byte{}, err // Return found error
 	}
 
@@ -83,8 +82,7 @@ func DecodeString(s string) ([]byte, error) {
 	}
 
 	b, err := hex.DecodeString(s[2:]) // Decode input (trimming 0x)
-
-	if err != nil { // Check for errors
+	if err != nil {                   // Check for errors
 		return []byte{}, err // Return found error
 	}
 

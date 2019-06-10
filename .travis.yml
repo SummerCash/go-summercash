@@ -29,7 +29,7 @@ jobs:
     - name: "gofmt"
       script:
         - git diff --quiet || (echo "\033[0;31mWorking directory not clean!\033[0m" && exit 1) # Check working dir clean
-        - go fmt ./... # Fmt
+        - gofumpt -w -s . # Fmt
         - git diff --exit-code || (git checkout . && exit 1) # Ensure no changes made in working dir
     - name: "tidy"
       script:

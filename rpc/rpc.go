@@ -29,8 +29,7 @@ import (
 // StartRPCServer - start RPC server
 func StartRPCServer(port int) error {
 	err := common.GenerateTLSCertificates("term") // Generate certs
-
-	if err != nil { // Check for errors
+	if err != nil {                               // Check for errors
 		return err // Return found error
 	}
 

@@ -17,10 +17,8 @@ import (
 	"github.com/SummerCash/go-summercash/config"
 )
 
-var (
-	// ErrTimedOut defines an error describing a standard timeout.
-	ErrTimedOut = errors.New("request timed out")
-)
+// ErrTimedOut defines an error describing a standard timeout.
+var ErrTimedOut = errors.New("request timed out")
 
 /* BEGIN EXPORTED METHODS */
 
@@ -31,16 +29,14 @@ func CheckPeerCompatible(ctx context.Context, host *routed.RoutedHost, peer peer
 	}
 
 	stream, err := (*host).NewStream(ctx, peer, protocol.ID(GetStreamHeaderProtocolPath(network, RequestAlive))) // Initialize stream
-
-	if err != nil { // Check for errors
+	if err != nil {                                                                                              // Check for errors
 		return false // Not compatible
 	}
 
 	reader := bufio.NewReader(stream) // Initialize reader
 
 	networkBytes, err := reader.ReadBytes('\r') // Read network
-
-	if err != nil { // Check for errors
+	if err != nil {                             // Check for errors
 		return false // Not compatible
 	}
 
@@ -67,8 +63,7 @@ func BroadcastDht(ctx context.Context, host *routed.RoutedHost, message []byte, 
 		}
 
 		stream, err := (*host).NewStream(ctx, peer, protocol.ID(streamProtocol)) // Connect
-
-		if err != nil { // Check for errors
+		if err != nil {                                                          // Check for errors
 			continue // Continue
 		}
 
@@ -109,8 +104,7 @@ func BroadcastDhtResult(ctx context.Context, host *routed.RoutedHost, message []
 			}
 
 			stream, err := (*host).NewStream(ctx, peer, protocol.ID(streamProtocol)) // Connect
-
-			if err != nil { // Check for errors
+			if err != nil {                                                          // Check for errors
 				return // Continue
 			}
 
@@ -125,8 +119,7 @@ func BroadcastDhtResult(ctx context.Context, host *routed.RoutedHost, message []
 			readWriter.Flush() // Flush
 
 			responseBytes, err := readWriter.ReadBytes('\r') // Read up to delimiter
-
-			if err != nil { // Check for errors
+			if err != nil {                                  // Check for errors
 				return // Continue
 			}
 

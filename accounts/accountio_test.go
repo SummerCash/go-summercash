@@ -5,8 +5,7 @@ import "testing"
 // TestWriteToMemory - test functionality of persistent memory account I/O writing
 func TestWriteToMemory(t *testing.T) {
 	account, err := NewAccount() // Generate account
-
-	if err != nil { // Check for errors
+	if err != nil {              // Check for errors
 		t.Error(err) // Log found error
 		t.FailNow()  // Panic
 	}
@@ -24,8 +23,7 @@ func TestWriteToMemory(t *testing.T) {
 // TestReadFromMemory - test functionality of account reader
 func TestReadFromMemory(t *testing.T) {
 	account, err := NewAccount() // Generate account
-
-	if err != nil { // Check for errors
+	if err != nil {              // Check for errors
 		t.Error(err) // Log found error
 		t.FailNow()  // Panic
 	}

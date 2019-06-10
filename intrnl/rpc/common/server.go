@@ -14,8 +14,7 @@ type Server struct{}
 // Encode - common.Encode RPC handler
 func (server *Server) Encode(ctx context.Context, req *commonProto.GeneralRequest) (*commonProto.GeneralResponse, error) {
 	encoded, err := common.Encode(req.Input) // Encode
-
-	if err != nil { // Check for errors
+	if err != nil {                          // Check for errors
 		return &commonProto.GeneralResponse{}, err // Return found error
 	}
 
@@ -25,8 +24,7 @@ func (server *Server) Encode(ctx context.Context, req *commonProto.GeneralReques
 // EncodeString - common.EncodeString RPC handler
 func (server *Server) EncodeString(ctx context.Context, req *commonProto.GeneralRequest) (*commonProto.GeneralResponse, error) {
 	encoded, err := common.EncodeString(req.Input) // Encode
-
-	if err != nil { // Check for errors
+	if err != nil {                                // Check for errors
 		return &commonProto.GeneralResponse{}, err // Return found error
 	}
 
@@ -36,8 +34,7 @@ func (server *Server) EncodeString(ctx context.Context, req *commonProto.General
 // Decode - common.Decode RPC handler
 func (server *Server) Decode(ctx context.Context, req *commonProto.GeneralRequest) (*commonProto.GeneralResponse, error) {
 	decoded, err := common.Decode(req.Input) // Decode
-
-	if err != nil { // Check for errors
+	if err != nil {                          // Check for errors
 		return &commonProto.GeneralResponse{}, err // Return found error
 	}
 
@@ -47,8 +44,7 @@ func (server *Server) Decode(ctx context.Context, req *commonProto.GeneralReques
 // DecodeString - common.DecodeString RPC handler
 func (server *Server) DecodeString(ctx context.Context, req *commonProto.GeneralRequest) (*commonProto.GeneralResponse, error) {
 	decoded, err := common.DecodeString(req.S) // Decode
-
-	if err != nil { // Check for errors
+	if err != nil {                            // Check for errors
 		return &commonProto.GeneralResponse{}, err // Return found error
 	}
 

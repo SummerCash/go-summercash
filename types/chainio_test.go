@@ -16,22 +16,19 @@ import (
 // TestWriteChainToMemory - test chain writeToMemory() method
 func TestWriteChainToMemory(t *testing.T) {
 	privateKey, err := ecdsa.GenerateKey(elliptic.P521(), rand.Reader) // Generate private key
-
-	if err != nil { // Check for errors
+	if err != nil {                                                    // Check for errors
 		t.Error(err) // Log found error
 		t.FailNow()  // Panic
 	}
 
 	address, err := common.NewAddress(privateKey) // Generate address
-
-	if err != nil { // Check for errors
+	if err != nil {                               // Check for errors
 		t.Error(err) // Log found error
 		t.FailNow()  // Panic
 	}
 
 	chain, err := NewChain(address) // Initialize chain
-
-	if err != nil { // Check for errors
+	if err != nil {                 // Check for errors
 		t.Error(err) // Log found error
 		t.FailNow()  // Panic
 	}
@@ -49,15 +46,13 @@ func TestWriteChainToMemory(t *testing.T) {
 // TestReadChainFromMemory - test reading of chain
 func TestReadChainFromMemory(t *testing.T) {
 	privateKey, err := ecdsa.GenerateKey(elliptic.P521(), rand.Reader) // Generate private key
-
-	if err != nil { // Check for errors
+	if err != nil {                                                    // Check for errors
 		t.Error(err) // Log found error
 		t.FailNow()  // Panic
 	}
 
 	address, err := common.NewAddress(privateKey) // Generate address
-
-	if err != nil { // Check for errors
+	if err != nil {                               // Check for errors
 		t.Error(err) // Log found error
 		t.FailNow()  // Panic
 	}
@@ -71,8 +66,7 @@ func TestReadChainFromMemory(t *testing.T) {
 	(*chain).ID = common.NewHash(crypto.Sha3(chain.Bytes())) // Set ID
 
 	transaction, err := NewTransaction(0, nil, &address, &address, big.NewFloat(0), []byte("test")) // Initialize transaction
-
-	if err != nil { // Check for errors
+	if err != nil {                                                                                 // Check for errors
 		t.Error(err) // Log found error
 		t.FailNow()  // Panic
 	}

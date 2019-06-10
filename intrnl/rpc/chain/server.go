@@ -18,14 +18,12 @@ type Server struct{}
 // GetBalance - chain.GetBalance RPC handler
 func (server *Server) GetBalance(ctx context.Context, req *chainProto.GeneralRequest) (*chainProto.GeneralResponse, error) {
 	address, err := common.StringToAddress(req.Address) // Get address primitive value
-
-	if err != nil { // Check for errors
+	if err != nil {                                     // Check for errors
 		return &chainProto.GeneralResponse{}, err // Return found error
 	}
 
 	chain, err := types.ReadChainFromMemory(address) // Read chain from persistent memory
-
-	if err != nil { // Check for errors
+	if err != nil {                                  // Check for errors
 		return &chainProto.GeneralResponse{}, err // Return found error
 	}
 
@@ -37,20 +35,17 @@ func (server *Server) GetBalance(ctx context.Context, req *chainProto.GeneralReq
 // Bytes - chain.Bytes RPC handler
 func (server *Server) Bytes(ctx context.Context, req *chainProto.GeneralRequest) (*chainProto.GeneralResponse, error) {
 	address, err := common.StringToAddress(req.Address) // Get address primitive value
-
-	if err != nil { // Check for errors
+	if err != nil {                                     // Check for errors
 		return &chainProto.GeneralResponse{}, err // Return found error
 	}
 
 	chain, err := types.ReadChainFromMemory(address) // Read chain from persistent memory
-
-	if err != nil { // Check for errors
+	if err != nil {                                  // Check for errors
 		return &chainProto.GeneralResponse{}, err // Return found error
 	}
 
 	hex, err := common.EncodeString(chain.Bytes()) // Encode chain byte value
-
-	if err != nil { // Check for errors
+	if err != nil {                                // Check for errors
 		return &chainProto.GeneralResponse{}, err // Return found error
 	}
 
@@ -60,14 +55,12 @@ func (server *Server) Bytes(ctx context.Context, req *chainProto.GeneralRequest)
 // String - chain.String RPC handler
 func (server *Server) String(ctx context.Context, req *chainProto.GeneralRequest) (*chainProto.GeneralResponse, error) {
 	address, err := common.StringToAddress(req.Address) // Get address primitive value
-
-	if err != nil { // Check for errors
+	if err != nil {                                     // Check for errors
 		return &chainProto.GeneralResponse{}, err // Return found error
 	}
 
 	chain, err := types.ReadChainFromMemory(address) // Read chain from persistent memory
-
-	if err != nil { // Check for errors
+	if err != nil {                                  // Check for errors
 		return &chainProto.GeneralResponse{}, err // Return found error
 	}
 
@@ -77,14 +70,12 @@ func (server *Server) String(ctx context.Context, req *chainProto.GeneralRequest
 // ReadChainFromMemory - chain.ReadChainFromMemory RPC handler
 func (server *Server) ReadChainFromMemory(ctx context.Context, req *chainProto.GeneralRequest) (*chainProto.GeneralResponse, error) {
 	address, err := common.StringToAddress(req.Address) // Get address primitive value
-
-	if err != nil { // Check for errors
+	if err != nil {                                     // Check for errors
 		return &chainProto.GeneralResponse{}, err // Return found error
 	}
 
 	chain, err := types.ReadChainFromMemory(address) // Read chain from persistent memory
-
-	if err != nil { // Check for errors
+	if err != nil {                                  // Check for errors
 		return &chainProto.GeneralResponse{}, err // Return found error
 	}
 
@@ -94,14 +85,12 @@ func (server *Server) ReadChainFromMemory(ctx context.Context, req *chainProto.G
 // QueryTransaction - chain.QueryTransaction RPC handler
 func (server *Server) QueryTransaction(ctx context.Context, req *chainProto.GeneralRequest) (*chainProto.GeneralResponse, error) {
 	files, err := ioutil.ReadDir(filepath.FromSlash(fmt.Sprintf("%s/db/chain", common.DataDir))) // Walk chain dir
-
-	if err != nil { // Check for errors
+	if err != nil {                                                                              // Check for errors
 		return &chainProto.GeneralResponse{}, err // Return found error
 	}
 
 	hash, err := common.StringToHash(req.Address) // Get hash value
-
-	if err != nil { // Check for errors
+	if err != nil {                               // Check for errors
 		return &chainProto.GeneralResponse{}, err // Return found error
 	}
 
@@ -113,8 +102,7 @@ func (server *Server) QueryTransaction(ctx context.Context, req *chainProto.Gene
 
 			if err == nil { // Check successfully read
 				transaction, err := chain.QueryTransaction(hash) // Query for transaction
-
-				if err != nil { // Check for errors
+				if err != nil {                                  // Check for errors
 					continue
 				}
 
@@ -129,14 +117,12 @@ func (server *Server) QueryTransaction(ctx context.Context, req *chainProto.Gene
 // GetNumTransactions - get total number of transactions in given account chain
 func (server *Server) GetNumTransactions(ctx context.Context, req *chainProto.GeneralRequest) (*chainProto.GeneralResponse, error) {
 	address, err := common.StringToAddress(req.Address) // Get address primitive value
-
-	if err != nil { // Check for errors
+	if err != nil {                                     // Check for errors
 		return &chainProto.GeneralResponse{}, err // Return found error
 	}
 
 	chain, err := types.ReadChainFromMemory(address) // Read chain from persistent memory
-
-	if err != nil { // Check for errors
+	if err != nil {                                  // Check for errors
 		return &chainProto.GeneralResponse{}, err // Return found error
 	}
 

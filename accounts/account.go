@@ -35,8 +35,7 @@ func NewAccount() (*Account, error) {
 
 	for bytes.Contains(account.Address.Bytes(), []byte{'\r'}) { // Generate accounts until valid
 		privateKey, err := ecdsa.GenerateKey(elliptic.P521(), rand.Reader) // Generate private key
-
-		if err != nil { // Check for errors
+		if err != nil {                                                    // Check for errors
 			return &Account{}, err // Return error
 		}
 
@@ -48,8 +47,7 @@ func NewAccount() (*Account, error) {
 	}
 
 	chain, err := types.NewChain(account.Address) // Init account chain
-
-	if err != nil { // Check for errors
+	if err != nil {                               // Check for errors
 		return &Account{}, err // Return error
 	}
 
@@ -65,26 +63,22 @@ func NewAccount() (*Account, error) {
 // NewContractAccount - create new account for contract
 func NewContractAccount(contractSource []byte, deployingAccountAddress *common.Address) (*Account, error) {
 	deployingAccount, err := ReadAccountFromMemory(*deployingAccountAddress) // Read account private key
-
-	if err != nil { // Check for errors
+	if err != nil {                                                          // Check for errors
 		return &Account{}, err // Return error
 	}
 
 	privateKey, err := ecdsa.GenerateKey(elliptic.P521(), rand.Reader) // Generate private key
-
-	if err != nil { // Check for errors
+	if err != nil {                                                    // Check for errors
 		return &Account{}, err // Return error
 	}
 
 	account, err := AccountFromKey(privateKey) // Generate account from key
-
-	if err != nil { // Check for errors
+	if err != nil {                            // Check for errors
 		return &Account{}, err // Return error
 	}
 
 	deploymentTransaction, err := types.NewTransaction(0, nil, &deployingAccount.Address, &account.Address, big.NewFloat(0), nil) // Initialize transaction
-
-	if err != nil { // Check for errors
+	if err != nil {                                                                                                               // Check for errors
 		return &Account{}, err // Return error
 	}
 
@@ -95,8 +89,7 @@ func NewContractAccount(contractSource []byte, deployingAccountAddress *common.A
 	}
 
 	chain, err := types.NewContractChain(account.Address, contractSource, deploymentTransaction) // Init contract chain
-
-	if err != nil { // Check for errors
+	if err != nil {                                                                              // Check for errors
 		return &Account{}, err // Return error
 	}
 
@@ -112,8 +105,7 @@ func NewContractAccount(contractSource []byte, deployingAccountAddress *common.A
 // AccountFromKey - generate account from given private key
 func AccountFromKey(privateKey *ecdsa.PrivateKey) (*Account, error) {
 	address, err := common.NewAddress(privateKey) // Generate address
-
-	if err != nil { // Check for errors
+	if err != nil {                               // Check for errors
 		return &Account{}, err // Return found error
 	}
 
@@ -128,16 +120,14 @@ func AccountFromKey(privateKey *ecdsa.PrivateKey) (*Account, error) {
 // GetAllAccounts - get list of local account addresses
 func GetAllAccounts() ([]string, error) {
 	err := common.CreateDirIfDoesNotExist(filepath.FromSlash(fmt.Sprintf("%s/keystore", common.DataDir))) // Make data dir
-
-	if err != nil { // Check for errors
+	if err != nil {                                                                                       // Check for errors
 		return []string{}, err // Return found error
 	}
 
 	buffer := []string{} // Init buffer
 
 	files, err := ioutil.ReadDir(filepath.FromSlash(fmt.Sprintf("%s/keystore", common.DataDir))) // Walk keystore dir
-
-	if err != nil { // Check for errors
+	if err != nil {                                                                              // Check for errors
 		return []string{}, err // Return found error
 	}
 
@@ -157,21 +147,18 @@ func GetAllContracts(deployingAccount common.Address) ([]string, error) {
 	buffer := []string{} // Init buffer
 
 	files, err := ioutil.ReadDir(filepath.FromSlash(fmt.Sprintf("%s/db/chain", common.DataDir))) // Walk chain dir
-
-	if err != nil { // Check for errors
+	if err != nil {                                                                              // Check for errors
 		return []string{}, err // Return found error
 	}
 
 	for _, file := range files { // Iterate through files
 		chainBytes, err := ioutil.ReadFile(filepath.FromSlash(fmt.Sprintf("%s/db/chain/%s", common.DataDir, file.Name()))) // Read file
-
-		if err != nil { // Check for errors
+		if err != nil {                                                                                                    // Check for errors
 			return []string{}, err // Return found error
 		}
 
 		chain, err := types.FromBytes(chainBytes) // Get chain
-
-		if err != nil { // Check for errors
+		if err != nil {                           // Check for errors
 			return []string{}, err // Return found error
 		}
 
@@ -187,8 +174,7 @@ func GetAllContracts(deployingAccount common.Address) ([]string, error) {
 func (account *Account) MakeEncodingSafe() error {
 	if account.PrivateKey != nil { // Check has private key
 		marshaledPrivateKey, err := x509.MarshalECPrivateKey(account.PrivateKey) // Marshal private key
-
-		if err != nil { // Check for errors
+		if err != nil {                                                          // Check for errors
 			return err // Return found error
 		}
 
@@ -209,8 +195,7 @@ func (account *Account) RecoverSafeEncoding() error {
 	x509EncodedPrivateKey := blockPub.Bytes // Get x509 byte val
 
 	privateKey, err := x509.ParseECPrivateKey(x509EncodedPrivateKey) // Parse private key
-
-	if err != nil { // Check for errors
+	if err != nil {                                                  // Check for errors
 		return err // Return found error
 	}
 

@@ -12,8 +12,7 @@ import (
 // TestSendBytes - test functionality of SendBytes() method
 func TestSendBytes(t *testing.T) {
 	err := SendBytes([]byte("test"), "1.1.1.1:443") // Write to address
-
-	if err != nil { // Check for errors
+	if err != nil {                                 // Check for errors
 		t.Error(err) // Log found error
 		t.FailNow()  // Panic
 	}
@@ -24,8 +23,7 @@ func TestSendBytes(t *testing.T) {
 // TestReadConnectionWaitAsyncNoTLS - test functionality of ReadConnectionWaitAsyncNoTLS() method
 func TestReadConnectionWaitAsyncNoTLS(t *testing.T) {
 	connection, err := tls.Dial("tcp", "1.1.1.1:443", GeneralTLSConfig) // Connect to given address
-
-	if err != nil { // Check for errors
+	if err != nil {                                                     // Check for errors
 		t.Error(err) // Log found error
 		t.FailNow()  // Panic
 	}
@@ -54,8 +52,7 @@ func TestReadConnectionWaitAsyncNoTLS(t *testing.T) {
 // TestGetExtIPAddrWithoutUPnP - test functionality of GetExtIPAddrWithoutUPnP() method
 func TestGetExtIPAddrWithoutUPnP(t *testing.T) {
 	ip, err := GetExtIPAddrWithoutUPnP() // Get IP
-
-	if err != nil { // Check for errors
+	if err != nil {                      // Check for errors
 		t.Log(ip)    // Log IP for cov
 		t.Error(err) // Log found error
 		t.FailNow()  // Panic
@@ -74,8 +71,7 @@ func TestConnected(t *testing.T) {
 // TestGetIPFromProvider - test functionality of getIPFromProvider() method
 func TestGetIPFromProvider(t *testing.T) {
 	ip, err := getIPFromProvider("http://checkip.amazonaws.com/") // Get IP from provider
-
-	if err != nil { // Check for errors
+	if err != nil {                                               // Check for errors
 		t.Error(err) // Log found error
 		t.FailNow()  // Panic
 	}

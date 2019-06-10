@@ -18,8 +18,7 @@ func TestNewClient(t *testing.T) {
 	defer cancel() // Cancel
 
 	host, err := NewHost(ctx, 1234, "main_net") // Initialize host
-
-	if err != nil { // Check for errors
+	if err != nil {                             // Check for errors
 		t.Fatal(err) // Panic
 	}
 

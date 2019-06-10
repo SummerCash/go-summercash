@@ -19,8 +19,7 @@ import (
 // TestNewCoordinationChain - test coordinationChain initializer
 func TestNewCoordinationChain(t *testing.T) {
 	coordinationChain, err := NewCoordinationChain() // Init coordinationChain
-
-	if err != nil { // Check for errors
+	if err != nil {                                  // Check for errors
 		t.Error(err) // Log found error
 		t.FailNow()  // Panic
 	}
@@ -31,29 +30,25 @@ func TestNewCoordinationChain(t *testing.T) {
 // TestAddNode - test addNode() method
 func TestAddNode(t *testing.T) {
 	coordinationChain, err := NewCoordinationChain() // Init coordinationChain
-
-	if err != nil { // Check for errors
+	if err != nil {                                  // Check for errors
 		t.Error(err) // Log found error
 		t.FailNow()  // Panic
 	}
 
 	privateKey, err := ecdsa.GenerateKey(elliptic.P521(), rand.Reader) // Generate private key
-
-	if err != nil { // Check for errors
+	if err != nil {                                                    // Check for errors
 		t.Error(err) // Log found error
 		t.FailNow()  // Panic
 	}
 
 	address, err := common.NewAddress(privateKey) // Generate address
-
-	if err != nil { // Check for errors
+	if err != nil {                               // Check for errors
 		t.Error(err) // Log found error
 		t.FailNow()  // Panic
 	}
 
 	coordinationNode, err := NewCoordinationNode(address, []string{"1.1.1.1:" + strconv.Itoa(common.NodePort)}) // Init coordination node
-
-	if err != nil { // Check for errors
+	if err != nil {                                                                                             // Check for errors
 		t.Error(err) // Log found error
 		t.FailNow()  // Panic
 	}
@@ -71,29 +66,25 @@ func TestAddNode(t *testing.T) {
 // TestClearCache - test functionality of coordination chain clear cache
 func TestClearCache(t *testing.T) {
 	coordinationChain, err := NewCoordinationChain() // Init coordinationChain
-
-	if err != nil { // Check for errors
+	if err != nil {                                  // Check for errors
 		t.Error(err) // Log found error
 		t.FailNow()  // Panic
 	}
 
 	privateKey, err := ecdsa.GenerateKey(elliptic.P521(), rand.Reader) // Generate private key
-
-	if err != nil { // Check for errors
+	if err != nil {                                                    // Check for errors
 		t.Error(err) // Log found error
 		t.FailNow()  // Panic
 	}
 
 	address, err := common.NewAddress(privateKey) // Generate address
-
-	if err != nil { // Check for errors
+	if err != nil {                               // Check for errors
 		t.Error(err) // Log found error
 		t.FailNow()  // Panic
 	}
 
 	coordinationNode, err := NewCoordinationNode(address, []string{"1.1.1.1:" + strconv.Itoa(3000)}) // Init coordination node
-
-	if err != nil { // Check for errors
+	if err != nil {                                                                                  // Check for errors
 		t.Error(err) // Log found error
 		t.FailNow()  // Panic
 	}
@@ -117,29 +108,25 @@ func TestClearCache(t *testing.T) {
 
 func TestUpdateRemotes(t *testing.T) {
 	coordinationChain, err := NewCoordinationChain() // Init coordinationChain
-
-	if err != nil { // Check for errors
+	if err != nil {                                  // Check for errors
 		t.Error(err) // Log found error
 		t.FailNow()  // Panic
 	}
 
 	privateKey, err := ecdsa.GenerateKey(elliptic.P521(), rand.Reader) // Generate private key
-
-	if err != nil { // Check for errors
+	if err != nil {                                                    // Check for errors
 		t.Error(err) // Log found error
 		t.FailNow()  // Panic
 	}
 
 	address, err := common.NewAddress(privateKey) // Generate address
-
-	if err != nil { // Check for errors
+	if err != nil {                               // Check for errors
 		t.Error(err) // Log found error
 		t.FailNow()  // Panic
 	}
 
 	coordinationNode, err := NewCoordinationNode(address, []string{"1.1.1.1:" + strconv.Itoa(3000)}) // Init coordination node
-
-	if err != nil { // Check for errors
+	if err != nil {                                                                                  // Check for errors
 		t.Error(err) // Log found error
 		t.FailNow()  // Panic
 	}
@@ -162,8 +149,7 @@ func TestUpdateRemotes(t *testing.T) {
 // TestJoinNetwork - test functionality of network joining
 func TestJoinNetwork(t *testing.T) {
 	err := JoinNetwork(common.BootstrapNodes[0], false) // Join network
-
-	if err != nil { // Check for errors
+	if err != nil {                                     // Check for errors
 		t.Error(err) // Log found error
 		t.FailNow()  // Panic
 	}
@@ -174,29 +160,25 @@ func TestJoinNetwork(t *testing.T) {
 // TestQueryAddress - test QueryAddress() method
 func TestQueryAddress(t *testing.T) {
 	coordinationChain, err := NewCoordinationChain() // Init coordinationChain
-
-	if err != nil { // Check for errors
+	if err != nil {                                  // Check for errors
 		t.Error(err) // Log found error
 		t.FailNow()  // Panic
 	}
 
 	privateKey, err := ecdsa.GenerateKey(elliptic.P521(), rand.Reader) // Generate private key
-
-	if err != nil { // Check for errors
+	if err != nil {                                                    // Check for errors
 		t.Error(err) // Log found error
 		t.FailNow()  // Panic
 	}
 
 	address, err := common.NewAddress(privateKey) // Generate address
-
-	if err != nil { // Check for errors
+	if err != nil {                               // Check for errors
 		t.Error(err) // Log found error
 		t.FailNow()  // Panic
 	}
 
 	coordinationNode, err := NewCoordinationNode(address, []string{"1.1.1.1:" + strconv.Itoa(common.NodePort)}) // Init coordination node
-
-	if err != nil { // Check for errors
+	if err != nil {                                                                                             // Check for errors
 		t.Error(err) // Log found error
 		t.FailNow()  // Panic
 	}
@@ -221,29 +203,25 @@ func TestQueryAddress(t *testing.T) {
 // TestQueryNode - test QueryNode() method
 func TestQueryNode(t *testing.T) {
 	coordinationChain, err := NewCoordinationChain() // Init coordinationChain
-
-	if err != nil { // Check for errors
+	if err != nil {                                  // Check for errors
 		t.Error(err) // Log found error
 		t.FailNow()  // Panic
 	}
 
 	privateKey, err := ecdsa.GenerateKey(elliptic.P521(), rand.Reader) // Generate private key
-
-	if err != nil { // Check for errors
+	if err != nil {                                                    // Check for errors
 		t.Error(err) // Log found error
 		t.FailNow()  // Panic
 	}
 
 	address, err := common.NewAddress(privateKey) // Generate address
-
-	if err != nil { // Check for errors
+	if err != nil {                               // Check for errors
 		t.Error(err) // Log found error
 		t.FailNow()  // Panic
 	}
 
 	coordinationNode, err := NewCoordinationNode(address, []string{"1.1.1.1:" + strconv.Itoa(common.NodePort)}) // Init coordination node
-
-	if err != nil { // Check for errors
+	if err != nil {                                                                                             // Check for errors
 		t.Error(err) // Log found error
 		t.FailNow()  // Panic
 	}
@@ -268,29 +246,25 @@ func TestQueryNode(t *testing.T) {
 // TestQueryArchivalNode - test QueryArchivalNode() method
 func TestQueryArchivalNode(t *testing.T) {
 	coordinationChain, err := NewCoordinationChain() // Init coordinationChain
-
-	if err != nil { // Check for errors
+	if err != nil {                                  // Check for errors
 		t.Error(err) // Log found error
 		t.FailNow()  // Panic
 	}
 
 	privateKey, err := ecdsa.GenerateKey(elliptic.P521(), rand.Reader) // Generate private key
-
-	if err != nil { // Check for errors
+	if err != nil {                                                    // Check for errors
 		t.Error(err) // Log found error
 		t.FailNow()  // Panic
 	}
 
 	address, err := common.NewAddress(privateKey) // Generate address
-
-	if err != nil { // Check for errors
+	if err != nil {                               // Check for errors
 		t.Error(err) // Log found error
 		t.FailNow()  // Panic
 	}
 
 	coordinationNode, err := NewCoordinationNode(address, []string{"1.1.1.1:" + strconv.Itoa(common.NodePort)}) // Init coordination node
-
-	if err != nil { // Check for errors
+	if err != nil {                                                                                             // Check for errors
 		t.Error(err) // Log found error
 		t.FailNow()  // Panic
 	}
@@ -303,8 +277,7 @@ func TestQueryArchivalNode(t *testing.T) {
 	}
 
 	coordinationNodes, err := coordinationChain.QueryArchivalNode("1.1.1.1") // Query address
-
-	if err != nil { // Check for errors
+	if err != nil {                                                          // Check for errors
 		t.Error(err) // Log error
 		t.FailNow()  // Panic
 	}
@@ -315,50 +288,43 @@ func TestQueryArchivalNode(t *testing.T) {
 // TestQueryAllArchivalNodes - test QueryAllArchivalNodes() method
 func TestQueryAllArchivalNodes(t *testing.T) {
 	coordinationChain, err := NewCoordinationChain() // Init coordinationChain
-
-	if err != nil { // Check for errors
+	if err != nil {                                  // Check for errors
 		t.Error(err) // Log found error
 		t.FailNow()  // Panic
 	}
 
 	privateKey, err := ecdsa.GenerateKey(elliptic.P521(), rand.Reader) // Generate private key
-
-	if err != nil { // Check for errors
+	if err != nil {                                                    // Check for errors
 		t.Error(err) // Log found error
 		t.FailNow()  // Panic
 	}
 
 	address, err := common.NewAddress(privateKey) // Generate address
-
-	if err != nil { // Check for errors
+	if err != nil {                               // Check for errors
 		t.Error(err) // Log found error
 		t.FailNow()  // Panic
 	}
 
 	privateKey2, err := ecdsa.GenerateKey(elliptic.P521(), rand.Reader) // Generate private key
-
-	if err != nil { // Check for errors
+	if err != nil {                                                     // Check for errors
 		t.Error(err) // Log found error
 		t.FailNow()  // Panic
 	}
 
 	address2, err := common.NewAddress(privateKey2) // Generate address
-
-	if err != nil { // Check for errors
+	if err != nil {                                 // Check for errors
 		t.Error(err) // Log found error
 		t.FailNow()  // Panic
 	}
 
 	coordinationNode, err := NewCoordinationNode(address, []string{"1.1.1.1:" + strconv.Itoa(common.NodePort), "2.2.2.2:" + strconv.Itoa(common.NodePort)}) // Init coordination node
-
-	if err != nil { // Check for errors
+	if err != nil {                                                                                                                                         // Check for errors
 		t.Error(err) // Log found error
 		t.FailNow()  // Panic
 	}
 
 	coordinationNode2, err := NewCoordinationNode(address2, []string{"1.1.1.1:" + strconv.Itoa(common.NodePort), "2.2.2.2:" + strconv.Itoa(common.NodePort)}) // Init coordination node
-
-	if err != nil { // Check for errors
+	if err != nil {                                                                                                                                           // Check for errors
 		t.Error(err) // Log found error
 		t.FailNow()  // Panic
 	}
@@ -378,8 +344,7 @@ func TestQueryAllArchivalNodes(t *testing.T) {
 	}
 
 	coordinationNodes, err := coordinationChain.QueryAllArchivalNodes() // Query addresses
-
-	if err != nil { // Check for errors
+	if err != nil {                                                     // Check for errors
 		t.Error(err) // Log error
 		t.FailNow()  // Panic
 	}
@@ -390,29 +355,25 @@ func TestQueryAllArchivalNodes(t *testing.T) {
 // TestPushNode - test PushNode() method
 func TestPushNode(t *testing.T) {
 	coordinationChain, err := NewCoordinationChain() // Init coordinationChain
-
-	if err != nil { // Check for errors
+	if err != nil {                                  // Check for errors
 		t.Error(err) // Log found error
 		t.FailNow()  // Panic
 	}
 
 	privateKey, err := ecdsa.GenerateKey(elliptic.P521(), rand.Reader) // Generate private key
-
-	if err != nil { // Check for errors
+	if err != nil {                                                    // Check for errors
 		t.Error(err) // Log found error
 		t.FailNow()  // Panic
 	}
 
 	address, err := common.NewAddress(privateKey) // Generate address
-
-	if err != nil { // Check for errors
+	if err != nil {                               // Check for errors
 		t.Error(err) // Log found error
 		t.FailNow()  // Panic
 	}
 
 	coordinationNode, err := NewCoordinationNode(address, []string{"1.1.1.1:" + strconv.Itoa(common.NodePort)}) // Init coordination node
-
-	if err != nil { // Check for errors
+	if err != nil {                                                                                             // Check for errors
 		t.Error(err) // Log found error
 		t.FailNow()  // Panic
 	}
@@ -437,8 +398,7 @@ func TestPushNode(t *testing.T) {
 // TestCoordinationChainFromBytes - test bytes decoder for coordination c
 func TestCoordinationChainFromBytes(t *testing.T) {
 	coordinationChain, err := NewCoordinationChain() // Init coordinationChain
-
-	if err != nil { // Check for errors
+	if err != nil {                                  // Check for errors
 		t.Error(err) // Log found error
 		t.FailNow()  // Panic
 	}
@@ -463,8 +423,7 @@ func TestCoordinationChainFromBytes(t *testing.T) {
 // TestBytesCoordinationChain - test functionality of coordinationChain Bytes() extension method
 func TestBytesCoordinationChain(t *testing.T) {
 	coordinationChain, err := NewCoordinationChain() // Init coordinationChain
-
-	if err != nil { // Check for errors
+	if err != nil {                                  // Check for errors
 		t.Error(err) // Log found error
 		t.FailNow()  // Panic
 	}
@@ -482,8 +441,7 @@ func TestBytesCoordinationChain(t *testing.T) {
 // TestStringCoordinationChain - test functionality of coordinationChain String() extension method
 func TestStringCoordinationChain(t *testing.T) {
 	coordinationChain, err := NewCoordinationChain() // Init coordinationChain
-
-	if err != nil { // Check for errors
+	if err != nil {                                  // Check for errors
 		t.Error(err) // Log found error
 		t.FailNow()  // Panic
 	}
@@ -509,22 +467,19 @@ func TestStringCoordinationChain(t *testing.T) {
 // TestNewCoordinationNode - test functionality of coordinationNode initializer
 func TestNewCoordinationNode(t *testing.T) {
 	privateKey, err := ecdsa.GenerateKey(elliptic.P521(), rand.Reader) // Generate private key
-
-	if err != nil { // Check for errors
+	if err != nil {                                                    // Check for errors
 		t.Error(err) // Log found error
 		t.FailNow()  // Panic
 	}
 
 	address, err := common.NewAddress(privateKey) // Generate address
-
-	if err != nil { // Check for errors
+	if err != nil {                               // Check for errors
 		t.Error(err) // Log found error
 		t.FailNow()  // Panic
 	}
 
 	coordinationNode, err := NewCoordinationNode(address, []string{"1.1.1.1:" + strconv.Itoa(common.NodePort)}) // Init coordination node
-
-	if err != nil { // Check for errors
+	if err != nil {                                                                                             // Check for errors
 		t.Error(err) // Log found error
 		t.FailNow()  // Panic
 	}
@@ -535,22 +490,19 @@ func TestNewCoordinationNode(t *testing.T) {
 // TestCoordinationNodeFromBytes - test conversion from byte array to coordination node
 func TestCoordinationNodeFromByte(t *testing.T) {
 	privateKey, err := ecdsa.GenerateKey(elliptic.P521(), rand.Reader) // Generate private key
-
-	if err != nil { // Check for errors
+	if err != nil {                                                    // Check for errors
 		t.Error(err) // Log found error
 		t.FailNow()  // Panic
 	}
 
 	address, err := common.NewAddress(privateKey) // Generate address
-
-	if err != nil { // Check for errors
+	if err != nil {                               // Check for errors
 		t.Error(err) // Log found error
 		t.FailNow()  // Panic
 	}
 
 	coordinationNode, err := NewCoordinationNode(address, []string{"1.1.1.1:" + strconv.Itoa(common.NodePort)}) // Init coordination node
-
-	if err != nil { // Check for errors
+	if err != nil {                                                                                             // Check for errors
 		t.Error(err) // Log found error
 		t.FailNow()  // Panic
 	}
@@ -575,22 +527,19 @@ func TestCoordinationNodeFromByte(t *testing.T) {
 // TestBytesCoordinationNode - test functionality of coordinationNode Byte() extension method
 func TestBytesCoordinationNode(t *testing.T) {
 	privateKey, err := ecdsa.GenerateKey(elliptic.P521(), rand.Reader) // Generate private key
-
-	if err != nil { // Check for errors
+	if err != nil {                                                    // Check for errors
 		t.Error(err) // Log found error
 		t.FailNow()  // Panic
 	}
 
 	address, err := common.NewAddress(privateKey) // Generate address
-
-	if err != nil { // Check for errors
+	if err != nil {                               // Check for errors
 		t.Error(err) // Log found error
 		t.FailNow()  // Panic
 	}
 
 	coordinationNode, err := NewCoordinationNode(address, []string{"1.1.1.1:" + strconv.Itoa(common.NodePort)}) // Init coordination node
-
-	if err != nil { // Check for errors
+	if err != nil {                                                                                             // Check for errors
 		t.Error(err) // Log found error
 		t.FailNow()  // Panic
 	}
@@ -608,22 +557,19 @@ func TestBytesCoordinationNode(t *testing.T) {
 // TestStringCoordinationNode - test functionality of coordinationNode String() extension method
 func TestStringCoordinationNode(t *testing.T) {
 	privateKey, err := ecdsa.GenerateKey(elliptic.P521(), rand.Reader) // Generate private key
-
-	if err != nil { // Check for errors
+	if err != nil {                                                    // Check for errors
 		t.Error(err) // Log found error
 		t.FailNow()  // Panic
 	}
 
 	address, err := common.NewAddress(privateKey) // Generate address
-
-	if err != nil { // Check for errors
+	if err != nil {                               // Check for errors
 		t.Error(err) // Log found error
 		t.FailNow()  // Panic
 	}
 
 	coordinationNode, err := NewCoordinationNode(address, []string{"1.1.1.1:" + strconv.Itoa(common.NodePort)}) // Init coordination node
-
-	if err != nil { // Check for errors
+	if err != nil {                                                                                             // Check for errors
 		t.Error(err) // Log found error
 		t.FailNow()  // Panic
 	}

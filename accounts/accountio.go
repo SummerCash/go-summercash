@@ -12,8 +12,7 @@ import (
 // WriteToMemory - write given account to persistent memory
 func (account *Account) WriteToMemory() error {
 	err := account.MakeEncodingSafe() // Make safe for encoding
-
-	if err != nil { // Check for errors
+	if err != nil {                   // Check for errors
 		return err // Return error
 	}
 
@@ -24,8 +23,7 @@ func (account *Account) WriteToMemory() error {
 	}
 
 	json, err := json.MarshalIndent(*account, "", "  ") // Marshal account
-
-	if err != nil { // Check for errors
+	if err != nil {                                     // Check for errors
 		return err // Return error
 	}
 
@@ -41,8 +39,7 @@ func (account *Account) WriteToMemory() error {
 // ReadAccountFromMemory - read account with address from persistent memory
 func ReadAccountFromMemory(address common.Address) (*Account, error) {
 	data, err := ioutil.ReadFile(filepath.FromSlash(fmt.Sprintf("%s/keystore/account_%s.json", common.DataDir, address.String()))) // Read account file
-
-	if err != nil { // Check for errors
+	if err != nil {                                                                                                                // Check for errors
 		return &Account{}, err // Return error
 	}
 

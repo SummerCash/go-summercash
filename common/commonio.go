@@ -26,8 +26,7 @@ func CreateDirIfDoesNotExist(dir string) error {
 // WriteGob - create gob from specified object, at filePath
 func WriteGob(filePath string, object interface{}) error {
 	file, err := os.Create(filePath) // Attempt to create file at path
-
-	if err != nil { // Check for errors
+	if err != nil {                  // Check for errors
 		return err // Return found error
 	}
 
@@ -47,8 +46,7 @@ func WriteGob(filePath string, object interface{}) error {
 // ReadGob - read gob specified at path
 func ReadGob(filePath string, object interface{}) error {
 	file, err := os.Open(filePath) // Attempt to open file at path
-
-	if err != nil { // Check for errors
+	if err != nil {                // Check for errors
 		return err // Return found error
 	}
 

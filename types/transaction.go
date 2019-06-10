@@ -157,8 +157,7 @@ func TransactionFromBytes(b []byte) (*Transaction, error) {
 	transaction := Transaction{} // Init buffer
 
 	err := json.NewDecoder(bytes.NewReader(b)).Decode(&transaction) // Decode into buffer
-
-	if err != nil { // Check for errors
+	if err != nil {                                                 // Check for errors
 		return nil, err // Return found error
 	}
 
@@ -185,22 +184,19 @@ func (transaction *Transaction) EvaluateNewState(gasPolicy *compiler.GasPolicy) 
 	}
 
 	recipientChain, err := ReadChainFromMemory(*transaction.Recipient) // Read recipient chain
-
-	if err != nil { // Check for errors
+	if err != nil {                                                    // Check for errors
 		return &vm.State{}, err // Return found error
 	}
 
 	workingVM, err := vm.NewVirtualMachine(recipientChain.ContractSource, common.VMConfig, new(TransactionMetaResolver), common.GasPolicy) // Init vm
-
-	if err != nil { // Check for errors
+	if err != nil {                                                                                                                        // Check for errors
 		return nil, err // Return found error
 	}
 
 	workingVMTransaction = transaction // Set working vm tx
 
 	parentTx, err := recipientChain.QueryTransaction(*transaction.ParentTx) // Query parent
-
-	if err != nil { // Check for errors
+	if err != nil {                                                         // Check for errors
 		return &vm.State{}, err // Return found error
 	}
 
@@ -221,8 +217,7 @@ func (transaction *Transaction) EvaluateNewState(gasPolicy *compiler.GasPolicy) 
 	}
 
 	callMethod, callParams, err := common.ParseStringMethodCallNoReceiver(string(transaction.Payload)) // Parse payload method call
-
-	if err != nil { // Check for errors
+	if err != nil {                                                                                    // Check for errors
 		return &vm.State{}, err // Return found error
 	}
 
@@ -236,8 +231,7 @@ func (transaction *Transaction) EvaluateNewState(gasPolicy *compiler.GasPolicy) 
 
 	for _, param := range callParams { // Iterate through params
 		intVal, err := strconv.ParseInt(param, 10, 64) // Parse int
-
-		if err != nil { // Check for errors
+		if err != nil {                                // Check for errors
 			return nil, err // Return found error
 		}
 
@@ -245,8 +239,7 @@ func (transaction *Transaction) EvaluateNewState(gasPolicy *compiler.GasPolicy) 
 	}
 
 	result, err := workingVM.Run(entryID, parsedCallParams...) // Run
-
-	if err != nil { // Check for errors
+	if err != nil {                                            // Check for errors
 		common.Logf("== VM == Contract call exited with code %d and error %s", result, err.Error()) // Log err
 
 		return &vm.State{}, err // Return found error
@@ -278,14 +271,12 @@ func (transaction *Transaction) Publish() error {
 	}
 
 	coordinationChain, err := ReadCoordinationChainFromMemory() // Read coordination chain
-
-	if err != nil { // Check for errors
+	if err != nil {                                             // Check for errors
 		return err // Return found error
 	}
 
 	node, err := coordinationChain.QueryAddress(*transaction.Recipient) // Get address
-
-	if err != nil { // Check for errors
+	if err != nil {                                                     // Check for errors
 		return err // Return found error
 	}
 
@@ -312,8 +303,7 @@ func (transaction *Transaction) Publish() error {
 func (transaction *Transaction) MakeEncodingSafe() error {
 	if transaction.Signature != nil && transaction.Signature.PublicKey != nil { // Check has signature
 		encoded, err := x509.MarshalPKIXPublicKey(transaction.Signature.PublicKey) // Encode
-
-		if err != nil { // Check for errors
+		if err != nil {                                                            // Check for errors
 			return err // Return error
 		}
 
@@ -335,8 +325,7 @@ func (transaction *Transaction) RecoverSafeEncoding() error {
 		x509EncodedPub := blockPub.Bytes // Get x509 byte val
 
 		genericPublicKey, err := x509.ParsePKIXPublicKey(x509EncodedPub) // Parse public  key
-
-		if err != nil { // Check for errors
+		if err != nil {                                                  // Check for errors
 			return err // Return found error
 		}
 
@@ -419,8 +408,7 @@ func (transaction *Transaction) String() string {
 // WriteToMemory - write given transaction to memory
 func (transaction *Transaction) WriteToMemory() error {
 	err := common.CreateDirIfDoesNotExist(fmt.Sprintf("%s/mem/pending_tx", common.DataDir)) // Create dir if necessary
-
-	if err != nil { // Check for errors
+	if err != nil {                                                                         // Check for errors
 		return err // Return error
 	}
 
@@ -431,8 +419,7 @@ func (transaction *Transaction) WriteToMemory() error {
 	}
 
 	json, err := json.MarshalIndent(*transaction, "", "  ") // Marshal JSOn
-
-	if err != nil { // Check for errors
+	if err != nil {                                         // Check for errors
 		return err // Return found error
 	}
 
@@ -454,8 +441,7 @@ func (transaction *Transaction) WriteToMemory() error {
 // ReadTransactionFromMemory - read transaction from memory
 func ReadTransactionFromMemory(hash common.Hash) (*Transaction, error) {
 	data, err := ioutil.ReadFile(filepath.FromSlash(fmt.Sprintf("%s/mem/pending_tx/tx_%s.gob", common.DataDir, hash.String()))) // Read file
-
-	if err != nil { // Check for errors
+	if err != nil {                                                                                                             // Check for errors
 		return &Transaction{}, err // Return error
 	}
 

@@ -18,10 +18,8 @@ import (
 	"github.com/SummerCash/go-summercash/types"
 )
 
-const (
-	// StandardValidatorValidationProtocol represents the validation protocol of the standard validator.
-	StandardValidatorValidationProtocol = "standard_sig_ver"
-)
+// StandardValidatorValidationProtocol represents the validation protocol of the standard validator.
+const StandardValidatorValidationProtocol = "standard_sig_ver"
 
 var (
 	// ErrInvalidTransactionHash is an error definition representing a transaction hash of invalid value.
@@ -30,7 +28,7 @@ var (
 	// ErrInvalidTransactionState is an error definition representing a transaction state of invalid value.
 	ErrInvalidTransactionState = errors.New("transaction state is invalid")
 
-	//ErrInvalidTransactionTimestamp is an error definition representing a transaction timestamp of invalid value.
+	// ErrInvalidTransactionTimestamp is an error definition representing a transaction timestamp of invalid value.
 	ErrInvalidTransactionTimestamp = errors.New("invalid transaction timestamp")
 
 	// ErrInvalidTransactionSignature is an error definition representing a transaction signature of invalid value.
@@ -64,8 +62,7 @@ func NewStandardValidator(config *config.ChainConfig) *StandardValidator {
 // Each validation issue is returned as an error.
 func (validator *StandardValidator) ValidateTransaction(transaction *types.Transaction) error {
 	err := validator.PerformChainSafetyChecks(transaction) // Perform safety checks
-
-	if err != nil { // Check for errors
+	if err != nil {                                        // Check for errors
 		return err // Return found error
 	}
 
@@ -104,11 +101,9 @@ func (validator *StandardValidator) ValidateTransaction(transaction *types.Trans
 // and makes one if it cannot request it from its peers.
 func (validator *StandardValidator) PerformChainSafetyChecks(transaction *types.Transaction) error {
 	_, err := types.ReadChainFromMemory(*transaction.Sender) // Read sender chain
-
-	if err != nil { // Check for errors
+	if err != nil {                                          // Check for errors
 		_, err := types.NewChain(*transaction.Sender) // Initialize chain
-
-		if err != nil { // Check for errors
+		if err != nil {                               // Check for errors
 			return err // Return found error
 		}
 	}
@@ -117,8 +112,7 @@ func (validator *StandardValidator) PerformChainSafetyChecks(transaction *types.
 
 	if err != nil { // Check for errors
 		_, err := types.NewChain(*transaction.Recipient) // Initialize chain
-
-		if err != nil { // Check for errors
+		if err != nil {                                  // Check for errors
 			return err // Return found error
 		}
 	}
@@ -146,8 +140,7 @@ func (validator *StandardValidator) ValidateTransactionState(transaction *types.
 	gasPolicy := compiler.GasPolicy(common.GasPolicy) // Get gas policy
 
 	localState, err := transaction.EvaluateNewState(&gasPolicy) // Calculate local state
-
-	if err != nil { // Check for errors
+	if err != nil {                                             // Check for errors
 		return false // Invalid
 	}
 
@@ -163,8 +156,7 @@ func (validator *StandardValidator) ValidateTransactionState(transaction *types.
 // If any one of the transaction's parent transactions cannot be found in the working dag, false is returned.
 func (validator *StandardValidator) ValidateTransactionTimestamp(transaction *types.Transaction) bool {
 	senderChain, err := types.ReadChainFromMemory(*transaction.Sender) // Read sender chain
-
-	if err != nil { // Check for errors
+	if err != nil {                                                    // Check for errors
 		return false // Invalid
 	}
 
@@ -187,8 +179,7 @@ func (validator *StandardValidator) ValidateTransactionSignature(transaction *ty
 	}
 
 	valid, err := types.VerifyTransactionSignature(transaction) // Check valid
-
-	if err != nil { // Check for errors
+	if err != nil {                                             // Check for errors
 		return false // Invalid
 	}
 
@@ -202,7 +193,6 @@ func (validator *StandardValidator) ValidateTransactionSenderBalance(transaction
 	}
 
 	chain, err := types.ReadChainFromMemory(*transaction.Sender) // Read sender chain
-
 	if err != nil {
 		return false // Invalid
 	}
@@ -215,7 +205,6 @@ func (validator *StandardValidator) ValidateTransactionSenderBalance(transaction
 // ValidateTransactionIsNotDuplicate checks that a given transaction does not already exist in the working dag.
 func (validator *StandardValidator) ValidateTransactionIsNotDuplicate(transaction *types.Transaction) bool {
 	chain, err := types.ReadChainFromMemory(*transaction.Sender) // Read sender chain
-
 	if err != nil {
 		return false // Invalid
 	}
@@ -232,7 +221,6 @@ func (validator *StandardValidator) ValidateTransactionIsNotDuplicate(transactio
 // ValidateTransactionNonce checks that a given transaction's nonce is equivalent to the sending account's last nonce + 1.
 func (validator *StandardValidator) ValidateTransactionNonce(transaction *types.Transaction) bool {
 	chain, err := types.ReadChainFromMemory(*transaction.Sender) // Read sender chain
-
 	if err != nil {
 		return false // Invalid
 	}

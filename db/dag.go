@@ -78,8 +78,7 @@ func (dag *Dag) AddLeaf(leaf *Leaf) error {
 // QueryTransactionWithHash queries the dag for a transaction with the corresponding hash.
 func (dag *Dag) QueryTransactionWithHash(hash common.Hash) (*types.Transaction, error) {
 	leaf, err := dag.Root.GetChildByHash(hash) // Get child
-
-	if err != nil { // Check for errors
+	if err != nil {                            // Check for errors
 		return &types.Transaction{}, err // Return found error
 	}
 

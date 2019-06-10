@@ -23,14 +23,12 @@ type Server struct{}
 // NewTransaction - transaction.NewTransaction RPC handler
 func (server *Server) NewTransaction(ctx context.Context, req *transactionProto.GeneralRequest) (*transactionProto.GeneralResponse, error) {
 	sender, err := common.StringToAddress(req.Address) // Convert address param to address literal
-
-	if err != nil { // Check for errors
+	if err != nil {                                    // Check for errors
 		return &transactionProto.GeneralResponse{}, err // Return found error
 	}
 
 	recipient, err := common.StringToAddress(req.Address2) // Check for errors
-
-	if err != nil { // Check for errors
+	if err != nil {                                        // Check for errors
 		return &transactionProto.GeneralResponse{}, err // Return found error
 	}
 
@@ -40,8 +38,7 @@ func (server *Server) NewTransaction(ctx context.Context, req *transactionProto.
 
 	if err != nil { // Check for errors
 		newTransaction, err := types.NewTransaction(0, nil, &sender, &recipient, big.NewFloat(req.Amount), req.Payload) // Init transaction
-
-		if err != nil { // Check for errors
+		if err != nil {                                                                                                 // Check for errors
 			return &transactionProto.GeneralResponse{}, err // Return found error
 		}
 
@@ -57,8 +54,7 @@ func (server *Server) NewTransaction(ctx context.Context, req *transactionProto.
 		}
 
 		newTransaction, err := types.NewTransaction(nonce, lastTransaction, &sender, &recipient, big.NewFloat(req.Amount), req.Payload) // Init transaction
-
-		if err != nil { // Check for errors
+		if err != nil {                                                                                                                 // Check for errors
 			return &transactionProto.GeneralResponse{}, err // Return found error
 		}
 
@@ -77,8 +73,7 @@ func (server *Server) NewTransaction(ctx context.Context, req *transactionProto.
 // TransactionFromBytes - transaction.TransactionFromBytes RPC handler
 func (server *Server) TransactionFromBytes(ctx context.Context, req *transactionProto.GeneralRequest) (*transactionProto.GeneralResponse, error) {
 	transaction, err := types.TransactionFromBytes(req.Payload) // Get tx literal
-
-	if err != nil { // Check for errors
+	if err != nil {                                             // Check for errors
 		return &transactionProto.GeneralResponse{}, err // Return found error
 	}
 
@@ -94,14 +89,12 @@ func (server *Server) Publish(ctx context.Context, req *transactionProto.General
 	}
 
 	hash, err := common.StringToHash(req.Address) // String to hash
-
-	if err != nil { // Check for errors
+	if err != nil {                               // Check for errors
 		return &transactionProto.GeneralResponse{}, err // Return found error
 	}
 
 	transaction, err := types.ReadTransactionFromMemory(hash) // Read transaction from hash
-
-	if err != nil { // Check for errors
+	if err != nil {                                           // Check for errors
 		return &transactionProto.GeneralResponse{}, err // Return found error
 	}
 
@@ -110,8 +103,7 @@ func (server *Server) Publish(ctx context.Context, req *transactionProto.General
 	}
 
 	config, err := config.ReadChainConfigFromMemory() // Read config from memory
-
-	if err != nil { // Check for errors
+	if err != nil {                                   // Check for errors
 		return &transactionProto.GeneralResponse{}, err // Return found error
 	}
 
@@ -125,8 +117,7 @@ func (server *Server) Publish(ctx context.Context, req *transactionProto.General
 
 	if err == nil { // Check no errors
 		chain, err := types.ReadChainFromMemory(*transaction.Sender) // Read sender chain
-
-		if err != nil { // Check for errors
+		if err != nil {                                              // Check for errors
 			return &transactionProto.GeneralResponse{}, err // Return found error
 		}
 
@@ -176,17 +167,14 @@ func (server *Server) Publish(ctx context.Context, req *transactionProto.General
 
 func handleContractCall(transaction *types.Transaction) (*transactionProto.GeneralResponse, error) {
 	err := transaction.Publish() // Publish transaction
-
-	if err != nil { // Check for errors
+	if err != nil {              // Check for errors
 		return &transactionProto.GeneralResponse{}, err // Return found error
 	}
 
 	chain, err := types.ReadChainFromMemory(*transaction.Recipient) // Read recipient chain
-
-	if err != nil { // Check for errors
+	if err != nil {                                                 // Check for errors
 		coordinationChain, err := types.ReadCoordinationChainFromMemory() // Read coordination chain
-
-		if err != nil { // Check for errors
+		if err != nil {                                                   // Check for errors
 			return &transactionProto.GeneralResponse{}, err // Return found error
 		}
 
@@ -241,20 +229,17 @@ func handleContractCall(transaction *types.Transaction) (*transactionProto.Gener
 // Bytes - transaction.Bytes RPC handler
 func (server *Server) Bytes(ctx context.Context, req *transactionProto.GeneralRequest) (*transactionProto.GeneralResponse, error) {
 	hash, err := common.StringToHash(req.Address) // String to hash
-
-	if err != nil { // Check for errors
+	if err != nil {                               // Check for errors
 		return &transactionProto.GeneralResponse{}, err // Return found error
 	}
 
 	transaction, err := types.ReadTransactionFromMemory(hash) // Read transaction from hash
-
-	if err != nil { // Check for errors
+	if err != nil {                                           // Check for errors
 		return &transactionProto.GeneralResponse{}, err // Return found error
 	}
 
 	hex, err := common.EncodeString(transaction.Bytes()) // Encode byte value
-
-	if err != nil { // Check for errors
+	if err != nil {                                      // Check for errors
 		return &transactionProto.GeneralResponse{}, err // Return found error
 	}
 
@@ -264,14 +249,12 @@ func (server *Server) Bytes(ctx context.Context, req *transactionProto.GeneralRe
 // String - transaction.String RPC handler
 func (server *Server) String(ctx context.Context, req *transactionProto.GeneralRequest) (*transactionProto.GeneralResponse, error) {
 	hash, err := common.StringToHash(req.Address) // String to hash
-
-	if err != nil { // Check for errors
+	if err != nil {                               // Check for errors
 		return &transactionProto.GeneralResponse{}, err // Return found error
 	}
 
 	transaction, err := types.ReadTransactionFromMemory(hash) // Read transaction from hash
-
-	if err != nil { // Check for errors
+	if err != nil {                                           // Check for errors
 		return &transactionProto.GeneralResponse{}, err // Return found error
 	}
 
@@ -281,20 +264,17 @@ func (server *Server) String(ctx context.Context, req *transactionProto.GeneralR
 // SignTransaction - transaction.SignTransaction RPC handler
 func (server *Server) SignTransaction(ctx context.Context, req *transactionProto.GeneralRequest) (*transactionProto.GeneralResponse, error) {
 	hash, err := common.StringToHash(req.Address) // String to hash
-
-	if err != nil { // Check for errors
+	if err != nil {                               // Check for errors
 		return &transactionProto.GeneralResponse{}, err // Return found error
 	}
 
 	transaction, err := types.ReadTransactionFromMemory(hash) // Read transaction from hash
-
-	if err != nil { // Check for errors
+	if err != nil {                                           // Check for errors
 		return &transactionProto.GeneralResponse{}, err // Return found error
 	}
 
 	account, err := accounts.ReadAccountFromMemory(*transaction.Sender) // Read account
-
-	if err != nil { // Check for errors
+	if err != nil {                                                     // Check for errors
 		return &transactionProto.GeneralResponse{}, err // Return found error
 	}
 
@@ -316,20 +296,17 @@ func (server *Server) SignTransaction(ctx context.Context, req *transactionProto
 // VerifyTransactionSignature - transaction.VerifyTransactionSignature RPC handler
 func (server *Server) VerifyTransactionSignature(ctx context.Context, req *transactionProto.GeneralRequest) (*transactionProto.GeneralResponse, error) {
 	hash, err := common.StringToHash(req.Address) // Get hash value
-
-	if err != nil { // Check for errors
+	if err != nil {                               // Check for errors
 		return &transactionProto.GeneralResponse{}, err // Return found error
 	}
 
 	transaction, err := types.ReadTransactionFromMemory(hash) // Read transaction from mempool
-
-	if err != nil { // Check for errors
+	if err != nil {                                           // Check for errors
 		return &transactionProto.GeneralResponse{}, err // Return found error
 	}
 
 	verified, err := types.VerifyTransactionSignature(transaction) // Verify signature
-
-	if err != nil { // Check for errors
+	if err != nil {                                                // Check for errors
 		return &transactionProto.GeneralResponse{}, err // Return found error
 	}
 

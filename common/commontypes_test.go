@@ -18,15 +18,13 @@ import (
 // TestNewAddress - test init new address
 func TestNewAddress(t *testing.T) {
 	privateKey, err := ecdsa.GenerateKey(elliptic.P521(), rand.Reader) // Generate private key
-
-	if err != nil { // Check for errors
+	if err != nil {                                                    // Check for errors
 		t.Error(err) // Log found error
 		t.FailNow()  // Panic
 	}
 
 	address, err := NewAddress(privateKey) // Generate address
-
-	if err != nil { // Check for errors
+	if err != nil {                        // Check for errors
 		t.Error(err) // Log found error
 		t.FailNow()  // Panic
 	}
@@ -37,8 +35,7 @@ func TestNewAddress(t *testing.T) {
 // TestPublicKeyToAddress - test functionality of public key address initializer
 func TestPublicKeyToAddress(t *testing.T) {
 	privateKey, err := ecdsa.GenerateKey(elliptic.P521(), rand.Reader) // Generate private key
-
-	if err != nil { // Check for errors
+	if err != nil {                                                    // Check for errors
 		t.Error(err) // Log found error
 		t.FailNow()  // Panic
 	}
@@ -50,15 +47,13 @@ func TestPublicKeyToAddress(t *testing.T) {
 
 func TestStringToAddress(t *testing.T) {
 	privateKey, err := ecdsa.GenerateKey(elliptic.P521(), rand.Reader) // Generate private key
-
-	if err != nil { // Check for errors
+	if err != nil {                                                    // Check for errors
 		t.Error(err) // Log found error
 		t.FailNow()  // Panic
 	}
 
 	address, err := NewAddress(privateKey) // Generate address
-
-	if err != nil { // Check for errors
+	if err != nil {                        // Check for errors
 		t.Error(err) // Log found error
 		t.FailNow()  // Panic
 	}
@@ -71,8 +66,7 @@ func TestStringToAddress(t *testing.T) {
 	}
 
 	decoded, err := StringToAddress(stringVal) // Decode string
-
-	if err != nil { // Check for errors
+	if err != nil {                            // Check for errors
 		t.Error(err) // Log found error
 		t.FailNow()  // Panic
 	}
@@ -88,15 +82,13 @@ func TestStringToAddress(t *testing.T) {
 // TestBytes - test address to bytes conversion
 func TestBytes(t *testing.T) {
 	privateKey, err := ecdsa.GenerateKey(elliptic.P521(), rand.Reader) // Generate private key
-
-	if err != nil { // Check for errors
+	if err != nil {                                                    // Check for errors
 		t.Error(err) // Log found error
 		t.FailNow()  // Panic
 	}
 
 	address, err := NewAddress(privateKey) // Generate address
-
-	if err != nil { // Check for errors
+	if err != nil {                        // Check for errors
 		t.Error(err) // Log found error
 		t.FailNow()  // Panic
 	}
@@ -107,15 +99,13 @@ func TestBytes(t *testing.T) {
 // TestString - test address to string conversion
 func TestString(t *testing.T) {
 	privateKey, err := ecdsa.GenerateKey(elliptic.P521(), rand.Reader) // Generate private key
-
-	if err != nil { // Check for errors
+	if err != nil {                                                    // Check for errors
 		t.Error(err) // Log found error
 		t.FailNow()  // Panic
 	}
 
 	address, err := NewAddress(privateKey) // Generate address
-
-	if err != nil { // Check for errors
+	if err != nil {                        // Check for errors
 		t.Error(err) // Log found error
 		t.FailNow()  // Panic
 	}
@@ -146,8 +136,7 @@ func TestNewHash(t *testing.T) {
 // TestStringToHash - test functionality of StringToHash() method
 func TestStringToHash(t *testing.T) {
 	hash, err := StringToHash("0x307836f028580bb02cc8272a9a020f4200e346e276ae664e45ee80745574e2f5") // Decode to hash
-
-	if err != nil { // Check for errors
+	if err != nil {                                                                                 // Check for errors
 		t.Error(err) // Log found error
 		t.FailNow()  // Panic
 	}
@@ -204,22 +193,19 @@ func TestStringHash(t *testing.T) {
 // TestNewAddressSpace - test functionality of address-space initializer
 func TestNewAddressSpace(t *testing.T) {
 	privateKey, err := ecdsa.GenerateKey(elliptic.P521(), rand.Reader) // Generate private key
-
-	if err != nil { // Check for errors
+	if err != nil {                                                    // Check for errors
 		t.Error(err) // Log found error
 		t.FailNow()  // Panic
 	}
 
 	address, err := NewAddress(privateKey) // Generate address
-
-	if err != nil { // Check for errors
+	if err != nil {                        // Check for errors
 		t.Error(err) // Log found error
 		t.FailNow()  // Panic
 	}
 
 	addressSpace, err := NewAddressSpace([]Address{address}) // Init address-space
-
-	if err != nil { // Check for errors
+	if err != nil {                                          // Check for errors
 		t.Error(err) // Log found error
 		t.FailNow()  // Panic
 	}
@@ -230,22 +216,19 @@ func TestNewAddressSpace(t *testing.T) {
 // TestBytesAddressSpace - test functionality of address-space Bytes() extension method
 func TestBytesAddressSpace(t *testing.T) {
 	privateKey, err := ecdsa.GenerateKey(elliptic.P521(), rand.Reader) // Generate private key
-
-	if err != nil { // Check for errors
+	if err != nil {                                                    // Check for errors
 		t.Error(err) // Log found error
 		t.FailNow()  // Panic
 	}
 
 	address, err := NewAddress(privateKey) // Generate address
-
-	if err != nil { // Check for errors
+	if err != nil {                        // Check for errors
 		t.Error(err) // Log found error
 		t.FailNow()  // Panic
 	}
 
 	addressSpace, err := NewAddressSpace([]Address{address}) // Init address-space
-
-	if err != nil { // Check for errors
+	if err != nil {                                          // Check for errors
 		t.Error(err) // Log found error
 		t.FailNow()  // Panic
 	}
@@ -263,22 +246,19 @@ func TestBytesAddressSpace(t *testing.T) {
 // TestStringAddressSpace - test functionality of address-space String() extension method
 func TestStringAddressSpace(t *testing.T) {
 	privateKey, err := ecdsa.GenerateKey(elliptic.P521(), rand.Reader) // Generate private key
-
-	if err != nil { // Check for errors
+	if err != nil {                                                    // Check for errors
 		t.Error(err) // Log found error
 		t.FailNow()  // Panic
 	}
 
 	address, err := NewAddress(privateKey) // Generate address
-
-	if err != nil { // Check for errors
+	if err != nil {                        // Check for errors
 		t.Error(err) // Log found error
 		t.FailNow()  // Panic
 	}
 
 	addressSpace, err := NewAddressSpace([]Address{address}) // Init address-space
-
-	if err != nil { // Check for errors
+	if err != nil {                                          // Check for errors
 		t.Error(err) // Log found error
 		t.FailNow()  // Panic
 	}
