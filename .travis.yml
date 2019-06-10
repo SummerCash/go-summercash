@@ -11,9 +11,9 @@ notifications:
   email: false
 
 install:
+  - go get mvdan.cc/gofumpt; cd ~/go/src/mvdan.cc/gofumpt; go install; cd
   - export GO111MODULE=on
   - go get -u
-  - cd $(mktemp -d); go mod init tmp; go get mvdan.cc/gofumpt; cd
 
 install: true
 
