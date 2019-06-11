@@ -77,12 +77,92 @@ func (dag *Dag) AddLeaf(leaf *Leaf) error {
 
 // QueryTransactionWithHash queries the dag for a transaction with the corresponding hash.
 func (dag *Dag) QueryTransactionWithHash(hash common.Hash) (*types.Transaction, error) {
+	if bytes.Equal(dag.Root.Hash[:], hash[:]) { // Check root is match
+		return dag.Root.Transaction, nil // Return root
+	}
+
 	leaf, err := dag.Root.GetChildByHash(hash) // Get child
 	if err != nil {                            // Check for errors
 		return &types.Transaction{}, err // Return found error
 	}
 
 	return leaf.Transaction, nil // Return transaction
+}
+
+// QueryTransactionsWithSender queries the dag for a list of transactions with the corresponding sender.
+func (dag *Dag) QueryTransactionsWithSender(sender common.Address) ([]*types.Transaction, error) {
+	leaves, err := dag.Root.GetChildrenBySender(sender) // Get child
+	if err != nil {                                     // Check for errors
+		return []*types.Transaction{}, err // Return found error
+	}
+
+	if dag.Root.Transaction != nil && dag.Root.Transaction.Sender != nil && bytes.Equal(dag.Root.Transaction.Sender[:], sender[:]) { // Check root matches
+		leaves = append(leaves, dag.Root) // Append root to leaves
+	}
+
+	transactions := []*types.Transaction{} // Init tx list buffer
+
+	for _, leaf := range leaves { // Iterate through leaves
+		if len(transactions) != 0 { // Check matches already exist
+			alreadyExists := false // Init duplicate match buffer
+
+			for _, match := range transactions { // Iterate through matches
+				if leaf.Transaction.Hash != nil { // Check has hash
+					if bytes.Equal(match.Hash[:], leaf.Hash[:]) { // Check duplicate match
+						alreadyExists = true // Set true
+
+						break // Break
+					}
+				}
+			}
+
+			if alreadyExists { // Check already exists
+				continue // Continue
+			}
+		}
+
+		transactions = append(transactions, leaf.Transaction) // Append tx
+	}
+
+	return transactions, nil // Return leaves
+}
+
+// QueryTransactionsWithRecipient queries the dag for a list of transactions with the corresponding recipient.
+func (dag *Dag) QueryTransactionsWithRecipient(recipient common.Address) ([]*types.Transaction, error) {
+	leaves, err := dag.Root.GetChildrenByRecipient(recipient) // Get child
+	if err != nil {                                           // Check for errors
+		return []*types.Transaction{}, err // Return found error
+	}
+
+	if dag.Root.Transaction != nil && dag.Root.Transaction.Recipient != nil && bytes.Equal(dag.Root.Transaction.Recipient[:], recipient[:]) { // Check root matches
+		leaves = append(leaves, dag.Root) // Append root to leaves
+	}
+
+	transactions := []*types.Transaction{} // Init tx list buffer
+
+	for _, leaf := range leaves { // Iterate through leaves
+		if len(transactions) != 0 { // Check matches already exist
+			alreadyExists := false // Init duplicate match buffer
+
+			for _, match := range transactions { // Iterate through matches
+				if leaf.Transaction.Hash != nil { // Check has hash
+					if bytes.Equal(match.Hash[:], leaf.Hash[:]) { // Check duplicate match
+						alreadyExists = true // Set true
+
+						break // Break
+					}
+				}
+			}
+
+			if alreadyExists { // Check already exists
+				continue // Continue
+			}
+		}
+
+		transactions = append(transactions, leaf.Transaction) // Append tx
+	}
+
+	return transactions, nil // Return leaves
 }
 
 // QueryLeafWithHash queries the dag for a leaf with the corresponding hash.

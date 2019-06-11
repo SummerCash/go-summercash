@@ -34,14 +34,22 @@ type Leaf struct {
 /* BEGIN EXPORTED METHODS */
 
 // NewLeaf initializes a new leaf with the given transaction.
-func NewLeaf(transaction *types.Transaction) (*Leaf, error) {
+func NewLeaf(transaction *types.Transaction, parent *Leaf) (*Leaf, error) {
 	if transaction == nil || transaction.Hash == nil { // CHeck for nil transaction
 		return &Leaf{}, ErrNilLeafContents // Return error
 	}
 
+	if parent == nil { // Check no parent
+		return &Leaf{
+			Transaction: transaction,       // Set transaction
+			Hash:        *transaction.Hash, // Set hash
+		}, nil // Return leaf
+	}
+
 	return &Leaf{
-		Transaction: transaction,
-		Hash:        *transaction.Hash,
+		Transaction: transaction,       // Set transaction
+		Hash:        *transaction.Hash, // Set hash
+		Parents:     []*Leaf{parent},   // Set parents
 	}, nil // Return leaf
 }
 
@@ -106,6 +114,88 @@ func (leaf *Leaf) GetDirectChildByHash(hash common.Hash) (*Leaf, error) {
 	}
 
 	return &Leaf{}, ErrNoMatchingLeaf // Return error
+}
+
+// GetChildrenBySender queries the leaf's children for a particular sender.
+// If a transaction with the corresponding sender does not exist, an error is returned.
+func (leaf *Leaf) GetChildrenBySender(sender common.Address) ([]*Leaf, error) {
+	children, _ := leaf.GetDirectChildrenBySender(sender) // Get children
+
+	for i, child := range leaf.Children { // Iterate through children
+		matches, err := child.GetChildrenBySender(sender) // Get child
+
+		if err != nil && i == len(leaf.Children)-1 && (children == nil || len(children) == 0) { // Check for errors
+			return []*Leaf{}, err // Return found error
+		}
+
+		if matches != nil && len(matches) != 0 { // Check for match
+			children = append(children, matches...) // Append matches
+		}
+	}
+
+	return children, nil // Return error
+}
+
+// GetDirectChildrenBySender searches the set of immediate children for the
+// given sender. If no child exists with the corresponding sender, an
+// error is returned.
+func (leaf *Leaf) GetDirectChildrenBySender(sender common.Address) ([]*Leaf, error) {
+	matchingChildren := []*Leaf{} // Init buffer
+
+	for _, child := range leaf.Children { // Iterate through children
+		if child.Transaction.Sender != nil { // Check has sender
+			if bytes.Equal(child.Transaction.Sender[:], sender[:]) { // Check for match
+				matchingChildren = append(matchingChildren, child) // Append child
+			}
+		}
+	}
+
+	if len(matchingChildren) != 0 { // Check has children
+		return matchingChildren, nil // Return matches
+	}
+
+	return []*Leaf{}, ErrNoMatchingLeaf // Return error
+}
+
+// GetChildrenByRecipient queries the leaf's children for a particular recipient.
+// If a transaction with the corresponding recipient does not exist, an error is returned.
+func (leaf *Leaf) GetChildrenByRecipient(recipient common.Address) ([]*Leaf, error) {
+	children, _ := leaf.GetDirectChildrenByRecipient(recipient) // Get children
+
+	for i, child := range leaf.Children { // Iterate through children
+		matches, err := child.GetChildrenByRecipient(recipient) // Get child
+
+		if err != nil && i == len(leaf.Children)-1 && (children == nil || len(children) == 0) { // Check for errors
+			return []*Leaf{}, err // Return found error
+		}
+
+		if matches != nil && len(matches) != 0 { // Check for match
+			children = append(children, matches...) // Append matches
+		}
+	}
+
+	return children, nil // Return error
+}
+
+// GetDirectChildrenByRecipient searches the set of immediate children for the
+// given recipient. If no child exists with the corresponding recipient, an
+// error is returned.
+func (leaf *Leaf) GetDirectChildrenByRecipient(recipient common.Address) ([]*Leaf, error) {
+	matchingChildren := []*Leaf{} // Init buffer
+
+	for _, child := range leaf.Children { // Iterate through children
+		if child.Transaction.Sender != nil { // Check has sender
+			if bytes.Equal(child.Transaction.Recipient[:], recipient[:]) { // Check for match
+				matchingChildren = append(matchingChildren, child) // Append child
+			}
+		}
+	}
+
+	if len(matchingChildren) != 0 { // Check has children
+		return matchingChildren, nil // Return matches
+	}
+
+	return []*Leaf{}, ErrNoMatchingLeaf // Return error
 }
 
 // GetNextCommonLeaf implements the functionality of the DAG

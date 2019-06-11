@@ -31,8 +31,8 @@ func TestNewLeaf(t *testing.T) {
 		t.Fatal(err) // Panic
 	}
 
-	leaf, err := NewLeaf(transaction) // Initialize leaf
-	if err != nil {                   // Check for errors
+	leaf, err := NewLeaf(transaction, nil) // Initialize leaf
+	if err != nil {                        // Check for errors
 		t.Fatal(err) // Panic
 	}
 
@@ -58,8 +58,8 @@ func TestIsOnlyChild(t *testing.T) {
 		t.Fatal(err) // Panic
 	}
 
-	root, err := NewLeaf(transaction) // Initialize leaf
-	if err != nil {                   // Check for errors
+	root, err := NewLeaf(transaction, nil) // Initialize leaf
+	if err != nil {                        // Check for errors
 		t.Fatal(err) // Panic
 	}
 
@@ -68,12 +68,10 @@ func TestIsOnlyChild(t *testing.T) {
 	}
 
 	for i := 0; i < 3; i++ { // Add children
-		leaf, err := NewLeaf(transaction) // Initialize leaf
-		if err != nil {                   // Check for errors
+		leaf, err := NewLeaf(transaction, root) // Initialize leaf
+		if err != nil {                         // Check for errors
 			t.Fatal(err) // Panic
 		}
-
-		leaf.Parents = append(leaf.Parents, root) // Append root to parents
 
 		root.Children = append(root.Children, leaf) // Append leaf to root children
 	}
@@ -100,19 +98,17 @@ func TestGetOnlyChild(t *testing.T) {
 		t.Fatal(err) // Panic
 	}
 
-	root, err := NewLeaf(transaction) // Initialize leaf
-	if err != nil {                   // Check for errors
+	root, err := NewLeaf(transaction, nil) // Initialize leaf
+	if err != nil {                        // Check for errors
 		t.Fatal(err) // Panic
 	}
 
-	child, err := NewLeaf(transaction) // Initialize leaf
-	if err != nil {                    // Check for errors
+	child, err := NewLeaf(transaction, root) // Initialize leaf
+	if err != nil {                          // Check for errors
 		t.Fatal(err) // Panic
 	}
 
 	root.Children = append(root.Children, child) // Append child
-
-	child.Parents = append(child.Parents, root) // Append root as parent
 
 	onlyChild, err := root.GetOnlyChild() // Get only child
 	if err != nil {                       // Check for errors
@@ -141,8 +137,8 @@ func TestGetChildByHash(t *testing.T) {
 		t.Fatal(err) // Panic
 	}
 
-	root, err := NewLeaf(transaction) // Initialize leaf
-	if err != nil {                   // Check for errors
+	root, err := NewLeaf(transaction, nil) // Initialize leaf
+	if err != nil {                        // Check for errors
 		t.Fatal(err) // Panic
 	}
 
@@ -152,12 +148,10 @@ func TestGetChildByHash(t *testing.T) {
 			t.Fatal(err) // Panic
 		}
 
-		child, err := NewLeaf(transaction) // Initialize leaf
-		if err != nil {                    // Check for errors
+		child, err := NewLeaf(transaction, root) // Initialize leaf
+		if err != nil {                          // Check for errors
 			t.Fatal(err) // Panic
 		}
-
-		child.Parents = append(child.Parents, root) // Append root as parent
 
 		root.Children = append(root.Children, child) // Append child to root
 
@@ -189,8 +183,8 @@ func TestGetNextCommonLeaf(t *testing.T) {
 		t.Fatal(err) // Panic
 	}
 
-	root, err := NewLeaf(transaction) // Initialize leaf
-	if err != nil {                   // Check for errors
+	root, err := NewLeaf(transaction, nil) // Initialize leaf
+	if err != nil {                        // Check for errors
 		t.Fatal(err) // Panic
 	}
 
@@ -200,12 +194,10 @@ func TestGetNextCommonLeaf(t *testing.T) {
 			t.Fatal(err) // Panic
 		}
 
-		child, err := NewLeaf(transaction) // Initialize leaf
-		if err != nil {                    // Check for errors
+		child, err := NewLeaf(transaction, root) // Initialize leaf
+		if err != nil {                          // Check for errors
 			t.Fatal(err) // Panic
 		}
-
-		child.Parents = append(child.Parents, root) // Append root as parent
 
 		root.Children = append(root.Children, child) // Append child to root
 
@@ -224,8 +216,8 @@ func TestGetNextCommonLeaf(t *testing.T) {
 		t.Fatal(err) // Panic
 	}
 
-	newChild, err := NewLeaf(newTransaction) // Initialize leaf
-	if err != nil {                          // Check for errors
+	newChild, err := NewLeaf(newTransaction, nil) // Initialize leaf
+	if err != nil {                               // Check for errors
 		t.Fatal(err) // Panic
 	}
 
@@ -235,12 +227,10 @@ func TestGetNextCommonLeaf(t *testing.T) {
 		child.Children = append(child.Children, newChild) // Append child to root
 	}
 
-	secondChild, err := NewLeaf(newTransaction) // Initialize leaf
-	if err != nil {                             // Check for errors
+	secondChild, err := NewLeaf(newTransaction, newChild) // Initialize leaf
+	if err != nil {                                       // Check for errors
 		t.Fatal(err) // Panic
 	}
-
-	secondChild.Parents = append(secondChild.Parents, newChild) // Append second child as parent
 
 	newChild.Children = append(newChild.Children, secondChild) // Append second child
 
