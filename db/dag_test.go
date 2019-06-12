@@ -194,4 +194,96 @@ func TestQueryTransactionsWithSender(t *testing.T) {
 	}
 }
 
+// TestQueryTransactionsWithRecipient tests the functionality of the QueryTransactionsWithRecipient helper method.
+func TestQueryTransactionsWithRecipient(t *testing.T) {
+	privateKey, err := ecdsa.GenerateKey(elliptic.P521(), rand.Reader) // Generate private key
+	if err != nil {                                                    // Check for errors
+		t.Fatal(err) // Panic
+	}
+
+	privateKey2, err := ecdsa.GenerateKey(elliptic.P521(), rand.Reader) // Generate private key
+	if err != nil {                                                     // Check for errors
+		t.Fatal(err) // Panic
+	}
+
+	sender, err := common.NewAddress(privateKey) // Initialize address from private key
+	if err != nil {                              // Check for errors
+		t.Fatal(err) // Panic
+	}
+
+	recipient, err := common.NewAddress(privateKey2) // Initialize address from private key
+	if err != nil {                                  // Check for errors
+		t.Fatal(err) // Panic
+	}
+
+	transaction, err := types.NewTransaction(0, nil, &sender, &recipient, big.NewFloat(0), []byte("test")) // Initialize transaction
+	if err != nil {                                                                                        // Check for errors
+		t.Fatal(err) // Panic
+	}
+
+	root, err := NewLeaf(transaction, nil) // Initialize leaf
+	if err != nil {                        // Check for errors
+		t.Fatal(err) // Panic
+	}
+
+	dag := NewDagWithRoot(root) // Initialize dag
+
+	if dag.Root != root { // Check not same root
+		t.Fatal("dag should have same root") // Panic
+	}
+
+	lastLeaf := root // Set last leaf
+
+	for i := 0; i < 1000; i++ { // Lol
+		newTransaction, err := types.NewTransaction(uint64(i+1), nil, &sender, &recipient, big.NewFloat(0), []byte("test")) // Initialize transaction
+		if err != nil {                                                                                                     // Check for errors
+			t.Fatal(err) // Panic
+		}
+
+		leaf, err := NewLeaf(newTransaction, lastLeaf) // Initialize leaf
+		if err != nil {                                // Check for errors
+			t.Fatal(err) // Panic
+		}
+
+		lastLeaf = leaf // Set last leaf
+
+		err = dag.AddLeaf(leaf) // Add leaf to dag
+		if err != nil {         // Check for errors
+			t.Fatal(err) // Panic
+		}
+	}
+
+	foundTransactions, err := dag.QueryTransactionsWithRecipient(recipient) // Query transactions
+
+	if err != nil { // Check for errors
+		t.Fatal(err) // Panic
+	}
+
+	if len(foundTransactions) == 0 { // Check no transactions
+		t.Fatal("zero results in dag") // Panic
+	}
+
+	lastLeaf = root // Set last leaf
+
+	for i := 0; i < 1001; i++ { // Iterate through txs
+		found := false // Init found buffer
+
+		for _, tx := range foundTransactions { // Iterate through queried txs
+			if bytes.Equal(tx.Hash[:], lastLeaf.Hash[:]) { // Check match
+				found = true // Set found
+
+				break // Break
+			}
+		}
+
+		if !found { // Check not found
+			t.Fatalf("leaf with recipient %s not found in dag", lastLeaf.Transaction.Recipient.String()) // Panic
+		}
+
+		if i != 1000 { // Check is not last tx
+			lastLeaf = lastLeaf.Children[0] // Set last leaf
+		}
+	}
+}
+
 /* END EXPORTED METHODS TESTS */
