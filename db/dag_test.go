@@ -162,8 +162,7 @@ func TestQueryTransactionsWithSender(t *testing.T) {
 	}
 
 	foundTransactions, err := dag.QueryTransactionsWithSender(sender) // Query transactions
-
-	if err != nil { // Check for errors
+	if err != nil {                                                   // Check for errors
 		t.Fatal(err) // Panic
 	}
 
@@ -254,8 +253,7 @@ func TestQueryTransactionsWithRecipient(t *testing.T) {
 	}
 
 	foundTransactions, err := dag.QueryTransactionsWithRecipient(recipient) // Query transactions
-
-	if err != nil { // Check for errors
+	if err != nil {                                                         // Check for errors
 		t.Fatal(err) // Panic
 	}
 
