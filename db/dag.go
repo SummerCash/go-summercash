@@ -4,8 +4,11 @@ package db
 import (
 	"bytes"
 	"errors"
+	"math/big"
 
+	"github.com/SummerCash/go-summercash/accounts"
 	"github.com/SummerCash/go-summercash/common"
+	"github.com/SummerCash/go-summercash/config"
 	"github.com/SummerCash/go-summercash/types"
 )
 
@@ -69,6 +72,38 @@ func (dag *Dag) AddLeaf(leaf *Leaf) error {
 	}
 
 	return nil // Return
+}
+
+// AddTransaction adds the given transaction to the working dag.
+func (dag *Dag) AddTransaction(transaction *types.Transaction) error {
+	if transaction.ParentTx == nil && dag.Root == nil { // Check no root
+		leaf, err := NewLeaf(transaction, nil) // Initialize leaf
+		if err != nil {                        // Check for errors
+			return err // Return found error
+		}
+
+		dag.Root = leaf // Set dag root
+
+		return nil // Return
+	}
+
+	if transaction.ParentTx == nil { // Check no parent
+		return ErrNoParents // Return error
+	}
+
+	parent, err := dag.QueryLeafWithHash(*transaction.ParentTx) // Query parent
+	if err != nil {                                             // Check for errors
+		return err // Return found error
+	}
+
+	leaf, err := NewLeaf(transaction, parent) // Initialize leaf
+	if err != nil {                           // Check for errors
+		return err // Return found error
+	}
+
+	parent.Children = append(parent.Children, leaf) // Append leaf as child
+
+	return nil // Return nil
 }
 
 // END LEAF HELPERS
@@ -178,6 +213,53 @@ func (dag *Dag) QueryNextCommonLeaf(lastCommonLeaf *Leaf) (*Leaf, error) {
 }
 
 // END QUERY HELPERS
+
+// BEGIN NETWORK HELPERS
+
+// MakeGenesis constructs a set of genesis transactions from the given config
+// and adds them to the working dag.
+func (dag *Dag) MakeGenesis(config *config.ChainConfig) error {
+	totalGenesisValue := big.NewFloat(0) // Init total genesis value
+
+	for _, allocAddress := range config.AllocAddresses { // Iterate through alloc addresses
+		totalGenesisValue.Add(totalGenesisValue, config.Alloc[allocAddress.String()]) // Add value
+	}
+
+	genesisAccount, err := accounts.NewAccount() // Initialize new account
+	if err != nil {                              // Check for errors
+		return err // Return found error
+	}
+
+	genesisTransaction, err := types.NewTransaction(0, nil, nil, &genesisAccount.Address, totalGenesisValue, []byte("genesis")) // Initialize genesis transaction
+	if err != nil {                                                                                                             // Check for errors
+		return err // Return found error
+	}
+
+	err = dag.AddTransaction(genesisTransaction) // Add genesis tx
+	if err != nil {                              // Check for errors
+		return err // Return found error
+	}
+
+	lastTransaction := genesisTransaction // Set last tx pointer
+
+	for _, address := range config.AllocAddresses { // Iterate through alloc addresses
+		transaction, err := types.NewTransaction(0, lastTransaction, &genesisAccount.Address, &address, config.Alloc[address.String()], []byte("genesis_child")) // Init tx
+		if err != nil {                                                                                                                                          // Check for errors
+			return err // Return found error
+		}
+
+		err = dag.AddTransaction(transaction) // Add genesis child tx
+		if err != nil {                       // Check for errors
+			return err // Return found error
+		}
+
+		lastTransaction = transaction // Set last tx
+	}
+
+	return nil // No error occurred, return nil
+}
+
+// END NETWORK HELPERS
 
 /*
 	END HELPER METHODS
