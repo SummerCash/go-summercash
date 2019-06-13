@@ -72,8 +72,7 @@ func ImportBlockmesh(dbPath string, inflationRate float64, networkID uint) (*Dag
 // WriteToMemory writes the working dag to persistent memory.
 func (dag *Dag) WriteToMemory(network string) error {
 	err := common.CreateDirIfDoesNotExist(common.DagDir) // Create dag dir
-
-	if err != nil { // Check for errors
+	if err != nil {                                      // Check for errors
 		return err // Return found error
 	}
 
