@@ -3,6 +3,7 @@ package db
 
 import (
 	"encoding/gob"
+	"errors"
 	"fmt"
 	"io/ioutil"
 	"math/big"
@@ -14,6 +15,11 @@ import (
 	"github.com/SummerCash/go-summercash/config"
 	"github.com/SummerCash/go-summercash/crypto"
 	"github.com/SummerCash/go-summercash/types"
+)
+
+var (
+	// ErrNilDag is an error definition representing a root dag leaf of nil value.
+	ErrNilDag = errors.New("dag has no root")
 )
 
 /* BEGIN EXPORTED METHODS */
@@ -67,6 +73,34 @@ func ImportBlockmesh(dbPath string, inflationRate float64, networkID uint) (*Dag
 	}
 
 	return dag, nil // Return initialized dag
+}
+
+// Flatten flattens the working dag. If the working
+// dag is nil, an error is returned.
+func (dag *Dag) Flatten() (*Flattened, error) {
+	if dag.Root == nil { // Check no root
+		return &Flattened{}, ErrNilDag // Return error
+	}
+
+	leaves := []*Leaf{dag.Root} // Init leaves list
+
+	children, err := dag.Root.GetChildren() // Get children
+
+	if err != nil { // Check for errors
+		return &Flattened{}, err // Return found error
+	}
+
+	leaves = append(leaves, children...) // Append children to leaves
+
+	transactions := []*types.Transaction{} // Initialize transactions
+
+	for _, leaf := range leaves { // Iterate through leaves
+		transactions = append(transactions, leaf.Transaction) // Append transaction
+	}
+
+	return &Flattened{
+		Transactions: transactions,
+	}, nil // Return flattened dag
 }
 
 // WriteToMemory writes the working dag to persistent memory.

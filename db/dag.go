@@ -29,6 +29,12 @@ type Dag struct {
 	Root *Leaf `json:"root"` // Root leaf
 }
 
+// Flattened implements a flattened representation of the
+// standard dag.
+type Flattened struct {
+	Transactions []*types.Transaction `json:"transactions"` // Flattened dag transactions
+}
+
 /* BEGIN EXPORTED METHODS */
 
 // NewDag initializes a new dag.

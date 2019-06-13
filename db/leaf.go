@@ -220,6 +220,23 @@ func (leaf *Leaf) GetNextCommonLeaf() (*Leaf, error) {
 	return &Leaf{}, ErrNoCommonLeaf // Return error
 }
 
+// GetChildren gets all children of the given leaf.
+func (leaf *Leaf) GetChildren() ([]*Leaf, error) {
+	children := leaf.Children // Get direct children
+
+	for _, child := range children { // Iterate through children
+		children, err := child.GetChildren() // Get children
+
+		if err != nil { // Check for errors
+			return []*Leaf{}, err // Return found error
+		}
+
+		children = append(children, children...) // Append children
+	}
+
+	return children, nil // Return children
+}
+
 /*
 	END HELPER METHODS
 */
