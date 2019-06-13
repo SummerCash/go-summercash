@@ -226,8 +226,7 @@ func (leaf *Leaf) GetChildren() ([]*Leaf, error) {
 
 	for _, child := range children { // Iterate through children
 		children, err := child.GetChildren() // Get children
-
-		if err != nil { // Check for errors
+		if err != nil {                      // Check for errors
 			return []*Leaf{}, err // Return found error
 		}
 

@@ -17,10 +17,8 @@ import (
 	"github.com/SummerCash/go-summercash/types"
 )
 
-var (
-	// ErrNilDag is an error definition representing a root dag leaf of nil value.
-	ErrNilDag = errors.New("dag has no root")
-)
+// ErrNilDag is an error definition representing a root dag leaf of nil value.
+var ErrNilDag = errors.New("dag has no root")
 
 /* BEGIN EXPORTED METHODS */
 
@@ -85,8 +83,7 @@ func (dag *Dag) Flatten() (*Flattened, error) {
 	leaves := []*Leaf{dag.Root} // Init leaves list
 
 	children, err := dag.Root.GetChildren() // Get children
-
-	if err != nil { // Check for errors
+	if err != nil {                         // Check for errors
 		return &Flattened{}, err // Return found error
 	}
 
@@ -120,9 +117,13 @@ func (dag *Dag) WriteToMemory(network string) error {
 
 	encoder := gob.NewEncoder(file) // Initialize encoder
 
-	err = encoder.Encode(dag) // Encode dag
+	flattened, err := dag.Flatten() // Flatten dag
+	if err != nil {                 // Check for errors
+		return err // Return found error
+	}
 
-	if err != nil { // Check for errors
+	err = encoder.Encode(flattened) // Encode dag
+	if err != nil {                 // Check for errors
 		return err // Return found error
 	}
 
