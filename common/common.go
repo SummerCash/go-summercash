@@ -38,6 +38,12 @@ var (
 	// PeerToPeerDir - global p2p directory definition.
 	PeerToPeerDir = filepath.FromSlash(fmt.Sprintf("%s/p2p", DataDir))
 
+	// DbDir - global db directory definition.
+	DbDir = filepath.FromSlash(fmt.Sprintf("%s/db", DataDir))
+
+	// DagDir - global dag directory definition.
+	DagDir = filepath.FromSlash(fmt.Sprintf("%s/dag", DbDir))
+
 	// DisableTimestamps - global declaration for timestamp format config
 	DisableTimestamps = false
 
