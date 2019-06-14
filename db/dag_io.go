@@ -100,6 +100,21 @@ func (dag *Dag) Flatten() (*Flattened, error) {
 	}, nil // Return flattened dag
 }
 
+// UnflattenDag attempts to unflatten the given flattened dag.
+func UnflattenDag(flattened *Flattened) (*Dag, error) {
+	dag := NewDag() // Initialize dag ref
+
+	for _, transaction := range flattened.Transactions { // Iterate through transactions
+		err := dag.AddTransaction(transaction) // Add tx to dag
+
+		if err != nil { // Check for errors
+			return &Dag{}, err // Return found error
+		}
+	}
+
+	return dag, nil // Return unflattened dag
+}
+
 // WriteToMemory writes the working dag to persistent memory.
 func (dag *Dag) WriteToMemory(network string) error {
 	err := common.CreateDirIfDoesNotExist(common.DagDir) // Create dag dir
@@ -143,14 +158,14 @@ func ReadDagFromMemory(network string) (*Dag, error) {
 
 	decoder := gob.NewDecoder(file) // Initialize decoder
 
-	buffer := &Dag{} // Init dag buffer
+	buffer := &Flattened{} // Init flattened dag buffer
 
 	err = decoder.Decode(buffer) // Decode file
 	if err != nil {              // Check for errors
 		return &Dag{}, err // Return found error
 	}
 
-	return buffer, nil // Return decoded dag
+	return UnflattenDag(buffer) // Return decoded, unflattened dag
 }
 
 /* END EXPORTED METHODS */
