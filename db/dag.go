@@ -93,7 +93,7 @@ func (dag *Dag) AddTransaction(transaction *types.Transaction) error {
 		return nil // Return
 	}
 
-	if transaction.ParentTx == nil { // Check no parent
+	if transaction.ParentTx == nil || bytes.Equal(transaction.ParentTx[:], new(common.Hash)[:]) { // Check no parent
 		return ErrNoParents // Return error
 	}
 
@@ -208,6 +208,10 @@ func (dag *Dag) QueryTransactionsWithRecipient(recipient common.Address) ([]*typ
 
 // QueryLeafWithHash queries the dag for a leaf with the corresponding hash.
 func (dag *Dag) QueryLeafWithHash(hash common.Hash) (*Leaf, error) {
+	if bytes.Equal(dag.Root.Hash[:], hash[:]) { // Check root is match
+		return dag.Root, nil // Return root
+	}
+
 	return dag.Root.GetChildByHash(hash) // Return leaf
 }
 
