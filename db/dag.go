@@ -82,7 +82,7 @@ func (dag *Dag) AddLeaf(leaf *Leaf) error {
 
 // AddTransaction adds the given transaction to the working dag.
 func (dag *Dag) AddTransaction(transaction *types.Transaction) error {
-	if transaction.ParentTx == nil && dag.Root == nil { // Check no root
+	if (transaction.ParentTx == nil || bytes.Equal(transaction.ParentTx[:], new(common.Hash)[:])) && dag.Root == nil { // Check no root
 		leaf, err := NewLeaf(transaction, nil) // Initialize leaf
 		if err != nil {                        // Check for errors
 			return err // Return found error
@@ -251,6 +251,11 @@ func (dag *Dag) MakeGenesis(config *config.ChainConfig) error {
 	for _, address := range config.AllocAddresses { // Iterate through alloc addresses
 		transaction, err := types.NewTransaction(0, lastTransaction, &genesisAccount.Address, &address, config.Alloc[address.String()], []byte("genesis_child")) // Init tx
 		if err != nil {                                                                                                                                          // Check for errors
+			return err // Return found error
+		}
+
+		err = types.SignTransaction(transaction, genesisAccount.PrivateKey) // Sign tx
+		if err != nil {                                                     // Check for errors
 			return err // Return found error
 		}
 

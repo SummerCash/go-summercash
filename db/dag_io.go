@@ -106,8 +106,7 @@ func UnflattenDag(flattened *Flattened) (*Dag, error) {
 
 	for _, transaction := range flattened.Transactions { // Iterate through transactions
 		err := dag.AddTransaction(transaction) // Add tx to dag
-
-		if err != nil { // Check for errors
+		if err != nil {                        // Check for errors
 			return &Dag{}, err // Return found error
 		}
 	}
