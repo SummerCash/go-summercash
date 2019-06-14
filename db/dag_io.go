@@ -92,7 +92,15 @@ func (dag *Dag) Flatten() (*Flattened, error) {
 	transactions := []*types.Transaction{} // Initialize transactions
 
 	for _, leaf := range leaves { // Iterate through leaves
-		transactions = append(transactions, leaf.Transaction) // Append transaction
+		transactionCopy := *leaf.Transaction // Get raw value
+
+		err = transactionCopy.MakeEncodingSafe() // Make tx encoding safe
+
+		if err != nil { // Check for errors
+			return &Flattened{}, err // Return found error
+		}
+
+		transactions = append(transactions, &transactionCopy) // Append transaction
 	}
 
 	return &Flattened{

@@ -135,19 +135,23 @@ func TestReadFromMemory(t *testing.T) {
 	}
 
 	flattenedDag, err := dag.Flatten() // Flatten dag
-
-	if err != nil { // Check for errors
+	if err != nil {                    // Check for errors
 		t.Fatal(err) // Panic
 	}
 
 	flattenedReadDag, err := readDag.Flatten() // Flatten read dag
-
-	if err != nil { // Check for errors
+	if err != nil {                            // Check for errors
 		t.Fatal(err) // Panic
 	}
 
 	if len(flattenedDag.Transactions) != len(flattenedReadDag.Transactions) { // Check for errors
 		t.Fatalf("expected %d txs in read dag; found %d", len(flattenedDag.Transactions), len(flattenedReadDag.Transactions)) // Panic
+	}
+
+	for i, transaction := range flattenedDag.Transactions { // Iterate through txs
+		if flattenedReadDag.Transactions[i].String() != transaction.String() { // Check not same tx
+			t.Fatal("should be same tx") // Panic
+		}
 	}
 }
 
