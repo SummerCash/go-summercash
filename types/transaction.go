@@ -344,7 +344,7 @@ func (transaction *Transaction) Bytes() []byte {
 	if transaction.Signature != nil {
 		publicKey = *(*(*transaction).Signature).PublicKey // Set public key
 
-		encoded, _ := x509.MarshalPKIXPublicKey(transaction.Signature.PublicKey) // Encode
+		encoded, _ := x509.MarshalPKIXPublicKey(publicKey) // Encode
 
 		pemEncodedPub := pem.EncodeToMemory(&pem.Block{Type: "PUBLIC KEY", Bytes: encoded}) // Encode PEM
 
