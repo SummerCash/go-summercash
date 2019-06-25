@@ -27,7 +27,7 @@ type ChainConfig struct {
 }
 
 // Version - dist version def
-const Version = "0.7.3"
+const Version = "0.7.4"
 
 // NewChainConfig - generate new ChainConfig from genesis.json file
 func NewChainConfig(genesisFilePath string) (*ChainConfig, error) {
