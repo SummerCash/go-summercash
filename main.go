@@ -52,6 +52,7 @@ var (
 	bootstrapHost       = flag.Bool("bootstrap", false, "launch node as a genesis boostrap node")                                                                          // Init bootstrap host flag
 	disableLogTimeStamp = flag.Bool("silence-timestamps", false, "launch node without terminal timestamp output")                                                          // Init disable log timestamp flag
 	networkFlag         = flag.String("network", "main_net", "launch with a given network")                                                                                // Init network flag
+	skipSyncFlag        = flag.Bool("skip-sync", false, "skip an initial sync")                                                                                            // Init skip sync flag
 )
 
 func main() {
@@ -174,7 +175,7 @@ func startNode(archivalNode bool) {
 
 	client := p2p.NewClient(host, &validator, *networkFlag) // Initialize client
 
-	if p2p.GetBestBootstrapAddress(ctx, host, *networkFlag) != "localhost" { // Check can sync
+	if p2p.GetBestBootstrapAddress(ctx, host, *networkFlag) != "localhost" && !*skipSyncFlag { // Check can sync
 		err = client.SyncNetwork() // Sync network
 
 		if err != nil { // Check for errors
