@@ -1,6 +1,7 @@
 package types
 
 import (
+	"bytes"
 	"crypto/ecdsa"
 	"crypto/elliptic"
 	"crypto/rand"
@@ -277,9 +278,15 @@ func TestBytes(t *testing.T) {
 		t.FailNow()  // Panic
 	}
 
+	err = SignTransaction(transaction, privateKey) // Sign
+	if err != nil {                                // Check for errors
+		t.Error(err) // Log found error
+		t.FailNow()  // Panic
+	}
+
 	byteVal := transaction.Bytes() // Get byte val
 
-	if byteVal == nil { // Check for nil byteVal
+	if byteVal == nil || bytes.Contains(byteVal, []byte{'\r'}) { // Check for nil byteVal
 		t.Errorf("invalid byteval") // Log found error
 		t.FailNow()                 // Panic
 	}

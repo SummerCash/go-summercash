@@ -58,6 +58,10 @@ func (client *Client) PublishTransaction(ctx context.Context, transaction *types
 
 	x := 0 // Init x buffer
 
+	if bytes.Contains(transaction.Bytes(), []byte{'\r'}) { // Check has invalid delimiter
+		return errors.New("message contains a restricted control character") // Return error
+	}
+
 	for _, currentPeer := range peers { // Iterate through peers
 		if currentPeer == (*client.Host).ID() { // Check not same node
 			continue // Continue
