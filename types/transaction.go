@@ -162,15 +162,10 @@ func TransactionFromBytes(b []byte) (*Transaction, error) {
 	}
 
 	if transaction.Signature != nil { // Check signature
-		blockPub, _ := pem.Decode([]byte(transaction.Signature.SerializedPublicKey)) // Decode
-
-		x509EncodedPub := blockPub.Bytes // Get x509 byte val
-
-		genericPublicKey, _ := x509.ParsePKIXPublicKey(x509EncodedPub) // Parse public  key
-
-		publicKey := genericPublicKey.(*ecdsa.PublicKey) // Get public key value
-
-		((*transaction.Signature).PublicKey) = publicKey // Set public key
+		err = transaction.RecoverSafeEncoding() // Recover
+		if err != nil {                         // Check for errors
+			return &Transaction{}, err // Return found error
+		}
 	}
 
 	return &transaction, nil // No error occurred, return read value
