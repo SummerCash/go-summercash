@@ -42,15 +42,15 @@ func ReadAll(reader *bufio.Reader) ([]byte, error) {
 		data <- buffer // Write contents of buffer to data chan var
 	}() // Run with timeout
 
-	deadline := time.Tick(2 * time.Second) // Wait 2 seconds to declare dead
+	deadline := time.After(2 * time.Second) // Wait 2 seconds to declare dead
 
 	select {
+	case readData := <-data:
+		return readData, nil // Return read data
 	case pickedUpErr := <-err: // Wait for errors
 		return nil, pickedUpErr // Return found errors
 	case <-deadline:
 		return nil, ErrTimedOut // Return timeout error
-	case readData := <-data:
-		return readData, nil // Return read data
 	}
 }
 
