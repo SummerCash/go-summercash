@@ -2,6 +2,7 @@ package common
 
 import (
 	"bufio"
+	"bytes"
 	"encoding/gob"
 	"errors"
 	"os"
@@ -25,10 +26,14 @@ func ReadAll(reader *bufio.Reader) ([]byte, error) {
 		var buffer []byte // Initialize buffer
 
 		for scanner.Scan() { // Scan
+			if bytes.Contains(scanner.Bytes(), []byte("\n\r")) || len(scanner.Bytes()) == 0 { // Check for EOF'
+				break // Break
+			}
+
 			buffer = append(buffer, scanner.Bytes()...) // Append read line
 		}
 
-		if scanErr := scanner.Err(); scanErr != nil { // Check for errors
+		if scanErr := scanner.Err(); scanErr != nil && scanErr.Error() != "stream reset" { // Check for errors
 			err <- scanErr // Write error to parent routine
 
 			return // Return
