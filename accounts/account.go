@@ -30,10 +30,10 @@ type Account struct {
 // NewAccount - create new account
 func NewAccount() (*Account, error) {
 	account := &Account{
-		Address: common.Address{'\r'}, // Set mock address
+		Address: common.Address{'\n', '\r'}, // Set mock address
 	} // Init account buffer
 
-	for bytes.Contains(account.Address.Bytes(), []byte{'\r'}) { // Generate accounts until valid
+	for bytes.Contains(account.Address.Bytes(), []byte("\n\r")) { // Generate accounts until valid
 		privateKey, err := ecdsa.GenerateKey(elliptic.P521(), rand.Reader) // Generate private key
 		if err != nil {                                                    // Check for errors
 			return &Account{}, err // Return error

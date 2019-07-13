@@ -286,7 +286,7 @@ func TestBytes(t *testing.T) {
 
 	byteVal := transaction.Bytes() // Get byte val
 
-	if byteVal == nil || bytes.Contains(byteVal, []byte{'\r'}) { // Check for nil byteVal
+	if byteVal == nil || bytes.Contains(byteVal, []byte("\n\r")) { // Check for nil byteVal
 		t.Errorf("invalid byteval") // Log found error
 		t.FailNow()                 // Panic
 	}

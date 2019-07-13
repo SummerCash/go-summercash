@@ -1,12 +1,64 @@
 package common
 
 import (
+	"bufio"
 	"encoding/gob"
+	"errors"
 	"os"
 	"path/filepath"
+	"sync"
+	"time"
 )
 
+// ErrTimedOut defines an error representing an IO timeout.
+var ErrTimedOut = errors.New("the io operation timed out")
+
 /* BEGIN EXPORTED METHODS */
+
+// ReadAll reads the entire contents from a given reader.
+func ReadAll(reader *bufio.Reader) ([]byte, error) {
+	data := make(chan []byte) // Initialize data buffer
+	err := make(chan error)   // Initialize error buffer
+	started := false          // Initialize started watch var
+
+	var wg sync.WaitGroup // Initialize wait group
+
+	wg.Add(1) // Only one process to complete
+
+	go func(started *bool) {
+		scanner := bufio.NewScanner(reader) // Initialize reader
+
+		for scanner.Scan() { // Scan
+			data <- append(<-data, scanner.Bytes()...) // Append read line
+
+			if !*started { // Check hasn't started yet
+				*started = true // Set started
+			}
+		}
+
+		if scanErr := scanner.Err(); scanErr != nil { // Check for errors
+			err <- scanErr // Write error to parent routine
+		}
+
+		wg.Done() // Done!
+	}(&started) // Run with timeout
+
+	startTime := time.Now() // Get start time
+
+	for !started { // Wait until started
+		if pickedUpErr := <-err; pickedUpErr != nil { // Check for errors
+			return nil, pickedUpErr // Return found errors
+		}
+
+		if time.Now().Sub(startTime) > 2*time.Second { // Check timeout
+			return nil, ErrTimedOut // Return timeout error
+		}
+	}
+
+	wg.Wait() // Wait...
+
+	return <-data, nil // Return read data
+}
 
 // CreateDirIfDoesNotExist - create given directory if does not exist
 func CreateDirIfDoesNotExist(dir string) error {

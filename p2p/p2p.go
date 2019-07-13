@@ -35,12 +35,12 @@ func CheckPeerCompatible(ctx context.Context, host *routed.RoutedHost, peer peer
 
 	reader := bufio.NewReader(stream) // Initialize reader
 
-	networkBytes, err := reader.ReadBytes('\r') // Read network
+	networkBytes, err := common.ReadAll(reader) // Read network
 	if err != nil {                             // Check for errors
 		return false // Not compatible
 	}
 
-	networkBytes = bytes.Replace(networkBytes, []byte{'\r'}, []byte{}, 1) // Remove delimiter
+	networkBytes = bytes.Replace(networkBytes, []byte("\n\r"), []byte{}, 1) // Remove delimiter
 
 	if string(networkBytes) != fmt.Sprintf("despacito: %s", config.Version) { // Check incompatible
 		return false // Not compatible
@@ -51,7 +51,7 @@ func CheckPeerCompatible(ctx context.Context, host *routed.RoutedHost, peer peer
 
 // BroadcastDht attempts to send a given message to all nodes in a dht at a given endpoint.
 func BroadcastDht(ctx context.Context, host *routed.RoutedHost, message []byte, streamProtocol string, dagIdentifier string) error {
-	if bytes.Contains(message, []byte{'\r'}) { // Check control char
+	if bytes.Contains(message, []byte("\n\r")) { // Check control char
 		return errors.New("message contains a restricted control character") // Return error
 	}
 
@@ -69,7 +69,7 @@ func BroadcastDht(ctx context.Context, host *routed.RoutedHost, message []byte, 
 
 		writer := bufio.NewWriter(stream) // Initialize writer
 
-		_, err = writer.Write(append(message, '\r')) // Write message
+		_, err = writer.Write(append(message, []byte("\n\r")...)) // Write message
 
 		if err != nil { // Check for errors
 			continue // Continue
@@ -83,7 +83,7 @@ func BroadcastDht(ctx context.Context, host *routed.RoutedHost, message []byte, 
 
 // BroadcastDhtResult send a given message to all nodes in a dht, and returns the result from each node.
 func BroadcastDhtResult(ctx context.Context, host *routed.RoutedHost, message []byte, streamProtocol string, dagIdentifier string, nPeers int) (responses [][]byte, err error) {
-	if bytes.Contains(message, []byte{'\r'}) { // Check control char
+	if bytes.Contains(message, []byte("\n\r")) { // Check control char
 		return nil, errors.New("message contains a restricted control character") // Return error
 	}
 
@@ -110,7 +110,7 @@ func BroadcastDhtResult(ctx context.Context, host *routed.RoutedHost, message []
 
 			readWriter := bufio.NewReadWriter(bufio.NewReader(stream), bufio.NewWriter(stream)) // Initialize reader/writer
 
-			_, err = readWriter.Write(append(message, byte('\r'))) // Write message
+			_, err = readWriter.Write(append(message, []byte("\n\r")...)) // Write message
 
 			if err != nil { // Check for errors
 				return // Continue
@@ -118,12 +118,12 @@ func BroadcastDhtResult(ctx context.Context, host *routed.RoutedHost, message []
 
 			readWriter.Flush() // Flush
 
-			responseBytes, err := readWriter.ReadBytes('\r') // Read up to delimiter
-			if err != nil {                                  // Check for errors
+			responseBytes, err := common.ReadAll(readWriter.Reader) // Read up to delimiter
+			if err != nil {                                         // Check for errors
 				return // Continue
 			}
 
-			responseBytes = bytes.Trim(responseBytes, "\r") // Trim delmiter
+			responseBytes = bytes.Trim(responseBytes, "\n\r") // Trim delmiter
 
 			results = append(results, responseBytes) // Append response
 

@@ -120,7 +120,7 @@ func NewTransaction(nonce uint64, parentTx *Transaction, sender *common.Address,
 
 	hash := common.NewHash(crypto.Sha3(transaction.Bytes())) // Hash transaction
 
-	for bytes.Contains(hash.Bytes(), []byte{'\r'}) { // Do until does not contain escape character
+	for bytes.Contains(hash.Bytes(), []byte("\n\r")) { // Do until does not contain escape character
 		transaction.HashNonce++ // Increment hash nonce
 
 		hash = common.NewHash(crypto.Sha3(transaction.Bytes())) // Set hash

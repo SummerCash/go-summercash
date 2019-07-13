@@ -73,7 +73,7 @@ func GetBestBootstrapAddress(ctx context.Context, host *routed.RoutedHost, netwo
 		timer := time.NewTimer(time.Second * time.Duration(15)) // Init timer
 
 		go func() {
-			network, err := reader.ReadBytes('\r') // Read
+			network, err := common.ReadAll(reader) // Read
 			if err != nil {                        // Check for errors
 				err = host.Network().ClosePeer(peerInfo.ID) // Disconnect from peer
 
@@ -88,7 +88,7 @@ func GetBestBootstrapAddress(ctx context.Context, host *routed.RoutedHost, netwo
 				return // Return
 			}
 
-			network = bytes.Replace(network, []byte{'\r'}, []byte{}, 1) // Remove delimiter
+			network = bytes.Replace(network, []byte("\n\r"), []byte{}, 1) // Remove delimiter
 
 			if string(network) != fmt.Sprintf("despacito: %s", config.Version) { // Check networks not matching
 				errChan <- fmt.Errorf("network not matching for peer with multi-addr: %s", peerInfo.ID.Pretty()) // Write err
