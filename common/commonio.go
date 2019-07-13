@@ -6,7 +6,6 @@ import (
 	"errors"
 	"os"
 	"path/filepath"
-	"sync"
 	"time"
 )
 
@@ -19,45 +18,35 @@ var ErrTimedOut = errors.New("the io operation timed out")
 func ReadAll(reader *bufio.Reader) ([]byte, error) {
 	data := make(chan []byte) // Initialize data buffer
 	err := make(chan error)   // Initialize error buffer
-	started := false          // Initialize started watch var
 
-	var wg sync.WaitGroup // Initialize wait group
-
-	wg.Add(1) // Only one process to complete
-
-	go func(started *bool) {
+	go func() {
 		scanner := bufio.NewScanner(reader) // Initialize reader
 
-		for scanner.Scan() { // Scan
-			data <- append(<-data, scanner.Bytes()...) // Append read line
+		var buffer []byte // Initialize buffer
 
-			if !*started { // Check hasn't started yet
-				*started = true // Set started
-			}
+		for scanner.Scan() { // Scan
+			buffer = append(buffer, scanner.Bytes()...) // Append read line
 		}
 
 		if scanErr := scanner.Err(); scanErr != nil { // Check for errors
 			err <- scanErr // Write error to parent routine
+
+			return // Return
 		}
 
-		wg.Done() // Done!
-	}(&started) // Run with timeout
+		data <- buffer // Write contents of buffer to data chan var
+	}() // Run with timeout
 
-	startTime := time.Now() // Get start time
+	deadline := time.Tick(2 * time.Second) // Wait 2 seconds to declare dead
 
-	for !started { // Wait until started
-		if pickedUpErr := <-err; pickedUpErr != nil { // Check for errors
-			return nil, pickedUpErr // Return found errors
-		}
-
-		if time.Now().Sub(startTime) > 2*time.Second { // Check timeout
-			return nil, ErrTimedOut // Return timeout error
-		}
+	select {
+	case pickedUpErr := <-err: // Wait for errors
+		return nil, pickedUpErr // Return found errors
+	case <-deadline:
+		return nil, ErrTimedOut // Return timeout error
+	case readData := <-data:
+		return readData, nil // Return read data
 	}
-
-	wg.Wait() // Wait...
-
-	return <-data, nil // Return read data
 }
 
 // CreateDirIfDoesNotExist - create given directory if does not exist
