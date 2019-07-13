@@ -78,8 +78,8 @@ func SendBytesResult(b []byte, address string) ([]byte, error) {
 
 	readWriter.Flush() // Flush
 
-	response, err := common.ReadAll(readWriter.Reader) // Read up to delimiter
-	if err != nil {                                    // Check for errors
+	response, err := ReadAll(readWriter.Reader) // Read up to delimiter
+	if err != nil {                             // Check for errors
 		return nil, err // Return found error
 	}
 
@@ -90,8 +90,8 @@ func SendBytesResult(b []byte, address string) ([]byte, error) {
 func ReadConnectionWaitAsyncNoTLS(conn net.Conn) ([]byte, error) {
 	reader := bufio.NewReader(conn) // Initialize reader
 
-	readBytes, err := common.ReadAll(reader) // Read up to delimiter
-	if err != nil {                          // Check for errors
+	readBytes, err := ReadAll(reader) // Read up to delimiter
+	if err != nil {                   // Check for errors
 		return nil, err // Return found error
 	}
 
