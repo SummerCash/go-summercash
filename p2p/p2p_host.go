@@ -154,14 +154,14 @@ func BootstrapConfig(ctx context.Context, host *routed.RoutedHost, bootstrapAddr
 
 	reader := bufio.NewReader(stream) // Initialize reader from stream
 
-	dagConfigBytes, err := common.ReadAll(reader) // Read
+	dagConfigBytes, err := reader.ReadBytes('\r') // Read
 	if err != nil {                               // Check for errors
 		cancel() // Cancel
 
 		return &config.ChainConfig{}, err // Return found error
 	}
 
-	dagConfigBytes = bytes.Trim(dagConfigBytes, "\n") // Trim delimiter
+	dagConfigBytes = bytes.Trim(dagConfigBytes, "\r") // Trim delimiter
 
 	deserializedConfig, err := config.FromBytes(dagConfigBytes) // Deserialize
 	if err != nil {                                             // Check for errors

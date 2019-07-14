@@ -38,7 +38,7 @@ func SendBytes(b []byte, address string) error {
 
 	writer := bufio.NewWriter(connection) // Initialize writer
 
-	_, err = writer.Write(append(b, []byte("\n")...)) // Write data
+	_, err = writer.Write(append(b, byte('\r'))) // Write data
 
 	if err != nil { // Check for errors
 		return err // Return found errors
@@ -70,7 +70,7 @@ func SendBytesResult(b []byte, address string) ([]byte, error) {
 
 	readWriter := bufio.NewReadWriter(bufio.NewReader(connection), bufio.NewWriter(connection)) // Initialize read writer
 
-	_, err = readWriter.Write(append(b, []byte("\n")...)) // Write data to connection
+	_, err = readWriter.Write(append(b, byte('\r'))) // Write data to connection
 
 	if err != nil { // Check for errors
 		return nil, err // Return found error
@@ -78,24 +78,24 @@ func SendBytesResult(b []byte, address string) ([]byte, error) {
 
 	readWriter.Flush() // Flush
 
-	response, err := ReadAll(readWriter.Reader) // Read up to delimiter
+	response, err := readWriter.ReadBytes('\r') // Read up to delimiter
 	if err != nil {                             // Check for errors
 		return nil, err // Return found error
 	}
 
-	return bytes.Trim(response, "\n"), nil // Return response
+	return bytes.Trim(response, "\r"), nil // Return response
 }
 
 // ReadConnectionWaitAsyncNoTLS - attempt to read from connection in an asynchronous fashion, after waiting for peer to write
 func ReadConnectionWaitAsyncNoTLS(conn net.Conn) ([]byte, error) {
 	reader := bufio.NewReader(conn) // Initialize reader
 
-	readBytes, err := ReadAll(reader) // Read up to delimiter
-	if err != nil {                   // Check for errors
+	readBytes, err := reader.ReadBytes('\r') // Read up to delimiter
+	if err != nil {                          // Check for errors
 		return nil, err // Return found error
 	}
 
-	return bytes.Trim(readBytes, "\n"), nil // Return read bytes w/trimmed delimiter
+	return bytes.Trim(readBytes, "\r"), nil // Return read bytes w/trimmed delimiter
 }
 
 /*

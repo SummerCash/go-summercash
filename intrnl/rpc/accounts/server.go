@@ -160,8 +160,8 @@ func (server *Server) MakeEncodingSafe(ctx context.Context, req *accountsProto.G
 		return &accountsProto.GeneralResponse{}, err // Return found error
 	}
 
-	marshaledVal, err := json.Marshal(*account) // Marshal JSON
-	if err != nil {                             // Check for errors
+	marshaledVal, err := json.MarshalIndent(*account, "", "  ") // Marshal JSON
+	if err != nil {                                             // Check for errors
 		return &accountsProto.GeneralResponse{}, err // Return found error
 	}
 
@@ -186,8 +186,8 @@ func (server *Server) RecoverSafeEncoding(ctx context.Context, req *accountsProt
 		return &accountsProto.GeneralResponse{}, err // Return found error
 	}
 
-	marshaledVal, err := json.Marshal(*account) // Marshal JSON
-	if err != nil {                             // Check for errors
+	marshaledVal, err := json.MarshalIndent(*account, "", "  ") // Marshal JSON
+	if err != nil {                                             // Check for errors
 		return &accountsProto.GeneralResponse{}, err // Return found error
 	}
 

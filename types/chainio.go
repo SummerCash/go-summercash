@@ -47,8 +47,8 @@ func (chain *Chain) WriteToMemory() error {
 		return err // Return error
 	}
 
-	json, err := json.Marshal(*chain) // Marshal chain
-	if err != nil {                   // Check for errors
+	json, err := json.MarshalIndent(*chain, "", "  ") // Marshal chain
+	if err != nil {                                   // Check for errors
 		return err // Return error
 	}
 

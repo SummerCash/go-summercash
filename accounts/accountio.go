@@ -22,8 +22,8 @@ func (account *Account) WriteToMemory() error {
 		return err // Return error
 	}
 
-	json, err := json.Marshal(*account) // Marshal account
-	if err != nil {                     // Check for errors
+	json, err := json.MarshalIndent(*account, "", "  ") // Marshal account
+	if err != nil {                                     // Check for errors
 		return err // Return error
 	}
 

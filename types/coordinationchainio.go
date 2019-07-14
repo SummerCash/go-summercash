@@ -16,8 +16,8 @@ func (coordinationChain *CoordinationChain) WriteToMemory() error {
 		return err // Return error
 	}
 
-	json, err := json.Marshal(*coordinationChain) // Marshal coordination chain
-	if err != nil {                               // Check for errors
+	json, err := json.MarshalIndent(*coordinationChain, "", "  ") // Marshal coordination chain
+	if err != nil {                                               // Check for errors
 		return err // Return error
 	}
 

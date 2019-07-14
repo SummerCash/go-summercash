@@ -22,7 +22,6 @@ require (
 	github.com/libp2p/go-libp2p-peer v0.2.0
 	github.com/libp2p/go-libp2p-peerstore v0.1.1
 	github.com/libp2p/go-libp2p-protocol v0.1.0
-	github.com/libp2p/go-yamux v1.2.3
 	github.com/mitchellh/mapstructure v1.1.2 // indirect
 	github.com/multiformats/go-multiaddr v0.0.4
 	github.com/multiformats/go-multihash v0.0.6 // indirect

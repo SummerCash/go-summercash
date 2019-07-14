@@ -58,7 +58,7 @@ func (client *Client) PublishTransaction(ctx context.Context, transaction *types
 
 	x := 0 // Init x buffer
 
-	if bytes.Contains(transaction.Bytes(), []byte("\n")) { // Check has invalid delimiter
+	if bytes.Contains(transaction.Bytes(), []byte{'\r'}) { // Check has invalid delimiter
 		return errors.New("message contains a restricted control character") // Return error
 	}
 
@@ -79,7 +79,7 @@ func (client *Client) PublishTransaction(ctx context.Context, transaction *types
 
 			writer := bufio.NewWriter(stream) // Initialize writer
 
-			_, err = writer.Write(append(transaction.Bytes(), []byte("\n")...)) // Write message
+			_, err = writer.Write(append(transaction.Bytes(), '\r')) // Write message
 
 			if err != nil { // Check for errors
 				return // Return

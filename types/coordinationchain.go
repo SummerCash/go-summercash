@@ -703,7 +703,7 @@ func (coordinationChain *CoordinationChain) Bytes() []byte {
 
 // String - convert given coordinationChain to string
 func (coordinationChain *CoordinationChain) String() string {
-	marshaled, _ := json.Marshal(*coordinationChain) // Marshal coordination chain
+	marshaled, _ := json.MarshalIndent(*coordinationChain, "", "  ") // Marshal coordination chain
 
 	return string(marshaled) // Return marshaled
 }
@@ -756,7 +756,7 @@ func (coordinationNode *CoordinationNode) Bytes() []byte {
 
 // String - convert given coordinationNode to string
 func (coordinationNode *CoordinationNode) String() string {
-	marshaled, _ := json.Marshal(*coordinationNode) // Marshal coordination node
+	marshaled, _ := json.MarshalIndent(*coordinationNode, "", "  ") // Marshal coordination node
 
 	return string(marshaled) // Return marshaled
 }

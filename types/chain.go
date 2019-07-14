@@ -287,7 +287,7 @@ func (chain *Chain) Bytes() []byte {
 
 // String - convert given chain to string
 func (chain *Chain) String() string {
-	marshaled, _ := json.Marshal(*chain) // Marshal chain
+	marshaled, _ := json.MarshalIndent(*chain, "", "  ") // Marshal chain
 
 	return string(marshaled) // Return marshaled
 }

@@ -295,8 +295,8 @@ func makeChainConfig(address common.Address) error {
 
 	genesis := genesis{NetworkID: 0, Alloc: alloc} // Init genesis
 
-	json, err := json.Marshal(genesis) // Marshal genesis
-	if err != nil {                    // Check for errors
+	json, err := json.MarshalIndent(genesis, "", "  ") // Marshal genesis
+	if err != nil {                                    // Check for errors
 		return err // Return error
 	}
 
