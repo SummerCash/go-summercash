@@ -2,7 +2,6 @@ package common
 
 import (
 	"bufio"
-	"bytes"
 	"encoding/gob"
 	"errors"
 	"os"
@@ -21,28 +20,15 @@ func ReadAll(reader *bufio.Reader) ([]byte, error) {
 	err := make(chan error)   // Initialize error buffer
 
 	go func() {
-		scanner := bufio.NewScanner(reader) // Initialize reader
-
-		var buffer []byte // Initialize buffer
-
-		for scanner.Scan() { // Scan
-			if bytes.Contains(scanner.Bytes(), []byte("\n\r")) || len(scanner.Bytes()) == 0 { // Check for EOF'
-				break // Break
-			}
-
-			buffer = append(buffer, scanner.Bytes()...) // Append read line
+		readData, readErr := reader.ReadBytes('\n') // Read up to newline
+		if readErr != nil {                         // Check for errors
+			err <- readErr // Write error to error chan var
 		}
 
-		if scanErr := scanner.Err(); scanErr != nil && scanErr.Error() != "stream reset" { // Check for errors
-			err <- scanErr // Write error to parent routine
-
-			return // Return
-		}
-
-		data <- buffer // Write contents of buffer to data chan var
+		data <- readData // Write read data to data chan var
 	}() // Run with timeout
 
-	deadline := time.After(2 * time.Second) // Wait 2 seconds to declare dead
+	deadline := time.After(4 * time.Second) // Wait 2 seconds to declare dead
 
 	select {
 	case readData := <-data:

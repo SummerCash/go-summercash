@@ -77,7 +77,7 @@ func handleConnection(conn net.Conn, isArchival bool) error {
 
 		common.Logf("== NETWORK == responding to chain request from peer %s\n", conn.RemoteAddr().String()) // Log request
 
-		_, err = conn.Write(append(chain.Bytes(), []byte("\n\r")...)) // Write chain
+		_, err = conn.Write(append(chain.Bytes(), []byte("\n")...)) // Write chain
 
 		if err != nil { // Check for errors
 			return err // Return found error
@@ -118,7 +118,7 @@ func handleConnection(conn net.Conn, isArchival bool) error {
 
 		common.Logf("== NETWORK == responding to coordination chain request from peer %s\n", conn.RemoteAddr().String()) // Log request
 
-		_, err = conn.Write(append(chainBytes, []byte("\n\r")...)) // Write chain
+		_, err = conn.Write(append(chainBytes, []byte("\n")...)) // Write chain
 
 		if err != nil { // Check for errors
 			return err // Return found error
@@ -137,7 +137,7 @@ func handleConnection(conn net.Conn, isArchival bool) error {
 
 		common.Logf("== NETWORK == responding to chain config request from peer %s\n", conn.RemoteAddr().String()) // Log request
 
-		_, err = conn.Write(append(configBytes, []byte("\n\r")...)) // Write chain
+		_, err = conn.Write(append(configBytes, []byte("\n")...)) // Write chain
 
 		if err != nil { // Check for errors
 			return err // Return found error
@@ -156,7 +156,7 @@ func handleConnection(conn net.Conn, isArchival bool) error {
 
 		common.Logf("== NETWORK == responding to state request from peer %s\n", conn.RemoteAddr().String()) // Log request
 
-		_, err = conn.Write(append(state, []byte("\n\r")...)) // Write chain
+		_, err = conn.Write(append(state, []byte("\n")...)) // Write chain
 
 		if err != nil { // Check for errors
 			return err // Return found error

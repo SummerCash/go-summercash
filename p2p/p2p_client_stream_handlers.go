@@ -27,7 +27,7 @@ func (client *Client) HandleReceiveConfigRequest(stream inet.Stream) {
 
 	config, _ := config.ReadChainConfigFromMemory() // Read config from memory
 
-	writer.Write(append(config.Bytes(), []byte("\n\r")...)) // Write config bytes
+	writer.Write(append(config.Bytes(), []byte("\n")...)) // Write config bytes
 
 	writer.Flush() // Flush
 }
@@ -45,7 +45,7 @@ func (client *Client) HandleReceiveTransaction(stream inet.Stream) {
 		return // Return
 	}
 
-	b = bytes.Trim(b, "\n\r") // Trim delimiter
+	b = bytes.Trim(b, "\n") // Trim delimiter
 
 	tx, err := types.TransactionFromBytes(b) // Marshal bytes to transaction
 	if err != nil {                          // Check for errors
@@ -120,7 +120,7 @@ func (client *Client) HandleReceiveBestTransaction(stream inet.Stream) {
 
 	common.Logf("== P2P == parsed req_best_tx account: %s\n", accountString) // Log handle stream
 
-	accountString = bytes.Trim(accountString, "\n\r") // Trim delimiter
+	accountString = bytes.Trim(accountString, "\n") // Trim delimiter
 
 	address, err := common.StringToAddress(string(accountString)) // Get address
 	if err != nil {                                               // Check for errors
@@ -133,9 +133,9 @@ func (client *Client) HandleReceiveBestTransaction(stream inet.Stream) {
 	}
 
 	if len(chain.Transactions) > 0 { // Check has txs
-		readWriter.Write(append(chain.Transactions[len(chain.Transactions)-1].Hash.Bytes(), []byte("\n\r")...)) // Write tx hash
+		readWriter.Write(append(chain.Transactions[len(chain.Transactions)-1].Hash.Bytes(), []byte("\n")...)) // Write tx hash
 	} else { // No txs
-		readWriter.Write(append(common.NewHash(crypto.Sha3(nil)).Bytes(), []byte("\n\r")...)) // Write nil hash
+		readWriter.Write(append(common.NewHash(crypto.Sha3(nil)).Bytes(), []byte("\n")...)) // Write nil hash
 	}
 
 	readWriter.Flush() // Flush
@@ -152,7 +152,7 @@ func (client *Client) HandleReceiveNextTransactionRequest(stream inet.Stream) {
 		common.Logf("== P2P == error while reading req_next_tx stream: %s\n", err.Error()) // Log error
 	}
 
-	lastTxAccount = bytes.Trim(lastTxAccount, "\n\r") // Trim delimiter
+	lastTxAccount = bytes.Trim(lastTxAccount, "\n") // Trim delimiter
 
 	address, err := common.StringToAddress(strings.Split(string(lastTxAccount), "_")[0]) // Get address
 	if err != nil {                                                                      // Check for errors
@@ -170,7 +170,7 @@ func (client *Client) HandleReceiveNextTransactionRequest(stream inet.Stream) {
 	}
 
 	if bytes.Equal(hash.Bytes(), common.NewHash(crypto.Sha3(nil)).Bytes()) { // Check is nil request
-		readWriter.Write(append(accountChain.Transactions[0].Bytes(), []byte("\n\r")...)) // Write genesis bytes
+		readWriter.Write(append(accountChain.Transactions[0].Bytes(), []byte("\n")...)) // Write genesis bytes
 
 		readWriter.Flush() // Flush
 
@@ -180,14 +180,14 @@ func (client *Client) HandleReceiveNextTransactionRequest(stream inet.Stream) {
 	for x, transaction := range accountChain.Transactions { // Iterate through transactions
 		if bytes.Equal(transaction.Hash.Bytes(), hash.Bytes()) { // Check hashes equal
 			if len(accountChain.Transactions) == x+1 { // Check no next
-				readWriter.Write(append(accountChain.Transactions[x].Bytes(), []byte("\n\r")...)) // Write current transaction
+				readWriter.Write(append(accountChain.Transactions[x].Bytes(), []byte("\n")...)) // Write current transaction
 
 				readWriter.Flush() // Flush
 
 				break // Break
 			}
 
-			readWriter.Write(append(accountChain.Transactions[x+1].Bytes(), []byte("\n\r")...)) // Write next transaction
+			readWriter.Write(append(accountChain.Transactions[x+1].Bytes(), []byte("\n")...)) // Write next transaction
 
 			readWriter.Flush() // Flush
 
@@ -209,7 +209,7 @@ func (client *Client) HandleReceiveAllChainsRequest(stream inet.Stream) {
 
 	common.Logf("== P2P == found local chains: %s\n", strings.Join(allLocalChains, ", ")) // Log error
 
-	_, err = writer.Write(append([]byte(strings.Join(allLocalChains, "_")), []byte("\n\r")...)) // Write all local chains
+	_, err = writer.Write(append([]byte(strings.Join(allLocalChains, "_")), []byte("\n")...)) // Write all local chains
 
 	if err != nil { // Check for errors
 		common.Logf("== P2P == error while writing req_chain stream: %s\n", err.Error()) // Log error
@@ -229,7 +229,7 @@ func (client *Client) HandleReceiveChainRequest(stream inet.Stream) {
 		common.Logf("== P2P == error while reading req_chain stream: %s\n", err.Error()) // Log error
 	}
 
-	addressBytes = bytes.Trim(addressBytes, "\n\r") // Trim delimiter
+	addressBytes = bytes.Trim(addressBytes, "\n") // Trim delimiter
 
 	var address common.Address // Init buffer
 
@@ -240,9 +240,9 @@ func (client *Client) HandleReceiveChainRequest(stream inet.Stream) {
 		common.Logf("== P2P == error while reading req_chain stream: %s\n", err.Error()) // Log error
 	}
 
-	chainBytes := bytes.Replace(chain.Bytes(), []byte("\n\r"), []byte{}, 1) // Remove \r
+	chainBytes := bytes.Replace(chain.Bytes(), []byte("\n"), []byte{}, 1) // Remove \r
 
-	_, err = readWriter.Write(append(chainBytes, []byte("\n\r")...)) // Write chain bytes
+	_, err = readWriter.Write(append(chainBytes, []byte("\n")...)) // Write chain bytes
 
 	if err != nil { // Check for errors
 		common.Logf("== P2P == error while writing req_chain stream: %s\n", err.Error()) // Log error
@@ -259,8 +259,8 @@ func (client *Client) HandleReceiveAliveRequest(stream inet.Stream) {
 
 	config, _ := config.ReadChainConfigFromMemory() // Read chain config from persistent memory
 
-	_, err := writer.Write(append([]byte(fmt.Sprintf("despacito: %s", config.ChainVersion)), []byte("\n\r")...)) // Write alive
-	if err != nil {                                                                                              // Check for errors
+	_, err := writer.Write(append([]byte(fmt.Sprintf("despacito: %s", config.ChainVersion)), []byte("\n")...)) // Write alive
+	if err != nil {                                                                                            // Check for errors
 		common.Logf("== P2P == error while writing req_not_dead_lol stream: %s\n", err.Error()) // Log error
 	}
 

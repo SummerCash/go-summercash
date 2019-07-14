@@ -49,8 +49,8 @@ func (server *Server) GetPeers(ctx context.Context, req *coordinationChainProto.
 		}
 	}
 
-	json, err := json.MarshalIndent(knownPeers, "", "  ") // Marshal
-	if err != nil {                                       // Check for errors
+	json, err := json.Marshal(knownPeers) // Marshal
+	if err != nil {                       // Check for errors
 		return &coordinationChainProto.GeneralResponse{}, err // Return found error
 	}
 

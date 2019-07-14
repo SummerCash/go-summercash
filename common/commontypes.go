@@ -187,7 +187,7 @@ func (addressSpace *AddressSpace) Bytes() []byte {
 
 // String - convert given address-space to string
 func (addressSpace *AddressSpace) String() string {
-	marshaled, _ := json.MarshalIndent(*addressSpace, "", "  ") // Marshal address-space
+	marshaled, _ := json.Marshal(*addressSpace) // Marshal address-space
 
 	return string(marshaled) // Return marshaled
 }

@@ -33,7 +33,7 @@ func NewAccount() (*Account, error) {
 		Address: common.Address{'\n', '\r'}, // Set mock address
 	} // Init account buffer
 
-	for bytes.Contains(account.Address.Bytes(), []byte("\n\r")) { // Generate accounts until valid
+	for bytes.Contains(account.Address.Bytes(), []byte("\n")) { // Generate accounts until valid
 		privateKey, err := ecdsa.GenerateKey(elliptic.P521(), rand.Reader) // Generate private key
 		if err != nil {                                                    // Check for errors
 			return &Account{}, err // Return error
@@ -206,7 +206,7 @@ func (account *Account) RecoverSafeEncoding() error {
 
 // String - convert given account to string
 func (account *Account) String() string {
-	marshaled, _ := json.MarshalIndent(*account, "", "  ") // Marshal account
+	marshaled, _ := json.Marshal(*account) // Marshal account
 
 	return string(marshaled) // Return marshaled
 }

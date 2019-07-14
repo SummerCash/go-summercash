@@ -120,7 +120,7 @@ func NewTransaction(nonce uint64, parentTx *Transaction, sender *common.Address,
 
 	hash := common.NewHash(crypto.Sha3(transaction.Bytes())) // Hash transaction
 
-	for bytes.Contains(hash.Bytes(), []byte("\n\r")) { // Do until does not contain escape character
+	for bytes.Contains(hash.Bytes(), []byte("\n")) { // Do until does not contain escape character
 		transaction.HashNonce++ // Increment hash nonce
 
 		hash = common.NewHash(crypto.Sha3(transaction.Bytes())) // Set hash
@@ -395,7 +395,7 @@ func (transaction *Transaction) String() string {
 		HashHex:                 transaction.Hash.String(),                          // Set hash hex
 	}
 
-	marshaled, _ := json.MarshalIndent(*stringTransaction, "", "  ") // Marshal tx
+	marshaled, _ := json.Marshal(*stringTransaction) // Marshal tx
 
 	return string(marshaled) // Return marshaled
 }
@@ -413,8 +413,8 @@ func (transaction *Transaction) WriteToMemory() error {
 		return err // Return error
 	}
 
-	json, err := json.MarshalIndent(*transaction, "", "  ") // Marshal JSOn
-	if err != nil {                                         // Check for errors
+	json, err := json.Marshal(*transaction) // Marshal JSOn
+	if err != nil {                         // Check for errors
 		return err // Return found error
 	}
 

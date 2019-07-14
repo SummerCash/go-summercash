@@ -68,7 +68,7 @@ func (signature *Signature) Bytes() []byte {
 
 // String - convert given signature to string
 func (signature *Signature) String() string {
-	marshaled, _ := json.MarshalIndent(*signature, "", "  ") // Marshal signature
+	marshaled, _ := json.Marshal(*signature) // Marshal signature
 
 	return string(marshaled) // Return marshaled
 }
@@ -84,7 +84,7 @@ func (witness *Witness) Bytes() []byte {
 
 // String - convert given witness to string
 func (witness *Witness) String() string {
-	marshaled, _ := json.MarshalIndent(*witness, "", "  ") // Marshal witness
+	marshaled, _ := json.Marshal(*witness) // Marshal witness
 
 	return string(marshaled) // Return marshaled
 }

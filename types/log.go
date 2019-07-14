@@ -40,7 +40,7 @@ func NewLog(key string, value []byte, logType LogKeyType) *Log {
 
 // String - get string representation of log
 func (log *Log) String() string {
-	marshaledVal, _ := json.MarshalIndent(*log, "", "  ") // Marshal
+	marshaledVal, _ := json.Marshal(*log) // Marshal
 
 	var marshaledString map[string]interface{} // Init json buffer
 
@@ -53,7 +53,7 @@ func (log *Log) String() string {
 		marshaledString["value"] = binary.LittleEndian.Uint64(log.Value) // Get integer representation
 	}
 
-	marshaledVal, _ = json.MarshalIndent(marshaledString, "", "  ") // Marshal
+	marshaledVal, _ = json.Marshal(marshaledString) // Marshal
 
 	return string(marshaledVal) // Return success
 }

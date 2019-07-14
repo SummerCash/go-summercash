@@ -111,15 +111,15 @@ func FromBytes(b []byte) (*ChainConfig, error) {
 
 // String - convert given chainConfig to string
 func (chainConfig *ChainConfig) String() string {
-	marshaled, _ := json.MarshalIndent(*chainConfig, "", "  ") // Marshal config
+	marshaled, _ := json.Marshal(*chainConfig) // Marshal config
 
 	return string(marshaled) // Return marshaled
 }
 
 // WriteToMemory - write given chainConfig to memory
 func (chainConfig *ChainConfig) WriteToMemory() error {
-	json, err := json.MarshalIndent(*chainConfig, "", "  ") // Marshal config
-	if err != nil {                                         // Check for errors
+	json, err := json.Marshal(*chainConfig) // Marshal config
+	if err != nil {                         // Check for errors
 		return err // Return error
 	}
 

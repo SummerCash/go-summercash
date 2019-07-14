@@ -40,8 +40,8 @@ func TestSignTransaction(t *testing.T) {
 		t.FailNow()  // Panic
 	}
 
-	marshaledVal, err := json.MarshalIndent(*transaction, "", "  ") // Marshal tx
-	if err != nil {                                                 // Check for errors
+	marshaledVal, err := json.Marshal(*transaction) // Marshal tx
+	if err != nil {                                 // Check for errors
 		t.Error(err) // Log found error
 		t.FailNow()  // Panic
 	}
@@ -187,8 +187,8 @@ func TestSelfSignTransaction(t *testing.T) {
 		t.FailNow()  // Panic
 	}
 
-	marshaledVal, err := json.MarshalIndent(*transaction, "", "  ") // Marshal tx
-	if err != nil {                                                 // Check for errors
+	marshaledVal, err := json.Marshal(*transaction) // Marshal tx
+	if err != nil {                                 // Check for errors
 		t.Error(err) // Log found error
 		t.FailNow()  // Panic
 	}

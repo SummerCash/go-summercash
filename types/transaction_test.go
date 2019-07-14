@@ -35,8 +35,8 @@ func TestNewTransaction(t *testing.T) {
 		t.FailNow()  // Panic
 	}
 
-	marshaledVal, err := json.MarshalIndent(*transaction, "", "  ") // Marshal tx
-	if err != nil {                                                 // Check for errors
+	marshaledVal, err := json.Marshal(*transaction) // Marshal tx
+	if err != nil {                                 // Check for errors
 		t.Error(err) // Log found error
 		t.FailNow()  // Panic
 	}
@@ -286,7 +286,7 @@ func TestBytes(t *testing.T) {
 
 	byteVal := transaction.Bytes() // Get byte val
 
-	if byteVal == nil || bytes.Contains(byteVal, []byte("\n\r")) { // Check for nil byteVal
+	if byteVal == nil || bytes.Contains(byteVal, []byte("\n")) { // Check for nil byteVal
 		t.Errorf("invalid byteval") // Log found error
 		t.FailNow()                 // Panic
 	}
