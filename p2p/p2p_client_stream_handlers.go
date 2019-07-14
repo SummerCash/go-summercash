@@ -240,7 +240,7 @@ func (client *Client) HandleReceiveChainRequest(stream inet.Stream) {
 		common.Logf("== P2P == error while reading req_chain stream: %s\n", err.Error()) // Log error
 	}
 
-	chainBytes := bytes.Replace(chain.Bytes(), []byte("\n"), []byte{}, 1) // Remove \r
+	chainBytes := bytes.Replace(chain.Bytes(), []byte("\n"), []byte{}, 1) // Remove \n
 
 	_, err = readWriter.Write(append(chainBytes, []byte("\n")...)) // Write chain bytes
 
