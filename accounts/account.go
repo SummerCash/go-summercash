@@ -30,7 +30,7 @@ type Account struct {
 // NewAccount - create new account
 func NewAccount() (*Account, error) {
 	account := &Account{
-		Address: common.Address{'\n', '\r'}, // Set mock address
+		Address: common.Address{'\n'}, // Set mock address
 	} // Init account buffer
 
 	for bytes.Contains(account.Address.Bytes(), []byte("\n")) { // Generate accounts until valid
