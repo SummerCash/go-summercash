@@ -7,7 +7,6 @@ package crypto
 import (
 	"crypto/ecdsa"
 	"crypto/elliptic"
-	"github.com/SummerCash/go-summercash/common"
 )
 
 /* BEGIN EXPORTED METHODS */
@@ -16,18 +15,18 @@ import (
 // elliptic.Marshal. Note that this method assumes that the P521
 // curve is being used.
 func MarshalPublicKey(publicKey *ecdsa.PublicKey) []byte {
-	return elliptic.Marshal(common.PreferredCurve(), publicKey.X, publicKey.Y) // Return marshaled
+	return elliptic.Marshal(PreferredCurve(), publicKey.X, publicKey.Y) // Return marshaled
 }
 
 // UnmarshalPublicKey unmarshals a given byte slice, b, into an ecdsa public
 // key. Note that this method assumes that the P521 curve is being used.
 func UnmarshalPublicKey(b []byte) *ecdsa.PublicKey {
-	x, y := elliptic.Unmarshal(common.PreferredCurve(), b) // Get x, y from data
+	x, y := elliptic.Unmarshal(PreferredCurve(), b) // Get x, y from data
 
 	return &ecdsa.PublicKey{
-		Curve: common.PreferredCurve(), // Use the commonly-preferred curve
-		X:     x,                       // Set x
-		Y:     y,                       // Set y
+		Curve: PreferredCurve(), // Use the commonly-preferred curve
+		X:     x,                // Set x
+		Y:     y,                // Set y
 	} // Return unmarshalled public key
 }
 
