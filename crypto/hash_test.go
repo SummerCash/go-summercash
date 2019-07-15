@@ -20,7 +20,8 @@ func TestBlake2s(t *testing.T) {
 	}
 }
 
-// TestHashBytes tests the functionality of the hash Bytes() helper method (literally the exact same as the Blake2s test).
+// TestHashBytes tests the functionality of the hash Bytes() helper method
+// (literally the exact same as the Blake2s test).
 func TestHashBytes(t *testing.T) {
 	hash := Blake2s([]byte("test")) // Hash test contents
 
