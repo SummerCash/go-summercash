@@ -20,7 +20,7 @@ func TestMarshalPublicKey(t *testing.T) {
 		t.Fatal(err) // Panic
 	}
 
-	if MarshalPublicKey(&privateKey.PublicKey) == nil || len(MarshalPublicKey(&privateKey.PublicKey)) == 0 { // Check couldn't encoode
+	if MarshalPublicKey(&privateKey.PublicKey) == nil || len(MarshalPublicKey(&privateKey.PublicKey)) == 0 { // Check couldn't encode
 		t.Fatal("invalid public key marshalling") // Panic
 	}
 }
