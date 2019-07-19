@@ -69,6 +69,17 @@ func (signature *Signature) String() (string, error) {
 	return string(marshalled), nil // Return JSON string val
 }
 
+// Pretty converts the given signature to a pretty-printed JSON-formatted
+// string.
+func (signature *Signature) Pretty() string {
+	marshalled, err := json.MarshalIndent(signature, "", "  ") // Marshal signature
+	if err != nil {                                            // Check for errors
+		return "" // Return nil contents
+	}
+
+	return string(marshalled) // Return JSON string val
+}
+
 // Bytes serializes the given signature to a byte slice via rlp encoding.
 func (signature *Signature) Bytes() ([]byte, error) {
 	var buffer bytes.Buffer // Initialize serialized data buffer

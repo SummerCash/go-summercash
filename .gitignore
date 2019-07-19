@@ -16,6 +16,7 @@
 
 # Settings
 .vscode/settings.json
+.idea/
 
 # Testing files
 server.sh

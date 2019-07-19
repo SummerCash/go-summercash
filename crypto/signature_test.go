@@ -68,6 +68,25 @@ func TestSignatureString(t *testing.T) {
 	}
 }
 
+// TestSignaturePretty tests the functionality of the Signature Pretty() helper method.
+func TestSignaturePretty(t *testing.T) {
+	privateKey, err := ecdsa.GenerateKey(PreferredCurve(), rand.Reader) // Generate private key
+	if err != nil {                                                     // Check for errors
+		t.Fatal(err) // Panic
+	}
+
+	signature, err := Sign(privateKey, []byte("test")) // Sign test message
+	if err != nil {                                    // Check for errors
+		t.Fatal(err) // Panic
+	}
+
+	stringVal := signature.Pretty() // Pretty print
+
+	if stringVal == "" { // Check empty string value
+		t.Fatal("string value is empty") // Panic
+	}
+}
+
 // TestSignatureBytes tests the functionality of the Signature Bytes() helper method.
 func TestSignatureBytes(t *testing.T) {
 	privateKey, err := ecdsa.GenerateKey(PreferredCurve(), rand.Reader) // Generate private key
